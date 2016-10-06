@@ -22,4 +22,12 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/textView2" />
 
+    <Button
+        android:text="Send Hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/testButton" />
+
 </RelativeLayout>
