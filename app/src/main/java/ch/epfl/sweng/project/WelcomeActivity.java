@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
@@ -28,13 +30,18 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+
 import static ch.epfl.sweng.project.R.attr.title;
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Button testButton;
+    LinearLayout activityPreviewsLayout;
+
     private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +71,56 @@ public class WelcomeActivity extends AppCompatActivity
         testButton = (Button) findViewById(R.id.testButton);
         testButton.setOnClickListener(testClickListener);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(30, 20, 30, 0);
+
+        ActivityPreview ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
+        activityPreviewsLayout.addView(ap, layoutParams);
+        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
+        activityPreviewsLayout.addView(ap, layoutParams);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     View.OnClickListener testClickListener = new View.OnClickListener() {
@@ -77,7 +132,7 @@ public class WelcomeActivity extends AppCompatActivity
     };
 
 
-    
+
     private void writeNewPost() {
         String key = mDatabase.child("messages").push().getKey();
 

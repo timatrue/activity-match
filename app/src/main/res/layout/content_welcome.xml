@@ -14,14 +14,6 @@
     tools:showIn="@layout/app_bar_welcome">
 
 
-    <TextView
-        android:text="Hello, welcome in ActivityMatch!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView2" />
-
     <Button
         android:text="Send Hello"
         android:layout_width="wrap_content"
@@ -29,5 +21,29 @@
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
         android:id="@+id/testButton" />
+
+    <ScrollView
+        android:id="@+id/activityPreviewsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/testButton"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/activityPreviewsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <TextView
+        android:text="Hello, welcome in ActivityMatch!"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
