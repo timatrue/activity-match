@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -51,13 +50,7 @@ public class WelcomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Soon something cool will happen here :)", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(newActivityListener);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -123,10 +116,17 @@ public class WelcomeActivity extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+    View.OnClickListener newActivityListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(), CreateActivity.class);
+            startActivity(intent);
+        }
+    };
+
     View.OnClickListener testClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             writeNewPost();
         }
     };
@@ -140,7 +140,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         HashMap<String, Object> result = new HashMap<>();
         result.put("uid", "result");
-        childUpdates.put("/messages/" + key, result);
+        childUpdates.put("/messages", result);
 
         mDatabase.updateChildren(childUpdates);
     }

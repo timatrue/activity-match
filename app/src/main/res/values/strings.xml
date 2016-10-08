@@ -5,7 +5,7 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="company_mail">teamdebox@epfl.ch</string>
     <string name="share_text">Hi! Whatsup? Do you wanna check out what kind of activities are available nearby you? Take a look at ActivityMatch! http://activitymatch.azurewebsites.net</string>
-    
+
     <!-- Welcome Activity navigation Drawer strings -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -15,5 +15,12 @@
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
     <string name="contact_message">Choose an Email client</string>
+
+
+    <!-- Create Activity -->
+    <string name="create_activity_title">Organize your activity : \n Chose a title and describe it</string>
+    <string name="create_activity_name_hint">The name of your activity</string>
+    <string name="create_activity_description_hint">Describe the activity you\'re planning</string>
+
 
 </resources>

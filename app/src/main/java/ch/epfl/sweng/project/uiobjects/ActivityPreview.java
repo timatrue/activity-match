@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -29,6 +30,15 @@ public class ActivityPreview extends LinearLayout {
 
         this.addView(titleView);
         this.addView(previewtextView);
+
+        GradientDrawable gd = new GradientDrawable();
+        gd.setColor(0xFFDDDDDD); // Changes this drawbale to use a single color instead of a gradient
+        gd.setCornerRadius(5);
+        gd.setStroke(2, 0xFF000000);
+        this.setBackgroundDrawable(gd);
+
+        this.setPadding(10,10,10,10);
+
 
     }
 
