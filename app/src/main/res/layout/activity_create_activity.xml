@@ -40,5 +40,11 @@
             android:ems="10"
             android:background="#EEE"
             android:id="@+id/edActivityDescription" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pick time"
+            android:onClick="showTimePickerDialog" />
     </LinearLayout>
 </RelativeLayout>
