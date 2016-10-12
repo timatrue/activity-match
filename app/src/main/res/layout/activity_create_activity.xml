@@ -41,29 +41,33 @@
             android:background="#EEE"
             android:id="@+id/edActivityDescription" />
 
-        <Button
-            android:layout_width="wrap_content"
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="pick time"
-            android:onClick="showTimePickerDialog" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pick date"
-            android:onClick="showDatePickerDialog" />
+            android:onClick="showStartDatePickerDialog"
+            android:id="@+id/startDateTextView" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/dateTextView" />
+            android:onClick="showStartTimePickerDialog"
+            android:id="@+id/startTimeTextView" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/timeTextView" />
+            android:onClick="showEndDatePickerDialog"
+            android:id="@+id/endDateTextView" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="showEndTimePickerDialog"
+            android:id="@+id/endTimeTextView" />
 
     </LinearLayout>
 </RelativeLayout>

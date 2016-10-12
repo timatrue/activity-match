@@ -1,116 +1,110 @@
 package ch.epfl.sweng.project;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.text.format.DateFormat;
-
-//import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 
-public class CreateActivity extends AppCompatActivity{
+public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
 
-    TextView dateTextView;
-    TextView timeTextView;
+    TextView startDateTextView;
+    TextView endDateTextView;
+    TextView startTimeTextView;
+    TextView endTimeTextView;
+
+    DatePickerFragment startDateFragment;
+    DatePickerFragment endDateFragment;
+    TimePickerFragment startTimeFragment;
+    TimePickerFragment endTimeFragment;
+
+    Calendar startCalendar;
+    Calendar endCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_activity);
 
-        dateTextView = (TextView) findViewById(R.id.dateTextView);
-        Calendar calendar = Calendar.getInstance();
-        String currentDateString =
-                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + " " +
-                calendar.get(Calendar.DAY_OF_MONTH) + "." +
-                calendar.get(Calendar.MONTH) + "." +
-                calendar.get(Calendar.YEAR);
-        dateTextView.setText(currentDateString);
+        startDateTextView = (TextView) findViewById(R.id.startDateTextView);
+        endDateTextView = (TextView) findViewById(R.id.endDateTextView);
+        startCalendar = Calendar.getInstance();
+        endCalendar = Calendar.getInstance();
+        startDateTextView.setText(makeDateString(startCalendar));
+        endDateTextView.setText(makeDateString(endCalendar));
 
-        timeTextView = (TextView) findViewById(R.id.dateTextView);
-        String currentTimeString =
-                calendar.get(Calendar.HOUR) + ":" +
-                calendar.get(Calendar.MINUTE);
-        timeTextView.setText(currentTimeString);
-
-
-
+        startTimeTextView = (TextView) findViewById(R.id.startTimeTextView);
+        endTimeTextView = (TextView) findViewById(R.id.endTimeTextView);
+        startTimeTextView.setText(makeTimeString(startCalendar));
+        endTimeTextView.setText(makeTimeString(endCalendar));
     }
 
 
-
-
-    /*
-    long date = System.currentTimeMillis();
-
-    SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
-    String dateString = sdf.format(date);
-    dateTextView.setText(dateString);
-    */
-
-
-    public static class TimePickerFragment extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
-        }
+    public void showStartTimePickerDialog(View v) {
+        startTimeFragment = new TimePickerFragment();
+        startTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        startTimeFragment.setPickerListener(this);
     }
 
-    public void showTimePickerDialog(View v) {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
+    public void showStartDatePickerDialog(View v) {
+        startDateFragment = new DatePickerFragment();
+        startDateFragment.show(getSupportFragmentManager(), "datePicker");
+        startDateFragment.setPickerListener(this);
     }
 
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
+    public void showEndTimePickerDialog(View v) {
+        endTimeFragment = new TimePickerFragment();
+        endTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        endTimeFragment.setPickerListener(this);
+    }
 
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+    public void showEndDatePickerDialog(View v) {
+        endDateFragment = new DatePickerFragment();
+        endDateFragment.show(getSupportFragmentManager(), "datePicker");
+        endDateFragment.setPickerListener(this);
+    }
 
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+    private String makeDateString(Calendar calendar) {
+        return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()) + " " +
+               calendar.get(Calendar.DAY_OF_MONTH) + "." +
+               (calendar.get(Calendar.MONTH) + 1) + "." +
+               calendar.get(Calendar.YEAR);
+    }
+
+    private String makeTimeString(Calendar calendar) {
+        return calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public void updateDate(DialogFragment fragment, int year, int month, int day) {
+        if(fragment == startDateFragment) {
+            startCalendar.set(Calendar.YEAR, year);
+            startCalendar.set(Calendar.MONTH, month);
+            startCalendar.set(Calendar.DAY_OF_MONTH, day);
+            startDateTextView.setText(makeDateString(startCalendar));
         }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            // Do something with the date chosen by the user
+        else if (fragment == endDateFragment) {
+            endCalendar.set(Calendar.YEAR, year);
+            endCalendar.set(Calendar.MONTH, month);
+            endCalendar.set(Calendar.DAY_OF_MONTH, day);
+            endDateTextView.setText(makeDateString(endCalendar));
         }
     }
 
-    public void showDatePickerDialog(View v) {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
+    @Override
+    public void updateTime(DialogFragment fragment, int hour, int minute) {
+        if(fragment == startTimeFragment) {
+            startCalendar.set(Calendar.HOUR, hour);
+            startCalendar.set(Calendar.MINUTE, minute);
+            startTimeTextView.setText(makeTimeString(startCalendar));
+        }
+        else if (fragment == endTimeFragment) {
+            endCalendar.set(Calendar.HOUR, hour);
+            endCalendar.set(Calendar.MINUTE, minute);
+            endTimeTextView.setText(makeTimeString(endCalendar));
+        }
     }
-
 }
