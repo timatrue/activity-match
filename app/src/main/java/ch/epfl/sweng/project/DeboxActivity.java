@@ -13,6 +13,7 @@ import java.util.Locale;
 public class DeboxActivity {
     public final int DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH = 64;
 
+    private String id;
     private String organizer;
     private String title;
     private String description;
@@ -35,30 +36,36 @@ public class DeboxActivity {
      * @param   latitude    the latitude of the activity's meeting point location
      * @param   category    the category of the activity
      */
-    public DeboxActivity(String organizer, String title, String description, Calendar timeStart,
+    public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
                          Calendar timeEnd, double latitude, double longitude, String category) {
-        this.organizer = organizer;
-        this.title = title;
-        this.description = description;
+        this.id = new String(id);
+        this.organizer = new String(organizer);
+        this.title = new String(title);
+        this.description = new String(description);
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.category = category;
+        this.category = new String(category);
     }
 
     /**
      * @return  the organizer of the Debox Activity
      */
+    public String getId() { return new String(id); }
+
+    /**
+     * @return  the organizer of the Debox Activity
+     */
     public String getOrganizer() {
-        return organizer;
+        return new String(organizer);
     }
 
     /**
      * @return  the title of the Debox Activity
      */
     public String getTitle() {
-        return title;
+        return new String(title);
     }
 
 
@@ -66,7 +73,7 @@ public class DeboxActivity {
      * @return the description of the Debox Activity
      */
     public String getDescription(){
-        return description;
+        return new String(description);
     }
 
     /**
@@ -75,10 +82,10 @@ public class DeboxActivity {
      */
     public String getShortDescription() {
         if (description.length() > DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH) {
-            return description.substring(0, DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH-3) + "...";
+            return new String(description.substring(0, DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH-3) + "...");
         }
         else {
-            return description;
+            return new String(description);
         }
     }
 
@@ -92,10 +99,10 @@ public class DeboxActivity {
             return "...";
         }
         if (description.length() > maxLength) {
-            return description.substring(0, maxLength-3) + "...";
+            return new String(description.substring(0, maxLength-3) + "...");
         }
         else {
-            return description;
+            return new String(description);
         }
     }
 
@@ -127,6 +134,6 @@ public class DeboxActivity {
      * @return the category of the Debox Activity
      */
     public String getCategory() {
-        return category;
+        return new String(category);
     }
 }
