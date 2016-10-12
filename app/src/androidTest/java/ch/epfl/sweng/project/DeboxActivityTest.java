@@ -27,7 +27,7 @@ public final class DeboxActivityTest {
         startDate.set(Calendar.YEAR, 2016);
         startDate.set(Calendar.MONTH, 11);
 
-        DeboxActivity dA = new DeboxActivity("Nathan",
+        DeboxActivity dA = new DeboxActivity("zdkasKKLD", "Nathan",
                 "Football in UNIL sport center", "Indoor football tournaments open to every student " +
                 "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
                 "minutes games",
