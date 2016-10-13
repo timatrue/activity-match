@@ -33,6 +33,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DisplayActivity">
+        </activity>
         <activity android:name=".GpsTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

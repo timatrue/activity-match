@@ -7,26 +7,36 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.DeboxActivity;
+
 /**
  * Created by nathan on 07.10.16.
  */
 
 public class ActivityPreview extends LinearLayout {
 
+    DeboxActivity event;
+
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
     }
 
-    public ActivityPreview(Context context, String title, String previewText) {
+    public String getEventId() {
+        return event.getId();
+    }
+
+    public ActivityPreview(Context context, DeboxActivity event) {
         super(context);
         setOrientation(VERTICAL);
+
+        this.event = event;
 
         TextView titleView = new TextView(context);
         TextView previewtextView = new TextView(context);
 
-        titleView.setText(title);
-        previewtextView.setText(previewText);
+        titleView.setText(event.getTitle());
+        previewtextView.setText(event.getShortDescription());
 
         this.addView(titleView);
         this.addView(previewtextView);

@@ -14,7 +14,7 @@ import java.util.Calendar;
 
 public class DisplayActivity extends AppCompatActivity {
 
-    final public String DISPLAY_EVENT_ID = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID";
+    final static public String DISPLAY_EVENT_ID = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID";
 
     TextView title;
     TextView description;
@@ -29,9 +29,10 @@ public class DisplayActivity extends AppCompatActivity {
         DeboxActivity selectedEvent = new DeboxActivity("1", "dummy", "football", "play", Calendar.getInstance(), Calendar.getInstance(), 20, 30, "Sports" );
         //DeboxActivity selectedEvent = DBProvider.getEventById(eventId);
 
+        //System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>"+eventId);
         //display also schedule
         title = (TextView) findViewById(R.id.eventTitle);
-        title.setText(selectedEvent.getTitle());
+        title.setText(eventId); //selectedEvent.getTitle()
 
         description = (TextView) findViewById(R.id.eventDescription);
         description.setText(selectedEvent.getDescription());
