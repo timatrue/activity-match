@@ -6,39 +6,159 @@
     android:layout_height="match_parent"
     tools:context="ch.epfl.sweng.project.MainActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:weightSum="1">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
-        <TextView
-            android:text="@string/create_activity_title"
-            android:layout_margin="@dimen/activity_horizontal_margin"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="@string/create_activity_name_hint"
-            android:ems="10"
-            android:background="#EEE"
-            android:id="@+id/editText" />
+            <View
+                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:visibility="invisible"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/center" />
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:layout_height="match_parent"
-            android:inputType="textPersonName"
-            android:hint="@string/create_activity_description_hint"
-            android:ems="10"
-            android:background="#EEE"
-            android:id="@+id/edActivityDescription" />
-    </LinearLayout>
+            <TextView
+                android:text="@string/create_activity_title"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:id="@+id/createActivityTitle" />
+
+            <TextView
+                android:text="@string/create_activity_name_textView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityTitle"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/createActivityNameTextView" />
+
+            <EditText
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityNameTextView"
+                android:inputType="textPersonName"
+                android:hint="@string/create_activity_name_hint"
+                android:ems="10"
+                android:background="#EEE"
+                android:id="@+id/createActivityTitleEditText" />
+
+            <TextView
+                android:text="@string/create_activity_description_textView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityTitleEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/createActivityDescriptionTextView" />
+
+            <EditText
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityDescriptionTextView"
+                android:inputType="textMultiLine"
+                android:lines="6"
+                android:maxLines="20"
+                android:hint="@string/create_activity_description_hint"
+                android:ems="10"
+                android:background="#EEE"
+                android:id="@+id/createActivityDescriptionEditText" />
+
+            <TextView
+                android:text="@string/create_activity_starting_time_textView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityDescriptionEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/createActivityStartingTimeTextView" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityStartingTimeTextView"
+                android:layout_toLeftOf="@+id/center"
+                android:layout_toStartOf="@+id/center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showStartDatePickerDialog"
+                android:id="@+id/startDateTextView" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityStartingTimeTextView"
+                android:layout_toRightOf="@+id/center"
+                android:layout_toEndOf="@+id/center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showStartTimePickerDialog"
+                android:id="@+id/startTimeTextView" />
+
+            <TextView
+                android:text="@string/create_activity_ending_time_textView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/startDateTextView"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/createActivityEndingTimeTextView" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityEndingTimeTextView"
+                android:layout_toLeftOf="@+id/center"
+                android:layout_toStartOf="@+id/center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showEndDatePickerDialog"
+                android:id="@+id/endDateTextView" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityEndingTimeTextView"
+                android:layout_toRightOf="@+id/center"
+                android:layout_toEndOf="@+id/center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showEndTimePickerDialog"
+                android:id="@+id/endTimeTextView" />
+
+            <Button
+                android:text="@string/create_activity_create_activity_button"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/endDateTextView"
+                android:onClick="createActivity"
+                android:id="@+id/createActivityValidateButton" />
+
+            <TextView
+                android:text=""
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityValidateButton"
+                android:id="@+id/createActivityConfirmation" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
 </RelativeLayout>
