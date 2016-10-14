@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static java.text.DateFormat.getDateInstance;
+import static java.text.DateFormat.getTimeInstance;
 
 
 public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
@@ -78,46 +79,85 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         double activityLongitude = 0.00;
         String activityCategory = "default_category";
 
-        if (!activityTitle.equals("") && !activityDescription.equals("") && !activityCategory.equals("")) {
+        String validation = validateActivity(
+                activityId,
+                activityOrganizer,
+                activityTitle,
+                activityDescription,
+                activityStartCalendar,
+                activityEndCalendar,
+                activityLatitude,
+                activityLongitude,
+                activityCategory);
 
-            if (activityEndCalendar.after(activityStartCalendar)
-                    && activityEndCalendar.after(Calendar.getInstance())) {
-
-                if (activityStartCalendar.before(Calendar.getInstance())) {
+        if (validation.equals("success")) {
+            if (activityStartCalendar.before(Calendar.getInstance())) {
                     /* sets the starting time of the activity to the current time if the starting time
                     is before the current time */
-                    activityStartCalendar = Calendar.getInstance();
-                }
-
-                DeboxActivity newDeboxActivity = new DeboxActivity(activityId,
-                                                                   activityOrganizer,
-                                                                   activityTitle,
-                                                                   activityDescription,
-                                                                   activityStartCalendar,
-                                                                   activityEndCalendar,
-                                                                   activityLatitude,
-                                                                   activityLongitude,
-                                                                   activityCategory);
-
-                mDataProvider.pushActivity(newDeboxActivity);
-
-                Intent intent = new Intent(this, CreateActivity.class);
-                String message = "success";
-                intent.putExtra("CONFIRMATION_MESSAGE", message);
-                startActivity(intent);
+                activityStartCalendar = Calendar.getInstance();
             }
 
-            else {
-                TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
-                confirmation.setText(R.string.create_activity_date_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
-            }
+            DeboxActivity newDeboxActivity = new DeboxActivity(
+                    activityId,
+                    activityOrganizer,
+                    activityTitle,
+                    activityDescription,
+                    activityStartCalendar,
+                    activityEndCalendar,
+                    activityLatitude,
+                    activityLongitude,
+                    activityCategory);
+
+            //mDataProvider.pushActivity(newDeboxActivity);
+
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.putExtra("CONFIRMATION_MESSAGE", validation);
+            startActivity(intent);
+        }
+
+        else if (validation.equals("missing_field_error")) {
+            TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
+            confirmation.setText(R.string.create_activity_missing_field_error_message);
+            confirmation.setTextColor(getResources().getColor(R.color.red));
+        }
+
+        else if (validation.equals("date_error")){
+            TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
+            confirmation.setText(R.string.create_activity_date_error_message);
+            confirmation.setTextColor(getResources().getColor(R.color.red));
         }
 
         else {
             TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
-            confirmation.setText(R.string.create_activity_missing_field_error_message);
+            confirmation.setText(R.string.create_activity_unknown_error_message);
             confirmation.setTextColor(getResources().getColor(R.color.red));
+        }
+    }
+
+    public String validateActivity(
+            String activityId,
+            String activityOrganizer,
+            String activityTitle,
+            String activityDescription,
+            Calendar activityStartCalendar,
+            Calendar activityEndCalendar,
+            double activityLatitude,
+            double activityLongitude,
+            String activityCategory) {
+        if (!activityTitle.equals("") && !activityDescription.equals("") && !activityCategory.equals("")) {
+
+            if (activityEndCalendar.after(activityStartCalendar)
+                    && activityEndCalendar.after(Calendar.getInstance())) {
+                return "success";
+            }
+
+            else {
+                return "date_error";
+            }
+        }
+
+        else {
+            return "missing_field_error";
         }
     }
 
@@ -151,6 +191,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     }
 
     private String makeTimeString(Calendar calendar) {
+        //DateFormat timeFormat = getTimeInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         return timeFormat.format(calendar.getTime());
     }
@@ -174,12 +215,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     @Override
     public void updateTime(DialogFragment fragment, int hour, int minute) {
         if(fragment == startTimeFragment) {
-            activityStartCalendar.set(Calendar.HOUR, hour);
+            activityStartCalendar.set(Calendar.HOUR_OF_DAY, hour);
             activityStartCalendar.set(Calendar.MINUTE, minute);
             startTimeTextView.setText(makeTimeString(activityStartCalendar));
         }
         else if (fragment == endTimeFragment) {
-            activityEndCalendar.set(Calendar.HOUR, hour);
+            activityEndCalendar.set(Calendar.HOUR_OF_DAY, hour);
             activityEndCalendar.set(Calendar.MINUTE, minute);
             endTimeTextView.setText(makeTimeString(activityEndCalendar));
         }

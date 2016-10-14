@@ -29,6 +29,7 @@
     <string name="create_activity_starting_time_textView">Starting time</string>
     <string name="create_activity_ending_time_textView">Ending time</string>
     <string name="create_activity_create_activity_button">Create activity</string>
+    <string name="create_activity_unknown_error_message">Unknown error</string>
 
 
 </resources>
