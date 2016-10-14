@@ -16,6 +16,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public final class CreateActivityTest {
 
+    validateActivity
     @Test
     public void emptyActivityName() {
         assertThat(MainActivity.add(1, 1), is(2));

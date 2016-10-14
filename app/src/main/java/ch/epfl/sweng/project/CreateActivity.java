@@ -108,7 +108,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                     activityLongitude,
                     activityCategory);
 
-            //mDataProvider.pushActivity(newDeboxActivity);
+            mDataProvider.pushActivity(newDeboxActivity);
 
             Intent intent = new Intent(this, CreateActivity.class);
             intent.putExtra("CONFIRMATION_MESSAGE", validation);
