@@ -30,8 +30,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     Calendar activityStartCalendar;
     Calendar activityEndCalendar;
 
-    //to change when the data provider is implemented
-    //private DataProvider mDataProvider;
+    private DataProvider mDataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +49,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         startTimeTextView.setText(makeTimeString(activityStartCalendar));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
-        //to change when the data provider is implemented
-        //mDataProvider = new DataProvider;
+        mDataProvider = new DataProvider();
 
         //Retrieves and displays the confirmation message after a successful activity creation
         Bundle confirmationMessage = getIntent().getExtras();
@@ -101,8 +99,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                                                                    activityLongitude,
                                                                    activityCategory);
 
-                //to change when the data provider is implemented
-                //mDataProvider.pushActivity(newDeboxActivity);
+                mDataProvider.pushActivity(newDeboxActivity);
 
                 Intent intent = new Intent(this, CreateActivity.class);
                 String message = "success";
