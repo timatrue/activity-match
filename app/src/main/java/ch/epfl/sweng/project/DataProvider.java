@@ -66,7 +66,6 @@ public class DataProvider {
         childUpdates.put("activities", childActivityUpdate);
 
         mDatabase.updateChildren(childUpdates);
-
     }
 
 

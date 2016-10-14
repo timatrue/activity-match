@@ -5,4 +5,6 @@ package ch.epfl.sweng.project;
  */
 
 public class DataProviderTest {
+
+    // test not yet implemented, because we can still not take the data from the database
 }
