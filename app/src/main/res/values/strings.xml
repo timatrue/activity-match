@@ -18,9 +18,17 @@
 
 
     <!-- Create Activity -->
-    <string name="create_activity_title">Organize your activity : \n Chose a title and describe it</string>
+    <string name="create_activity_title">Organize your activity : \n Choose a title and describe it</string>
     <string name="create_activity_name_hint">The name of your activity</string>
     <string name="create_activity_description_hint">Describe the activity you\'re planning</string>
+    <string name="create_activity_confirmation_message">Activity successfully created</string>
+    <string name="create_activity_date_error_message">Invalid dates and/or time</string>
+    <string name="create_activity_missing_field_error_message">Missing required field informations</string>
+    <string name="create_activity_name_textView">Name</string>
+    <string name="create_activity_description_textView">Description</string>
+    <string name="create_activity_starting_time_textView">Starting time</string>
+    <string name="create_activity_ending_time_textView">Ending time</string>
+    <string name="create_activity_create_activity_button">Create activity</string>
 
 
 </resources>
