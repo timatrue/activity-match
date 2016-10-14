@@ -146,9 +146,10 @@ public class WelcomeActivity extends AppCompatActivity
                 121.0213,
                 "Sports");
 
-        mDataProvider.pushActivity(dA);
+      //  mDataProvider.pushActivity(dA);
 
-        //mDataProvider.getActivityByID(".");
+
+        mDataProvider.getActivityFromUid(".");
 
     }
 

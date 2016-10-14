@@ -68,5 +68,22 @@ public class DataProvider {
         mDatabase.updateChildren(childUpdates);
     }
 
+    public DeboxActivity getActivityFromUid(String uid) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities/" + uid);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
+        return null;
+    }
+
 
 }
