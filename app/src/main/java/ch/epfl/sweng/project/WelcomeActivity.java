@@ -21,6 +21,7 @@ import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
@@ -146,10 +147,35 @@ public class WelcomeActivity extends AppCompatActivity
                 1121.0213,
                 "Sports");
 
-        mDataProvider.pushActivity(dA);
+       // mDataProvider.pushActivity(dA);
+
+
 
         //mDataProvider.getAllActivities();
-        //mDataProvider.getActivityFromUid(".");
+        /*
+        mDataProvider.getActivityFromUid(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+            }
+        }, "-KU1JUv55xpQj0jeXVzk");
+        */
+        mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+                int a = 2;
+            }
+        });
 
     }
 
