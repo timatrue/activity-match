@@ -29,15 +29,36 @@ public class DataProvider {
 
     }
 
-    /*public ArrayList<DeboxActivity> getAllActivities() {
+    public ArrayList<DeboxActivity> getAllActivities() {
 
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
         return deboxActivityList;
-    }*/
+    }
 
 
-    //public void getActivityByID(String id){}
+    public void getActivityByID(String id){
+
+    }
 
     public void pushActivity(DeboxActivity da){
+
+
+        String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> childActivityUpdate = new HashMap<>();
@@ -61,9 +82,7 @@ public class DataProvider {
         result.put("category",da.getCategory());
 
 
-        childActivityUpdate.put(da.getId(),result);
-
-        childUpdates.put("activities", childActivityUpdate);
+        childUpdates.put("activities/"+key, result);
 
         mDatabase.updateChildren(childUpdates);
     }
@@ -74,6 +93,8 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+
 
             }
 

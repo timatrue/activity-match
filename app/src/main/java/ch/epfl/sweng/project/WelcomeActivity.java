@@ -136,20 +136,20 @@ public class WelcomeActivity extends AppCompatActivity
 
         startDate.set(Calendar.YEAR, 2016);
         startDate.set(Calendar.MONTH, 11);
-        DeboxActivity dA = new DeboxActivity("zdkasKKLD1", "Nathan",
-                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+        DeboxActivity dA = new DeboxActivity("aadddddda", "Lathan",
+                "Baseball in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of HES and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
                 "minutes games",
                 startDate,
                 endDate,
-                122.01,
-                121.0213,
+                1212.01,
+                1121.0213,
                 "Sports");
 
-      //  mDataProvider.pushActivity(dA);
+        mDataProvider.pushActivity(dA);
 
-
-        mDataProvider.getActivityFromUid(".");
+        //mDataProvider.getAllActivities();
+        //mDataProvider.getActivityFromUid(".");
 
     }
 
