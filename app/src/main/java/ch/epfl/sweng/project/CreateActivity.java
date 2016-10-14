@@ -11,10 +11,8 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import static java.text.DateFormat.getDateInstance;
-import static java.text.DateFormat.getTimeInstance;
 
 
 public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
@@ -69,6 +67,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     public void createActivity(View v) {
 
+        String activityId = "delfault_id";
         String activityOrganizer = "default_organizer";
 
         EditText TitleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
@@ -92,7 +91,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                     activityStartCalendar = Calendar.getInstance();
                 }
 
-                DeboxActivity newDeboxActivity = new DeboxActivity(activityOrganizer,
+                DeboxActivity newDeboxActivity = new DeboxActivity(activityId,
+                                                                   activityOrganizer,
                                                                    activityTitle,
                                                                    activityDescription,
                                                                    activityStartCalendar,
