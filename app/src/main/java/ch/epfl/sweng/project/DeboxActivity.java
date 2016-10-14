@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import android.location.Location;
 
+//import java.util.Calendar;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;

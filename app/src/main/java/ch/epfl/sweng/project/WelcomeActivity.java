@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
+
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,14 +20,7 @@ import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
@@ -39,7 +32,8 @@ public class WelcomeActivity extends AppCompatActivity
     Button testButton;
     LinearLayout activityPreviewsLayout;
 
-    private DatabaseReference mDatabase;
+   // private DatabaseReference mDatabase;
+    private DataProvider mDataProvider;
 
 
     @Override
@@ -113,7 +107,8 @@ public class WelcomeActivity extends AppCompatActivity
         ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
         activityPreviewsLayout.addView(ap, layoutParams);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDataProvider = new DataProvider();
     }
 
     View.OnClickListener newActivityListener = new View.OnClickListener() {
@@ -134,15 +129,27 @@ public class WelcomeActivity extends AppCompatActivity
 
 
     private void writeNewPost() {
-        String key = mDatabase.child("messages").push().getKey();
 
-        Map<String, Object> childUpdates = new HashMap<>();
+        //mDataProvider.test();
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
 
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("uid", "result");
-        childUpdates.put("/messages", result);
+        startDate.set(Calendar.YEAR, 2016);
+        startDate.set(Calendar.MONTH, 11);
+        DeboxActivity dA = new DeboxActivity("zdkasKKLD1", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Sports");
 
-        mDatabase.updateChildren(childUpdates);
+        mDataProvider.pushActivity(dA);
+
+        //mDataProvider.getActivityByID(".");
+
     }
 
     @Override
