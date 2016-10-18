@@ -20,6 +20,8 @@ import static org.junit.Assert.assertThat;
 public final class DataProviderTest {
     // TODO replace this with your own tests.
 
+    Boolean testFinished = false;
+
     @Test
     public void DeboxActivityConstructorAndMethod() {
         Calendar startDate = Calendar.getInstance();
@@ -40,7 +42,8 @@ public final class DataProviderTest {
 
 
         DataProvider dp = new DataProvider();
-        dp.pushActivity(dA);
+        String uid = dp.pushActivity(dA);
+
 
         dp.getActivityFromUid(new DataProvider.DataProviderListener() {
             @Override
@@ -52,15 +55,17 @@ public final class DataProviderTest {
                 assertThat(activity.getCategory(), is(activity.getCategory()));
                 assertThat(activity.getTimeStart(), is(activity.getTimeStart()));
                 assertThat(activity.getTimeEnd(), is(activity.getTimeEnd()));
-                assertThat("false", is("true"));
+                testFinished = true;
             }
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
-
+                testFinished = true;
             }
-        }, "zdkasKKLD");
+        }, uid);
 
+
+        while (!testFinished);
 
 
     }
