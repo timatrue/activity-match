@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by olga on 10.10.16.
@@ -26,16 +27,25 @@ public class DisplayActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
-        DeboxActivity selectedEvent = new DeboxActivity("1", "dummy", "football", "play", Calendar.getInstance(), Calendar.getInstance(), 20, 30, "Sports" );
-        //DeboxActivity selectedEvent = DBProvider.getEventById(eventId);
 
-        //System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>"+eventId);
-        //display also schedule
-        title = (TextView) findViewById(R.id.eventTitle);
-        title.setText(eventId); //selectedEvent.getTitle()
 
-        description = (TextView) findViewById(R.id.eventDescription);
-        description.setText(selectedEvent.getDescription());
+        DataProvider dp = new DataProvider();
+        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+                title = (TextView) findViewById(R.id.eventTitle);
+                title.setText(activity.getTitle()); //selectedEvent.getTitle()
+
+                description = (TextView) findViewById(R.id.eventDescription);
+                description.setText(activity.getDescription());
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+            }
+        }, eventId);
     }
 
 }
