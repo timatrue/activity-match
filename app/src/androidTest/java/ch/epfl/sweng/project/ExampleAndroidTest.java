@@ -16,12 +16,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public final class ExampleAndroidTest {
     // TODO replace this with your own tests.
-
-    @Test
-    public void twoPlusTwoIsFour() {
-        assertThat(MainActivity.add(2, 2), is(4));
-    }
-
+    
     @Test
     public void packageNameIsCorrect() {
         final Context context = InstrumentationRegistry.getTargetContext();
