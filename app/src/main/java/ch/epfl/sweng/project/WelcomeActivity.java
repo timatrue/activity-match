@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
@@ -149,19 +150,45 @@ public class WelcomeActivity extends AppCompatActivity
 
         startDate.set(Calendar.YEAR, 2016);
         startDate.set(Calendar.MONTH, 11);
-        DeboxActivity dA = new DeboxActivity("zdkasKKLD1", "Nathan",
-                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+        DeboxActivity dA = new DeboxActivity("aadddddda", "Lathan",
+                "Baseball in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of HES and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
                 "minutes games",
                 startDate,
                 endDate,
-                122.01,
-                121.0213,
+                1212.01,
+                1121.0213,
                 "Sports");
 
-        mDataProvider.pushActivity(dA);
+       // mDataProvider.pushActivity(dA);
 
-        //mDataProvider.getActivityByID(".");
+
+
+        //mDataProvider.getAllActivities();
+        /*
+        mDataProvider.getActivityFromUid(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+            }
+        }, "-KU1JUv55xpQj0jeXVzk");
+        */
+        mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+                int a = 2;
+            }
+        });
 
     }
 

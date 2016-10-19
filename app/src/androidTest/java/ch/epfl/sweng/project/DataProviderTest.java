@@ -1,10 +1,30 @@
 package ch.epfl.sweng.project;
 
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 /**
- * Created by jeremie on 12.10.16.
+ * Unit tests!
  */
+@RunWith(AndroidJUnit4.class)
+public final class DataProviderTest {
+    // TODO replace this with your own tests.
 
-public class DataProviderTest {
+    @Test
+    public void DeboxActivityConstructorAndMethod() {
 
-    // test not yet implemented, because we can still not take the data from the database
+
+
+
+    }
 }
