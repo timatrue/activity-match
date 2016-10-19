@@ -10,7 +10,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,15 +32,32 @@ public class DataProvider {
 
     }
 
-    /*public ArrayList<DeboxActivity> getAllActivities() {
+    public void getAllActivities(final DataProviderListener listener) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities");
 
-        return deboxActivityList;
-    }*/
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    list.add(getDeboxActivity(snapshot.getKey(), (Map<String, Object>) snapshot.getValue()));
+                }
 
+                listener.getActivities(list);
+            }
 
-    //public void getActivityByID(String id){}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
+    }
 
     public void pushActivity(DeboxActivity da){
+
+
+        String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> childActivityUpdate = new HashMap<>();
@@ -61,11 +81,59 @@ public class DataProvider {
         result.put("category",da.getCategory());
 
 
-        childActivityUpdate.put(da.getId(),result);
-
-        childUpdates.put("activities", childActivityUpdate);
+        childUpdates.put("activities/"+key, result);
 
         mDatabase.updateChildren(childUpdates);
+    }
+
+    private DeboxActivity getDeboxActivity(String uid, Map<String, Object> activityMap) {
+
+        String category = (String) activityMap.get("category");
+        String description = (String) activityMap.get("description");
+        Double latitude = (Double) activityMap.get("latitude");
+        Double longitude = (Double) activityMap.get("longitude");
+        String organizer = (String) activityMap.get("organizer");
+        String title = (String) activityMap.get("title");
+
+        Calendar timeStart = Calendar.getInstance();
+        Long timeStartMillis = (Long) activityMap.get("timeStart");
+        if(timeStartMillis != null) {
+            timeStart.setTimeInMillis(timeStartMillis);
+        }
+
+        Calendar timeEnd = Calendar.getInstance();
+        Long timeEndMillis = (Long) activityMap.get("timeEnd");
+        if(timeEndMillis != null) {
+            timeEnd.setTimeInMillis(timeEndMillis);
+        }
+
+        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category);
+
+    }
+
+    public void getActivityFromUid(final DataProviderListener listener, final String uid) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities/" + uid);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+
+
+
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
+    }
+
+    public interface DataProviderListener {
+        public void getActivity(DeboxActivity activity);
+        public void getActivities(List<DeboxActivity> activitiesList);
     }
 
 
