@@ -62,45 +62,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(30, 20, 30, 0);
-
-        Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
-
-        startDate.set(Calendar.YEAR, 2016);
-        startDate.set(Calendar.MONTH, 11);
-
-        DeboxActivity dA = new DeboxActivity("zdkasKKLD", "Nathan",
-                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
-                startDate,
-                endDate,
-                122.01,
-                121.0213,
-                "Sports");
-
-        DeboxActivity dA1 = new DeboxActivity("lzjhbl", "Nathan",
-                "ADA in BC hall", "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
-                startDate,
-                endDate,
-                122.01,
-                121.0213,
-                "Sports");
-
-        ArrayList<DeboxActivity> eventList = new ArrayList<>();
-        eventList.add(dA);
-        eventList.add(dA1);
-        for(DeboxActivity elem: eventList) {
-            ActivityPreview ap = new ActivityPreview(this, elem);
-            activityPreviewsLayout.addView(ap, layoutParams);
-            ap.setOnClickListener(previewClickListener);
-        }
-
         //mDatabase = FirebaseDatabase.getInstance().getReference();
         mDataProvider = new DataProvider();
     }
@@ -144,40 +105,6 @@ public class WelcomeActivity extends AppCompatActivity
 
     private void writeNewPost() {
 
-        //mDataProvider.test();
-        Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
-
-        startDate.set(Calendar.YEAR, 2016);
-        startDate.set(Calendar.MONTH, 11);
-        DeboxActivity dA = new DeboxActivity("aadddddda", "Lathan",
-                "Baseball in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of HES and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
-                startDate,
-                endDate,
-                1212.01,
-                1121.0213,
-                "Sports");
-
-       // mDataProvider.pushActivity(dA);
-
-
-
-        //mDataProvider.getAllActivities();
-        /*
-        mDataProvider.getActivityFromUid(new DataProvider.DataProviderListener() {
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-            }
-
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-        }, "-KU1JUv55xpQj0jeXVzk");
-        */
         mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -186,7 +113,19 @@ public class WelcomeActivity extends AppCompatActivity
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
-                int a = 2;
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 30, 0);
+
+                for(DeboxActivity elem: activitiesList) {
+                    ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                    activityPreviewsLayout.addView(ap, layoutParams);
+                    ap.setOnClickListener(previewClickListener);
+                }
+
+                //mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDataProvider = new DataProvider();
             }
         });
 
