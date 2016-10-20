@@ -144,6 +144,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     public String validateActivity() {
         if (!activityTitle.equals("") && !activityDescription.equals("") && !activityCategory.equals("")) {
 
+            if (activityLongitude== 0 || activityLatitude==0)
+                return "missing_location";
             if (activityEndCalendar.after(activityStartCalendar)
                     && activityEndCalendar.after(Calendar.getInstance())) {
                 return "success";
@@ -203,6 +205,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
             case "date_error":
                 confirmation.setText(R.string.create_activity_date_error_message);
+                confirmation.setTextColor(getResources().getColor(R.color.red));
+                break;
+
+            case "missing_location":
+                confirmation.setText(R.string.create_activity_location_error_message);
                 confirmation.setTextColor(getResources().getColor(R.color.red));
                 break;
 

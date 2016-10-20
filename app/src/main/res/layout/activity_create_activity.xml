@@ -150,7 +150,7 @@
 
             <Button
                 android:text="@string/create_activity_set_location"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/createActivityLocation"
                 android:layout_below="@+id/createActivityEndDate"
