@@ -54,29 +54,6 @@ public class DataProvider {
         });
     }
 
-    public void getAllCategories(final DataProviderListener listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("categories");
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> list = new ArrayList<String>();
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
-
-
-                    list.add((String) snapshot.getValue());
-                }
-
-                listener.getCategories(list);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                int c = 2;
-            }
-        });
-    }
 
 
     public String pushActivity(DeboxActivity da){
