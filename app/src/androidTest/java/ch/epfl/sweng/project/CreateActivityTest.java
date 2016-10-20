@@ -153,8 +153,13 @@ public class CreateActivityTest {
         String testTitle = "test_title";
         String testDescription = "test description";
 
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
+
+        double longitude = 1;
+        double latitude = 0.3;
+        double[] location = {latitude, longitude};
+
+        activity.activityLatitude=location[0];
+        activity.activityLongitude=location[1];
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 2);
@@ -215,6 +220,9 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(activity.createActivityMethod().getLocation()[0] == location[0]);
+        assertTrue(activity.createActivityMethod().getLocation()[1] == location[1]);
+
     }
 
     @Test
