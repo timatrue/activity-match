@@ -14,10 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Button testButton;
+    Button displayCategoriesButton;
+    TextView testListener;
     LinearLayout activityPreviewsLayout;
 
    // private DatabaseReference mDatabase;
@@ -56,14 +60,16 @@ public class WelcomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
         testButton = (Button) findViewById(R.id.testButton);
         testButton.setOnClickListener(testClickListener);
-
-        activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
+        displayCategoriesButton = (Button) findViewById(R.id.displayCategories);
+        displayCategoriesButton.setOnClickListener(categoriesListener);
 
         //mDatabase = FirebaseDatabase.getInstance().getReference();
         mDataProvider = new DataProvider();
+
     }
 
     View.OnClickListener previewClickListener = new View.OnClickListener() {
@@ -100,8 +106,27 @@ public class WelcomeActivity extends AppCompatActivity
             writeNewPost();
         }
     };
+    View.OnClickListener categoriesListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            displayCategories();
+        }
+    };
+    private void displayCategories(){
+        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
+            @Override
+            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
+                /*LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 30, 0);
 
-
+                testListener = new TextView(getApplicationContext());
+                testListener.setText("test click listener");
+                activityPreviewsLayout.addView(testListener, layoutParams);*/
+                displayCategoriesButton.setText("dd");
+            }
+        });
+    }
 
     private void writeNewPost() {
 
@@ -128,13 +153,6 @@ public class WelcomeActivity extends AppCompatActivity
                 mDataProvider = new DataProvider();
             }
         });
-        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
-            @Override
-            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
-
-            }
-        });
-
     }
 
     @Override
