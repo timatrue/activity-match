@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
 
     private static final int RC_SIGN_IN = 1;
 
@@ -54,8 +54,7 @@ public class Login extends AppCompatActivity implements
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
-
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        signInButton.setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
@@ -77,6 +76,15 @@ public class Login extends AppCompatActivity implements
             }
         };
     }
+
+    public void signOut(View V) {
+        FirebaseAuth.getInstance().signOut();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public void onStart() {

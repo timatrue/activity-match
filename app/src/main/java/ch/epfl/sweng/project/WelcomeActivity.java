@@ -20,6 +20,11 @@ import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
@@ -199,7 +204,39 @@ public class WelcomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_log_out) {
-            FirebaseAuth.getInstance().signOut();
+
+
+            /*FirebaseAuth.getInstance().signOut();
+
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+            if(mGoogleApiClient.isConnected()) {
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                // ...
+                                Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), Login.class);
+                                startActivity(intent);
+                            }
+                        });
+            }*/
+
+
+
+
+            //FirebaseAuth.getInstance().signOut();
+            //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
+            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            startActivity(intent);
+
         } else if (id == R.id.nav_sign_up) {
 
         } else if (id == R.id.nav_share) {

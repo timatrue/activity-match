@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,8 +30,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     TimePickerFragment startTimeFragment;
     TimePickerFragment endTimeFragment;
 
-    String activityId = "default_id";
-    String activityOrganizer = "default_organizer";
+    String activityId =  "";
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String activityOrganizer = user.getUid();
     String activityTitle = "";
     String activityDescription = "";
     Calendar activityStartCalendar = Calendar.getInstance();
@@ -85,7 +89,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         DeboxActivity newDeboxActivity = createActivityMethod();
 
         if(validation.equals("success")) {
-            //mDataProvider.pushActivity(newDeboxActivity);
+            mDataProvider.pushActivity(newDeboxActivity);
         }
 
         setConfirmationTextView(validation);
