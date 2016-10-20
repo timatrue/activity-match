@@ -44,7 +44,7 @@ public class DataProvider {
             return this.categoryId;
         }
     }
-    public void getAllCategories(final DataProviderListener listener) {
+    public void getAllCategories(final DataProviderListenerCategories listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myCategories = database.getReference("categories");
 
@@ -68,7 +68,7 @@ public class DataProvider {
 
     }
 
-    public void getAllActivities(final DataProviderListener listener) {
+    public void getAllActivities(final DataProviderListenerActivities listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -150,7 +150,7 @@ public class DataProvider {
 
     }
 
-    public void getActivityFromUid(final DataProviderListener listener, final String uid) {
+    public void getActivityFromUid(final DataProviderListenerActivities listener, final String uid) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities/" + uid);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,9 +170,11 @@ public class DataProvider {
         });
     }
 
-    public interface DataProviderListener {
+    public interface DataProviderListenerActivities {
         public void getActivity(DeboxActivity activity);
         public void getActivities(List<DeboxActivity> activitiesList);
+    }
+    public interface DataProviderListenerCategories {
         public void getCategories(ArrayList<CategoryName> deboxCategoriesList);
     }
 

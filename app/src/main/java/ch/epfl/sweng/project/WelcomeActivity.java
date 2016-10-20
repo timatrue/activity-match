@@ -105,12 +105,9 @@ public class WelcomeActivity extends AppCompatActivity
 
     private void writeNewPost() {
 
-        mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
+        mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
             @Override
             public void getActivity(DeboxActivity activity) {
-
-            }
-            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
 
             }
 
@@ -129,6 +126,12 @@ public class WelcomeActivity extends AppCompatActivity
 
                 //mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDataProvider = new DataProvider();
+            }
+        });
+        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
+            @Override
+            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
+
             }
         });
 

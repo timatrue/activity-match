@@ -30,7 +30,7 @@ public class DisplayActivity extends AppCompatActivity {
 
 
         DataProvider dp = new DataProvider();
-        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+        dp.getActivityFromUid(new DataProvider.DataProviderListenerActivities() {
             @Override
             public void getActivity(DeboxActivity activity) {
 

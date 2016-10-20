@@ -14,14 +14,6 @@
     tools:showIn="@layout/app_bar_welcome">
 
 
-    <Button
-        android:text="Send Hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/testButton" />
-
     <ScrollView
         android:id="@+id/activityPreviewsScrollView"
         android:layout_width="match_parent"
@@ -45,5 +37,27 @@
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Send Hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/testButton"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp" />
+
+    <Button
+        android:text="Show Categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/displayCategories"
+        android:layout_below="@+id/textView2"
+        android:layout_toRightOf="@+id/testButton"
+        android:layout_toEndOf="@+id/testButton"
+        android:layout_marginLeft="23dp"
+        android:layout_marginStart="23dp" />
 
 </RelativeLayout>
