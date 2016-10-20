@@ -5,6 +5,7 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="company_mail">teamdebox@epfl.ch</string>
     <string name="share_text">Hi! Whatsup? Do you want to check out what kind of activities are available nearby you? Take a look at ActivityMatch! http://activitymatch.azurewebsites.net</string>
+    <string name="web_client_id">431266647672-cjab4sklue3hi342jko98a3bvcii8mnc.apps.googleusercontent.com</string>
 
     <!-- Welcome Activity navigation Drawer strings -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
