@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,6 +110,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
+                activityLatitude = place.getLatLng().latitude;
+                activityLongitude = place.getLatLng().longitude;
+
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
@@ -131,7 +133,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         DeboxActivity newDeboxActivity = createActivityMethod();
 
         if (validation.equals("success")) {
-            //mDataProvider.pushActivity(newDeboxActivity);
+            mDataProvider.pushActivity(newDeboxActivity);
         }
 
         setConfirmationTextView(validation);
