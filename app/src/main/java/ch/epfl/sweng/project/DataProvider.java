@@ -54,7 +54,8 @@ public class DataProvider {
         });
     }
 
-    public void pushActivity(DeboxActivity da){
+
+    public String pushActivity(DeboxActivity da){
 
 
         String key = mDatabase.child("activities").push().getKey();
@@ -84,6 +85,8 @@ public class DataProvider {
         childUpdates.put("activities/"+key, result);
 
         mDatabase.updateChildren(childUpdates);
+
+        return key;
     }
 
     private DeboxActivity getDeboxActivity(String uid, Map<String, Object> activityMap) {
