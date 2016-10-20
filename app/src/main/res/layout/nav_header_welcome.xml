@@ -20,6 +20,13 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@drawable/logo_icon" />
 
+    <Button
+        android:text="salut"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/sign_out_button" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,5 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />
+
+
 
 </LinearLayout>

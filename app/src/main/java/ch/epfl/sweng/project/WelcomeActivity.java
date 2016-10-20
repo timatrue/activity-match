@@ -20,6 +20,8 @@ import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -196,8 +198,8 @@ public class WelcomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_log_in) {
-            // Handle the camera action
+        if (id == R.id.nav_log_out) {
+            FirebaseAuth.getInstance().signOut();
         } else if (id == R.id.nav_sign_up) {
 
         } else if (id == R.id.nav_share) {

@@ -12,6 +12,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="create_activity">Organize your activity</string>
     <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
     <string name="sign_up">Sign up</string>
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
