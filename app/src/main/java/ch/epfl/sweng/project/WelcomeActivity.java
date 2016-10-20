@@ -110,6 +110,9 @@ public class WelcomeActivity extends AppCompatActivity
             public void getActivity(DeboxActivity activity) {
 
             }
+            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
+
+            }
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
