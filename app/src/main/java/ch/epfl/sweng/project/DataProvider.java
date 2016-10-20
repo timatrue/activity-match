@@ -23,12 +23,48 @@ import java.util.Map;
 public class DataProvider {
 
     private static ArrayList<DeboxActivity> deboxActivityList;//= new ArrayList<String>();
+    private static ArrayList<CategoryName> deboxCategoriesList;
     private DatabaseReference mDatabase;
 
     public DataProvider() {
 
       deboxActivityList = new ArrayList<DeboxActivity>();
       mDatabase = FirebaseDatabase.getInstance().getReference();
+
+    }
+
+    public class CategoryName{
+        String categoryId;
+        String nameCategory;
+        public CategoryName(String categoryId, String nameCategory){
+            this.categoryId = categoryId;
+            this.nameCategory = nameCategory;
+        }
+        public String getCategoryId() {
+            return this.categoryId;
+        }
+    }
+    public void getAllCategories(final DataProviderListener listener) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myCategories = database.getReference("categories");
+
+        myCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<CategoryName> categoriesList = new ArrayList<CategoryName>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    String id = child.getKey().toString();
+                    String name = child.getValue().toString();
+                    CategoryName category = new CategoryName(id,name);
+                    categoriesList.add(category);
+                }
+                listener.getCategories(categoriesList);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
 
     }
 
@@ -137,6 +173,7 @@ public class DataProvider {
     public interface DataProviderListener {
         public void getActivity(DeboxActivity activity);
         public void getActivities(List<DeboxActivity> activitiesList);
+        public void getCategories(ArrayList<CategoryName> deboxCategoriesList);
     }
 
 
