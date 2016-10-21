@@ -135,7 +135,6 @@ public class WelcomeActivity extends AppCompatActivity
     };
 
 
-
     private void writeNewPost() {
 
         //mDataProvider.test();
