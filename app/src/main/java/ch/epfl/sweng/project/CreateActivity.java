@@ -149,6 +149,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
 
         setConfirmationTextView(validation);
+
+
+        if(validation.equals("success")) {
+            finish();
+        }
     }
 
     /* Checks the parameters entered by the user an returns a String with the corresponding error

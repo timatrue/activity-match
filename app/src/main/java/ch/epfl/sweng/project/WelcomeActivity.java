@@ -12,27 +12,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.ShareActionProvider;
-import android.widget.Toast;
-
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
-import static ch.epfl.sweng.project.R.attr.title;
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -68,56 +54,29 @@ public class WelcomeActivity extends AppCompatActivity
 
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(30, 20, 30, 0);
-
-        ActivityPreview ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Volleyball", "Volleyball with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Climbing", "Climbing with friend in Renens");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Running", "Running with friend in Mouline");
-        activityPreviewsLayout.addView(ap, layoutParams);
-        ap = new ActivityPreview(this, "Football", "Football with friend in sport Center");
-        activityPreviewsLayout.addView(ap, layoutParams);
-
         //mDatabase = FirebaseDatabase.getInstance().getReference();
         mDataProvider = new DataProvider();
     }
+
+    View.OnClickListener previewClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v instanceof ActivityPreview) {
+                String eventId = ((ActivityPreview) v).getEventId();
+                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                startActivity(intent);
+            }
+        }
+    };
+
+    public void listActivities(View view) {
+        Intent intent = new Intent(this, DisplayActivity.class);
+        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, view.getTag().toString());
+        //Button testList = (Button) findViewById(R.id.testList);
+        startActivity(intent);
+    }
+
 
     View.OnClickListener newActivityListener = new View.OnClickListener() {
         @Override
@@ -137,40 +96,6 @@ public class WelcomeActivity extends AppCompatActivity
 
     private void writeNewPost() {
 
-        //mDataProvider.test();
-        Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
-
-        startDate.set(Calendar.YEAR, 2016);
-        startDate.set(Calendar.MONTH, 11);
-        DeboxActivity dA = new DeboxActivity("aadddddda", "Lathan",
-                "Baseball in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of HES and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
-                startDate,
-                endDate,
-                1212.01,
-                1121.0213,
-                "Sports");
-
-       // mDataProvider.pushActivity(dA);
-
-
-
-        //mDataProvider.getAllActivities();
-        /*
-        mDataProvider.getActivityFromUid(new DataProvider.DataProviderListener() {
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-            }
-
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-        }, "-KU1JUv55xpQj0jeXVzk");
-        */
         mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -179,7 +104,20 @@ public class WelcomeActivity extends AppCompatActivity
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
-                int a = 2;
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 30, 0);
+
+                activityPreviewsLayout.removeAllViews();
+                for(DeboxActivity elem: activitiesList) {
+                    ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                    activityPreviewsLayout.addView(ap, layoutParams);
+                    ap.setOnClickListener(previewClickListener);
+                }
+
+                //mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDataProvider = new DataProvider();
             }
         });
 
