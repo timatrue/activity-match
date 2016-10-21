@@ -362,7 +362,6 @@ public class CreateActivityTest {
         int endMonth = endCalendar.get(Calendar.MONTH);
         int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
 
-
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
