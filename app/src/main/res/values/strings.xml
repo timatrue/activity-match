@@ -5,12 +5,13 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="company_mail">teamdebox@epfl.ch</string>
     <string name="share_text">Hi! Whatsup? Do you want to check out what kind of activities are available nearby you? Take a look at ActivityMatch! http://activitymatch.azurewebsites.net</string>
+    <string name="web_client_id">431266647672-cjab4sklue3hi342jko98a3bvcii8mnc.apps.googleusercontent.com</string>
 
     <!-- Welcome Activity navigation Drawer strings -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="create_activity">Organize your activity</string>
-    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
     <string name="sign_up">Sign up</string>
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
@@ -32,6 +33,10 @@
     <string name="create_activity_create_activity_button">Create activity</string>
     <string name="create_activity_unknown_error_message">Unknown error</string>
     <string name="create_activity_set_location">Choose location</string>
+
+    <!-- Login -->
+    <string name="sign_out">Sign out</string>
+    <string name="unlogged_user">unlogged_user</string>
 
 
 </resources>

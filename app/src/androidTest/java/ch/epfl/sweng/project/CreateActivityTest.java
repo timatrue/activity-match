@@ -181,6 +181,14 @@ public class CreateActivityTest {
         int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
         int endMinute = endCalendar.get(Calendar.MINUTE);
 
+        String expectedUid;
+        if(activity.user != null) {
+            expectedUid = activity.user.getUid();
+        }
+        else {
+            expectedUid = activity.getString(R.string.unlogged_user);
+        }
+
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -220,9 +228,9 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(activity.createActivityMethod().getOrganizer().equals(expectedUid));
         assertTrue(activity.createActivityMethod().getLocation()[0] == location[0]);
         assertTrue(activity.createActivityMethod().getLocation()[1] == location[1]);
-
     }
 
     @Test
@@ -353,7 +361,6 @@ public class CreateActivityTest {
         int endYear = endCalendar.get(Calendar.YEAR);
         int endMonth = endCalendar.get(Calendar.MONTH);
         int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());

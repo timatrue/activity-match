@@ -19,6 +19,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -50,6 +53,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     String activityCategory = "default_category";
     String validation = "default_validation";
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     private DataProvider mDataProvider;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -74,6 +79,13 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
         startTimeTextView.setText(makeTimeString(activityStartCalendar));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
+
+        if(user != null) {
+            activityOrganizer = user.getUid();
+        }
+        else {
+            activityOrganizer = getString(R.string.unlogged_user);
+        }
 
         mDataProvider = new DataProvider();
 
@@ -132,7 +144,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         DeboxActivity newDeboxActivity = createActivityMethod();
 
-        if (validation.equals("success")) {
+        if(validation.equals("success")) {
             mDataProvider.pushActivity(newDeboxActivity);
         }
 
