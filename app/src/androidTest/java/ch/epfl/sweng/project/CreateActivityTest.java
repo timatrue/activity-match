@@ -161,6 +161,14 @@ public class CreateActivityTest {
         int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
         int endMinute = endCalendar.get(Calendar.MINUTE);
 
+        String expectedUid;
+        if(activity.user != null) {
+            expectedUid = activity.user.getUid();
+        }
+        else {
+            expectedUid = "unlogged_user";
+        }
+
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -200,6 +208,7 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(activity.createActivityMethod().getOrganizer().equals(expectedUid));
     }
 
     @Test

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -41,7 +42,9 @@ public class Login extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
@@ -75,14 +78,26 @@ public class Login extends AppCompatActivity implements
                 // ... updateUI(user); ?
             }
         };
+
+        /*Bundle confirmationMessage = getIntent().getExtras();
+        if (confirmationMessage != null) {
+            String confirmationMessageString = confirmationMessage.getString("LOGOUT_ORDER");
+            if (confirmationMessageString != null && confirmationMessageString.equals("logout")) {
+
+                //FirebaseAuth.getInstance().signOut();
+                //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+                signOut(findViewById(R.id.sign_out_button));
+
+                Intent intent = new Intent(getApplicationContext(), CreateActivity.class);
+                startActivity(intent);
+            }
+        }*/
     }
 
     public void signOut(View V) {
         FirebaseAuth.getInstance().signOut();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        startActivity(intent);
     }
 
 

@@ -31,8 +31,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     TimePickerFragment endTimeFragment;
 
     String activityId =  "";
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String activityOrganizer = user.getUid();
+    String activityOrganizer = "default_organizer";
     String activityTitle = "";
     String activityDescription = "";
     Calendar activityStartCalendar = Calendar.getInstance();
@@ -41,6 +40,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     double activityLongitude = 0;
     String activityCategory = "default_category";
     String validation = "default_validation";
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private DataProvider mDataProvider;
 
@@ -59,6 +60,13 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
         startTimeTextView.setText(makeTimeString(activityStartCalendar));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
+
+        if(user != null) {
+            activityOrganizer = user.getUid();
+        }
+        else {
+            activityOrganizer = "unlogged_user";
+        }
 
         mDataProvider = new DataProvider();
 

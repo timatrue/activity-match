@@ -205,36 +205,12 @@ public class WelcomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_log_out) {
 
-
-            /*FirebaseAuth.getInstance().signOut();
-
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .build();
-            GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                    .build();
-            if(mGoogleApiClient.isConnected()) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), Login.class);
-                                startActivity(intent);
-                            }
-                        });
-            }*/
-
-
-
-
             //FirebaseAuth.getInstance().signOut();
             //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
             //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
 
             Intent intent = new Intent(getApplicationContext(), Login.class);
+            intent.putExtra("LOGOUT_ORDER", "logout");
             startActivity(intent);
 
         } else if (id == R.id.nav_sign_up) {
