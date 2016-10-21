@@ -123,7 +123,7 @@ public class WelcomeActivity extends AppCompatActivity
                 testListener = new TextView(getApplicationContext());
                 testListener.setText("test click listener");
                 activityPreviewsLayout.addView(testListener, layoutParams);*/
-                displayCategoriesButton.setText("dd");
+                displayCategoriesButton.setText("testListener");
             }
         });
     }

@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -67,6 +68,27 @@ public class DataProvider {
         });
 
     }
+    public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference getActivities = database.getReference("activities");
+        Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
+
+        getCategory.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<DeboxActivity> activitiesList = new ArrayList<DeboxActivity>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    activitiesList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                }
+                listener.getCategory(activitiesList);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
+
+    }
 
     public void getAllActivities(final DataProviderListenerActivities listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -76,8 +98,8 @@ public class DataProvider {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    list.add(getDeboxActivity(snapshot.getKey(), (Map<String, Object>) snapshot.getValue()));
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
                 }
 
                 listener.getActivities(list);
@@ -176,6 +198,9 @@ public class DataProvider {
     }
     public interface DataProviderListenerCategories {
         public void getCategories(ArrayList<CategoryName> deboxCategoriesList);
+    }
+    public interface DataProviderListenerCategory {
+        public void getCategory(List<DeboxActivity> activitiesList);
     }
 
 
