@@ -11,7 +11,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="create_activity">Organize your activity</string>
-    <string name="log_in">Log in</string>
     <string name="log_out">Log out</string>
     <string name="sign_up">Sign up</string>
     <string name="share">Share</string>
@@ -34,6 +33,9 @@
     <string name="create_activity_create_activity_button">Create activity</string>
     <string name="create_activity_unknown_error_message">Unknown error</string>
     <string name="create_activity_set_location">Choose location</string>
+
+    <!-- Login -->
+    <string name="sign_out">Sign out</string>
 
 
 </resources>

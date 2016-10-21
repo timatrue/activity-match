@@ -13,7 +13,7 @@
 
     <Button
         android:id="@+id/sign_out_button"
-        android:text="Sign out"
+        android:text="@string/sign_out"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_below="@+id/sign_in_button"

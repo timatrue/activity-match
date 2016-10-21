@@ -50,11 +50,7 @@ public class LoginTest {
     public ActivityTestRule<Login> loginRule =
                 new ActivityTestRule<Login>(Login.class);
 
-    /*@Rule
-    public ActivityTestRule<CreateActivity> createActivityRule =
-            new ActivityTestRule<CreateActivity>(CreateActivity.class);*/
-
-    @Test
+    /*@Test
     public void loginLogout() throws Exception {
 
         Login activity = loginRule.getActivity();
@@ -84,9 +80,12 @@ public class LoginTest {
 
         FirebaseUser loggedOutUser = FirebaseAuth.getInstance().getCurrentUser();
         assertTrue(loggedOutUser == null);
-    }
+    }*/
 
 
+
+
+    //WARNING: THE TEST BELOW IS NOT FUNCTIONAL
     /*@Test
     public void createActivityWithUid() throws Exception {
 
