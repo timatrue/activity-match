@@ -36,6 +36,7 @@
 
     <!-- Login -->
     <string name="sign_out">Sign out</string>
+    <string name="unlogged_user">unlogged_user</string>
 
 
 </resources>
