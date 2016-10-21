@@ -19,8 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
-
 import java.util.ArrayList;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.List;
 
@@ -148,8 +153,16 @@ public class WelcomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_log_in) {
-            // Handle the camera action
+        if (id == R.id.nav_log_out) {
+
+            //FirebaseAuth.getInstance().signOut();
+            //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
+            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+            Intent intent = new Intent(getApplicationContext(), Login.class);
+            intent.putExtra("LOGOUT_ORDER", "logout");
+            startActivity(intent);
+
         } else if (id == R.id.nav_sign_up) {
 
         } else if (id == R.id.nav_share) {
