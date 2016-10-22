@@ -41,6 +41,10 @@ public class Login extends AppCompatActivity implements
     private static final int RC_SIGN_IN = 1;
     private static final int RC_LOG_OUT = 2;
 
+
+    protected static final int RE_LOG_OUT = 1;
+    protected static final int RE_QUIT = 2;
+
     private boolean appLaunched = false;
 
 

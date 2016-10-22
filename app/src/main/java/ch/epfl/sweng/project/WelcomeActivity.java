@@ -128,14 +128,15 @@ public class WelcomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        //Close the drawer if opened
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-
-            setResult(RESULT_CANCELED);
+        }
+        //Quit the APP without logout on backpressed
+        else {
+            setResult(Login.RE_QUIT);
             finish();
-
         }
     }
 
@@ -147,16 +148,8 @@ public class WelcomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_log_out) {
-
-            //FirebaseAuth.getInstance().signOut();
-            //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
-            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-/*
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            intent.putExtra("LOGOUT_ORDER", "logout");
-            startActivity(intent);
-            */
-            setResult(RESULT_OK);
+            //Return to Login Activity and logout
+            setResult(Login.RE_LOG_OUT);
             finish();
 
         } else if (id == R.id.nav_sign_up) {
