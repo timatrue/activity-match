@@ -106,11 +106,6 @@ public class Login extends AppCompatActivity implements
         }*/
     }
 
-    public void signOut(View V) { /*
-        FirebaseAuth.getInstance().signOut();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);*/
-    }
-
 
     @Override
     public void onStart() {
@@ -160,7 +155,7 @@ public class Login extends AppCompatActivity implements
         }
 
         if (requestCode == RC_LOG_OUT) {
-            if(resultCode == RESULT_CANCELED) {
+            if(resultCode == RE_QUIT) {
                 finish();
             }
             else {
