@@ -39,6 +39,10 @@ public class Login extends AppCompatActivity implements
     public static GoogleApiClient mGoogleApiClient;
 
     private static final int RC_SIGN_IN = 1;
+    private static final int RC_LOG_OUT = 2;
+
+    private boolean appLaunched = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +73,11 @@ public class Login extends AppCompatActivity implements
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    if(!appLaunched) {
+                        appLaunched = true;
+                        Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                        startActivityForResult(intent, RC_LOG_OUT);
+                    }
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -95,9 +102,9 @@ public class Login extends AppCompatActivity implements
         }*/
     }
 
-    public void signOut(View V) {
+    public void signOut(View V) { /*
         FirebaseAuth.getInstance().signOut();
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);*/
     }
 
 
@@ -126,6 +133,7 @@ public class Login extends AppCompatActivity implements
     }
 
     private void signIn() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -144,6 +152,16 @@ public class Login extends AppCompatActivity implements
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ... updateUI(null/false); ?
+            }
+        }
+
+        if (requestCode == RC_LOG_OUT) {
+            if(resultCode == RESULT_CANCELED) {
+                finish();
+            }
+            else {
+                appLaunched = false;
+                FirebaseAuth.getInstance().signOut();
             }
         }
     }
@@ -166,8 +184,12 @@ public class Login extends AppCompatActivity implements
                             Toast.makeText(Login.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                        startActivity(intent);
+
+                        if(!appLaunched) {
+                            appLaunched = true;
+                            Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                            startActivityForResult(intent, RC_LOG_OUT);
+                        }
                     }
                 });
     }

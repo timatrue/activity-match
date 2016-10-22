@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
@@ -129,7 +132,10 @@ public class WelcomeActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+            setResult(RESULT_CANCELED);
+            finish();
+
         }
     }
 
@@ -145,10 +151,13 @@ public class WelcomeActivity extends AppCompatActivity
             //FirebaseAuth.getInstance().signOut();
             //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
             //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-
+/*
             Intent intent = new Intent(getApplicationContext(), Login.class);
             intent.putExtra("LOGOUT_ORDER", "logout");
             startActivity(intent);
+            */
+            setResult(RESULT_OK);
+            finish();
 
         } else if (id == R.id.nav_sign_up) {
 
