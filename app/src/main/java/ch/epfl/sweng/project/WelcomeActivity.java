@@ -45,8 +45,9 @@ public class WelcomeActivity extends AppCompatActivity
     Button displayCategoriesButton;
     TextView testListener;
     LinearLayout activityPreviewsLayout;
+    LinearLayout categoryLayout;
 
-   // private DatabaseReference mDatabase;
+    // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
 
 
@@ -57,8 +58,9 @@ public class WelcomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(newActivityListener);
+        FloatingActionButton addActivityButton = (FloatingActionButton) findViewById(R.id.addActivity);
+        addActivityButton.setOnClickListener(newActivityListener);
+        FloatingActionButton filterActivityButton = (FloatingActionButton) findViewById(R.id.filterActivity);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -75,7 +77,6 @@ public class WelcomeActivity extends AppCompatActivity
         displayCategoriesButton = (Button) findViewById(R.id.displayCategories);
         displayCategoriesButton.setOnClickListener(categoriesListener);
 
-        //mDatabase = FirebaseDatabase.getInstance().getReference();
         mDataProvider = new DataProvider();
 
     }
@@ -111,7 +112,8 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener testClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            writeNewPost();
+            //writeNewPost();
+            displaySpecifiedActivities();
         }
     };
     View.OnClickListener categoriesListener = new View.OnClickListener() {
@@ -120,20 +122,49 @@ public class WelcomeActivity extends AppCompatActivity
             displayCategories();
         }
     };
+
     private void displayCategories(){
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
             @Override
-            public void getCategories(ArrayList<DataProvider.CategoryName> deboxCategoriesList) {
-                /*LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+            public void getCategories(List<DataProvider.CategoryName> categoriesList) {
+                /*
+                categoryLayout.setOrientation(LinearLayout.VERTICAL);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 30, 0);
+                categoryLayout.setLayoutParams(layoutParams);
+
+                for( DataProvider.CategoryName elem: categoriesList){
+                    String category = elem.getCategory();
+                    TextView name = new TextView(getApplicationContext());
+                    name.setText(category);
+                    categoryLayout.addView(name);
+                }
+                setContentView(categoryLayout);*/
+                String category = categoriesList.get(0).getCategory();
+                displayCategoriesButton.setText(category);
+            }
+        });
+    }
+    private void displaySpecifiedActivities() {
+
+        mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+            @Override
+            public void getCategory(List<DeboxActivity> activitiesList) {
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(30, 20, 30, 0);
 
-                testListener = new TextView(getApplicationContext());
-                testListener.setText("test click listener");
-                activityPreviewsLayout.addView(testListener, layoutParams);*/
-                displayCategoriesButton.setText("testListener");
+                for(DeboxActivity elem: activitiesList) {
+                    ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                    activityPreviewsLayout.addView(ap, layoutParams);
+                    ap.setOnClickListener(previewClickListener);
+                }
+                mDataProvider = new DataProvider();
             }
-        });
+        },"Culture");
     }
 
     private void writeNewPost() {
@@ -173,7 +204,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -200,7 +230,7 @@ public class WelcomeActivity extends AppCompatActivity
             startActivity(sendIntent);
         } else if (id == R.id.nav_contact) {
             Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",getResources().getString(R.string.company_mail), null));
+                    "mailto",getResources().getString(R.string.company_mail), null));
             startActivity(Intent.createChooser(intent, getResources().getString(R.string.contact_message)));
         }
 

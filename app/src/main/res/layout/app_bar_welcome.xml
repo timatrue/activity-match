@@ -25,11 +25,19 @@
         android:id="@+id/include" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/addActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/filterActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="left|bottom"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
 

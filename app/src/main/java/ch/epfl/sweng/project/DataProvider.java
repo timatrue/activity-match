@@ -27,8 +27,8 @@ public class DataProvider {
 
     public DataProvider() {
 
-      deboxActivityList = new ArrayList<DeboxActivity>();
-      mDatabase = FirebaseDatabase.getInstance().getReference();
+        deboxActivityList = new ArrayList<DeboxActivity>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -41,6 +41,9 @@ public class DataProvider {
         }
         public String getCategoryId() {
             return this.categoryId;
+        }
+        public String getCategory() {
+            return this.nameCategory;
         }
     }
     public void getAllCategories(final DataProviderListenerCategories listener) {
@@ -196,7 +199,7 @@ public class DataProvider {
         public void getActivities(List<DeboxActivity> activitiesList);
     }
     public interface DataProviderListenerCategories {
-        public void getCategories(ArrayList<CategoryName> deboxCategoriesList);
+        public void getCategories(List<CategoryName> categoriesList);
     }
     public interface DataProviderListenerCategory {
         public void getCategory(List<DeboxActivity> activitiesList);
