@@ -39,6 +39,9 @@ public class CreateActivityTest {
 
         String testDescription = "test description";
 
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
+
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
@@ -53,6 +56,9 @@ public class CreateActivityTest {
         CreateActivity activity = createActivityRule.getActivity();
 
         String testTitle = "test_title";
+
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
 
@@ -69,6 +75,9 @@ public class CreateActivityTest {
 
         String testTitle = "test_title";
         String testDescription = "test description";
+
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
@@ -87,6 +96,9 @@ public class CreateActivityTest {
 
         String testTitle = "test_title";
         String testDescription = "test description";
+
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 3);
@@ -141,6 +153,14 @@ public class CreateActivityTest {
         String testTitle = "test_title";
         String testDescription = "test description";
 
+
+        double longitude = 1;
+        double latitude = 0.3;
+        double[] location = {latitude, longitude};
+
+        activity.activityLatitude=location[0];
+        activity.activityLongitude=location[1];
+
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 2);
         startCalendar.add(Calendar.HOUR, 2);
@@ -160,6 +180,14 @@ public class CreateActivityTest {
         int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
         int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
         int endMinute = endCalendar.get(Calendar.MINUTE);
+
+        String expectedUid;
+        if(activity.user != null) {
+            expectedUid = activity.user.getUid();
+        }
+        else {
+            expectedUid = activity.getString(R.string.unlogged_user);
+        }
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
@@ -200,12 +228,18 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
         assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(activity.createActivityMethod().getOrganizer().equals(expectedUid));
+        assertTrue(activity.createActivityMethod().getLocation()[0] == location[0]);
+        assertTrue(activity.createActivityMethod().getLocation()[1] == location[1]);
     }
 
     @Test
     public void correctlyDisplaysDateAndTime() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
+
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 2);
@@ -265,6 +299,9 @@ public class CreateActivityTest {
         String testTitle = "test_title";
         String testDescription = "test description";
 
+        activity.activityLongitude=1;
+        activity.activityLatitude=1;
+
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.MINUTE, -10);
         int startYear = startCalendar.get(Calendar.YEAR);
@@ -309,5 +346,33 @@ public class CreateActivityTest {
         assertTrue(activity.validateActivity().equals("success"));
         assertTrue(activity.createActivityMethod() != null);
         assertTrue(activity.createActivityMethod().getTimeStart().after(startCalendar));
+    }
+
+    @Test
+    public void noLocationChoose() throws Exception {
+
+        CreateActivity activity = createActivityRule.getActivity();
+
+        String testTitle = "test_title";
+        String testDescription = "test description";
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.add(Calendar.HOUR, 2);
+        int endYear = endCalendar.get(Calendar.YEAR);
+        int endMonth = endCalendar.get(Calendar.MONTH);
+        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
+        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
+
+        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
+        assertTrue(activity.validateActivity().equals("missing_location"));
+        assertTrue(activity.createActivityMethod() == null);
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_location_error_message)));
     }
 }
