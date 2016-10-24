@@ -38,6 +38,9 @@ import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
 import static ch.epfl.sweng.project.R.attr.title;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -60,7 +63,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         FloatingActionButton addActivityButton = (FloatingActionButton) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
-        FloatingActionButton filterActivityButton = (FloatingActionButton) findViewById(R.id.filterActivity);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -79,6 +81,13 @@ public class WelcomeActivity extends AppCompatActivity
 
         mDataProvider = new DataProvider();
 
+    }
+    protected void CategoryFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentCategories category = new FragmentCategories();
+        fragmentTransaction.add(R.id.category_fragment_container,category);
+        fragmentTransaction.commit();
     }
 
     View.OnClickListener previewClickListener = new View.OnClickListener() {

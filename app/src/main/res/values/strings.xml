@@ -37,6 +37,7 @@
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
+    <string name="hello_fragment">hello fragment</string>
 
 
 </resources>
