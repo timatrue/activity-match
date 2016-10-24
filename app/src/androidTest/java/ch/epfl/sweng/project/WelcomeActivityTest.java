@@ -3,6 +3,7 @@ package ch.epfl.sweng.project;
 import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -14,6 +15,8 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagKey;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static ch.epfl.sweng.project.R.id.activityPreviewsLayout;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
@@ -36,18 +39,20 @@ public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<Welcom
 
     }
 
-    public void testCanPrewiewActivityBeClicked() {
-        getActivity();
-        onData(instanceOf(ActivityPreview.class))
-                .perform(click());
-        onView(withId(R.id.eventTitle)).check(matches(isDisplayed()));
-        onView(withId(R.id.eventDescription)).check(matches(isDisplayed()));
+    public void testCanPreviewActivityBeClicked() {
+        WelcomeActivity wa = getActivity();
 
+        //onView((wa.activityPreviewsLayout).getChildAt(0)).perform(click());
+        /*onData(instanceOf(ActivityPreview.class))
+                .perform(click());
+        */
+        onView(withId(R.id.testButton)).perform(click());
+
+        /*int tv_id = ((LinearLayout )wa.activityPreviewsLayout).getChildAt(0).getId();
+        onView(withId(tv_id)).perform(click());*/
 
         /*onData(allOf(instanceOf(ActivityPreview.class)))
-                .perform(click());
-
-        onView(allOf(isAssignableFrom(ActivityPreview.class)))
                 .perform(click());*/
+
     }
 }

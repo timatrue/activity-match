@@ -83,13 +83,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     };
 
-    public void listActivities(View view) {
-        Intent intent = new Intent(this, DisplayActivity.class);
-        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, view.getTag().toString());
-        //Button testList = (Button) findViewById(R.id.testList);
-        startActivity(intent);
-    }
-
 
     View.OnClickListener newActivityListener = new View.OnClickListener() {
         @Override
