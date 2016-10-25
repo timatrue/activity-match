@@ -42,10 +42,10 @@ public final class DataProviderTest {
 
 
         DataProvider dp = new DataProvider();
-        String uid = dp.pushActivity(dA);
+        String uid = dp.pushActivity(dA);c
 
 
-        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+        dp.getActivityFromUid(new DataProvider.DataProviderListenerActivities() {
             @Override
             public void getActivity(DeboxActivity activity) {
                 assertThat(activity.getDescription(), is(dA.getDescription()));

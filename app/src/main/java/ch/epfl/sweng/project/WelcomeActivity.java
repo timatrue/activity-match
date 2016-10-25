@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,29 +18,15 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.ShareActionProvider;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-import java.util.ArrayList;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Calendar;
 import java.util.List;
 
+import ch.epfl.sweng.project.fragments.FilterFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
 import static ch.epfl.sweng.project.R.attr.title;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,12 +69,10 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider = new DataProvider();
 
     }
-    protected void CategoryFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentCategories category = new FragmentCategories();
-        fragmentTransaction.add(R.id.category_fragment_container,category);
-        fragmentTransaction.commit();
+    protected void CategoryFragment(View v){
+        FragmentManager fm = getFragmentManager();
+        FilterFragment dialogFragment = new FilterFragment ();
+        dialogFragment.show(fm, "Sample Fragment");
     }
 
     View.OnClickListener previewClickListener = new View.OnClickListener() {
@@ -101,13 +86,6 @@ public class WelcomeActivity extends AppCompatActivity
             }
         }
     };
-
-    public void listActivities(View view) {
-        Intent intent = new Intent(this, DisplayActivity.class);
-        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, view.getTag().toString());
-        //Button testList = (Button) findViewById(R.id.testList);
-        startActivity(intent);
-    }
 
 
     View.OnClickListener newActivityListener = new View.OnClickListener() {
