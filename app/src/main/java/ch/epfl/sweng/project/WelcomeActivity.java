@@ -114,20 +114,7 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
             @Override
             public void getCategories(List<DataProvider.CategoryName> categoriesList) {
-                /*
-                categoryLayout.setOrientation(LinearLayout.VERTICAL);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(30, 20, 30, 0);
-                categoryLayout.setLayoutParams(layoutParams);
 
-                for( DataProvider.CategoryName elem: categoriesList){
-                    String category = elem.getCategory();
-                    TextView name = new TextView(getApplicationContext());
-                    name.setText(category);
-                    categoryLayout.addView(name);
-                }
-                setContentView(categoryLayout);*/
                 String category = categoriesList.get(0).getCategory();
                 displayCategoriesButton.setText(category);
             }
