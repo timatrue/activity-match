@@ -42,7 +42,7 @@ public final class DataProviderTest {
 
 
         DataProvider dp = new DataProvider();
-        String uid = dp.pushActivity(dA);c
+        String uid = dp.pushActivity(dA);
 
 
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivities() {
