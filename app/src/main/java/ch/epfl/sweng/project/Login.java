@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -86,24 +85,8 @@ public class Login extends AppCompatActivity implements
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ... updateUI(user); ?
             }
         };
-
-        /*Bundle confirmationMessage = getIntent().getExtras();
-        if (confirmationMessage != null) {
-            String confirmationMessageString = confirmationMessage.getString("LOGOUT_ORDER");
-            if (confirmationMessageString != null && confirmationMessageString.equals("logout")) {
-
-                //FirebaseAuth.getInstance().signOut();
-                //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-
-                signOut(findViewById(R.id.sign_out_button));
-
-                Intent intent = new Intent(getApplicationContext(), CreateActivity.class);
-                startActivity(intent);
-            }
-        }*/
     }
 
 
@@ -150,7 +133,7 @@ public class Login extends AppCompatActivity implements
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
-                // ... updateUI(null/false); ?
+                Log.d(TAG, "Google authentification failed");
             }
         }
 
