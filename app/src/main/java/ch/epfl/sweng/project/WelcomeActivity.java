@@ -16,8 +16,6 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
@@ -72,13 +70,6 @@ public class WelcomeActivity extends AppCompatActivity
             }
         }
     };
-
-    public void listActivities(View view) {
-        Intent intent = new Intent(this, DisplayActivity.class);
-        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, view.getTag().toString());
-        //Button testList = (Button) findViewById(R.id.testList);
-        startActivity(intent);
-    }
 
 
     View.OnClickListener newActivityListener = new View.OnClickListener() {

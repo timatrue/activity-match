@@ -32,6 +32,9 @@
             android:name=".WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".CreateActivity">
+        </activity>
+
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,9 +44,6 @@
         </activity>
         <activity android:name=".DisplayActivity">
         </activity>
-        <activity android:name=".CreateActivity">
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

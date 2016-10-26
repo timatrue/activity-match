@@ -186,7 +186,7 @@ public class CreateActivityTest {
             expectedUid = activity.user.getUid();
         }
         else {
-            expectedUid = "unlogged_user";
+            expectedUid = activity.getString(R.string.unlogged_user);
         }
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
@@ -361,7 +361,6 @@ public class CreateActivityTest {
         int endYear = endCalendar.get(Calendar.YEAR);
         int endMonth = endCalendar.get(Calendar.MONTH);
         int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());

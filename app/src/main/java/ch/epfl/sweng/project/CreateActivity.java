@@ -84,7 +84,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             activityOrganizer = user.getUid();
         }
         else {
-            activityOrganizer = "unlogged_user";
+            activityOrganizer = getString(R.string.unlogged_user);
         }
 
         mDataProvider = new DataProvider();
