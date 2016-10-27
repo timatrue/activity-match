@@ -1,8 +1,5 @@
 package ch.epfl.sweng.project;
 
-
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,12 +21,12 @@ import java.util.Map;
 
 public class DataProvider {
 
-    private static ArrayList<DeboxActivity> deboxActivityList;//= new ArrayList<String>();
+    private static ArrayList<DeboxActivity> deboxActivityList;
     private DatabaseReference mDatabase;
 
     public DataProvider() {
 
-      deboxActivityList = new ArrayList<DeboxActivity>();
+      deboxActivityList = new ArrayList<>();
       mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
@@ -41,7 +38,7 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> list = new ArrayList<>();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     list.add(getDeboxActivity(snapshot.getKey(), (Map<String, Object>) snapshot.getValue()));
                 }
@@ -50,9 +47,7 @@ public class DataProvider {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                int c = 2;
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -64,7 +59,6 @@ public class DataProvider {
         String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        Map<String, Object> childActivityUpdate = new HashMap<>();
         HashMap<String, Object> result = new HashMap<>();
 
         double location [] = da.getLocation();
@@ -124,22 +118,17 @@ public class DataProvider {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-
-
-
                 listener.getActivity(getDeboxActivity(uid, activityMap));
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                int c = 2;
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
     public interface DataProviderListener {
-        public void getActivity(DeboxActivity activity);
-        public void getActivities(List<DeboxActivity> activitiesList);
+        void getActivity(DeboxActivity activity);
+        void getActivities(List<DeboxActivity> activitiesList);
     }
 
     public void joinActivity(DeboxActivity dba){
