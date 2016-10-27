@@ -53,11 +53,29 @@
                 android:id="@+id/createActivityTitleEditText" />
 
             <TextView
-                android:text="@string/create_activity_description_textView"
+                android:text="@string/create_activity_category"
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/createActivityTitleEditText"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/createActivityCategory" />
+
+            <Spinner
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:id="@+id/createActivityCategoryDropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityCategory"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+
+            <TextView
+                android:text="@string/create_activity_description_textView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/createActivityCategoryDropDown"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:id="@+id/createActivityDescriptionTextView" />
 

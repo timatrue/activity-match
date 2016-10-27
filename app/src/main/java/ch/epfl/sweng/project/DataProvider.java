@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -25,12 +26,74 @@ import java.util.Map;
 public class DataProvider {
 
     private static ArrayList<DeboxActivity> deboxActivityList;
+    private static ArrayList<CategoryName> deboxCategoriesList;
+
     private DatabaseReference mDatabase;
 
     public DataProvider() {
 
-      deboxActivityList = new ArrayList<>();
-      mDatabase = FirebaseDatabase.getInstance().getReference();
+        deboxActivityList = new ArrayList<DeboxActivity>();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+
+    }
+
+    public class CategoryName{
+        String categoryId;
+        String nameCategory;
+        public CategoryName(String categoryId, String nameCategory){
+            this.categoryId = categoryId;
+            this.nameCategory = nameCategory;
+        }
+        public String getCategoryId() {
+            return this.categoryId;
+        }
+        public String getCategory() {
+            return this.nameCategory;
+        }
+    }
+    public void getAllCategories(final DataProviderListenerCategories listener) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myCategories = database.getReference("categories");
+
+        myCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<CategoryName> categoriesList = new ArrayList<CategoryName>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    String id = child.getKey().toString();
+                    String name = child.getValue().toString();
+                    CategoryName category = new CategoryName(id,name);
+                    categoriesList.add(category);
+                }
+                listener.getCategories(categoriesList);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
+
+    }
+    public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference getActivities = database.getReference("activities");
+        Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
+
+        getCategory.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<DeboxActivity> activitiesList = new ArrayList<DeboxActivity>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    activitiesList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                }
+                listener.getCategory(activitiesList);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                int c = 2;
+            }
+        });
 
     }
 
@@ -41,9 +104,11 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DeboxActivity> list = new ArrayList<>();
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    list.add(getDeboxActivity(snapshot.getKey(), (Map<String, Object>) snapshot.getValue()));
+
+                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+
                 }
 
                 listener.getActivities(list);
@@ -131,12 +196,6 @@ public class DataProvider {
         });
     }
 
-    public interface DataProviderListener {
-        void getActivity(DeboxActivity activity);
-        void getActivities(List<DeboxActivity> activitiesList);
-        void getIfEnrolled(boolean result);
-    }
-
     /**
      * Check if the current user is already enrolled in the uid activity.
      * Send response through the listener
@@ -144,20 +203,19 @@ public class DataProvider {
      * @param listener
      * @param uid
      */
-    public void userEnrolledInActivity(final DataProviderListener listener, final String uid){
+    public void userEnrolledInActivity(final DataProviderListener listener, final String uid) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         String userUid;
-        if(user != null)
+        if (user != null)
             userUid = user.getUid();
         else
-            userUid ="testUser";
+            userUid = "testUser";
 
         //DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
-        DatabaseReference myRef = database.getReference("users/"+userUid+"/enrolled");
-
+        DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
 
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -167,7 +225,7 @@ public class DataProvider {
 
                 Boolean alreadyEnrolled = false;
 
-                if(listEnrolled != null) {
+                if (listEnrolled != null) {
 
                     for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
 
@@ -186,7 +244,6 @@ public class DataProvider {
 
             }
         });
-
 
     }
 
@@ -214,6 +271,18 @@ public class DataProvider {
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
+    }
+
+    public interface DataProviderListener {
+        void getActivity(DeboxActivity activity);
+        void getActivities(List<DeboxActivity> activitiesList);
+        void getIfEnrolled(boolean result);
+    }
+    public interface DataProviderListenerCategories {
+        public void getCategories(List<CategoryName> categoriesList);
+    }
+    public interface DataProviderListenerCategory {
+        public void getCategory(List<DeboxActivity> activitiesList);
     }
 
 }

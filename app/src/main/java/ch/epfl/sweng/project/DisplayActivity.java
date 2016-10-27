@@ -122,8 +122,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         }
 
+
         // Set listener to check if user is already register in this activity or not.
         dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
+
             @Override
             public void getActivity(DeboxActivity activity) {
 
