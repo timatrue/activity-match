@@ -24,25 +24,6 @@
     <include layout="@layout/content_welcome"
         android:id="@+id/include" />
 
-    <Button
-        android:id="@+id/addActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/fab_margin"
-        android:text="@string/create_activity_button_text"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@android:color/holo_blue_light" />
-
-    <Button
-        android:id="@+id/filterActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_gravity="left|bottom"
-        android:text="@string/filter_button_text"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@android:color/holo_blue_light" />
 
 
 </android.support.design.widget.CoordinatorLayout>

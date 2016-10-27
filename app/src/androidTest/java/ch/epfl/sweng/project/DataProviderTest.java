@@ -27,6 +27,7 @@ public final class DataProviderTest {
     public void userEnrolledInActivityTest()
     {
 
+        testFinished = false;
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
 
@@ -78,6 +79,9 @@ public final class DataProviderTest {
      */
     @Test
     public void DeboxActivityConstructorAndMethod() {
+
+
+        testFinished = false;
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
 
