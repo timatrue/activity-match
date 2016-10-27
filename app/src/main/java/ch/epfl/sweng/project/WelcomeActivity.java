@@ -12,26 +12,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.ShareActionProvider;
-import android.widget.Toast;
-import java.util.ArrayList;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.firebase.auth.FirebaseAuth;
-import java.util.Calendar;
+
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
-import static ch.epfl.sweng.project.R.attr.title;
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -100,7 +88,6 @@ public class WelcomeActivity extends AppCompatActivity
     };
 
 
-
     private void writeNewPost() {
 
         mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
@@ -116,6 +103,7 @@ public class WelcomeActivity extends AppCompatActivity
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(30, 20, 30, 0);
 
+                activityPreviewsLayout.removeAllViews();
                 for(DeboxActivity elem: activitiesList) {
                     ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                     activityPreviewsLayout.addView(ap, layoutParams);
@@ -136,11 +124,15 @@ public class WelcomeActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        //Close the drawer if opened
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        }
+        //Quit the APP without logout on backpressed
+        else {
+            setResult(Login.RE_QUIT);
+            finish();
         }
     }
 
@@ -152,14 +144,9 @@ public class WelcomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_log_out) {
-
-            //FirebaseAuth.getInstance().signOut();
-            //GoogleApiClient mGoogleApiClient = Login.mGoogleApiClient;
-            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            intent.putExtra("LOGOUT_ORDER", "logout");
-            startActivity(intent);
+            //Return to Login Activity and logout
+            setResult(Login.RE_LOG_OUT);
+            finish();
 
         } else if (id == R.id.nav_sign_up) {
 
