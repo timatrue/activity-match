@@ -25,6 +25,7 @@ import ch.epfl.sweng.project.WelcomeActivity;
 public class FilterFragment extends DialogFragment {
     Button dismiss;
     DataProvider mDataProvider;
+    public List<String> categoryList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,32 +35,17 @@ public class FilterFragment extends DialogFragment {
         dismiss = (Button) rootView.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(dismissListener);
         final ListView categoriesList = (ListView) rootView.findViewById(R.id.categoriesFilterList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, categoryList);
 
-        mDataProvider = new DataProvider();
-
-        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
+        categoriesList.setAdapter(adapter);
+        categoriesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void getCategories(List<DataProvider.CategoryName> items) {
-                List<String> stringList = new ArrayList<String>();
-                for (DataProvider.CategoryName cat : items) {
-                    stringList.add(cat.getCategory());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, stringList);
-
-                categoriesList.setAdapter(adapter);
-                categoriesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        final String filterCategory = (String) parent.getItemAtPosition(position);
-                        ((WelcomeActivity)getActivity()).displaySpecifiedActivities(filterCategory);
-                        dismiss();
-                    }
-                });
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String filterCategory = (String) parent.getItemAtPosition(position);
+                ((WelcomeActivity)getActivity()).displaySpecifiedActivities(filterCategory);
+                dismiss();
             }
         });
-
-
-
         return rootView;
     }
 

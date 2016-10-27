@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.FilterFragment;
@@ -37,6 +38,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
+    final public List<String> categories = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,16 @@ public class WelcomeActivity extends AppCompatActivity
 
         mDataProvider = new DataProvider();
 
+        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
+            @Override
+            public void getCategories(List<DataProvider.CategoryName> items) {
+                for (DataProvider.CategoryName cat : items) {
+                    categories.add(cat.getCategory());
+                }
+            }
+        });
     }
+
     View.OnClickListener filterEventsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -77,6 +88,7 @@ public class WelcomeActivity extends AppCompatActivity
     protected void CategoryFragment(View v){
         FragmentManager fm = getFragmentManager();
         FilterFragment dialogFragment = new FilterFragment ();
+        dialogFragment.categoryList = categories;
         dialogFragment.show(fm, "filterFragment");
     }
 
