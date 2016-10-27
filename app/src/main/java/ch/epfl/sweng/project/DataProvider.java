@@ -93,9 +93,9 @@ public class DataProvider {
 
         String category = (String) activityMap.get("category");
         String description = (String) activityMap.get("description");
-        Double latitude = new Double(activityMap.get("latitude").toString());
-        Double longitude = new Double(activityMap.get("longitude").toString());
 
+        Double latitude = Double.valueOf(activityMap.get("latitude").toString());
+        Double longitude = Double.valueOf(activityMap.get("longitude").toString());
 
         String organizer = (String) activityMap.get("organizer");
         String title = (String) activityMap.get("title");
