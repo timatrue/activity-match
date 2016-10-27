@@ -149,7 +149,17 @@ public class DataProvider {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
+        String userUid;
+        if(user != null)
+            userUid = user.getUid();
+        else
+            userUid ="testUser";
+
+        //DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
+        DatabaseReference myRef = database.getReference("users/"+userUid+"/enrolled");
+
+
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
