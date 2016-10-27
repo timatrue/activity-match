@@ -1,28 +1,47 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+
+import static java.text.DateFormat.getDateInstance;
 
 /**
  * Created by olga on 10.10.16.
  * This class displays the details of a certain event, that comes from the list of events shown in WelcomeActivity class.
  */
 
-public class DisplayActivity extends AppCompatActivity {
+public class DisplayActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     final static public String DISPLAY_EVENT_ID = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID";
 
     TextView title;
+    TextView category;
     TextView description;
+    TextView schedule;
+
+    DeboxActivity activityToDisplay = null;
+    GoogleMap map = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super .onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
         Intent intent = getIntent();
@@ -34,11 +53,33 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public void getActivity(DeboxActivity activity) {
 
+                activityToDisplay = activity;
                 title = (TextView) findViewById(R.id.eventTitle);
                 title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
+                category = (TextView) findViewById(R.id.eventCategory);
+                category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
+
                 description = (TextView) findViewById(R.id.eventDescription);
                 description.setText(activity.getDescription());
+
+                schedule = (TextView) findViewById(R.id.eventSchedule);
+                DateFormat dateFormat = getDateInstance();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Calendar timeStart = activity.getTimeStart();
+                Calendar timeEnd = activity.getTimeEnd();
+                String stringSchedule = dateFormat.format(timeStart.getTime()) +
+                                        " at " + timeFormat.format(timeStart.getTime()) + " to " +
+                                        dateFormat.format(timeEnd.getTime()) +
+                                        " at " + timeFormat.format(timeEnd.getTime())  ;
+                schedule.setText(stringSchedule);
+
+                if (map != null) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
+                            .title(activity.getTitle()));
+                }
             }
 
             @Override
@@ -46,6 +87,24 @@ public class DisplayActivity extends AppCompatActivity {
 
             }
         }, eventId);
+
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        map = googleMap;
+
+
+        if(activityToDisplay != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]),15));
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
+                    .title(activityToDisplay.getTitle()));
+        }
+    }
 }
