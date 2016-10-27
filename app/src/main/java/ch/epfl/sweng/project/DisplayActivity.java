@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -43,52 +45,56 @@ public class DisplayActivity extends AppCompatActivity {
 
         dp = new DataProvider();
 
-        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
-            @Override
-            public void getActivity(DeboxActivity activity) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
 
-                currentActivity = activity;
-                title = (TextView) findViewById(R.id.eventTitle);
-                title.setText(activity.getTitle()); //selectedEvent.getTitle()
+            dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+                @Override
+                public void getActivity(DeboxActivity activity) {
 
-                description = (TextView) findViewById(R.id.eventDescription);
-                description.setText(activity.getDescription());
-            }
+                    currentActivity = activity;
+                    title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-
-            @Override
-            public void getIfEnrolled(boolean result) {
-
-            }
-        }, eventId);
-
-        // Set listener to check if user is already register in this activity or not.
-        dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-            }
-
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-
-            @Override
-            public void getIfEnrolled(boolean result) {
-
-                if (result){
-                    enrolledInfoTextView.setVisibility(View.VISIBLE);
-                }else{
-                    joinActivityButton.setVisibility(View.VISIBLE);
+                    description = (TextView) findViewById(R.id.eventDescription);
+                    description.setText(activity.getDescription());
                 }
 
-            }
-        }, eventId);
+                @Override
+                public void getActivities(List<DeboxActivity> activitiesList) {
+
+                }
+
+                @Override
+                public void getIfEnrolled(boolean result) {
+
+                }
+            }, eventId);
+
+            // Set listener to check if user is already register in this activity or not.
+            dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
+                @Override
+                public void getActivity(DeboxActivity activity) {
+
+                }
+
+                @Override
+                public void getActivities(List<DeboxActivity> activitiesList) {
+
+                }
+
+                @Override
+                public void getIfEnrolled(boolean result) {
+
+                    if (result) {
+                        enrolledInfoTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        joinActivityButton.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            }, eventId);
+        }
     }
 
     /**
