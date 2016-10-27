@@ -99,8 +99,8 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener testClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //writeNewPost();
-            displaySpecifiedActivities();
+            writeNewPost();
+            //displaySpecifiedActivities();
         }
     };
     View.OnClickListener categoriesListener = new View.OnClickListener() {
@@ -120,7 +120,8 @@ public class WelcomeActivity extends AppCompatActivity
             }
         });
     }
-    private void displaySpecifiedActivities() {
+
+    public void displaySpecifiedActivities(String category) {
 
         mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
 
@@ -136,9 +137,14 @@ public class WelcomeActivity extends AppCompatActivity
                     activityPreviewsLayout.addView(ap, layoutParams);
                     ap.setOnClickListener(previewClickListener);
                 }
+                if (activitiesList.isEmpty()) {
+                    TextView emptyList = new TextView(getApplicationContext());
+                    emptyList.setText("No results found");
+                    activityPreviewsLayout.addView(emptyList, layoutParams);
+                }
                 mDataProvider = new DataProvider();
             }
-        },"Culture");
+        },category);
     }
 
     private void writeNewPost() {
