@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -84,7 +85,6 @@ public class DisplayActivity extends AppCompatActivity {
                 if (result){
                     enrolledInfoTextView.setVisibility(View.VISIBLE);
                 }else{
-                    Log.e("resutl : ","not enrolled");
                     joinActivityButton.setVisibility(View.VISIBLE);
                 }
 
@@ -94,15 +94,20 @@ public class DisplayActivity extends AppCompatActivity {
 
     //joinActivity
     public void joinActivity(View v) {
-        Log.d("tag",".joinActivity");
         if(currentActivity!= null){
 
             dp.joinActivity(currentActivity);
             enrolledInfoTextView.setVisibility(View.VISIBLE);
             joinActivityButton.setVisibility(View.INVISIBLE);
 
+            String toastMsg = getString(R.string.toast_success_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
         } else {
-            Log.d("debug","current activity is null");
+
+            String toastMsg = getString(R.string.toas_fail_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
         }
     }
 
