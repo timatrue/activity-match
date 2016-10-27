@@ -1,18 +1,15 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
-import java.util.Calendar;
+
 import java.util.List;
 
 /**
@@ -45,6 +42,7 @@ public class DisplayActivity extends AppCompatActivity {
 
 
         dp = new DataProvider();
+
         dp.getActivityFromUid(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -68,6 +66,7 @@ public class DisplayActivity extends AppCompatActivity {
             }
         }, eventId);
 
+        // Set listener to check if user is already register in this activity or not.
         dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -92,7 +91,12 @@ public class DisplayActivity extends AppCompatActivity {
         }, eventId);
     }
 
-    //joinActivity
+    /**
+     * Method call by button joinActivity. Fill a new relation between user and current
+     * activity in database.
+     *
+     * @param v
+     */
     public void joinActivity(View v) {
         if(currentActivity!= null){
 

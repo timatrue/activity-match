@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 /**
  * Created by jeremie on 12.10.16.
@@ -135,6 +135,13 @@ public class DataProvider {
         void getIfEnrolled(boolean result);
     }
 
+    /**
+     * Check if the current user is already enrolled in the uid activity.
+     * Send response through the listener
+     *
+     * @param listener
+     * @param uid
+     */
     public void userEnrolledInActivity(final DataProviderListener listener, final String uid){
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -171,6 +178,13 @@ public class DataProvider {
 
     }
 
+    /**
+     * Enroll the user to the activity dba. If the user doesn't have an entry in users table, an
+     * entry corresponding to the user is automatically added to the table users.
+     *
+     * @param dba
+     */
+
     public void joinActivity(DeboxActivity dba){
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -178,11 +192,14 @@ public class DataProvider {
         HashMap<String, Object> enrolledChild = new HashMap<>();
         enrolledChild.put("activity ID:",dba.getId());
 
+        // get unique key for enroll the activity
         String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
         HashMap<String, Object> enrolled = new HashMap<>();
-        enrolled.put("user_email",user.getEmail());
-        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
 
+        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
+        enrolled.put("user_email",user.getEmail());
+
+        // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
     }
