@@ -1,14 +1,13 @@
 package ch.epfl.sweng.project;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
+
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.sql.Time;
+
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -75,7 +74,7 @@ public final class DataProviderTest {
     }
 
     /**
-     *  Test if method userEnrooledInActivity works properly
+     *  Test if method userEnrolledInActivity works properly
      */
     @Test
     public void DeboxActivityConstructorAndMethod() {
@@ -124,10 +123,7 @@ public final class DataProviderTest {
             }
         }, uid);
 
-        Log.e("clé",uid);
-
         while (!testFinished) ;
-
 
     }
 
