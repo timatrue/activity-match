@@ -88,6 +88,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
         dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
+        dropdown.setOnItemSelectedListener(selectedItemListener);
 
         if(user != null) {
             activityOrganizer = user.getUid();
@@ -127,7 +128,17 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            activityCategory = parent.getItemAtPosition(position).toString();
+        }
 
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            //another interface callback
+        }
+    };
 
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
