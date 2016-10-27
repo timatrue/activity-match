@@ -1,6 +1,9 @@
 package ch.epfl.sweng.project;
 
+import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,18 +17,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by jeremie on 12.10.16.
  */
 
 public class DataProvider {
 
-    private static ArrayList<DeboxActivity> deboxActivityList;//= new ArrayList<String>();
+    private static ArrayList<DeboxActivity> deboxActivityList;
     private DatabaseReference mDatabase;
 
     public DataProvider() {
 
-      deboxActivityList = new ArrayList<DeboxActivity>();
+      deboxActivityList = new ArrayList<>();
       mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
@@ -37,7 +41,7 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> list = new ArrayList<>();
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     list.add(getDeboxActivity(snapshot.getKey(), (Map<String, Object>) snapshot.getValue()));
                 }
@@ -46,9 +50,7 @@ public class DataProvider {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                int c = 2;
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -60,7 +62,6 @@ public class DataProvider {
         String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        Map<String, Object> childActivityUpdate = new HashMap<>();
         HashMap<String, Object> result = new HashMap<>();
 
         double location [] = da.getLocation();
@@ -92,8 +93,10 @@ public class DataProvider {
 
         String category = (String) activityMap.get("category");
         String description = (String) activityMap.get("description");
-        Double latitude = (Double) activityMap.get("latitude");
-        Double longitude = (Double) activityMap.get("longitude");
+
+        Double latitude = Double.valueOf(activityMap.get("latitude").toString());
+        Double longitude = Double.valueOf(activityMap.get("longitude").toString());
+
         String organizer = (String) activityMap.get("organizer");
         String title = (String) activityMap.get("title");
 
@@ -120,23 +123,97 @@ public class DataProvider {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-
-
-
                 listener.getActivity(getDeboxActivity(uid, activityMap));
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                int c = 2;
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
     public interface DataProviderListener {
-        public void getActivity(DeboxActivity activity);
-        public void getActivities(List<DeboxActivity> activitiesList);
+        void getActivity(DeboxActivity activity);
+        void getActivities(List<DeboxActivity> activitiesList);
+        void getIfEnrolled(boolean result);
     }
 
+    /**
+     * Check if the current user is already enrolled in the uid activity.
+     * Send response through the listener
+     *
+     * @param listener
+     * @param uid
+     */
+    public void userEnrolledInActivity(final DataProviderListener listener, final String uid){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        String userUid;
+        if(user != null)
+            userUid = user.getUid();
+        else
+            userUid ="testUser";
+
+        //DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
+        DatabaseReference myRef = database.getReference("users/"+userUid+"/enrolled");
+
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                Boolean alreadyEnrolled = false;
+
+                if(listEnrolled != null) {
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        if (activityID.equals(uid)) {
+                            alreadyEnrolled = true;
+                        }
+                    }
+                }
+                listener.getIfEnrolled(alreadyEnrolled);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    /**
+     * Enroll the user to the activity dba. If the user doesn't have an entry in users table, an
+     * entry corresponding to the user is automatically added to the table users.
+     *
+     * @param dba
+     */
+
+    public void joinActivity(DeboxActivity dba){
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        HashMap<String, Object> enrolledChild = new HashMap<>();
+        enrolledChild.put("activity ID:",dba.getId());
+
+        // get unique key for enroll the activity
+        String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+        HashMap<String, Object> enrolled = new HashMap<>();
+
+        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
+        enrolled.put("user_email",user.getEmail());
+
+        // update the database
+        mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
+
+    }
 
 }

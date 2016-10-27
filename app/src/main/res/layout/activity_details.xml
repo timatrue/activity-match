@@ -22,7 +22,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="340dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout">
 
         <fragment
             android:name="com.google.android.gms.maps.MapFragment"
@@ -51,5 +52,28 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/enrolledInfo"
+        android:visibility="invisible"
+        android:text="@string/joinActivity_satus"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/joinActivity"
+        android:text="@string/joinActivity_button"
+        android:onClick="joinActivity"
+        android:visibility="invisible"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
+
+

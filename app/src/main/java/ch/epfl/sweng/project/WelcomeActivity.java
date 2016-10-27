@@ -125,6 +125,11 @@ public class WelcomeActivity extends AppCompatActivity
                 //mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDataProvider = new DataProvider();
             }
+
+            @Override
+            public void getIfEnrolled(boolean result) {
+
+            }
         });
 
     }
