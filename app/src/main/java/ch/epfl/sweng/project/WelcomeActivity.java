@@ -32,9 +32,7 @@ import static ch.epfl.sweng.project.R.attr.title;
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button testButton;
-    Button displayCategoriesButton;
-
+    Button displayActivities;
     LinearLayout activityPreviewsLayout;
 
     // private DatabaseReference mDatabase;
@@ -60,8 +58,8 @@ public class WelcomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        testButton = (Button) findViewById(R.id.testButton);
-        testButton.setOnClickListener(testClickListener);
+        displayActivities = (Button) findViewById(R.id.displayActivities);
+        displayActivities.setOnClickListener(activitiesClickListener);
 
         mDataProvider = new DataProvider();
 
@@ -92,7 +90,7 @@ public class WelcomeActivity extends AppCompatActivity
         }
     };
 
-    View.OnClickListener testClickListener = new View.OnClickListener() {
+    View.OnClickListener activitiesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             writeNewPost();
@@ -128,12 +126,10 @@ public class WelcomeActivity extends AppCompatActivity
     }
 
     private void writeNewPost() {
-
+        cleanLinearLayout(activityPreviewsLayout);
         mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
             @Override
-            public void getActivity(DeboxActivity activity) {
-
-            }
+            public void getActivity(DeboxActivity activity) {}
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {

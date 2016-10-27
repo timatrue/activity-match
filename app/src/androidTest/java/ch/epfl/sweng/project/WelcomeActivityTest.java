@@ -39,14 +39,15 @@ public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<Welcom
 
     }
 
-    public void testCanPreviewActivityBeClicked() {
-        WelcomeActivity wa = getActivity();
+    public void testCanDisplayActivitiesBeClicked() {
+
 
         //onView((wa.activityPreviewsLayout).getChildAt(0)).perform(click());
         /*onData(instanceOf(ActivityPreview.class))
                 .perform(click());
         */
-        onView(withId(R.id.testButton)).perform(click());
+        onView(withId(R.id.displayActivities)).perform(click());
+        //onView(withId(R.id.filterActivity)).perform(click());
 
         /*int tv_id = ((LinearLayout )wa.activityPreviewsLayout).getChildAt(0).getId();
         onView(withId(tv_id)).perform(click());*/
