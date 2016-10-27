@@ -24,6 +24,7 @@ import java.util.List;
 
 import ch.epfl.sweng.project.fragments.FilterFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static ch.epfl.sweng.project.R.attr.title;
 
@@ -33,13 +34,11 @@ public class WelcomeActivity extends AppCompatActivity
 
     Button testButton;
     Button displayCategoriesButton;
-    TextView testListener;
+
     LinearLayout activityPreviewsLayout;
-    LinearLayout categoryLayout;
 
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +62,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         testButton = (Button) findViewById(R.id.testButton);
         testButton.setOnClickListener(testClickListener);
-        displayCategoriesButton = (Button) findViewById(R.id.displayCategories);
-        displayCategoriesButton.setOnClickListener(categoriesListener);
 
         mDataProvider = new DataProvider();
 
@@ -72,7 +69,7 @@ public class WelcomeActivity extends AppCompatActivity
     protected void CategoryFragment(View v){
         FragmentManager fm = getFragmentManager();
         FilterFragment dialogFragment = new FilterFragment ();
-        dialogFragment.show(fm, "Sample Fragment");
+        dialogFragment.show(fm, "filterFragment");
     }
 
     View.OnClickListener previewClickListener = new View.OnClickListener() {
@@ -87,7 +84,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     };
 
-
     View.OnClickListener newActivityListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -100,26 +96,8 @@ public class WelcomeActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             writeNewPost();
-            //displaySpecifiedActivities();
         }
     };
-    View.OnClickListener categoriesListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            displayCategories();
-        }
-    };
-
-    private void displayCategories(){
-        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
-            @Override
-            public void getCategories(List<DataProvider.CategoryName> categoriesList) {
-
-                String category = categoriesList.get(0).getCategory();
-                displayCategoriesButton.setText(category);
-            }
-        });
-    }
 
     public void displaySpecifiedActivities(String category) {
 
@@ -132,15 +110,17 @@ public class WelcomeActivity extends AppCompatActivity
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(30, 20, 30, 0);
 
-                for(DeboxActivity elem: activitiesList) {
-                    ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                    activityPreviewsLayout.addView(ap, layoutParams);
-                    ap.setOnClickListener(previewClickListener);
-                }
+                cleanLinearLayout(activityPreviewsLayout);
                 if (activitiesList.isEmpty()) {
-                    TextView emptyList = new TextView(getApplicationContext());
-                    emptyList.setText("No results found");
-                    activityPreviewsLayout.addView(emptyList, layoutParams);
+                    NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                    activityPreviewsLayout.addView(result, layoutParams);
+
+                } else {
+                    for(DeboxActivity elem: activitiesList) {
+                        ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                        activityPreviewsLayout.addView(ap, layoutParams);
+                        ap.setOnClickListener(previewClickListener);
+                    }
                 }
                 mDataProvider = new DataProvider();
             }
@@ -167,7 +147,6 @@ public class WelcomeActivity extends AppCompatActivity
                     activityPreviewsLayout.addView(ap, layoutParams);
                     ap.setOnClickListener(previewClickListener);
                 }
-
                 //mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDataProvider = new DataProvider();
             }
@@ -217,5 +196,9 @@ public class WelcomeActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void cleanLinearLayout(LinearLayout linearLayout){
+        if((linearLayout).getChildCount() > 0)
+            (linearLayout).removeAllViews();
     }
 }
