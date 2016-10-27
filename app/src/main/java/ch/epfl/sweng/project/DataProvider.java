@@ -143,30 +143,18 @@ public class DataProvider {
     }
 
     public void joinActivity(DeboxActivity dba){
-        Log.d("debug","join activity");
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        Log.d("debug","user: "+user.getUid());
-        Log.d("test : ","dbaID:"+dba.getId());
-
-
-        /*String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
-        Log.d("key",enrolledKey);
-
         HashMap<String, Object> enrolledChild = new HashMap<>();
-        enrolledChild.put(enrolledKey,dba.getId());
+        enrolledChild.put("activity ID:",dba.getId());
 
+        String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
         HashMap<String, Object> enrolled = new HashMap<>();
-        enrolled.put("enrolled",enrolledChild);
+        enrolled.put("user_email",user.getEmail());
+        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
 
-        HashMap<String, Object> thisUser = new HashMap<>();
-        thisUser.put("users/"+user.getUid(),enrolled);
-
-        mDatabase.updateChildren(thisUser);*/
-
-
-
-        //mDatabase.updateChildren(childUpdates);
+        mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
     }
 
