@@ -148,17 +148,11 @@ public class DataProvider {
 
                 Boolean alreadyEnrolled = false;
 
-                //listEnrolled.
-                //Map<String, Object> category = (Map<String, Object>) listEnrolled.get("enrolled");
-                //String category = (String) listEnrolled.get("activity ID:");
-
                 if(listEnrolled != null) {
 
                     for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
-                        //Log.e("dl",enrolledEntry.getValue());
-                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
 
-                        //Objects.equals(activityID,uid)){
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
 
                         if (activityID.equals(uid)) {
                             alreadyEnrolled = true;

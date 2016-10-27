@@ -19,5 +19,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/joinActivity"
         android:text="@string/joinActivity_button"
-        android:onClick="joinActivity"/>
+        android:onClick="joinActivity"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/enrolledInfo"
+        android:visibility="invisible"
+        android:text="@string/joinActivity_satus"/>
 </LinearLayout>

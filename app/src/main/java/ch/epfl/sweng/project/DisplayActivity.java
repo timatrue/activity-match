@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.List;
@@ -25,6 +28,8 @@ public class DisplayActivity extends AppCompatActivity {
     private DataProvider dp;
     private String eventId;
     private DeboxActivity currentActivity;
+    private Button joinActivityButton;
+    private TextView enrolledInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,9 @@ public class DisplayActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
+
+        joinActivityButton = (Button) findViewById(R.id.joinActivity);
+        enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
 
 
         dp = new DataProvider();
@@ -73,10 +81,12 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public void getIfEnrolled(boolean result) {
 
-                if(result)
-                    Log.e("resutl : ","already enrolled");
-                else
+                if (result){
+                    enrolledInfoTextView.setVisibility(View.VISIBLE);
+                }else{
                     Log.e("resutl : ","not enrolled");
+                    joinActivityButton.setVisibility(View.VISIBLE);
+                }
 
             }
         }, eventId);
@@ -88,13 +98,12 @@ public class DisplayActivity extends AppCompatActivity {
         if(currentActivity!= null){
 
             dp.joinActivity(currentActivity);
+            enrolledInfoTextView.setVisibility(View.VISIBLE);
+            joinActivityButton.setVisibility(View.INVISIBLE);
 
         } else {
             Log.d("debug","current activity is null");
         }
-
-
-
     }
 
 
