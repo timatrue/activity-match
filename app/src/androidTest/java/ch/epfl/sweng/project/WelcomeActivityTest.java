@@ -26,6 +26,7 @@ import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 /**
  * Created by artem on 21/10/2016.
  */
+
 public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<WelcomeActivity> {
     public WelcomeActivityTest() {
         super(WelcomeActivity.class);
@@ -40,20 +41,9 @@ public class WelcomeActivityTest extends ActivityInstrumentationTestCase2<Welcom
     }
 
     public void testCanDisplayActivitiesBeClicked() {
-
-
-        //onView((wa.activityPreviewsLayout).getChildAt(0)).perform(click());
-        /*onData(instanceOf(ActivityPreview.class))
-                .perform(click());
-        */
+        getActivity();
         onView(withId(R.id.displayActivities)).perform(click());
+
         //onView(withId(R.id.filterActivity)).perform(click());
-
-        /*int tv_id = ((LinearLayout )wa.activityPreviewsLayout).getChildAt(0).getId();
-        onView(withId(tv_id)).perform(click());*/
-
-        /*onData(allOf(instanceOf(ActivityPreview.class)))
-                .perform(click());*/
-
     }
 }

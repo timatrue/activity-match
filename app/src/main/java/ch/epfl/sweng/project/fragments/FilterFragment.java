@@ -29,7 +29,7 @@ public class FilterFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.filter_layout, container, false);
-        getDialog().setTitle("Simple Dialog");
+        getDialog().setTitle(R.string.event_filter_title);
 
         dismiss = (Button) rootView.findViewById(R.id.dismiss);
         dismiss.setOnClickListener(dismissListener);

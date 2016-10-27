@@ -48,6 +48,9 @@ public class WelcomeActivity extends AppCompatActivity
         FloatingActionButton addActivityButton = (FloatingActionButton) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
 
+        FloatingActionButton filterButton = (FloatingActionButton) findViewById(R.id.filterActivity);
+        filterButton.setOnClickListener(filterEventsListener);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -64,6 +67,13 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider = new DataProvider();
 
     }
+    View.OnClickListener filterEventsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            CategoryFragment(v);
+        }
+    };
+
     protected void CategoryFragment(View v){
         FragmentManager fm = getFragmentManager();
         FilterFragment dialogFragment = new FilterFragment ();
