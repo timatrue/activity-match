@@ -62,6 +62,11 @@ public final class DataProviderTest {
             public void getActivities(List<DeboxActivity> activitiesList) {
                 testFinished = true;
             }
+
+            @Override
+            public void getIfEnrolled(boolean result) {
+
+            }
         }, uid);
 
 

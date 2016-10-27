@@ -52,6 +52,33 @@ public class DisplayActivity extends AppCompatActivity {
             public void getActivities(List<DeboxActivity> activitiesList) {
 
             }
+
+            @Override
+            public void getIfEnrolled(boolean result) {
+
+            }
+        }, eventId);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+            }
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+            }
+
+            @Override
+            public void getIfEnrolled(boolean result) {
+
+                if(result)
+                    Log.e("resutl : ","already enrolled");
+                else
+                    Log.e("resutl : ","not enrolled");
+
+            }
         }, eventId);
     }
 

@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by jeremie on 12.10.16.
@@ -129,6 +132,49 @@ public class DataProvider {
     public interface DataProviderListener {
         void getActivity(DeboxActivity activity);
         void getActivities(List<DeboxActivity> activitiesList);
+        void getIfEnrolled(boolean result);
+    }
+
+    public void userEnrolledInActivity(final DataProviderListener listener, final String uid){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                Boolean alreadyEnrolled = false;
+
+                //listEnrolled.
+                //Map<String, Object> category = (Map<String, Object>) listEnrolled.get("enrolled");
+                //String category = (String) listEnrolled.get("activity ID:");
+
+                if(listEnrolled != null) {
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+                        //Log.e("dl",enrolledEntry.getValue());
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        //Objects.equals(activityID,uid)){
+
+                        if (activityID.equals(uid)) {
+                            alreadyEnrolled = true;
+                        }
+                    }
+                }
+                listener.getIfEnrolled(alreadyEnrolled);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     public void joinActivity(DeboxActivity dba){
