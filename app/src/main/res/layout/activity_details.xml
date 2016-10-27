@@ -13,4 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/eventDescription" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/joinActivity"
+        android:text="@string/joinActivity_button"
+        android:onClick="joinActivity"/>
 </LinearLayout>

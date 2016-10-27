@@ -16,6 +16,7 @@
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
     <string name="contact_message">Choose an Email client</string>
+    <string name="show_activity_button">Show all activities</string>
 
 
     <!-- Create Activity -->
@@ -37,6 +38,9 @@
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
+
+    <!-- Join activity -->
+    <string name="joinActivity_button">Join this activity</string>
 
 
 </resources>

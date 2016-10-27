@@ -1,6 +1,10 @@
 package ch.epfl.sweng.project;
 
 
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -138,5 +142,32 @@ public class DataProvider {
         public void getActivities(List<DeboxActivity> activitiesList);
     }
 
+    public void joinActivity(DeboxActivity dba){
+        Log.d("debug","join activity");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        Log.d("debug","user: "+user.getUid());
+        Log.d("test : ","dbaID:"+dba.getId());
+
+
+        /*String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+        Log.d("key",enrolledKey);
+
+        HashMap<String, Object> enrolledChild = new HashMap<>();
+        enrolledChild.put(enrolledKey,dba.getId());
+
+        HashMap<String, Object> enrolled = new HashMap<>();
+        enrolled.put("enrolled",enrolledChild);
+
+        HashMap<String, Object> thisUser = new HashMap<>();
+        thisUser.put("users/"+user.getUid(),enrolled);
+
+        mDatabase.updateChildren(thisUser);*/
+
+
+
+        //mDatabase.updateChildren(childUpdates);
+
+    }
 
 }

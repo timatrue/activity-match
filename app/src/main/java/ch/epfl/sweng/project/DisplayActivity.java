@@ -1,8 +1,11 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -19,6 +22,9 @@ public class DisplayActivity extends AppCompatActivity {
 
     TextView title;
     TextView description;
+    private DataProvider dp;
+    private String eventId;
+    private DeboxActivity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +32,15 @@ public class DisplayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         Intent intent = getIntent();
-        String eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
+        eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
 
 
-        DataProvider dp = new DataProvider();
+        dp = new DataProvider();
         dp.getActivityFromUid(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
 
+                currentActivity = activity;
                 title = (TextView) findViewById(R.id.eventTitle);
                 title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
@@ -47,5 +54,21 @@ public class DisplayActivity extends AppCompatActivity {
             }
         }, eventId);
     }
+
+    //joinActivity
+    public void joinActivity(View v) {
+        Log.d("tag",".joinActivity");
+        if(currentActivity!= null){
+
+            dp.joinActivity(currentActivity);
+
+        } else {
+            Log.d("debug","current activity is null");
+        }
+
+
+
+    }
+
 
 }
