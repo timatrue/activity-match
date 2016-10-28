@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +27,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import static android.R.attr.category;
 import static java.text.DateFormat.getDateInstance;
 
 
@@ -41,6 +47,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     TimePickerFragment startTimeFragment;
     TimePickerFragment endTimeFragment;
 
+    Spinner dropdown;
 
     String activityId = "default_id";
     String activityOrganizer = "default_organizer";
@@ -62,7 +69,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
      */
     private GoogleApiClient client;
 
-
+    final String[] tries = {"1", "2", "three"};
     int PLACE_PICKER_REQUEST = 1;
 
     @Override
@@ -80,6 +87,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         startTimeTextView.setText(makeTimeString(activityStartCalendar));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
+        dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
+        dropdown.setOnItemSelectedListener(selectedItemListener);
+
         if(user != null) {
             activityOrganizer = user.getUid();
         }
@@ -88,6 +98,19 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
 
         mDataProvider = new DataProvider();
+
+        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
+            @Override
+            public void getCategories(List<DataProvider.CategoryName> items) {
+                List<String> stringList = new ArrayList<String>();
+                for (DataProvider.CategoryName cat : items) {
+                    stringList.add(cat.getCategory());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateActivity.this, android.R.layout.simple_spinner_item, stringList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                dropdown.setAdapter(adapter);
+            }
+        });
 
         //Retrieves and displays the confirmation message after a successful activity creation
         Bundle confirmationMessage = getIntent().getExtras();
@@ -105,6 +128,17 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            activityCategory = parent.getItemAtPosition(position).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            //another interface callback
+        }
+    };
 
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();

@@ -16,11 +16,22 @@
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
     <string name="contact_message">Choose an Email client</string>
+    <string name="show_activity_button">Show all activities</string>
+
+    <!-- Welcome Activity interface -->
+    <string name="display_activities">Display Activities</string>
+    <string name="user_greeting_welcome">Hi bro, welcome in ActivityMatch!</string>
+    <string name="display_activities_button">Display All Events</string>
+    <string name="filter_button_text">Filter the events</string>
+    <string name="create_activity_button_text">Organize yours!</string>
+
+
 
 
     <!-- Create Activity -->
     <string name="create_activity_title">Organize your activity : \n Choose a title and describe it</string>
     <string name="create_activity_name_hint">The name of your activity</string>
+    <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Describe the activity you\'re planning</string>
     <string name="create_activity_confirmation_message">Activity successfully created</string>
     <string name="create_activity_date_error_message">Invalid dates and/or time</string>
@@ -38,6 +49,20 @@
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
+
+
+    <!-- Join activity -->
+    <string name="joinActivity_button">Join this activity</string>
+    <string name="joinActivity_satus">You are registered for this activity </string>
+    <string name="toast_success_join">You have successfully joined this activity</string>
+    <string name="toas_fail_join">Something wrong with network.. Try again in few seconds </string>
+
+
+    <!-- Fragment Filter -->
+    <string name="hello_fragment">hello fragment</string>
+    <string name="no_results_found">No results found</string>
+    <string name="event_filter_title">Filter events</string>
+    <string name="event_filter_description">Choose categories: </string>
 
 
 </resources>

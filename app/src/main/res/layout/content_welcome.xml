@@ -14,21 +14,13 @@
     tools:showIn="@layout/app_bar_welcome">
 
 
-    <Button
-        android:text="Send Hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/testButton" />
-
     <ScrollView
         android:id="@+id/activityPreviewsScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/testButton"
+        android:layout_below="@+id/displayActivities"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true">
+        android:layout_above="@+id/filterActivity">
 
         <LinearLayout
             android:id="@+id/activityPreviewsLayout"
@@ -39,11 +31,46 @@
     </ScrollView>
 
     <TextView
-        android:text="Hello, welcome in ActivityMatch!"
+        android:text="@string/user_greeting_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2"
+        android:id="@+id/userGreeting"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/displayActivities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:text="@string/display_activities_button"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:layout_below="@+id/userGreeting"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/filterActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:text="@string/filter_button_text"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/addActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="@string/create_activity_button_text"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/holo_blue_light"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

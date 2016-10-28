@@ -5,7 +5,14 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +45,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     DeboxActivity activityToDisplay = null;
     GoogleMap map = null;
 
+    private DataProvider dp;
+    private String eventId;
+    private DeboxActivity currentActivity;
+    private Button joinActivityButton;
+    private TextView enrolledInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,54 +57,129 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.activity_details);
 
         Intent intent = getIntent();
-        String eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
+        eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
+
+        joinActivityButton = (Button) findViewById(R.id.joinActivity);
+        enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
 
 
-        DataProvider dp = new DataProvider();
-        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+        dp = new DataProvider();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
+
+            dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+                @Override
+                public void getActivity(DeboxActivity activity) {
+
+                    currentActivity = activity;
+                    title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+
+                    description = (TextView) findViewById(R.id.eventDescription);
+                    description.setText(activity.getDescription());
+
+                    activityToDisplay = activity;
+                    title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+
+                    category = (TextView) findViewById(R.id.eventCategory);
+                    category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
+
+                    description = (TextView) findViewById(R.id.eventDescription);
+                    description.setText(activity.getDescription());
+
+                    schedule = (TextView) findViewById(R.id.eventSchedule);
+                    DateFormat dateFormat = getDateInstance();
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                    Calendar timeStart = activity.getTimeStart();
+                    Calendar timeEnd = activity.getTimeEnd();
+                    String stringSchedule = dateFormat.format(timeStart.getTime()) +
+                            " at " + timeFormat.format(timeStart.getTime()) + " to " +
+                            dateFormat.format(timeEnd.getTime()) +
+                            " at " + timeFormat.format(timeEnd.getTime())  ;
+                    schedule.setText(stringSchedule);
+
+                    if (map != null) {
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
+                        map.addMarker(new MarkerOptions()
+                                .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
+                                .title(activity.getTitle()));
+                    }
+                }
+
+                @Override
+                public void getActivities(List<DeboxActivity> activitiesList) {
+
+                }
+
+                @Override
+                public void getIfEnrolled(boolean result) {
+
+                }
+            }, eventId);
+
+
+        }
+
+
+        // Set listener to check if user is already register in this activity or not.
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
+
             @Override
             public void getActivity(DeboxActivity activity) {
 
-                activityToDisplay = activity;
-                title = (TextView) findViewById(R.id.eventTitle);
-                title.setText(activity.getTitle()); //selectedEvent.getTitle()
-
-                category = (TextView) findViewById(R.id.eventCategory);
-                category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
-
-                description = (TextView) findViewById(R.id.eventDescription);
-                description.setText(activity.getDescription());
-
-                schedule = (TextView) findViewById(R.id.eventSchedule);
-                DateFormat dateFormat = getDateInstance();
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                Calendar timeStart = activity.getTimeStart();
-                Calendar timeEnd = activity.getTimeEnd();
-                String stringSchedule = dateFormat.format(timeStart.getTime()) +
-                                        " at " + timeFormat.format(timeStart.getTime()) + " to " +
-                                        dateFormat.format(timeEnd.getTime()) +
-                                        " at " + timeFormat.format(timeEnd.getTime())  ;
-                schedule.setText(stringSchedule);
-
-                if (map != null) {
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
-                            .title(activity.getTitle()));
-                }
             }
+
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
+
+            }
+
+            @Override
+            public void getIfEnrolled(boolean result) {
+
+                if (result) {
+                    enrolledInfoTextView.setVisibility(View.VISIBLE);
+                } else {
+                    joinActivityButton.setVisibility(View.VISIBLE);
+                }
 
             }
         }, eventId);
 
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+        .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+
+    /**
+     * Method call by button joinActivity. Fill a new relation between user and current
+     * activity in database.
+     *
+     * @param v
+     */
+    public void joinActivity(View v) {
+        if(currentActivity!= null){
+
+            dp.joinActivity(currentActivity);
+            enrolledInfoTextView.setVisibility(View.VISIBLE);
+            joinActivityButton.setVisibility(View.INVISIBLE);
+
+            String toastMsg = getString(R.string.toast_success_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
+        } else {
+
+            String toastMsg = getString(R.string.toas_fail_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -100,8 +187,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         map = googleMap;
 
 
-        if(activityToDisplay != null) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]),15));
+        if (activityToDisplay != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
                     .title(activityToDisplay.getTitle()));

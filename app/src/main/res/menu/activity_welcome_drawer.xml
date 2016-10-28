@@ -6,10 +6,6 @@
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_menu_login"
             android:title="@string/log_out" />
-        <item
-            android:id="@+id/nav_sign_up"
-            android:icon="@drawable/ic_menu_signup"
-            android:title="@string/sign_up" />
     </group>
 
     <item android:title="Communicate">
