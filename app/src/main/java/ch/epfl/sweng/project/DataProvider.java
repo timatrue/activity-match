@@ -29,12 +29,24 @@ public class DataProvider {
     private static ArrayList<CategoryName> deboxCategoriesList;
 
     private DatabaseReference mDatabase;
+    private FirebaseDatabase database;
 
     public DataProvider() {
 
         deboxActivityList = new ArrayList<DeboxActivity>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
     }
+
+    // use for mock test
+    public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase) {
+
+        deboxActivityList = new ArrayList<DeboxActivity>();
+        mDatabase = mockDatabaseReference;
+        database = mockFireDataBase;
+    }
+
+
 
     public class CategoryName{
         String categoryId;
@@ -181,7 +193,7 @@ public class DataProvider {
     }
 
     public Void getActivityFromUid(final DataProviderListener listener, final String uid) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities/" + uid);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
