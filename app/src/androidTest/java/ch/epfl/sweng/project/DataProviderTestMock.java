@@ -87,15 +87,13 @@ public class DataProviderTestMock {
 
     @Test
     public void testGetActivityFromUid() {
-
-
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
         database = Mockito.mock(FirebaseDatabase.class);
         myRef = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
-
+        //Create Map from deboxactivities
         activityMap.put("title", deboxActivityTest.getTitle());
         activityMap.put("description", deboxActivityTest.getDescription());
         activityMap.put("category", deboxActivityTest.getCategory());
@@ -105,35 +103,32 @@ public class DataProviderTestMock {
         activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
         activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
 
-
+        //Override getValue() to always return the Map for the test
         when(ds.getValue()).thenReturn(activityMap);
-        //when(myRef.addListenerForSingleValueEvent(any(ValueEventListener.class))).
 
-        // to be verified!! absolutely not sure ...
-
-
+        //Override addListenerForSingleValueEvent method for test to always return our Map
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-
                 ValueEventListener listener = (ValueEventListener) args[0];
                 listener.onDataChange(ds);
-
                 return null;
             }
         }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
-
+        //Override getReference method to return the Mock reference
         when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
+        //Test DataProvider getActivityFromUid method, check that it calls the listener and gives
+        //it a proper DeboxActivity, corresponding to the Map values
         DataProvider dp = new DataProvider(myRef,database);
-
         dp.getActivityFromUid(new DataProvider.DataProviderListener() {
             @Override
             public void getActivity(DeboxActivity activity) {
                 assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
                 assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
                 assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
+                assertEquals(activity.getId(),deboxActivityTest.getId());
                 assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
                 assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
                 assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
@@ -151,8 +146,5 @@ public class DataProviderTestMock {
             }
         }, uuidTest);
     }
-
-
-
 
 }
