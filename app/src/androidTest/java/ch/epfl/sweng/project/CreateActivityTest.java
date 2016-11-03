@@ -216,22 +216,23 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
         assertTrue(activity.validateActivity().equals("success"));
-        assertTrue(activity.createActivityMethod() != null);
-        assertTrue(activity.createActivityMethod().getTitle().equals(testTitle));
-        assertTrue(activity.createActivityMethod().getDescription().equals(testDescription));
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.YEAR) == startYear);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.MONTH) == startMonth);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.DAY_OF_MONTH) == startDay);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.HOUR_OF_DAY) == startHour);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.MINUTE) == startMinute);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.YEAR) == endYear);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MONTH) == endMonth);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
-        assertTrue(activity.createActivityMethod().getOrganizer().equals(expectedUid));
-        assertTrue(activity.createActivityMethod().getLocation()[0] == location[0]);
-        assertTrue(activity.createActivityMethod().getLocation()[1] == location[1]);
+        DeboxActivity da = activity.createActivityMethod();
+        assertTrue(da != null);
+        assertTrue(da.getTitle().equals(testTitle));
+        assertTrue(da.getDescription().equals(testDescription));
+        assertTrue(da.getTimeStart().get(Calendar.YEAR) == startYear);
+        assertTrue(da.getTimeStart().get(Calendar.MONTH) == startMonth);
+        assertTrue(da.getTimeStart().get(Calendar.DAY_OF_MONTH) == startDay);
+        assertTrue(da.getTimeStart().get(Calendar.HOUR_OF_DAY) == startHour);
+        assertTrue(da.getTimeStart().get(Calendar.MINUTE) == startMinute);
+        assertTrue(da.getTimeEnd().get(Calendar.YEAR) == endYear);
+        assertTrue(da.getTimeEnd().get(Calendar.MONTH) == endMonth);
+        assertTrue(da.getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
+        assertTrue(da.getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
+        assertTrue(da.getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(da.getOrganizer().equals(expectedUid));
+        assertTrue(da.getLocation()[0] == location[0]);
+        assertTrue(da.getLocation()[1] == location[1]);
     }
 
     @Test
