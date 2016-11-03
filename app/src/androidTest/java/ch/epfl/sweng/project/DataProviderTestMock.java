@@ -6,30 +6,27 @@ package ch.epfl.sweng.project;
 
 
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.asm.tree.analysis.Value;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataProviderTestMock {
-
-    //private static final String FAKE_KEY = "fake_key";
 
     @Mock
     DatabaseReference mDataBaseRef;
@@ -37,6 +34,20 @@ public class DataProviderTestMock {
     DatabaseReference mChild;
     @Mock
     DatabaseReference mPush;
+    @Mock
+    DatabaseReference myRef;
+    @Mock
+    FirebaseDatabase database;
+
+    final DeboxActivity deboxActivityTest = new DeboxActivity("id","test", "user-test",
+            "description",
+            Calendar.getInstance(),
+            Calendar.getInstance(),
+            122.01,
+            121.0213,
+            "Sports");
+
+
 
     @Test
     public void testPushActivity() {
@@ -45,6 +56,7 @@ public class DataProviderTestMock {
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
         mChild = Mockito.mock(DatabaseReference.class);
         mPush = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
 
 
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
@@ -53,27 +65,53 @@ public class DataProviderTestMock {
 
         when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
 
-        Calendar startDate = Calendar.getInstance();
-        Calendar endDate = Calendar.getInstance();
 
-        startDate.set(Calendar.YEAR, 2016);
-        startDate.set(Calendar.MONTH, 11);
-
-        final DeboxActivity dA = new DeboxActivity("zdkasKKLD", "Nathan",
-                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
-                startDate,
-                endDate,
-                122.01,
-                121.0213,
-                "Sports");
-
-
-        DataProvider dp = new DataProvider(mDataBaseRef);
-        String result = dp.pushActivity(dA);
+        DataProvider dp = new DataProvider(mDataBaseRef,database);
+        String result = dp.pushActivity(deboxActivityTest);
 
         assertEquals(uuidTest,result);
 
     }
+
+
+
+    @Test
+    public void testGetActivityFromUid() {
+
+        String uuidTest = "uuid-test-111";
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+
+
+        //when(myRef.addListenerForSingleValueEvent(any(ValueEventListener.class))).
+
+        // to be verified!! absolutely not sure ...
+
+        Mockito.doThrow(new Exception()).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
 }
