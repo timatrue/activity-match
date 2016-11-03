@@ -122,7 +122,7 @@ public class DataProviderTestMock {
         //Test DataProvider getActivityFromUid method, check that it calls the listener and gives
         //it a proper DeboxActivity, corresponding to the Map values
         DataProvider dp = new DataProvider(myRef,database);
-        dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+        dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
                 assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
@@ -135,15 +135,6 @@ public class DataProviderTestMock {
                 assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
             }
 
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-
-            @Override
-            public void getIfEnrolled(boolean result) {
-
-            }
         }, uuidTest);
     }
 
