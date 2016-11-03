@@ -95,6 +95,7 @@ public class WelcomeActivity extends AppCompatActivity
             if(v instanceof ActivityPreview) {
                 String eventId = ((ActivityPreview) v).getEventId();
                 Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
                 intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
                 startActivity(intent);
             }

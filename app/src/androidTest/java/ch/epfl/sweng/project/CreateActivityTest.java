@@ -42,6 +42,7 @@ public class CreateActivityTest {
         activity.activityLongitude=1;
         activity.activityLatitude=1;
 
+
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
