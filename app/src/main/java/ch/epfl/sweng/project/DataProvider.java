@@ -36,6 +36,15 @@ public class DataProvider {
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
+    // use for mock test
+    public DataProvider(DatabaseReference mockDatabaseReference) {
+
+        deboxActivityList = new ArrayList<DeboxActivity>();
+        mDatabase = mockDatabaseReference;
+    }
+
+
+
     public class CategoryName{
         String categoryId;
         String nameCategory;
