@@ -108,7 +108,7 @@ public class DataProvider {
 
     }
 
-    public void getAllActivities(final DataProviderListener listener) {
+    public void getAllActivities(final DataProviderListenerActivities listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -192,7 +192,7 @@ public class DataProvider {
 
     }
 
-    public Void getActivityFromUid(final DataProviderListener listener, final String uid) {
+    public Void getActivityFromUid(final DataProviderListenerActivity listener, final String uid) {
         //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities/" + uid);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -216,7 +216,7 @@ public class DataProvider {
      * @param listener
      * @param uid
      */
-    public void userEnrolledInActivity(final DataProviderListener listener, final String uid) {
+    public void userEnrolledInActivity(final DataProviderListenerEnrolled listener, final String uid) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -286,14 +286,24 @@ public class DataProvider {
 
     }
 
-    public interface DataProviderListener {
-        void getActivity(DeboxActivity activity);
-        void getActivities(List<DeboxActivity> activitiesList);
+
+    //DB Callbacks interfaces
+    public interface DataProviderListenerEnrolled {
         void getIfEnrolled(boolean result);
     }
+
+    public interface DataProviderListenerActivity {
+        void getActivity(DeboxActivity activity);
+    }
+
+    public interface DataProviderListenerActivities {
+        void getActivities(List<DeboxActivity> activitiesList);
+    }
+
     public interface DataProviderListenerCategories {
         public void getCategories(List<CategoryName> categoriesList);
     }
+
     public interface DataProviderListenerCategory {
         public void getCategory(List<DeboxActivity> activitiesList);
     }

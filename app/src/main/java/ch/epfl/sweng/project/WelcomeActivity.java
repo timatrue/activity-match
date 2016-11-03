@@ -113,7 +113,7 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener activitiesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            writeNewPost();
+            getActivitesAndDisplay();
         }
     };
 
@@ -148,11 +148,9 @@ public class WelcomeActivity extends AppCompatActivity
 
 
 
-    private void writeNewPost() {
+    private void getActivitesAndDisplay() {
         cleanLinearLayout(activityPreviewsLayout);
-        mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
-            @Override
-            public void getActivity(DeboxActivity activity) {}
+        mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
             @Override
             public void getActivities(List<DeboxActivity> activitiesList) {
@@ -169,11 +167,6 @@ public class WelcomeActivity extends AppCompatActivity
                 }
                 //mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDataProvider = new DataProvider();
-            }
-
-            @Override
-            public void getIfEnrolled(boolean result) {
-
             }
         });
     }

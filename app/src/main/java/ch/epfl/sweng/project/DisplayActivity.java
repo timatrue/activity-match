@@ -87,7 +87,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         //TODO MODIFY THIS AND MAKE IT PROPER
         if(mFirebaseUser!=null || true) {
 
-            mDataProvider.getActivityFromUid(new DataProvider.DataProviderListener() {
+            mDataProvider.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
                 @Override
                 public void getActivity(DeboxActivity activity) {
 
@@ -126,31 +126,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                                 .title(activity.getTitle()));
                     }
                 }
-
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                }
-
-                @Override
-                public void getIfEnrolled(boolean result) {
-
-                }
             }, eventId);
 
             // Set listener to check if user is already register in this activity or not.
-            mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListener() {
-
-                @Override
-                public void getActivity(DeboxActivity activity) {
-
-                }
-
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                }
-
+            mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
                 @Override
                 public void getIfEnrolled(boolean result) {
 
