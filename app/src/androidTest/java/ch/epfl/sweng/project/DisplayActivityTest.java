@@ -65,6 +65,7 @@ public class DisplayActivityTest {
                             .getTargetContext();
                     Intent result = new Intent(targetContext, MainActivity.class);
                     result.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_TEST);
+                    result.putExtra(DisplayActivity.DISPLAY_EVENT_ID, "zdkasKKLD");
                     return result;
                 }
             };
