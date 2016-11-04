@@ -111,7 +111,7 @@ public class DataProvider {
 
     }
 
-    public void getAllActivities(final DataProviderListenerActivities listener) {
+    public Void getAllActivities(final DataProviderListenerActivities listener) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -131,6 +131,7 @@ public class DataProvider {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+        return null;
     }
 
 

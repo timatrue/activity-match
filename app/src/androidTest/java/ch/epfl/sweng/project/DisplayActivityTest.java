@@ -41,8 +41,6 @@ import static org.hamcrest.CoreMatchers.is;
 public class DisplayActivityTest {
 
 
-    boolean testFinished = false;
-
     @Mock
     FirebaseUser testFirebaseUser;
 

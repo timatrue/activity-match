@@ -30,6 +30,10 @@ import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    final static public String WELCOME_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST_KEY";
+    final static public String WELCOME_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_NO_TEST";
+    final static public String WELCOME_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST";
+
     Button displayActivities;
     LinearLayout activityPreviewsLayout;
 
@@ -63,8 +67,23 @@ public class WelcomeActivity extends AppCompatActivity
         displayActivities = (Button) findViewById(R.id.displayActivities);
         displayActivities.setOnClickListener(activitiesClickListener);
 
-        mDataProvider = new DataProvider();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String test = bundle.getString(WELCOME_ACTIVITY_TEST_KEY);
+            if (test != null) {
+                if (test.equals(WELCOME_ACTIVITY_TEST)) {
+                    setDataProvider(new DataProvider());
+                    getAllCategories();
+                }
+            }
+        }
+    }
 
+    public void setDataProvider(DataProvider dataProvider) {
+        mDataProvider = dataProvider;
+    }
+
+    public void getAllCategories() {
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
@@ -106,6 +125,7 @@ public class WelcomeActivity extends AppCompatActivity
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getApplicationContext(), CreateActivity.class);
+            intent.putExtra(CreateActivity.CREATE_ACTIVITY_TEST_KEY, CreateActivity.CREATE_ACTIVITY_NO_TEST);
             startActivity(intent);
         }
     };
@@ -113,7 +133,7 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener activitiesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            getActivitesAndDisplay();
+            getActivitiesAndDisplay();
         }
     };
 
@@ -141,14 +161,13 @@ public class WelcomeActivity extends AppCompatActivity
                         ap.setOnClickListener(previewClickListener);
                     }
                 }
-                mDataProvider = new DataProvider();
             }
         }, category);
     }
 
 
 
-    private void getActivitesAndDisplay() {
+    private void getActivitiesAndDisplay() {
         cleanLinearLayout(activityPreviewsLayout);
         mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
@@ -165,8 +184,6 @@ public class WelcomeActivity extends AppCompatActivity
                     activityPreviewsLayout.addView(ap, layoutParams);
                     ap.setOnClickListener(previewClickListener);
                 }
-                //mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDataProvider = new DataProvider();
             }
         });
     }
