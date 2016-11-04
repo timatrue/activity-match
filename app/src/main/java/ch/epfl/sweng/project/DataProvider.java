@@ -279,10 +279,9 @@ public class DataProvider {
         void getIfEnrolled(boolean result);
     }
     public interface DataProviderListenerCategories {
-        public void getCategories(List<CategoryName> categoriesList);
+        void getCategories(List<CategoryName> categoriesList);
     }
     public interface DataProviderListenerCategory {
-        public void getCategory(List<DeboxActivity> activitiesList);
+        void getCategory(List<DeboxActivity> activitiesList);
     }
-
 }

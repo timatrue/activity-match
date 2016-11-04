@@ -6,23 +6,47 @@
     android:padding="10dp"
     android:orientation="vertical">
 
+    <Button
+        android:text="@string/filter_change_your_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/filterAddLocation"
+        android:onClick="chooseLocation" />
+
     <TextView
-        android:id="@+id/filterTitle"
+        android:id="@+id/filterMaxDistanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_choose_the_maximum_distance_of_the_activities"
+        android:textSize="16dp" />
+
+    <Spinner
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:id="@+id/filterMaxDistanceDropDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:id="@+id/filterCategoriesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event_filter_description"
-        android:textSize="20dp" />
+        android:textSize="16dp" />
 
-    <ListView
-        android:id="@+id/categoriesFilterList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/common_google_signin_btn_text_light_disabled"
-        android:layout_weight="1"
-        android:drawSelectorOnTop="false"/>
-    <Button
-        android:id="@+id/dismiss"
+    <Spinner
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:id="@+id/filterCategoriesDropDown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dismiss" />
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        android:id="@+id/validate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/validate" />
+
 </LinearLayout>
