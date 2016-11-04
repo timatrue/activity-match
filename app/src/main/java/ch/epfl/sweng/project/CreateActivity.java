@@ -106,11 +106,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String confirmationMessageString = bundle.getString("CONFIRMATION_MESSAGE");
-            if (confirmationMessageString != null && confirmationMessageString.equals("success")) {
-
-                TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
-                confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
-                confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
+            if (confirmationMessageString != null) {
+                if(confirmationMessageString.equals("success")) {
+                    TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
+                    confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
+                    confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
+                }
             }
         }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -120,9 +121,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         //Check if the activity runs in test mode, if not, initialize with real Dataprovider and
         //Get categories on the DB and display them in the dropdown
         String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
-        if(test.equals(CREATE_ACTIVITY_TEST)) {
-            setDataProvider(new DataProvider());
-            getAndDisplayCategories();
+        if(test != null) {
+            if(test.equals(CREATE_ACTIVITY_TEST)) {
+                setDataProvider(new DataProvider());
+                getAndDisplayCategories();
+            }
         }
     }
 

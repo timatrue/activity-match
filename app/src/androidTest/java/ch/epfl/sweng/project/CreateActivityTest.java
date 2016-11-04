@@ -3,6 +3,7 @@ package ch.epfl.sweng.project;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -33,6 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
@@ -50,10 +52,6 @@ public class CreateActivityTest {
                     return result;
                 }
             };
-
-
-    @Mock
-    DataProvider testDataProvider;
 
 
     @Test
@@ -175,18 +173,11 @@ public class CreateActivityTest {
     public void validActivityCreation() throws Exception {
         CreateActivity activity = createActivityRule.getActivity();
 
+        DataProvider testDataProvider = mock(DataProvider.class);
 
-
-        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
-                listener.getActivity(dA);
-                return null;
-            }
-        });
-
+        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
         activity.setDataProvider(testDataProvider);
+        activity.getAndDisplayCategories();
 
         String testTitle = "test_title";
         String testDescription = "test description";
@@ -334,6 +325,9 @@ public class CreateActivityTest {
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
+
+        DataProvider testDataProvider = mock(DataProvider.class);
+        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
 
         String testTitle = "test_title";
         String testDescription = "test description";
