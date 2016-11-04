@@ -2,9 +2,15 @@ package ch.epfl.sweng.project;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +23,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
@@ -29,10 +40,13 @@ import ch.epfl.sweng.project.fragments.FilterFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
+import static com.google.android.gms.internal.zzs.TAG;
 
 
 public class WelcomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     Button displayActivities;
     LinearLayout activityPreviewsLayout;
@@ -43,6 +57,11 @@ public class WelcomeActivity extends AppCompatActivity
     int PLACE_PICKER_REQUEST = 1;
     public double centerLatitude = 0;
     public double centerLongitude = 0;
+    final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
+    Location mLastLocation;
+    LocationRequest mLocationRequest;
+    boolean permission_granted;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +99,105 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         });
+
+        setCurrentLocalisation();
+        createLocationRequest();
+
+
+        //The permissions need to be asked to the user at runtime for newer APIs
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+        } else {
+            permission_granted = true;
+            initializeGoogleApiClient();
+        }
+    }
+
+    protected synchronized void initializeGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    //Options for the user localisation refresh rate
+    protected void createLocationRequest() {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Error with the permission granting process");
+        }
+        else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        if (mLastLocation != null) {
+            setCurrentLocalisation();
+            stopLocationUpdates();
+        }
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permission_granted = true;
+                    initializeGoogleApiClient();
+
+                } else {
+                    permission_granted = false;
+                    Log.d(TAG, "Localisation permission denied");
+                }
+            }
+        }
+    }
+
+    //Updates the latitude and longitude variables for the filter
+    private void setCurrentLocalisation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Error with the permission granting process");
+        } else {
+            Log.d(TAG, "Localisation permission granted");
+            if (mGoogleApiClient != null) {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                        mGoogleApiClient);
+                if (mLastLocation != null) {
+                    centerLatitude = mLastLocation.getLatitude();
+                    centerLongitude = mLastLocation.getLongitude();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+
+        if (permission_granted) {
+            startLocationUpdates();
+        }
     }
 
     View.OnClickListener filterEventsListener = new View.OnClickListener() {
@@ -148,39 +266,10 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
-    public void displaySpecifiedActivities(String category, final double centerLatitude, final double centerLongitude, final double maxDistance) {
+    //Gets the activities that should be displayed given the filters and displays them
+    public void displaySpecifiedActivities(String category, final double maxDistance) {
 
-        if(!category.equals("All")){
-            mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
-
-                @Override
-                public void getCategory(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-                    if (activitiesList.isEmpty()) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-
-                    } else {
-                        for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance) {
-                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
-                                ap.setOnClickListener(previewClickListener);
-                            }
-                        }
-                    }
-                    mDataProvider = new DataProvider();
-                }
-            }, category);
-        }
-
-        else  {
+        if(category.equals("All")){
             mDataProvider.getAllActivities(new DataProvider.DataProviderListener() {
 
                 @Override
@@ -219,8 +308,38 @@ public class WelcomeActivity extends AppCompatActivity
             });
         }
 
+        else  {
+            mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+
+                @Override
+                public void getCategory(List<DeboxActivity> activitiesList) {
+
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(30, 20, 30, 0);
+
+                    cleanLinearLayout(activityPreviewsLayout);
+                    if (activitiesList.isEmpty()) {
+                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                        activityPreviewsLayout.addView(result, layoutParams);
+
+                    } else {
+                        for(DeboxActivity elem: activitiesList) {
+                            if(distanceFromCenter(elem) <= maxDistance) {
+                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+                                ap.setOnClickListener(previewClickListener);
+                            }
+                        }
+                    }
+                    mDataProvider = new DataProvider();
+                }
+            }, category);
+        }
     }
 
+    //Computes distance in km from lagitudes and longitudes
     private double distanceFromCenter(DeboxActivity elem){
         final double R = 6371; //radius of Earth in km
         double latitudeDiff = Math.toRadians(centerLatitude - elem.getLocation()[0]);
@@ -258,7 +377,6 @@ public class WelcomeActivity extends AppCompatActivity
             }
         });
     }
-
 
     @Override
     public void onBackPressed() {
@@ -305,4 +423,15 @@ public class WelcomeActivity extends AppCompatActivity
         if((linearLayout).getChildCount() > 0)
             (linearLayout).removeAllViews();
     }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
 }

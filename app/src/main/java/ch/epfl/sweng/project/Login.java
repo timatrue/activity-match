@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -35,7 +36,7 @@ public class Login extends AppCompatActivity implements
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    public static GoogleApiClient mGoogleApiClient;
+   private GoogleApiClient mGoogleApiClient;
 
     private static final int RC_SIGN_IN = 1;
     private static final int RC_LOG_OUT = 2;
@@ -69,6 +70,7 @@ public class Login extends AppCompatActivity implements
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(LocationServices.API)
                 .build();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {

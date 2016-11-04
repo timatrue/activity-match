@@ -40,14 +40,14 @@ public class FilterFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.filter_layout, container, false);
         getDialog().setTitle(R.string.event_filter_title);
 
-        dropdownMaxDistance = (Spinner)rootView.findViewById(R.id.filterMaxDistanceDropDown);
+        dropdownMaxDistance = (Spinner) rootView.findViewById(R.id.filterMaxDistanceDropDown);
         ArrayAdapter<CharSequence> maxDistanceDropDownAdapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
                 R.array.max_distance_array, android.R.layout.simple_spinner_item);
         maxDistanceDropDownAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropdownMaxDistance.setAdapter(maxDistanceDropDownAdapter);
         dropdownMaxDistance.setOnItemSelectedListener(maxDistanceSelectedItemListener);
 
-        dropDownCategories = (Spinner)rootView.findViewById(R.id.filterCategoriesDropDown);
+        dropDownCategories = (Spinner) rootView.findViewById(R.id.filterCategoriesDropDown);
         ArrayAdapter<String> categoriesDropDownAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
                 android.R.layout.simple_spinner_item, categoryListWithAll);
         categoriesDropDownAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -82,6 +82,8 @@ public class FilterFragment extends DialogFragment {
                     break;
                 case "10 km": maxDistance = 10;
                     break;
+                case "20 km": maxDistance = 20;
+                    break;
                 case "50 km": maxDistance = 50;
                     break;
                 case "All": maxDistance = 21000;
@@ -113,7 +115,7 @@ public class FilterFragment extends DialogFragment {
 
         @Override
         public void onClick(View v) {
-            ((WelcomeActivity)getActivity()).displaySpecifiedActivities(filterCategory, ((WelcomeActivity)getActivity()).centerLatitude, ((WelcomeActivity)getActivity()).centerLongitude, maxDistance);
+            ((WelcomeActivity)getActivity()).displaySpecifiedActivities(filterCategory, maxDistance);
             dismiss();
         }
     };
