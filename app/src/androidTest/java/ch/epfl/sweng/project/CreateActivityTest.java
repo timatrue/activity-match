@@ -15,6 +15,7 @@ import org.hamcrest.Matchers;
 
 import java.util.Calendar;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -23,6 +24,9 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -151,8 +155,8 @@ public class CreateActivityTest {
         CreateActivity activity = createActivityRule.getActivity();
 
         String testTitle = "test_title";
+        String testCategory = "Culture";
         String testDescription = "test description";
-
 
         double longitude = 1;
         double latitude = 0.3;
@@ -190,6 +194,10 @@ public class CreateActivityTest {
         }
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
+
+        onView(withId(R.id.createActivityCategoryDropDown)).perform(ViewActions.scrollTo()).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(testCategory))).perform(click());
+
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
         onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
@@ -217,6 +225,7 @@ public class CreateActivityTest {
         assertTrue(activity.validateActivity().equals("success"));
         assertTrue(activity.createActivityMethod() != null);
         assertTrue(activity.createActivityMethod().getTitle().equals(testTitle));
+        assertTrue(activity.createActivityMethod().getCategory().equals(testCategory));
         assertTrue(activity.createActivityMethod().getDescription().equals(testDescription));
         assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.YEAR) == startYear);
         assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.MONTH) == startMonth);
@@ -349,7 +358,7 @@ public class CreateActivityTest {
     }
 
     @Test
-    public void noLocationChoose() throws Exception {
+    public void noLocationChoosen() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
 
