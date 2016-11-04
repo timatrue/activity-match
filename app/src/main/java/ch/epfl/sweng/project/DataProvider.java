@@ -29,6 +29,7 @@ public class DataProvider {
     private static ArrayList<CategoryName> deboxCategoriesList;
 
     private DatabaseReference mDatabase;
+    private FirebaseUser user ;
     private FirebaseDatabase database;
 
     public DataProvider() {
@@ -36,14 +37,16 @@ public class DataProvider {
         deboxActivityList = new ArrayList<DeboxActivity>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     // use for mock test
-    public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase) {
+    public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase, FirebaseUser mockUser) {
 
         deboxActivityList = new ArrayList<DeboxActivity>();
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
+        user = mockUser;
     }
 
 
@@ -218,14 +221,10 @@ public class DataProvider {
      */
     public void userEnrolledInActivity(final DataProviderListenerEnrolled listener, final String uid) {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //database = FirebaseDatabase.getInstance();
+        //user = FirebaseAuth.getInstance().getCurrentUser();
 
-        String userUid;
-        if (user != null)
-            userUid = user.getUid();
-        else
-            userUid = "testUser";
+        String userUid = user.getUid();
 
         //DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
@@ -269,7 +268,7 @@ public class DataProvider {
 
     public void joinActivity(DeboxActivity dba){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         HashMap<String, Object> enrolledChild = new HashMap<>();
         enrolledChild.put("activity ID:",dba.getId());
