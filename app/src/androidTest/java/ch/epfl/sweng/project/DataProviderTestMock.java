@@ -19,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,6 +48,8 @@ public class DataProviderTestMock {
     FirebaseDatabase database;
     @Mock
     DataSnapshot ds;
+    @Mock
+    FirebaseUser mUser;
 
     final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
@@ -67,6 +70,7 @@ public class DataProviderTestMock {
         mChild = Mockito.mock(DatabaseReference.class);
         mPush = Mockito.mock(DatabaseReference.class);
         database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
 
 
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
@@ -76,7 +80,7 @@ public class DataProviderTestMock {
         when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
 
 
-        DataProvider dp = new DataProvider(mDataBaseRef,database);
+        DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
         String result = dp.pushActivity(deboxActivityTest);
 
         assertEquals(uuidTest,result);
@@ -90,6 +94,7 @@ public class DataProviderTestMock {
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
         database = Mockito.mock(FirebaseDatabase.class);
         myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
 
         when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
@@ -121,7 +126,7 @@ public class DataProviderTestMock {
 
         //Test DataProvider getActivityFromUid method, check that it calls the listener and gives
         //it a proper DeboxActivity, corresponding to the Map values
-        DataProvider dp = new DataProvider(myRef,database);
+        DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -136,6 +141,81 @@ public class DataProviderTestMock {
             }
 
         }, uuidTest);
+    }
+
+
+
+    @Test
+    public void testUserEnrolledInActivity() {
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        ds = Mockito.mock(DataSnapshot.class);
+
+
+        final String userUid = "user-uid-test";
+        final String userEmail ="test-fake-email@gmail.com";
+
+        when(mUser.getUid()).thenReturn(userUid);
+        when(mUser.getEmail()).thenReturn(userEmail);
+
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("users/" + userUid + "/enrolled")).thenReturn(myRef);
+
+
+        //Build fake result of the database (user enrolled in activity : fakeActivityID,uuidTest and fakeActivityID2
+        final Map<String, Object> resultMap = new HashMap<String, Object>();
+        Map<String, Object> entry;
+
+        entry = new HashMap<String,Object>();
+        entry.put("activity ID:","fakeActivityID");
+        resultMap.put("testnumber1",entry);
+
+        entry = new HashMap<String,Object>();
+        entry.put("activity ID:",uuidTest);
+        resultMap.put("testnumber2",entry);
+
+        entry = new HashMap<String,Object>();
+        entry.put("activity ID:","fakeActivityID2");
+        resultMap.put("testnumber3",entry);
+
+        //Override getValue() to always return the Map for the test
+        when(ds.getValue()).thenReturn(resultMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        //check if the user is indeed enrolled in activity uuidTest
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(true,result);
+
+            }
+        },uuidTest);
+
+        final String nonEnrolledUidActivity ="1111";
+
+        //check if the user is indeed not enrolled in activity nonEnrolledUidActivity
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(false,result);
+
+            }
+        },nonEnrolledUidActivity);
+
     }
 
 }
