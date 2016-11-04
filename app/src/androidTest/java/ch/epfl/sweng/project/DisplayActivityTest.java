@@ -90,9 +90,6 @@ public class DisplayActivityTest {
                 "Sports");
 
 
-
-        final DataProvider testDataProvider = mock(DataProvider.class);
-
         when(testDataProvider.getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString())).thenAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();

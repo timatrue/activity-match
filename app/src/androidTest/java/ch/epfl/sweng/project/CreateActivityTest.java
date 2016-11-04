@@ -1,5 +1,8 @@
 package ch.epfl.sweng.project;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -7,11 +10,15 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.hamcrest.Matchers;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.Calendar;
 
@@ -24,13 +31,30 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {
 
     @Rule
     public ActivityTestRule<CreateActivity> createActivityRule =
-            new ActivityTestRule<CreateActivity>(CreateActivity.class);
+            new ActivityTestRule<CreateActivity>(CreateActivity.class){
+                @Override
+                protected Intent getActivityIntent() {
+                    Context targetContext = InstrumentationRegistry.getInstrumentation()
+                            .getTargetContext();
+                    Intent result = new Intent(targetContext, MainActivity.class);
+                    result.putExtra(CreateActivity.CREATE_ACTIVITY_TEST_KEY, CreateActivity.CREATE_ACTIVITY_TEST);
+                    return result;
+                }
+            };
+
+
+    @Mock
+    DataProvider testDataProvider;
+
 
     @Test
     public void missingTitle() throws Exception {
@@ -150,6 +174,19 @@ public class CreateActivityTest {
     @Test
     public void validActivityCreation() throws Exception {
         CreateActivity activity = createActivityRule.getActivity();
+
+
+
+        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
+                listener.getActivity(dA);
+                return null;
+            }
+        });
+
+        activity.setDataProvider(testDataProvider);
 
         String testTitle = "test_title";
         String testDescription = "test description";
