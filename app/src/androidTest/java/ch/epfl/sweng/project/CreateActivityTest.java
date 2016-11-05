@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -296,7 +297,23 @@ public class CreateActivityTest {
         String endDate = activity.makeDateString(endCalendar);
         String endTime = activity.makeTimeString(endCalendar);
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+
+
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        int i = 0;
+        while(i==0){
+            try{
+                onView(withId(R.id.createActivityStartDate)).perform(click());
+                i=1;
+
+            } catch (NoMatchingViewException e) {
+
+            }
+        }
+
+
+        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
