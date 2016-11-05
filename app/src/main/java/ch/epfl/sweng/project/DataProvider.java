@@ -67,7 +67,7 @@ public class DataProvider {
     }
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //database = FirebaseDatabase.getInstance();
         DatabaseReference myCategories = database.getReference("categories");
 
         myCategories.addListenerForSingleValueEvent(new ValueEventListener() {

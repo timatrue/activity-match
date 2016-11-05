@@ -50,6 +50,12 @@ public class DataProviderTestMock {
     DataSnapshot ds;
     @Mock
     FirebaseUser mUser;
+    @Mock
+    DataSnapshot dsChild1;
+    @Mock
+    DataSnapshot dsChild2;
+    @Mock
+    DataSnapshot dsChild3;
 
     final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
@@ -215,6 +221,65 @@ public class DataProviderTestMock {
 
             }
         },nonEnrolledUidActivity);
+
+    }
+
+    @Test
+    public void testGetAllCategories() {
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        ds = Mockito.mock(DataSnapshot.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        when(database.getReference("categories")).thenReturn(myRef);
+
+        final String [][] testCategory = {{"1","2","3"},{"Sports","Culture","Undefined"}};
+
+        dsChild1 = Mockito.mock(DataSnapshot.class);
+        dsChild2 = Mockito.mock(DataSnapshot.class);
+        dsChild3 = Mockito.mock(DataSnapshot.class);
+
+        when(dsChild1.getKey()).thenReturn(testCategory[0][0]);
+        when(dsChild1.getValue()).thenReturn(testCategory[1][0]);
+
+        when(dsChild2.getKey()).thenReturn(testCategory[0][1]);
+        when(dsChild2.getValue()).thenReturn(testCategory[1][1]);
+
+        when(dsChild3.getKey()).thenReturn(testCategory[0][2]);
+        when(dsChild3.getValue()).thenReturn(testCategory[1][2]);
+
+        DataSnapshot [] listDS = {dsChild1,dsChild2,dsChild3};
+
+        Iterable<DataSnapshot> iterable = Arrays.asList(listDS);
+
+        //Overrride getChildren to always return interable of DataSnapshot
+        when(ds.getChildren()).thenReturn(iterable);
+
+        //Override addListenerForSingleValueEvent method for test to always return our value
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.getAllCategories(new DataProvider.DataProviderListenerCategories() {
+            @Override
+            public void getCategories(List<DataProvider.CategoryName> categoriesList) {
+                int c = 2;
+                assertEquals(true,true);
+
+                for(int i = 0; i<testCategory.length;i++){
+                    assertEquals(categoriesList.get(i).getCategoryId(),testCategory[0][i]);
+                    assertEquals(categoriesList.get(i).getCategory(),testCategory[1][i]);
+                }
+            }
+        });
 
     }
 
