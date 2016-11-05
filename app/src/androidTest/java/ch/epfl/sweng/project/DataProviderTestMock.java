@@ -36,6 +36,7 @@ import java.util.Map;
 public class DataProviderTestMock {
 
     final private String uuidTest = "uuid-test-111";
+    final private String uuidTest2 = "uuid-test-222";
 
     @Mock
     DatabaseReference mDataBaseRef;
@@ -62,6 +63,14 @@ public class DataProviderTestMock {
 
     final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
+            Calendar.getInstance(),
+            Calendar.getInstance(),
+            122.01,
+            121.0213,
+            "Sports");
+
+    final DeboxActivity deboxActivityTest2 = new DeboxActivity(uuidTest2,"test2", "user-test2",
+            "description2",
             Calendar.getInstance(),
             Calendar.getInstance(),
             122.01,
@@ -360,6 +369,116 @@ public class DataProviderTestMock {
 
             }
         },deboxActivityTest.getCategory());
+
+    }
+
+
+    @Test
+    public void testGetAllActivities() {
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mQuery = Mockito.mock(Query.class);
+        ds = Mockito.mock(DataSnapshot.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        ds = Mockito.mock(DataSnapshot.class);
+        dsChild1 = Mockito.mock(DataSnapshot.class);
+        dsChild2 = Mockito.mock(DataSnapshot.class);
+
+
+        when(database.getReference("activities")).thenReturn(myRef);
+
+        final Map<String, Object> activityMap1 = new HashMap<String, Object>();
+
+        activityMap1.put("title", deboxActivityTest.getTitle());
+        activityMap1.put("description", deboxActivityTest.getDescription());
+        activityMap1.put("category", deboxActivityTest.getCategory());
+        activityMap1.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMap1.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMap1.put("organizer", deboxActivityTest.getOrganizer());
+        activityMap1.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+
+        when(dsChild1.getKey()).thenReturn(uuidTest);
+        when(dsChild1.getValue()).thenReturn(activityMap1);
+
+        final Map<String, Object> activityMap2 = new HashMap<String, Object>();
+
+        activityMap2.put("title", deboxActivityTest2.getTitle());
+        activityMap2.put("description", deboxActivityTest2.getDescription());
+        activityMap2.put("category", deboxActivityTest2.getCategory());
+        activityMap2.put("latitude", deboxActivityTest2.getLocation()[0]);
+        activityMap2.put("longitude", deboxActivityTest2.getLocation()[1]);
+        activityMap2.put("organizer", deboxActivityTest2.getOrganizer());
+        activityMap2.put("timeEnd", deboxActivityTest2.getTimeEnd().getTimeInMillis());
+        activityMap2.put("timeStart", deboxActivityTest2.getTimeStart().getTimeInMillis());
+
+
+
+        when(dsChild2.getKey()).thenReturn(uuidTest2);
+        when(dsChild2.getValue()).thenReturn(activityMap2);
+
+
+        final DataSnapshot [] listDS = {dsChild1,dsChild2};
+
+        Iterable<DataSnapshot> iterable = Arrays.asList(listDS);
+
+        //Overrride getChildren to always return interable of DataSnapshot
+        when(ds.getChildren()).thenReturn(iterable);
+
+
+        //Override addListenerForSingleValueEvent method for test to always return our value
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+                assertEquals(activitiesList.size(),listDS.length);
+
+                DeboxActivity activity = activitiesList.get(0);
+
+                assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
+                assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
+                assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
+                assertEquals(activity.getId(),deboxActivityTest.getId());
+                assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
+                assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
+                assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
+                assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
+
+
+                activity = activitiesList.get(1);
+
+                assertEquals(activity.getTitle(),deboxActivityTest2.getTitle());
+                assertEquals(activity.getDescription(),deboxActivityTest2.getDescription());
+                assertEquals(activity.getCategory(),deboxActivityTest2.getCategory());
+                assertEquals(activity.getId(),deboxActivityTest2.getId());
+                assertTrue(activity.getLocation()[0] == deboxActivityTest2.getLocation()[0]);
+                assertTrue(activity.getLocation()[1] == deboxActivityTest2.getLocation()[1]);
+                assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest2.getTimeEnd().getTimeInMillis());
+                assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest2.getTimeStart().getTimeInMillis());
+
+            }
+        });
+
+
+
+
+
+
+
+
 
     }
 }

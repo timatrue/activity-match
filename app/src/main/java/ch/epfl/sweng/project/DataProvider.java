@@ -112,7 +112,7 @@ public class DataProvider {
     }
 
     public void getAllActivities(final DataProviderListenerActivities listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
