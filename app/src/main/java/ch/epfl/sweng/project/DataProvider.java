@@ -90,7 +90,7 @@ public class DataProvider {
 
     }
     public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference getActivities = database.getReference("activities");
         Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
 

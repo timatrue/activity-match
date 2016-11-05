@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
@@ -56,6 +57,8 @@ public class DataProviderTestMock {
     DataSnapshot dsChild2;
     @Mock
     DataSnapshot dsChild3;
+    @Mock
+    Query mQuery;
 
     final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
@@ -280,7 +283,83 @@ public class DataProviderTestMock {
                 }
             }
         });
-
     }
 
+    @Test
+    public void testGetSpecifiedCategory() {
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mQuery = Mockito.mock(Query.class);
+        ds = Mockito.mock(DataSnapshot.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        ds = Mockito.mock(DataSnapshot.class);
+        dsChild1 = Mockito.mock(DataSnapshot.class);
+        dsChild2 = Mockito.mock(DataSnapshot.class);
+
+        when(database.getReference("activities")).thenReturn(myRef);
+        when(myRef.orderByChild("category")).thenReturn(mQuery);
+        when(mQuery.equalTo(anyString())).thenReturn(mQuery);
+
+
+        final Map<String, Object> activityMapCat = new HashMap<String, Object>();
+
+        activityMapCat.put("title", deboxActivityTest.getTitle());
+        activityMapCat.put("description", deboxActivityTest.getDescription());
+        activityMapCat.put("category", deboxActivityTest.getCategory());
+        activityMapCat.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMapCat.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMapCat.put("organizer", deboxActivityTest.getOrganizer());
+        activityMapCat.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMapCat.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+
+        when(dsChild1.getKey()).thenReturn(uuidTest);
+        when(dsChild1.getValue()).thenReturn(activityMapCat);
+
+        when(dsChild2.getKey()).thenReturn(uuidTest);
+        when(dsChild2.getValue()).thenReturn(activityMapCat);
+
+
+        DataSnapshot [] listDS = {dsChild1,dsChild2};
+
+        Iterable<DataSnapshot> iterable = Arrays.asList(listDS);
+
+        //Overrride getChildren to always return interable of DataSnapshot
+        when(ds.getChildren()).thenReturn(iterable);
+
+        //Override addListenerForSingleValueEvent method for test to always return our value
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(mQuery).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+            @Override
+            public void getCategory(List<DeboxActivity> activitiesList) {
+                //for(DeboxActivity activity: activitiesList.)
+                assertEquals(activitiesList.size(),2);
+                for(int i = 0; i<activitiesList.size();i++)
+                {
+                    DeboxActivity activity = activitiesList.get(i);
+                    assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
+                    assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
+                    assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
+                    assertEquals(activity.getId(),deboxActivityTest.getId());
+                    assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
+                    assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
+                    assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
+                    assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
+                }
+
+            }
+        },deboxActivityTest.getCategory());
+
+    }
 }
