@@ -54,10 +54,10 @@ public class WelcomeActivity extends AppCompatActivity
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
     final public List<String> categories = new ArrayList<String>();
-    int PLACE_PICKER_REQUEST = 1;
+    private final static int PLACE_PICKER_REQUEST = 1;
     public double centerLatitude = 0;
     public double centerLongitude = 0;
-    final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
+    private final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
     Location mLastLocation;
     LocationRequest mLocationRequest;
     boolean permission_granted;

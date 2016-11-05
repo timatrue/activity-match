@@ -70,7 +70,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private GoogleApiClient client;
 
     final String[] tries = {"1", "2", "three"};
-    int PLACE_PICKER_REQUEST = 1;
+    private final static int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

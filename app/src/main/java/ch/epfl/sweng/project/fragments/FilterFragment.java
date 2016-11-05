@@ -2,6 +2,7 @@ package ch.epfl.sweng.project.fragments;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,14 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ch.epfl.sweng.project.DataProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.WelcomeActivity;
+
+import static com.google.android.gms.internal.zzs.TAG;
 
 
 /**
@@ -26,10 +30,23 @@ public class FilterFragment extends DialogFragment {
     Button validate;
     DataProvider mDataProvider;
     public List<String> categoryList;
-    double maxDistance;
     String filterCategory;
     Spinner dropdownMaxDistance;
     Spinner dropDownCategories;
+
+    int maxDistance = 21000;
+
+    private static final HashMap<String, Integer> maxDistanceMap;
+    static
+    {
+        maxDistanceMap = new HashMap<>();
+        maxDistanceMap.put("1 km", 1);
+        maxDistanceMap.put("5 km", 5);
+        maxDistanceMap.put("10 km", 10);
+        maxDistanceMap.put("20 km", 20);
+        maxDistanceMap.put("50 km", 50);
+        maxDistanceMap.put("All", 21000);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,27 +92,17 @@ public class FilterFragment extends DialogFragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String maxDistanceString = parent.getItemAtPosition(position).toString();
-            switch (maxDistanceString) {
-                case "1 km": maxDistance = 1;
-                    break;
-                case "5 km": maxDistance = 5;
-                    break;
-                case "10 km": maxDistance = 10;
-                    break;
-                case "20 km": maxDistance = 20;
-                    break;
-                case "50 km": maxDistance = 50;
-                    break;
-                case "All": maxDistance = 21000;
-                    break;
-                default: maxDistance = 21000;
-                    break;
+            if(maxDistanceMap.get(maxDistanceString) != null) {
+                maxDistance = maxDistanceMap.get(maxDistanceString);
+            }
+            else {
+                Log.d(TAG, "The max distance selected is not mapped to a value");
             }
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            maxDistance = 21000;
+            maxDistance = maxDistanceMap.get("All");
         }
     };
 
