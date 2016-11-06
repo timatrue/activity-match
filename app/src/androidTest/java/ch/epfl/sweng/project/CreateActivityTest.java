@@ -345,6 +345,7 @@ public class CreateActivityTest {
 
         DataProvider testDataProvider = mock(DataProvider.class);
         when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
+        activity.setDataProvider(testDataProvider);
 
         String testTitle = "test_title";
         String testDescription = "test description";
