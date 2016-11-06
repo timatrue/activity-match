@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,10 +33,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.R.attr.category;
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static java.text.DateFormat.getDateInstance;
 
 
 public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
+
+
+    public final int PLACE_PICKER_REQUEST = 1;
+    public final int PICK_IMAGE_REQUEST = 2;
 
     final static public String CREATE_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST_KEY";
     final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
@@ -75,7 +81,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private GoogleApiClient client;
 
     final String[] tries = {"1", "2", "three"};
-    int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +181,20 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
     }
 
+    //Start an intent to let the user chose the image he/she want to upload on the server
+    public void pickImage(View v) {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //When user has choosen a location, saves it
         if (requestCode == PLACE_PICKER_REQUEST) {
@@ -186,6 +205,14 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Uri imageUri= data.getData();
+                ImageProvider ip = new ImageProvider();
+                ip.UploadImage(imageUri);
             }
         }
     }
