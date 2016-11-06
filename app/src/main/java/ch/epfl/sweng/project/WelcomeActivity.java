@@ -71,7 +71,7 @@ public class WelcomeActivity extends AppCompatActivity
         if (bundle != null) {
             String test = bundle.getString(WELCOME_ACTIVITY_TEST_KEY);
             if (test != null) {
-                if (test.equals(WELCOME_ACTIVITY_TEST)) {
+                if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     getAllCategories();
                 }

@@ -67,7 +67,7 @@ public class DataProvider {
     }
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //database = FirebaseDatabase.getInstance();
         DatabaseReference myCategories = database.getReference("categories");
 
         myCategories.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -90,7 +90,7 @@ public class DataProvider {
 
     }
     public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference getActivities = database.getReference("activities");
         Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
 
@@ -111,8 +111,7 @@ public class DataProvider {
 
     }
 
-    public Void getAllActivities(final DataProviderListenerActivities listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+    public void getAllActivities(final DataProviderListenerActivities listener) {
         DatabaseReference myRef = database.getReference("activities");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -131,7 +130,6 @@ public class DataProvider {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-        return null;
     }
 
 

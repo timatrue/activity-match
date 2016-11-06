@@ -122,7 +122,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         //Get categories on the DB and display them in the dropdown
         String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
         if(test != null) {
-            if(test.equals(CREATE_ACTIVITY_TEST)) {
+            if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
                 setDataProvider(new DataProvider());
                 getAndDisplayCategories();
             }

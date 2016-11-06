@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -42,6 +43,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,14 +105,15 @@ public class WelcomeActivityTest {
 
         DataProvider testDataProvider = mock(DataProvider.class);
 
-        when(testDataProvider.getAllActivities(any(DataProvider.DataProviderListenerActivities.class))).thenAnswer(new Answer<Void>() {
+        doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
                 listener.getActivities(testActivityList);
                 return null;
             }
-        });
+        }).when(testDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));
+
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
         //Insert Mock DataProvider
