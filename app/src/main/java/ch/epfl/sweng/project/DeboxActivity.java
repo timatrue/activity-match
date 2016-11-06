@@ -124,8 +124,7 @@ public class DeboxActivity {
      * location
      */
     public double[] getLocation() {
-        double[] location = {latitude, longitude};
-        return location;
+        return new double[]{latitude, longitude};
     }
 
     /**

@@ -17,6 +17,7 @@
     <string name="contact_us">Contact us</string>
     <string name="contact_message">Choose an Email client</string>
     <string name="show_activity_button">Show all activities</string>
+    <string name="communicate">Communicate</string>
 
     <!-- Welcome Activity interface -->
     <string name="display_activities">Display Activities</string>
@@ -63,6 +64,11 @@
     <string name="no_results_found">No results found</string>
     <string name="event_filter_title">Filter events</string>
     <string name="event_filter_description">Choose categories: </string>
+    <string name="close">Close</string>
 
+
+
+    <!-- For test/development -->
+    <string name="test_text">test</string>
 
 </resources>

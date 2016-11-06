@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -120,7 +121,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
                 TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
                 confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
-                confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
+                confirmationPreviousActivity.setTextColor(Color.GREEN);
             }
         }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -155,7 +156,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
+                Place place = PlacePicker.getPlace(this, data);
                 activityLatitude = place.getLatLng().latitude;
                 activityLongitude = place.getLatLng().longitude;
 
@@ -251,22 +252,22 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
             case "missing_field_error":
                 confirmation.setText(R.string.create_activity_missing_field_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             case "date_error":
                 confirmation.setText(R.string.create_activity_date_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             case "missing_location":
                 confirmation.setText(R.string.create_activity_location_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             default:
                 confirmation.setText(R.string.create_activity_unknown_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
         }
     }
