@@ -201,17 +201,18 @@ public class DataProvider {
         String email = (String) activityMap.get("user_email");
         String username = "";
         List<String> interestedEvents = new ArrayList<String>();
-        for (Map.Entry<String, Object> enrolledEntry : activityMap.entrySet()) {
-            String activityID = (String) ((Map <String, Object>) enrolledEntry.getValue()).get("enrolled");
+        Map <String, Object> enrolled = (Map <String, Object>) activityMap.get("enrolled");
+        for (Map.Entry<String, Object> enrolledEntry : enrolled.entrySet()) {
+            Map <String, Object> activity = (Map <String, Object>) enrolledEntry.getValue();
+            String activityID = (String) activity.get("activity ID:");
             interestedEvents.add(activityID);
         }
         List<String> participatedEvents = new ArrayList<String>();
         List<String> organizedEvents = new ArrayList<String>();
         String rating = "";
         String photoLink = "";
-        Boolean isActive = Boolean.TRUE;
 
-        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink, isActive);
+        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
@@ -225,7 +226,7 @@ public class DataProvider {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                listener.getUserInfo(getDeboxUser(userUid,userMap));
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
 
             }
             @Override
