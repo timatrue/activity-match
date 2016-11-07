@@ -198,7 +198,10 @@ public class WelcomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_log_out) {
+        if (id == R.id.nav_user_profile) {
+            Intent intent = new Intent(this, UserProfile.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_log_out) {
             //Return to Login Activity and logout
             setResult(Login.RE_LOG_OUT);
             finish();

@@ -196,6 +196,24 @@ public class DataProvider {
         });
     }
 
+
+    private User getDeboxUser(String uid, Map<String, Object> activityMap) {
+        String email = (String) activityMap.get("user_email");
+        String username = "";
+        List<String> interestedEvents = new ArrayList<String>();
+        for (Map.Entry<String, Object> enrolledEntry : activityMap.entrySet()) {
+            String activityID = (String) ((Map <String, Object>) enrolledEntry.getValue()).get("enrolled");
+            interestedEvents.add(activityID);
+        }
+        List<String> participatedEvents = new ArrayList<String>();
+        List<String> organizedEvents = new ArrayList<String>();;
+        String rating = ""; //Double?
+        String photoLink = "";
+        Boolean isActive = Boolean.TRUE;
+
+        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink, isActive);
+    }
+
     /**
      * Check if the current user is already enrolled in the uid activity.
      * Send response through the listener
