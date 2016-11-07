@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import java.util.List;
+
 /**
  * Created by olga on 04.11.16.
  */
@@ -8,9 +10,9 @@ public class User {
     private String id;
     private String username;
     private String email;
-    private String[] organizedEvents;
-    private String[] participatedEvents;
-    private String[] interestedEvents;
+    private List<String> organizedEvents;
+    private List<String>  participatedEvents;
+    private List<String>  interestedEvents;
     private String rating; //Double?
     private String photoLink;
     private Boolean isActive;
@@ -27,7 +29,7 @@ public class User {
      * @param   photoLink    the link to get the photo of the user
      * @param   isActive    status of the user - either active (1) or not (0)
      */
-    public User(String id, String username, String email, String[] organizedEvents, String[] participatedEvents, String[] interestedEvents,
+    public User(String id, String username, String email, List<String>  organizedEvents, List<String>  participatedEvents, List<String>  interestedEvents,
                          String rating, String photoLink, Boolean isActive) {
         this.id = new String(id);
         this.username = new String(username);

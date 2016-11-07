@@ -206,13 +206,34 @@ public class DataProvider {
             interestedEvents.add(activityID);
         }
         List<String> participatedEvents = new ArrayList<String>();
-        List<String> organizedEvents = new ArrayList<String>();;
-        String rating = ""; //Double?
+        List<String> organizedEvents = new ArrayList<String>();
+        String rating = "";
         String photoLink = "";
         Boolean isActive = Boolean.TRUE;
 
         return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink, isActive);
     }
+
+    public void userProfile(final DataProviderListenerUserInfo listener){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+        //do try catch;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
+
+        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid,userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
+
 
     /**
      * Check if the current user is already enrolled in the uid activity.
@@ -297,10 +318,13 @@ public class DataProvider {
         void getIfEnrolled(boolean result);
     }
     public interface DataProviderListenerCategories {
-        public void getCategories(List<CategoryName> categoriesList);
+        void getCategories(List<CategoryName> categoriesList);
     }
     public interface DataProviderListenerCategory {
-        public void getCategory(List<DeboxActivity> activitiesList);
+        void getCategory(List<DeboxActivity> activitiesList);
+    }
+    public interface DataProviderListenerUserInfo {
+        void getUserInfo(User user);
     }
 
 }
