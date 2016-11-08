@@ -16,7 +16,10 @@ public class User {
     private List<String>  interestedEvents;
     private String rating; //Double?
     private String photoLink;
+
     //private Boolean isActive;
+
+    //private DataProvider mDB;
 
     /**
      * A class about user profile information that provides it to other classes.
