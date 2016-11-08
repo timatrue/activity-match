@@ -1,5 +1,10 @@
 package ch.epfl.sweng.project;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -7,11 +12,15 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.hamcrest.Matchers;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.Calendar;
 
@@ -24,13 +33,27 @@ import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {
 
     @Rule
     public ActivityTestRule<CreateActivity> createActivityRule =
-            new ActivityTestRule<CreateActivity>(CreateActivity.class);
+            new ActivityTestRule<CreateActivity>(CreateActivity.class){
+                @Override
+                protected Intent getActivityIntent() {
+                    Context targetContext = InstrumentationRegistry.getInstrumentation()
+                            .getTargetContext();
+                    Intent result = new Intent(targetContext, MainActivity.class);
+                    result.putExtra(CreateActivity.CREATE_ACTIVITY_TEST_KEY, CreateActivity.CREATE_ACTIVITY_TEST);
+                    return result;
+                }
+            };
+
 
     @Test
     public void missingTitle() throws Exception {
@@ -41,6 +64,7 @@ public class CreateActivityTest {
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
+
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -150,6 +174,12 @@ public class CreateActivityTest {
     public void validActivityCreation() throws Exception {
         CreateActivity activity = createActivityRule.getActivity();
 
+        DataProvider testDataProvider = mock(DataProvider.class);
+
+        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
+        activity.setDataProvider(testDataProvider);
+        activity.getAndDisplayCategories();
+
         String testTitle = "test_title";
         String testDescription = "test description";
 
@@ -215,22 +245,23 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
         assertTrue(activity.validateActivity().equals("success"));
-        assertTrue(activity.createActivityMethod() != null);
-        assertTrue(activity.createActivityMethod().getTitle().equals(testTitle));
-        assertTrue(activity.createActivityMethod().getDescription().equals(testDescription));
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.YEAR) == startYear);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.MONTH) == startMonth);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.DAY_OF_MONTH) == startDay);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.HOUR_OF_DAY) == startHour);
-        assertTrue(activity.createActivityMethod().getTimeStart().get(Calendar.MINUTE) == startMinute);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.YEAR) == endYear);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MONTH) == endMonth);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
-        assertTrue(activity.createActivityMethod().getTimeEnd().get(Calendar.MINUTE) == endMinute);
-        assertTrue(activity.createActivityMethod().getOrganizer().equals(expectedUid));
-        assertTrue(activity.createActivityMethod().getLocation()[0] == location[0]);
-        assertTrue(activity.createActivityMethod().getLocation()[1] == location[1]);
+        DeboxActivity da = activity.createActivityMethod();
+        assertTrue(da != null);
+        assertTrue(da.getTitle().equals(testTitle));
+        assertTrue(da.getDescription().equals(testDescription));
+        assertTrue(da.getTimeStart().get(Calendar.YEAR) == startYear);
+        assertTrue(da.getTimeStart().get(Calendar.MONTH) == startMonth);
+        assertTrue(da.getTimeStart().get(Calendar.DAY_OF_MONTH) == startDay);
+        assertTrue(da.getTimeStart().get(Calendar.HOUR_OF_DAY) == startHour);
+        assertTrue(da.getTimeStart().get(Calendar.MINUTE) == startMinute);
+        assertTrue(da.getTimeEnd().get(Calendar.YEAR) == endYear);
+        assertTrue(da.getTimeEnd().get(Calendar.MONTH) == endMonth);
+        assertTrue(da.getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
+        assertTrue(da.getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
+        assertTrue(da.getTimeEnd().get(Calendar.MINUTE) == endMinute);
+        assertTrue(da.getOrganizer().equals(expectedUid));
+        assertTrue(da.getLocation()[0] == location[0]);
+        assertTrue(da.getLocation()[1] == location[1]);
     }
 
     @Test
@@ -266,7 +297,23 @@ public class CreateActivityTest {
         String endDate = activity.makeDateString(endCalendar);
         String endTime = activity.makeTimeString(endCalendar);
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+
+
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        int i = 0;
+        while(i==0){
+            try{
+                onView(withId(R.id.createActivityStartDate)).perform(click());
+                i=1;
+
+            } catch (NoMatchingViewException e) {
+
+            }
+        }
+
+
+        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -295,6 +342,10 @@ public class CreateActivityTest {
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
+
+        DataProvider testDataProvider = mock(DataProvider.class);
+        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
+        activity.setDataProvider(testDataProvider);
 
         String testTitle = "test_title";
         String testDescription = "test description";

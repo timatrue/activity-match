@@ -79,6 +79,7 @@ public class Login extends AppCompatActivity implements
                     if(!appLaunched) {
                         appLaunched = true;
                         Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                        intent.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_NO_TEST);
                         startActivityForResult(intent, RC_LOG_OUT);
                     }
                 } else {
@@ -170,6 +171,7 @@ public class Login extends AppCompatActivity implements
                         if(!appLaunched) {
                             appLaunched = true;
                             Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                            intent.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_NO_TEST);
                             startActivityForResult(intent, RC_LOG_OUT);
                         }
                     }
