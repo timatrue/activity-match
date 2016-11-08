@@ -200,11 +200,10 @@ public class DataProvider {
     private User getDeboxUser(String uid, Map<String, Object> activityMap) {
         String email = (String) activityMap.get("user_email");
         String username = "";
-        List<String> interestedEvents = new ArrayList<String>();
-        Map <String, Object> enrolled = (Map <String, Object>) activityMap.get("enrolled");
-        for (Map.Entry<String, Object> enrolledEntry : enrolled.entrySet()) {
-            Map <String, Object> activity = (Map <String, Object>) enrolledEntry.getValue();
-            String activityID = (String) activity.get("activity ID:");
+        List<String> interestedEvents = new ArrayList<>();
+        Map<String,Map<String,Object> > enrolled = (Map<String,Map<String,Object> >) activityMap.get("enrolled");
+        for (Map<String, Object> innerMap : enrolled.values()) {
+            String activityID = (String) innerMap.get("activity ID:");
             interestedEvents.add(activityID);
         }
         List<String> participatedEvents = new ArrayList<String>();

@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 /**
@@ -26,13 +27,12 @@ public class UserProfile extends AppCompatActivity {
 
             @Override
             public void getUserInfo(User user) {
+                current_user = user.copy();
+                Log.d("current_user email: ", current_user.getEmail());
                 emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
-                        //new User(user.getId(), user.getUsername(), user.getEmail(), user.getOrganizedEvents(), user.getParticipatedEvents(), user.getInterestedEvents(), user.getPhotoLink(), user.getRating());
             }
 
         });
-
-
     }
 }
