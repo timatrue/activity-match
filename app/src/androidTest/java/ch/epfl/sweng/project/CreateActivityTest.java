@@ -72,7 +72,7 @@ public class CreateActivityTest {
         activity.activityLongitude=1;
         activity.activityLatitude=1;
 
-
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
@@ -191,7 +191,7 @@ public class CreateActivityTest {
 
     @Test
     public void validActivityCreation() throws Exception {
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
         DataProvider testDataProvider = mock(DataProvider.class);
 
@@ -199,13 +199,18 @@ public class CreateActivityTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                DataProvider.DataProviderListenerCategories listener = (DataProvider.DataProviderListenerCategories) args[0];
-                List<DataProvider.CategoryName> list = new ArrayList<DataProvider.CategoryName>();
+                final DataProvider.DataProviderListenerCategories listener = (DataProvider.DataProviderListenerCategories) args[0];
+                final List<DataProvider.CategoryName> list = new ArrayList<>();
                 DataProvider.CategoryName cat1 = new DataProvider.CategoryName("Hello", "Sport");
                 DataProvider.CategoryName cat2 = new DataProvider.CategoryName("Hello", "Culture");
                 list.add(cat1);
                 list.add(cat2);
-                listener.getCategories(list);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.getCategories(list);
+                    }
+                });
                 return null;
             }
         }).when(testDataProvider).getAllCategories(any(DataProvider.DataProviderListenerCategories.class));
