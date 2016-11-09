@@ -51,7 +51,7 @@ public class DataProvider {
 
 
 
-    public class CategoryName{
+    public static class CategoryName{
         String categoryId;
         String nameCategory;
         public CategoryName(String categoryId, String nameCategory){
@@ -299,11 +299,10 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerCategories {
-        public void getCategories(List<CategoryName> categoriesList);
+        void getCategories(List<CategoryName> categoriesList);
     }
 
     public interface DataProviderListenerCategory {
-        public void getCategory(List<DeboxActivity> activitiesList);
+        void getCategory(List<DeboxActivity> activitiesList);
     }
-
 }

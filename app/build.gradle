@@ -19,6 +19,7 @@ android {
     buildTypes {
         debug {
             testCoverageEnabled true
+            debuggable true
         }
 
         release {
@@ -45,6 +46,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:9.6.1'
     compile 'com.google.android.gms:play-services-auth:9.6.1'
     compile 'com.google.android.gms:play-services-places:9.6.1'
+    compile 'com.google.android.gms:play-services-location:9.6.1'
     compile 'com.google.firebase:firebase-storage:9.6.1'
 
     androidTestCompile 'junit:junit:4.12'

@@ -62,7 +62,19 @@
     <string name="hello_fragment">hello fragment</string>
     <string name="no_results_found">No results found</string>
     <string name="event_filter_title">Filter events</string>
-    <string name="event_filter_description">Choose categories: </string>
+    <string name="event_filter_description">Choose your category:</string>
+    <string name="validate">Validate</string>
+    <string name="filter_change_your_location">Change your location</string>
+    <string name="filter_choose_the_maximum_distance_of_the_activities">Set the maximum distance:</string>
+    <string-array name="max_distance_array">
+        <item>All</item>
+        <item>1 km</item>
+        <item>5 km</item>
+        <item>10 km</item>
+        <item>20 km</item>
+        <item>50 km</item>
+    </string-array>
+
 
 
 </resources>
