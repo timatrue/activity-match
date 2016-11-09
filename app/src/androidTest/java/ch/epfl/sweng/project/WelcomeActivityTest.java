@@ -7,14 +7,11 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.ActivityInstrumentationTestCase2;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ValueEventListener;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,29 +23,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
+import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withTagKey;
-import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
-import static ch.epfl.sweng.project.R.id.activityPreviewsLayout;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.instanceOf;
+import static ch.epfl.sweng.project.MockDataProvider.setActivityWhenAskAll;
+import static ch.epfl.sweng.project.MockDataProvider.getMockDataProvider;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-
-import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
 
 @LargeTest
@@ -113,6 +96,139 @@ public class WelcomeActivityTest {
                 return null;
             }
         }).when(testDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));
+
+
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+        //Insert Mock DataProvider
+        activity.setDataProvider(testDataProvider);
+
+        //Press on the "Display Events" button
+        activity.displayActivities.performClick();
+
+        //Check that the two events are displayed
+        assertTrue(activity.activityPreviewsLayout.getChildCount() == 2);
+        //Check that they are ActivityPreview
+        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof ActivityPreview);
+        assertTrue(activity.activityPreviewsLayout.getChildAt(1) instanceof ActivityPreview);
+        //Check that they have the same ID has the test DeboxActivity passed by the Mock
+        assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getEventId().equals(dA1.getId())) ;
+        assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getEventId().equals(dA2.getId())) ;
+        //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getChildAt(0)).getText().toString().equals(dA1.getTitle()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getChildAt(1)).getText().toString().equals(dA1.getShortDescription()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getChildAt(0)).getText().toString().equals(dA2.getTitle()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getChildAt(1)).getText().toString().equals(dA2.getShortDescription()));
+
+    }
+
+
+    @Test
+    public void tmpTest(){
+
+        DataProvider dp = getMockDataProvider();
+
+        final DeboxActivity dbat = new DeboxActivity("-","test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports");
+
+        if(dp==null)
+        {
+            assertEquals(true,false);
+
+        } else
+        {
+            assertEquals(true,true);
+        }
+
+        assertEquals(dp.pushActivity(dbat),"sample");
+
+        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
+
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        final DeboxActivity dA1 = new DeboxActivity("zdkasKKLD", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Sports");
+        final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
+                "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.04,
+                121.0243,
+                "Sports");
+
+        testActivityList.add(dA1);
+        testActivityList.add(dA2);
+
+
+        setActivityWhenAskAll(testActivityList);
+
+
+        dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+                for(DeboxActivity elem: activitiesList) {
+                    assertEquals(elem.getCategory(),"Sports");
+                }
+            }
+        });
+
+    }
+
+    @UiThreadTest
+    @Test
+    public void dpMockDisplayActivitiesProperly() throws Exception {
+
+        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
+
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        final DeboxActivity dA1 = new DeboxActivity("zdkasKKLD", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Sports");
+        final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
+                "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.04,
+                121.0243,
+                "Sports");
+
+        testActivityList.add(dA1);
+        testActivityList.add(dA2);
+
+        DataProvider testDataProvider = getMockDataProvider();
+        setActivityWhenAskAll(testActivityList);
+        /*doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
+                listener.getActivities(testActivityList);
+                return null;
+            }
+        }).when(testDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));*/
 
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
