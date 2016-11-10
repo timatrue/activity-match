@@ -16,7 +16,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:text="@string/create_activity_title"
@@ -109,7 +109,7 @@
                     android:id="@+id/createActivityStartingTimeTextView" />
 
                 <TextView
-                    android:text="TextView"
+                    android:text="@string/test_text"
                     android:layout_weight="0.5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                     android:id="@+id/createActivityStartDate" />
 
                 <TextView
-                    android:text="TextView"
+                    android:text="@string/test_text"
                     android:layout_weight="0.5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
                     android:id="@+id/createActivityEndingTimeTextView" />
 
                 <TextView
-                    android:text="TextView"
+                    android:text="@string/test_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -165,7 +165,7 @@
                     android:id="@+id/createActivityEndDate" />
 
                 <TextView
-                    android:text="TextView"
+                    android:text="@string/test_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"

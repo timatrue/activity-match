@@ -57,10 +57,12 @@
         </activity>
 
         <activity android:name=".DisplayActivity"
+            android:label="@string/display_activity_title_bar"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".CreateActivity"
             android:windowSoftInputMode="stateHidden"
+            android:label="@string/create_activity_title_bar"
             android:screenOrientation="portrait">
         </activity>
 

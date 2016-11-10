@@ -17,6 +17,7 @@
     <string name="contact_us">Contact us</string>
     <string name="contact_message">Choose an Email client</string>
     <string name="show_activity_button">Show all activities</string>
+    <string name="communicate">Communicate</string>
 
     <!-- Welcome Activity interface -->
     <string name="display_activities">Display Activities</string>
@@ -29,6 +30,7 @@
 
 
     <!-- Create Activity -->
+    <string name="create_activity_title_bar">Event organizer</string>
     <string name="create_activity_title">Organize your activity : \nChoose a title and describe it</string>
     <string name="create_activity_name_hint">The title of your activity</string>
     <string name="create_activity_category">Category</string>
@@ -48,7 +50,9 @@
     <string name="create_activity_upload_image">Upload Image</string>
 
 
-
+    <!-- Display Activity -->
+    <string name="display_activity_title_bar">Activity details</string>
+    
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
@@ -78,6 +82,12 @@
         <item>50 km</item>
     </string-array>
 
+    <string name="close">Close</string>
 
+
+
+
+    <!-- For test/development -->
+    <string name="test_text">test</string>
 
 </resources>

@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/filter_choose_the_maximum_distance_of_the_activities"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
     <Spinner
         android:layout_margin="@dimen/activity_horizontal_margin"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event_filter_description"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
 
     <Spinner
         android:layout_margin="@dimen/activity_horizontal_margin"
