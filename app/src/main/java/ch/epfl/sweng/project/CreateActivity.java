@@ -74,6 +74,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private DataProvider mDataProvider;
+
+    private ImageProvider mImageProvider;
+    private List<Uri> imagesUriList = new ArrayList<>();
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -132,6 +136,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 getAndDisplayCategories();
             }
         }
+
+        mImageProvider = new ImageProvider();
     }
 
     //Set the DataProvider (allows test to insert a Mock DataProvider)
@@ -210,9 +216,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         if(requestCode == PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Uri imageUri= data.getData();
-                ImageProvider ip = new ImageProvider();
-                ip.UploadImage(imageUri);
+                //Add image URI in the list
+                imagesUriList.add(data.getData());
             }
         }
     }
@@ -231,7 +236,17 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         DeboxActivity newDeboxActivity = createActivityMethod();
 
         if(validation.equals("success")) {
-            mDataProvider.pushActivity(newDeboxActivity);
+            //Add all images name in the debox activity
+            for(Uri uri :imagesUriList) {
+                newDeboxActivity.addImage(uri.getLastPathSegment());
+            }
+            //Push the activity on the DB
+            String activityKey = mDataProvider.pushActivity(newDeboxActivity);
+
+            //Upload all selected images in a folder corresponding to activity id
+            for(Uri uri :imagesUriList) {
+                mImageProvider.UploadImage(uri, activityKey);
+            }
         }
 
         setConfirmationTextView(validation);

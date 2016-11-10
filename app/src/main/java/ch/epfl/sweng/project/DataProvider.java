@@ -51,7 +51,7 @@ public class DataProvider {
 
 
 
-    public class CategoryName{
+    public static class CategoryName{
         String categoryId;
         String nameCategory;
         public CategoryName(String categoryId, String nameCategory){
@@ -159,6 +159,7 @@ public class DataProvider {
         result.put("longitude",location[1]);
         result.put("category",da.getCategory());
 
+        result.put("images",da.getImageList());
 
         childUpdates.put("activities/"+key, result);
 
@@ -190,7 +191,9 @@ public class DataProvider {
             timeEnd.setTimeInMillis(timeEndMillis);
         }
 
-        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category);
+        List<String> imagesList = (ArrayList<String>) activityMap.get("images");
+
+        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList);
 
     }
 
@@ -299,11 +302,10 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerCategories {
-        public void getCategories(List<CategoryName> categoriesList);
+        void getCategories(List<CategoryName> categoriesList);
     }
 
     public interface DataProviderListenerCategory {
-        public void getCategory(List<DeboxActivity> activitiesList);
+        void getCategory(List<DeboxActivity> activitiesList);
     }
-
 }

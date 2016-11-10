@@ -22,8 +22,11 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -32,9 +35,13 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,7 +72,7 @@ public class CreateActivityTest {
         activity.activityLongitude=1;
         activity.activityLatitude=1;
 
-
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
@@ -143,7 +150,19 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        int i = 0;
+        while(i==0){
+            try{
+                onView(withId(R.id.createActivityStartDate)).perform(click());
+                i=1;
+
+            } catch (NoMatchingViewException e) {
+
+            }
+        }
+
+        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -172,17 +191,35 @@ public class CreateActivityTest {
 
     @Test
     public void validActivityCreation() throws Exception {
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
         DataProvider testDataProvider = mock(DataProvider.class);
 
         when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                final DataProvider.DataProviderListenerCategories listener = (DataProvider.DataProviderListenerCategories) args[0];
+                final List<DataProvider.CategoryName> list = new ArrayList<>();
+                DataProvider.CategoryName cat1 = new DataProvider.CategoryName("Hello", "Sport");
+                DataProvider.CategoryName cat2 = new DataProvider.CategoryName("Hello", "Culture");
+                list.add(cat1);
+                list.add(cat2);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.getCategories(list);
+                    }
+                });
+                return null;
+            }
+        }).when(testDataProvider).getAllCategories(any(DataProvider.DataProviderListenerCategories.class));
         activity.setDataProvider(testDataProvider);
         activity.getAndDisplayCategories();
 
         String testTitle = "test_title";
+        String testCategory = "Culture";
         String testDescription = "test description";
-
 
         double longitude = 1;
         double latitude = 0.3;
@@ -220,9 +257,25 @@ public class CreateActivityTest {
         }
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
+
+        onView(withId(R.id.createActivityCategoryDropDown)).perform(ViewActions.scrollTo()).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(testCategory))).perform(click());
+
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        int i = 0;
+        while(i==0){
+            try{
+                onView(withId(R.id.createActivityStartDate)).perform(click());
+                i=1;
+
+            } catch (NoMatchingViewException e) {
+
+            }
+        }
+
+        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -245,9 +298,11 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
         assertTrue(activity.validateActivity().equals("success"));
+
         DeboxActivity da = activity.createActivityMethod();
         assertTrue(da != null);
         assertTrue(da.getTitle().equals(testTitle));
+        assertTrue(da.getCategory().equals(testCategory));
         assertTrue(da.getDescription().equals(testDescription));
         assertTrue(da.getTimeStart().get(Calendar.YEAR) == startYear);
         assertTrue(da.getTimeStart().get(Calendar.MONTH) == startMonth);
@@ -297,7 +352,7 @@ public class CreateActivityTest {
         String endDate = activity.makeDateString(endCalendar);
         String endTime = activity.makeTimeString(endCalendar);
 
-
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
         int i = 0;
@@ -310,7 +365,6 @@ public class CreateActivityTest {
 
             }
         }
-
 
         //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
 
@@ -372,7 +426,19 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        int i = 0;
+        while(i==0){
+            try{
+                onView(withId(R.id.createActivityStartDate)).perform(click());
+                i=1;
+
+            } catch (NoMatchingViewException e) {
+
+            }
+        }
+
+        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -400,7 +466,7 @@ public class CreateActivityTest {
     }
 
     @Test
-    public void noLocationChoose() throws Exception {
+    public void noLocationChoosen() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
 

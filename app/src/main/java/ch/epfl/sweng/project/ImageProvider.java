@@ -1,10 +1,17 @@
 package ch.epfl.sweng.project;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.Layout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -15,6 +22,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.List;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
@@ -35,8 +43,25 @@ public class ImageProvider {
     }
 
 
+    public void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
+        for(String imageName: imagesList)  {
+            // Reference to an image file in Firebase Storage
+            StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
 
-    public void UploadImage(Uri imageUri) {
+            ImageView imageView = new ImageView(context);
+
+            imageLayout.addView(imageView);
+
+            // Load the image using Glide
+            Glide.with(context)
+                    .using(new FirebaseImageLoader())
+                    .load(storageReference)
+                    .into(imageView);
+        }
+
+    }
+
+    public void UploadImage(Uri imageUri, String folder) {
         //"path/to/mountains.jpg"
         // File or Blob
 
@@ -44,7 +69,7 @@ public class ImageProvider {
         StorageMetadata metadata = new StorageMetadata.Builder().setContentType("image/jpeg").build();
 
         // Upload file and metadata to the path 'images/mountains.jpg'
-        UploadTask uploadTask = storageRef.child("images/" + imageUri.getLastPathSegment()).putFile(imageUri, metadata);
+        UploadTask uploadTask = storageRef.child("images/" + folder + "/" + imageUri.getLastPathSegment()).putFile(imageUri, metadata);
 
         // Listen for state changes, errors, and completion of the upload.
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
