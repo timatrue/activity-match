@@ -1,52 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="10dp"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <Button
-        android:text="@string/filter_change_your_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/filterAddLocation"
-        android:onClick="chooseLocation" />
-
-    <TextView
-        android:id="@+id/filterMaxDistanceTextView"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/filter_choose_the_maximum_distance_of_the_activities"
-        android:textSize="16dp" />
-
-    <Spinner
+        android:minWidth="350dp"
+        android:gravity="start"
+        android:padding="10dp"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:id="@+id/filterMaxDistanceDropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/filterCategoriesTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_filter_description"
-        android:textSize="16dp" />
 
-    <Spinner
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:id="@+id/filterCategoriesDropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
+        <Button
+            android:text="@string/filter_change_your_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filterAddLocation"
+            android:onClick="chooseLocation" />
 
-    <Button
-        android:id="@+id/validate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/validate" />
+        <TextView
+            android:id="@+id/filterMaxDistanceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_choose_the_maximum_distance_of_the_activities"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-</LinearLayout>
+        <Spinner
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:id="@+id/filterMaxDistanceDropDown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:id="@+id/filterCategoriesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/event_filter_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        <Spinner
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:id="@+id/filterCategoriesDropDown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:text="@string/filter_change_your_time_interval_of_interest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:id="@+id/dateFilterTextview" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/filter_from"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/from" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showStartDatePickerDialog"
+                android:id="@+id/startDate" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showStartTimePickerDialog"
+                android:id="@+id/startTime" />
+
+            <TextView
+                android:text="@string/filter_until"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/startDate"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:id="@+id/until" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/startDate"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showEndDatePickerDialog"
+                android:id="@+id/endDate" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/startDate"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:onClick="showEndTimePickerDialog"
+                android:id="@+id/endTime" />
+
+            <Button
+                android:id="@+id/validate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/endDate"
+                android:text="@string/validate" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

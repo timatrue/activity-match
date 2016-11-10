@@ -33,7 +33,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.FilterFragment;
@@ -41,12 +44,13 @@ import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static com.google.android.gms.internal.zzs.TAG;
+import static java.text.DateFormat.getDateInstance;
 
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, CalendarPickerListener {
 
     final static public String WELCOME_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST_KEY";
     final static public String WELCOME_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_NO_TEST";
@@ -55,12 +59,24 @@ public class WelcomeActivity extends AppCompatActivity
     Button displayActivities;
     LinearLayout activityPreviewsLayout;
 
+    FilterFragment dialogFragment;
+
+    DatePickerFragment startDateFragment;
+    DatePickerFragment endDateFragment;
+    TimePickerFragment startTimeFragment;
+    TimePickerFragment endTimeFragment;
+
+    public Calendar filterStartCalendar;
+    public Calendar filterEndCalendar;
+
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
     final public List<String> categories = new ArrayList<String>();
     private final static int PLACE_PICKER_REQUEST = 1;
     public double centerLatitude = 0;
     public double centerLongitude = 0;
+    public String filterCategory = "All";
+    public String maxDistanceString = "All";
     private final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
     Location mLastLocation;
     LocationRequest mLocationRequest;
@@ -103,6 +119,10 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         }
+
+        filterStartCalendar = Calendar.getInstance();
+        filterEndCalendar = Calendar.getInstance();
+        filterEndCalendar.add(Calendar.DATE, 7);
     }
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -228,7 +248,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     protected void CategoryFragment(View v){
         FragmentManager fm = getFragmentManager();
-        FilterFragment dialogFragment = new FilterFragment ();
+        dialogFragment = new FilterFragment ();
         dialogFragment.categoryList = categories;
         dialogFragment.show(fm, "filterFragment");
     }
@@ -290,6 +310,11 @@ public class WelcomeActivity extends AppCompatActivity
     //Gets the activities that should be displayed given the filters and displays them
     public void displaySpecifiedActivities(String category, final double maxDistance) {
 
+        Calendar currentTime = Calendar.getInstance();
+        if(filterStartCalendar.before(currentTime)) {
+            filterStartCalendar = currentTime;
+        }
+
         if(category.equals("All")){
             mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
@@ -307,7 +332,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     } else {
                         for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance) {
+                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeStart().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                                 activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
@@ -337,7 +362,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     } else {
                         for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance) {
+                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeStart().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                                 activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
@@ -436,4 +461,64 @@ public class WelcomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void updateDate(android.support.v4.app.DialogFragment fragment, int year, int month, int day) {
+        if (fragment == startDateFragment) {
+            filterStartCalendar.set(Calendar.YEAR, year);
+            filterStartCalendar.set(Calendar.MONTH, month);
+            filterStartCalendar.set(Calendar.DAY_OF_MONTH, day);
+        } else if (fragment == endDateFragment) {
+            filterEndCalendar.set(Calendar.YEAR, year);
+            filterEndCalendar.set(Calendar.MONTH, month);
+            filterEndCalendar.set(Calendar.DAY_OF_MONTH, day);
+        }
+        dialogFragment.updateDateTextViews();
+    }
+
+    @Override
+    public void updateTime(android.support.v4.app.DialogFragment fragment, int hour, int minute) {
+        if (fragment == startTimeFragment) {
+            filterStartCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            filterStartCalendar.set(Calendar.MINUTE, minute);
+        } else if (fragment == endTimeFragment) {
+            filterEndCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            filterEndCalendar.set(Calendar.MINUTE, minute);
+        }
+        dialogFragment.updateTimeTextViews();
+    }
+
+    public String makeDateString(Calendar calendar) {
+        DateFormat dateFormat = getDateInstance();
+        return dateFormat.format(calendar.getTime());
+    }
+
+    public String makeTimeString(Calendar calendar) {
+        //DateFormat timeFormat = getTimeInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        return timeFormat.format(calendar.getTime());
+    }
+
+    public void showStartDatePickerDialog(View v) {
+        startDateFragment = new DatePickerFragment();
+        startDateFragment.show(getSupportFragmentManager(), "datePicker");
+        startDateFragment.setPickerListener(this);
+    }
+
+    public void showEndDatePickerDialog(View v) {
+        endDateFragment = new DatePickerFragment();
+        endDateFragment.show(getSupportFragmentManager(), "datePicker");
+        endDateFragment.setPickerListener(this);
+    }
+
+    public void showStartTimePickerDialog(View v) {
+        startTimeFragment = new TimePickerFragment();
+        startTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        startTimeFragment.setPickerListener(this);
+    }
+
+    public void showEndTimePickerDialog(View v) {
+        endTimeFragment = new TimePickerFragment();
+        endTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        endTimeFragment.setPickerListener(this);
+    }
 }
