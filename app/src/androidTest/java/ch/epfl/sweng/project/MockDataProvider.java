@@ -47,14 +47,29 @@ public class MockDataProvider {
 
     }
 
+    static List<DeboxActivity> ll;
+
     static public void setActivityWhenAskAll(final List<DeboxActivity> list){
 
+        ll=list;
+        buildAnswerAllActivities();
 
+
+    }
+
+    static public void addActivityToMock(DeboxActivity dba){
+        ll.add(dba);
+        buildAnswerAllActivities();
+
+
+    }
+
+    static private void buildAnswerAllActivities(){
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
-                listener.getActivities(list);
+                listener.getActivities(ll);
                 return null;
             }
         }).when(mockDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));
