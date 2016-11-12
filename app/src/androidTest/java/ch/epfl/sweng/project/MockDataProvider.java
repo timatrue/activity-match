@@ -19,9 +19,9 @@ import static org.mockito.Mockito.when;
 public class MockDataProvider {
 
     @Mock
-    static DataProvider mockDataProvider;
+    DataProvider mockDataProvider;
 
-
+    List<DeboxActivity> ll;
 
     //when(mockDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn("return");
     //
@@ -29,42 +29,37 @@ public class MockDataProvider {
     //
     //
 
-    static public DataProvider getMockDataProvider(){
-        //if(mockDataProvider == null){
+    public DataProvider getMockDataProvider(){
+
             mockDataProvider = Mockito.mock(DataProvider.class);
             initBasicDataProvider();
-
-
             return mockDataProvider;
-        //} else {
-         //   return mockDataProvider;
-       // }
     }
 
-    static private void initBasicDataProvider(){
+    private void initBasicDataProvider(){
 
         when(mockDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn("sample");
 
     }
 
-    static List<DeboxActivity> ll;
 
-    static public void setActivityWhenAskAll(final List<DeboxActivity> list){
+
+    public void setActivities(final List<DeboxActivity> list){
 
         ll=list;
-        buildAnswerAllActivities();
+        initMocGetAllActivities();
 
 
     }
 
-    static public void addActivityToMock(DeboxActivity dba){
+    public void addActivityToMock(DeboxActivity dba){
+
         ll.add(dba);
-        buildAnswerAllActivities();
-
+        initMocGetAllActivities();
 
     }
 
-    static private void buildAnswerAllActivities(){
+    private void initMocGetAllActivities(){
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();

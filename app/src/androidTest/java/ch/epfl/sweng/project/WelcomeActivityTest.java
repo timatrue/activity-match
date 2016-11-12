@@ -25,8 +25,8 @@ import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
-import static ch.epfl.sweng.project.MockDataProvider.setActivityWhenAskAll;
-import static ch.epfl.sweng.project.MockDataProvider.getMockDataProvider;
+//import static ch.epfl.sweng.project.MockDataProvider.setActivity;
+//import static ch.epfl.sweng.project.MockDataProvider.getMockDataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -125,7 +125,9 @@ public class WelcomeActivityTest {
     @Test
     public void tmpTest(){
 
-        DataProvider dp = getMockDataProvider();
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        //DataProvider dp = getMockDataProvider();
 
         final DeboxActivity dbat = new DeboxActivity("-","test", "user-test",
                 "description",
@@ -173,7 +175,11 @@ public class WelcomeActivityTest {
         testActivityList.add(dA2);
 
 
-        setActivityWhenAskAll(testActivityList);
+
+
+        mocDataProvider.setActivities(testActivityList);
+        //setActivity(testActivityList);
+
 
 
         dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
@@ -219,21 +225,18 @@ public class WelcomeActivityTest {
         testActivityList.add(dA1);
         testActivityList.add(dA2);
 
-        DataProvider testDataProvider = getMockDataProvider();
-        setActivityWhenAskAll(testActivityList);
-        /*doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
-                listener.getActivities(testActivityList);
-                return null;
-            }
-        }).when(testDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));*/
+        //DataProvider testDataProvider = getMockDataProvider();
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
 
+        mocDataProvider.setActivities(testActivityList);
+
+        //setActivity(testActivityList);
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
         //Insert Mock DataProvider
-        activity.setDataProvider(testDataProvider);
+        //activity.setDataProvider(testDataProvider);
+        activity.setDataProvider(dp);
 
         //Press on the "Display Events" button
         activity.displayActivities.performClick();
