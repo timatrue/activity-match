@@ -34,7 +34,7 @@ public class DataProvider {
 
     public DataProvider() {
 
-        deboxActivityList = new ArrayList<DeboxActivity>();
+        deboxActivityList = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -43,7 +43,7 @@ public class DataProvider {
     // use for moc test
     public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase, FirebaseUser mockUser) {
 
-        deboxActivityList = new ArrayList<DeboxActivity>();
+        deboxActivityList = new ArrayList<>();
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
         user = mockUser;
@@ -117,7 +117,7 @@ public class DataProvider {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> list = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
 

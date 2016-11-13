@@ -23,13 +23,24 @@ public class MockDataProvider {
     DataProvider mockDataProvider;
 
     private List<DeboxActivity> listDeboxActivityStored;
+    private List<DataProvider.CategoryName> listCategoryStored;
 
     public DataProvider getMockDataProvider(){
 
-            mockDataProvider = Mockito.mock(DataProvider.class);
-            initBasicDataProvider();
-            listDeboxActivityStored= new ArrayList<>();
-            return mockDataProvider;
+        mockDataProvider = Mockito.mock(DataProvider.class);
+        initMocPushActivity();
+        initMocGetAllActivities();
+        initMocGetActivityFromUid();
+        initMockGetAllCategories();
+        listDeboxActivityStored = new ArrayList<>();
+        listCategoryStored = new ArrayList<>();
+
+        return mockDataProvider;
+    }
+
+    public void setListOfCategoryToMock(final List<DataProvider.CategoryName> list){
+        initMockGetAllCategories();
+        listCategoryStored = list;
     }
 
     public void setListOfActivitiesToMock(final List<DeboxActivity> list){
@@ -41,10 +52,6 @@ public class MockDataProvider {
 
     public void addActivityToMock(DeboxActivity dba){
 
-        if(listDeboxActivityStored == null)
-        {
-            listDeboxActivityStored= new ArrayList<>();
-        }
         listDeboxActivityStored.add(dba);
         initMocGetAllActivities();
         initMocGetActivityFromUid();
@@ -84,7 +91,7 @@ public class MockDataProvider {
         }).when(mockDataProvider).getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString());
     }
 
-    private void initBasicDataProvider(){
+    private void initMocPushActivity(){
 
         doAnswer(new Answer<String>() {
             public String answer(InvocationOnMock invocation) {
@@ -95,5 +102,17 @@ public class MockDataProvider {
                 return dbatmp.getId();
             }
         }).when(mockDataProvider).pushActivity(any(DeboxActivity.class));
+    }
+
+    private void initMockGetAllCategories(){
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerCategories listener = (DataProvider.DataProviderListenerCategories) args[0];
+                listener.getCategories(listCategoryStored);
+                return null;
+            }
+        }).when(mockDataProvider).getAllCategories(any(DataProvider.DataProviderListenerCategories.class));
     }
 }
