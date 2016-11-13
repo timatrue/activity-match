@@ -40,6 +40,7 @@ public class MockDataProvider {
         initJoinActivity();
         listDeboxActivityStored = new ArrayList<>();
         listCategoryStored = new ArrayList<>();
+        listUserActivityEnrolledStored = new ArrayList<>();
         userID="default";
 
         return mockDataProvider;
@@ -166,6 +167,11 @@ public class MockDataProvider {
                 DataProvider.DataProviderListenerEnrolled listener = (DataProvider.DataProviderListenerEnrolled) args[0];
 
                 boolean result = false;
+                /*if(listUserActivityEnrolledStored.isEmpty()){
+                    listener.getIfEnrolled(false);
+                    return null;
+                }*/
+
                 for(String activityUid : listUserActivityEnrolledStored ) {
 
                     if (activityUid.equals(args[1])){
