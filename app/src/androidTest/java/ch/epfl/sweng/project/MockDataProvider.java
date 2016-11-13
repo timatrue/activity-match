@@ -184,7 +184,7 @@ public class MockDataProvider {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                listUserActivityEnrolledStored.add((String)args[0]);
+                listUserActivityEnrolledStored.add(((DeboxActivity)args[0]).getId());
 
                 return null;
             }

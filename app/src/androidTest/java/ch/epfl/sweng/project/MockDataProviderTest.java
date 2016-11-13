@@ -242,4 +242,36 @@ public class MockDataProviderTest {
 
     }
 
+    @Test
+    public void joinActivityFromMocTest(){
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        final List<String> activityListEnrolled = new ArrayList<>();
+        activityListEnrolled.add(activity1.getId());
+        activityListEnrolled.add(activity2.getId());
+
+        mocDataProvider.setListOfEnrolledActivityToMock(activityListEnrolled);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,false);
+
+            }
+        },activity3.getId());
+
+        dp.joinActivity(activity3);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,true);
+
+            }
+        },activity3.getId());
+
+    }
+
 }
