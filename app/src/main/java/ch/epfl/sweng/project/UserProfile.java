@@ -53,6 +53,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void getUserActivities(List<DeboxActivity> activitiesList) {
                 interested = activitiesList;
+                List<String> participatedIds = new ArrayList<String>();
             }
         }, interestedIds);
     }

@@ -65,5 +65,9 @@
     <string name="event_filter_title">Filter events</string>
     <string name="event_filter_description">Choose categories: </string>
 
+    <!-- User Profile -->
+    <string name="organised_events">Organized events</string>
+    <string name="participated_events">Participated events</string>
+    <string name="interested_events">Interested events</string>
 
 </resources>
