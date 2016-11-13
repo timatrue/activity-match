@@ -56,6 +56,29 @@ public class User {
         return new String(email);
     }
 
+    public List<String> getOrganizedEvents() {
+        List<String> events = null;
+        for (String event : organizedEvents) {
+            events.add(new String(event));
+        }
+        return events;
+    }
+
+    public List<String> getParticipatedEvents() {
+        List<String> events = null;
+        for (String event : participatedEvents) {
+            events.add(new String(event));
+        }
+        return events;
+    }
+
+    public List<String> getInterestedEvents() {
+        List<String> events = null;
+        for (String event : interestedEvents) {
+            events.add(new String(event));
+        }
+        return events;
+    }
     /**
      * @return rating of the user
      */
@@ -63,4 +86,7 @@ public class User {
         return new String(rating);
     }
 
+    public String getPhotoLink() {
+        return new String(photoLink);
+    }
 }

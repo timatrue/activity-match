@@ -62,7 +62,9 @@
         <activity android:name=".CreateActivity"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name=".UserProfile"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"

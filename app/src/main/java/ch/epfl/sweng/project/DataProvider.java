@@ -200,6 +200,7 @@ public class DataProvider {
     private User getDeboxUser(String uid, Map<String, Object> activityMap) {
         String email = (String) activityMap.get("user_email");
         String username = "";
+
         List<String> interestedEvents = new ArrayList<String>();
         for (Map.Entry<String, Object> enrolledEntry : activityMap.entrySet()) {
             String activityID = (String) ((Map <String, Object>) enrolledEntry.getValue()).get("enrolled");
