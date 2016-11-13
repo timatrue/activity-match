@@ -175,13 +175,8 @@ public class WelcomeActivityTest {
         testActivityList.add(dA1);
         testActivityList.add(dA2);
 
-
-
-
         mocDataProvider.setListOfActivitiesToMock(testActivityList);
         //setActivity(testActivityList);
-
-
 
         dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 

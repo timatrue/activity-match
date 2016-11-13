@@ -2,19 +2,12 @@ package ch.epfl.sweng.project;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.UiThread;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.ActivityInstrumentationTestCase2;
-import android.test.InstrumentationTestCase;
-import android.widget.TextView;
-
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -112,9 +105,6 @@ public class DisplayActivityTest {
     @Test
     public void mocDisplayActivityProperly() throws Exception {
 
-
-        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
-
         Calendar startDate = Calendar.getInstance();
         Calendar endDate = Calendar.getInstance();
 
@@ -140,26 +130,13 @@ public class DisplayActivityTest {
                 121.0243,
                 "Sports");
 
-        //DataProvider testDataProvider = mock(DataProvider.class);
-
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.addActivityToMock(dA);
         mocDataProvider.addActivityToMock(dA2);
 
-        /*when(testDataProvider.getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString())).thenAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
-                listener.getActivity(dA);
-                return null;
-            }
-        });*/
-
-
         final DisplayActivity activity = displayActivityRule.getActivity();
 
-        //activity.setTestDBObjects(testDataProvider, testFirebaseUser);
         activity.setTestDBObjects(dp, testFirebaseUser);
 
         activity.initDisplay();
