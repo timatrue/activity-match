@@ -125,6 +125,10 @@ public class WelcomeActivity extends AppCompatActivity
         displayActivities = (Button) findViewById(R.id.displayActivities);
         displayActivities.setOnClickListener(activitiesClickListener);
 
+        filterStartCalendar = Calendar.getInstance();
+        filterEndCalendar = Calendar.getInstance();
+        filterEndCalendar.add(Calendar.DATE, 7);
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String test = bundle.getString(WELCOME_ACTIVITY_TEST_KEY);
@@ -135,10 +139,6 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         }
-
-        filterStartCalendar = Calendar.getInstance();
-        filterEndCalendar = Calendar.getInstance();
-        filterEndCalendar.add(Calendar.DATE, 7);
     }
 
     public void setDataProvider(DataProvider dataProvider) {

@@ -71,7 +71,7 @@
                 android:id="@+id/from" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:id="@+id/startDate" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                 android:id="@+id/until" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                 android:id="@+id/endDate" />
 
             <TextView
-                android:text="TextView"
+                android:text=""
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
