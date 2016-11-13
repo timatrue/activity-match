@@ -110,15 +110,15 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        String[] organisedEventsArray= { "organisedEvent1", "organisedEvent2"};
-        String[] participateEventsArray = { "participatedEvent1", "participatedEvent2"};
+        String[] organisedEventsArray= { "No Events"};
+        String[] participateEventsArray = { "No Events"};
 
         activityCollection = new LinkedHashMap<String, List<String>>();
 
         for (String group : groupList) {
-            if (group.equals("organisedEvents")) {
+            if (group.equals(organizedEvents)) {
                 loadChild(organisedEventsArray);
-            } else if (group.equals("participatedEvents")){
+            } else if (group.equals(participatedEvents)){
                 loadChild(participateEventsArray);
             }
             activityCollection.put(group, childList);
