@@ -175,6 +175,29 @@ public class WelcomeActivityTest {
             }
         },cat);
 
+        List<String> enrolledList = new ArrayList<>();
+        enrolledList.add("sample");
+        enrolledList.add(dA1.getId());
+        enrolledList.add("sampl2e");
+
+        mocDataProvider.setListOfEnrolledActivityToMock(enrolledList);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,true);
+            }
+        }, dA1.getId());
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,false);
+            }
+        },"noid");
+
+
+
     }
 
     @UiThreadTest
