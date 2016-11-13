@@ -66,6 +66,9 @@
     <string name="validate">Validate</string>
     <string name="filter_change_your_location">Change your location</string>
     <string name="filter_choose_the_maximum_distance_of_the_activities">Set the maximum distance:</string>
+    <string name="filter_from">From:</string>
+    <string name="filter_until">Until:</string>
+    <string name="filter_change_your_time_interval_of_interest">Change your time interval of interest:</string>
     <string-array name="max_distance_array">
         <item>All</item>
         <item>1 km</item>

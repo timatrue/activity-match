@@ -33,7 +33,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.FilterFragment;
@@ -41,26 +45,54 @@ import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static com.google.android.gms.internal.zzs.TAG;
+import static java.text.DateFormat.getDateInstance;
 
 
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, CalendarPickerListener {
+
+    //radius of Earth in km
+    final static double EARTH_RADIUS = 6371;
 
     final static public String WELCOME_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST_KEY";
     final static public String WELCOME_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_NO_TEST";
     final static public String WELCOME_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST";
 
+    public final static HashMap<String, Integer> maxDistanceMap;
+    static
+    {
+        maxDistanceMap = new HashMap<>();
+        maxDistanceMap.put("1 km", 1);
+        maxDistanceMap.put("5 km", 5);
+        maxDistanceMap.put("10 km", 10);
+        maxDistanceMap.put("20 km", 20);
+        maxDistanceMap.put("50 km", 50);
+        maxDistanceMap.put("All", 21000);
+    }
+
     Button displayActivities;
     LinearLayout activityPreviewsLayout;
 
+    FilterFragment dialogFragment;
+
+    DatePickerFragment startDateFragment;
+    DatePickerFragment endDateFragment;
+    TimePickerFragment startTimeFragment;
+    TimePickerFragment endTimeFragment;
+
+    public Calendar filterStartCalendar;
+    public Calendar filterEndCalendar;
+
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
-    final public List<String> categories = new ArrayList<String>();
+    final public List<String> categories = new ArrayList<>();
     private final static int PLACE_PICKER_REQUEST = 1;
     public double centerLatitude = 0;
     public double centerLongitude = 0;
+    public String filterCategory = "All";
+    public String maxDistanceString = "All";
     private final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
     Location mLastLocation;
     LocationRequest mLocationRequest;
@@ -93,13 +125,17 @@ public class WelcomeActivity extends AppCompatActivity
         displayActivities = (Button) findViewById(R.id.displayActivities);
         displayActivities.setOnClickListener(activitiesClickListener);
 
+        filterStartCalendar = Calendar.getInstance();
+        filterEndCalendar = Calendar.getInstance();
+        filterEndCalendar.add(Calendar.DATE, 7);
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String test = bundle.getString(WELCOME_ACTIVITY_TEST_KEY);
             if (test != null) {
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    getAllCategories();
+                    getAllCategoriesAndLocation();
                 }
             }
         }
@@ -109,15 +145,8 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider = dataProvider;
     }
 
-    public void getAllCategories() {
-        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
-            @Override
-            public void getCategories(List<DataProvider.CategoryName> items) {
-                for (DataProvider.CategoryName cat : items) {
-                    categories.add(cat.getCategory());
-                }
-            }
-        });
+    public void getAllCategoriesAndLocation() {
+        getAllCategories();
 
         setCurrentLocalisation();
         createLocationRequest();
@@ -131,6 +160,17 @@ public class WelcomeActivity extends AppCompatActivity
             permission_granted = true;
             initializeGoogleApiClient();
         }
+    }
+
+    public void getAllCategories() {
+        mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
+            @Override
+            public void getCategories(List<DataProvider.CategoryName> items) {
+                for (DataProvider.CategoryName cat : items) {
+                    categories.add(cat.getCategory());
+                }
+            }
+        });
     }
 
     protected synchronized void initializeGoogleApiClient() {
@@ -228,7 +268,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     protected void CategoryFragment(View v){
         FragmentManager fm = getFragmentManager();
-        FilterFragment dialogFragment = new FilterFragment ();
+        dialogFragment = new FilterFragment ();
         dialogFragment.categoryList = categories;
         dialogFragment.show(fm, "filterFragment");
     }
@@ -288,9 +328,23 @@ public class WelcomeActivity extends AppCompatActivity
     }
 
     //Gets the activities that should be displayed given the filters and displays them
-    public void displaySpecifiedActivities(String category, final double maxDistance) {
+    public void displaySpecifiedActivities() {
 
-        if(category.equals("All")){
+        final int maxDistance;
+        if(maxDistanceMap.get(maxDistanceString) != null) {
+            maxDistance = maxDistanceMap.get(maxDistanceString);
+        }
+        else {
+            maxDistance = 21000;
+            Log.d(TAG, "Invalid maxDistance string detected");
+        }
+
+        Calendar currentTime = Calendar.getInstance();
+        if(filterStartCalendar.before(currentTime)) {
+            filterStartCalendar = currentTime;
+        }
+
+        if(filterCategory.equals("All")){
             mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
                 @Override
@@ -307,7 +361,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     } else {
                         for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance) {
+                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                                 activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
@@ -337,7 +391,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     } else {
                         for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance) {
+                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                                 activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
@@ -346,17 +400,18 @@ public class WelcomeActivity extends AppCompatActivity
                     }
                     mDataProvider = new DataProvider();
                 }
-            }, category);
+            }, filterCategory);
         }
     }
 
-    //Computes distance in km from lagitudes and longitudes
-    private double distanceFromCenter(DeboxActivity elem){
-        final double R = 6371; //radius of Earth in km
-        double latitudeDiff = Math.toRadians(centerLatitude - elem.getLocation()[0]);
+    //Computes distance in km from lagitudes and longitudes with the equirectangular approximation
+    public double distanceFromCenter(DeboxActivity elem) {
+        double centerLatitudeRad = Math.toRadians(centerLatitude);
+        double latitudeElemRad = Math.toRadians(elem.getLocation()[0]);
+        double latitudeDiff = centerLatitudeRad - latitudeElemRad;
         double longitudeDiff = Math.toRadians(centerLongitude - elem.getLocation()[1]);
-        double correction = Math.cos((centerLongitude + elem.getLocation()[1])/2);
-        return R * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
+        double correction = Math.cos((centerLatitudeRad + latitudeElemRad)/2);
+        return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
 
     private void getActivitiesAndDisplay() {
@@ -436,4 +491,64 @@ public class WelcomeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void updateDate(android.support.v4.app.DialogFragment fragment, int year, int month, int day) {
+        if (fragment == startDateFragment) {
+            filterStartCalendar.set(Calendar.YEAR, year);
+            filterStartCalendar.set(Calendar.MONTH, month);
+            filterStartCalendar.set(Calendar.DAY_OF_MONTH, day);
+        } else if (fragment == endDateFragment) {
+            filterEndCalendar.set(Calendar.YEAR, year);
+            filterEndCalendar.set(Calendar.MONTH, month);
+            filterEndCalendar.set(Calendar.DAY_OF_MONTH, day);
+        }
+        dialogFragment.updateDateTextViews();
+    }
+
+    @Override
+    public void updateTime(android.support.v4.app.DialogFragment fragment, int hour, int minute) {
+        if (fragment == startTimeFragment) {
+            filterStartCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            filterStartCalendar.set(Calendar.MINUTE, minute);
+        } else if (fragment == endTimeFragment) {
+            filterEndCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            filterEndCalendar.set(Calendar.MINUTE, minute);
+        }
+        dialogFragment.updateTimeTextViews();
+    }
+
+    public String makeDateString(Calendar calendar) {
+        DateFormat dateFormat = getDateInstance();
+        return dateFormat.format(calendar.getTime());
+    }
+
+    public String makeTimeString(Calendar calendar) {
+        //DateFormat timeFormat = getTimeInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        return timeFormat.format(calendar.getTime());
+    }
+
+    public void showStartDatePickerDialog(View v) {
+        startDateFragment = new DatePickerFragment();
+        startDateFragment.show(getSupportFragmentManager(), "datePicker");
+        startDateFragment.setPickerListener(this);
+    }
+
+    public void showEndDatePickerDialog(View v) {
+        endDateFragment = new DatePickerFragment();
+        endDateFragment.show(getSupportFragmentManager(), "datePicker");
+        endDateFragment.setPickerListener(this);
+    }
+
+    public void showStartTimePickerDialog(View v) {
+        startTimeFragment = new TimePickerFragment();
+        startTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        startTimeFragment.setPickerListener(this);
+    }
+
+    public void showEndTimePickerDialog(View v) {
+        endTimeFragment = new TimePickerFragment();
+        endTimeFragment.show(getSupportFragmentManager(), "timePicker");
+        endTimeFragment.setPickerListener(this);
+    }
 }
