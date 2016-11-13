@@ -336,8 +336,7 @@ public class WelcomeActivityTest {
                 filteredTestActivityList.add(da);
             }
         }
-
-
+        
         DataProvider testDataProvider = mock(DataProvider.class);
 
         doAnswer(new Answer<Void>() {
