@@ -32,6 +32,7 @@ public class MockDataProvider {
         initMocGetAllActivities();
         initMocGetActivityFromUid();
         initMockGetAllCategories();
+        initMockGetSpecifiedCategory();
         listDeboxActivityStored = new ArrayList<>();
         listCategoryStored = new ArrayList<>();
 
@@ -114,5 +115,26 @@ public class MockDataProvider {
                 return null;
             }
         }).when(mockDataProvider).getAllCategories(any(DataProvider.DataProviderListenerCategories.class));
+    }
+
+    private void initMockGetSpecifiedCategory(){
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerCategory listener = (DataProvider.DataProviderListenerCategory) args[0];
+
+                List<DeboxActivity> result = new ArrayList<>();
+
+                for (DeboxActivity deb : listDeboxActivityStored) {
+
+                    if (deb.getCategory().equals(args[1])) {
+                        result.add(deb);
+                    }
+                }
+                listener.getCategory(result);
+                return null;
+            }
+        }).when(mockDataProvider).getSpecifiedCategory(any(DataProvider.DataProviderListenerCategory.class),any(String.class));
     }
 }

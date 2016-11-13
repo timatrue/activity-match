@@ -142,7 +142,7 @@ public class WelcomeActivityTest {
                 endDate,
                 122.01,
                 121.0213,
-                "Sports");
+                "Culture");
         final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
                 "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
                 "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
@@ -158,16 +158,22 @@ public class WelcomeActivityTest {
 
         mocDataProvider.setListOfActivitiesToMock(testActivityList);
 
-        dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+        List<DataProvider.CategoryName> listCategoryStored = new ArrayList<>();
+        listCategoryStored.add(new DataProvider.CategoryName("1","Sports"));
+        listCategoryStored.add(new DataProvider.CategoryName("1","Culture"));
+        mocDataProvider.setListOfCategoryToMock(listCategoryStored);
+
+        final String cat = "Sports";
+
+        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
 
             @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
+            public void getCategory(List<DeboxActivity> activitiesList) {
                 for(DeboxActivity elem: activitiesList) {
-                    assertEquals(elem.getCategory(),"Sports");
+                    assertEquals(elem.getCategory(),cat);
                 }
             }
-        });
+        },cat);
 
     }
 
