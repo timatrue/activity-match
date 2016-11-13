@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -30,12 +31,13 @@ import static com.google.android.gms.internal.zzs.TAG;
  */
 
 public class Login extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+        View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    public static GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
 
     private static final int RC_SIGN_IN = 1;
     private static final int RC_LOG_OUT = 2;
@@ -46,6 +48,8 @@ public class Login extends AppCompatActivity implements
 
     private boolean appLaunched = false;
 
+    private boolean logout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,8 @@ public class Login extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+
+        logout = false;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -69,7 +75,10 @@ public class Login extends AppCompatActivity implements
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
                 .build();
+        mGoogleApiClient.connect();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -79,6 +88,7 @@ public class Login extends AppCompatActivity implements
                     if(!appLaunched) {
                         appLaunched = true;
                         Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                        intent.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_NO_TEST);
                         startActivityForResult(intent, RC_LOG_OUT);
                     }
                 } else {
@@ -115,7 +125,7 @@ public class Login extends AppCompatActivity implements
     }
 
     private void signIn() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -144,6 +154,8 @@ public class Login extends AppCompatActivity implements
             else {
                 appLaunched = false;
                 FirebaseAuth.getInstance().signOut();
+                mGoogleApiClient.connect();
+                logout = true;
             }
         }
     }
@@ -170,12 +182,24 @@ public class Login extends AppCompatActivity implements
                         if(!appLaunched) {
                             appLaunched = true;
                             Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                            intent.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_NO_TEST);
                             startActivityForResult(intent, RC_LOG_OUT);
                         }
                     }
                 });
     }
 
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        if(logout){
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

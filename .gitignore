@@ -10,3 +10,5 @@
 /.idea/libraries
 /.idea/vcs.xml
 /.idea
+.idea/
+app/app.iml

@@ -36,6 +36,9 @@ import static java.text.DateFormat.getDateInstance;
 public class DisplayActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     final static public String DISPLAY_EVENT_ID = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID";
+    final static public String DISPLAY_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY";
+    final static public String DISPLAY_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_ACTIVITY_NO_TEST";
+    final static public String DISPLAY_ACTIVITY_TEST = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_ACTIVITY_TEST";
 
     TextView title;
     TextView category;
@@ -45,11 +48,12 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     DeboxActivity activityToDisplay = null;
     GoogleMap map = null;
 
-    private DataProvider dp;
+    private DataProvider mDataProvider;
     private String eventId;
     private DeboxActivity currentActivity;
     private Button joinActivityButton;
     private TextView enrolledInfoTextView;
+    private FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +67,27 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
 
 
-        dp = new DataProvider();
+        mDataProvider = new DataProvider();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null) {
+        String test = intent.getStringExtra(DISPLAY_ACTIVITY_TEST_KEY);
+        if(test.equals(DISPLAY_ACTIVITY_NO_TEST)) {
+            mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            initDisplay();
+        }
 
-            dp.getActivityFromUid(new DataProvider.DataProviderListener() {
+    }
+
+    public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
+        mDataProvider = testDataProvider;
+        mFirebaseUser = testFirebaseUser;
+    }
+
+
+    public void initDisplay() {
+        //TODO MODIFY THIS AND MAKE IT PROPER
+        if(mFirebaseUser!=null || true) {
+
+            mDataProvider.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
                 @Override
                 public void getActivity(DeboxActivity activity) {
 
@@ -107,52 +126,27 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                                 .title(activity.getTitle()));
                     }
                 }
+            }, eventId);
 
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                }
-
+            // Set listener to check if user is already register in this activity or not.
+            mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
                 @Override
                 public void getIfEnrolled(boolean result) {
+
+                    if (result) {
+                        enrolledInfoTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        joinActivityButton.setVisibility(View.VISIBLE);
+                    }
 
                 }
             }, eventId);
 
 
+            MapFragment mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
         }
-
-
-        // Set listener to check if user is already register in this activity or not.
-        dp.userEnrolledInActivity(new DataProvider.DataProviderListener() {
-
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-            }
-
-
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-            }
-
-            @Override
-            public void getIfEnrolled(boolean result) {
-
-                if (result) {
-                    enrolledInfoTextView.setVisibility(View.VISIBLE);
-                } else {
-                    joinActivityButton.setVisibility(View.VISIBLE);
-                }
-
-            }
-        }, eventId);
-
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-        .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
 
@@ -165,7 +159,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     public void joinActivity(View v) {
         if(currentActivity!= null){
 
-            dp.joinActivity(currentActivity);
+            mDataProvider.joinActivity(currentActivity);
             enrolledInfoTextView.setVisibility(View.VISIBLE);
             joinActivityButton.setVisibility(View.INVISIBLE);
 

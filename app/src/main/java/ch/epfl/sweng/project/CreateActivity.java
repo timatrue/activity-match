@@ -37,6 +37,11 @@ import static java.text.DateFormat.getDateInstance;
 
 public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
 
+    final static public String CREATE_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST_KEY";
+    final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
+    final static public String CREATE_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST";
+
+
     TextView startDateTextView;
     TextView endDateTextView;
     TextView startTimeTextView;
@@ -70,7 +75,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private GoogleApiClient client;
 
     final String[] tries = {"1", "2", "three"};
-    int PLACE_PICKER_REQUEST = 1;
+    private final static int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +102,40 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             activityOrganizer = getString(R.string.unlogged_user);
         }
 
-        mDataProvider = new DataProvider();
+        //Retrieves and displays the confirmation message after a successful activity creation
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String confirmationMessageString = bundle.getString("CONFIRMATION_MESSAGE");
+            if (confirmationMessageString != null) {
+                if(confirmationMessageString.equals("success")) {
+                    TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
+                    confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
+                    confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
+                }
+            }
+        }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        //Check if the activity runs in test mode, if not, initialize with real Dataprovider and
+        //Get categories on the DB and display them in the dropdown
+        String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
+        if(test != null) {
+            if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
+                setDataProvider(new DataProvider());
+                getAndDisplayCategories();
+            }
+        }
+    }
+
+    //Set the DataProvider (allows test to insert a Mock DataProvider)
+    public void setDataProvider(DataProvider dataProvider) {
+        mDataProvider = dataProvider;
+    }
+
+    //Get Categories available on the DB and display them in the dropdown
+    public void getAndDisplayCategories() {
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
@@ -111,23 +148,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 dropdown.setAdapter(adapter);
             }
         });
-
-        //Retrieves and displays the confirmation message after a successful activity creation
-        Bundle confirmationMessage = getIntent().getExtras();
-        if (confirmationMessage != null) {
-            String confirmationMessageString = confirmationMessage.getString("CONFIRMATION_MESSAGE");
-            if (confirmationMessageString != null && confirmationMessageString.equals("success")) {
-
-                TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
-                confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
-                confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
-            }
-        }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    //When user chose a category on the dropdown, saves it
     AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -140,6 +163,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
     };
 
+    //When click on the choose a location button, start the PLacePicker activity
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -153,6 +177,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //When user has choosen a location, saves it
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(data, this);
