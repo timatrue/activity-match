@@ -194,7 +194,51 @@ public class MockDataProviderTest {
 
             }
         },listAllCategory.get(1).getCategory());
+    }
 
+    @Test
+    public void UserIsEnrolledInActivityFromMocTest(){
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        final List<String> activityListEnrolled = new ArrayList<>();
+        activityListEnrolled.add(activity2.getId());
+        activityListEnrolled.add(activity4.getId());
+
+        mocDataProvider.setListOfEnrolledActivityToMock(activityListEnrolled);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,false);
+
+            }
+        },activity1.getId());
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,true);
+
+            }
+        },activity2.getId());
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,false);
+
+            }
+        },activity3.getId());
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,true);
+
+            }
+        },activity4.getId());
 
     }
 
