@@ -164,7 +164,6 @@ public class MockDataProvider {
 
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerEnrolled listener = (DataProvider.DataProviderListenerEnrolled) args[0];
-               // String activityUid = (String) args[1];
 
                 boolean result = false;
                 for(String activityUid : listUserActivityEnrolledStored ) {
@@ -179,10 +178,16 @@ public class MockDataProvider {
 
             }
         }).when(mockDataProvider).userEnrolledInActivity(any(DataProvider.DataProviderListenerEnrolled.class),any(String.class));
-
     }
 
     private void initJoinActivity(){
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                listUserActivityEnrolledStored.add((String)args[0]);
 
+                return null;
+            }
+        }).when(mockDataProvider).joinActivity(any(DeboxActivity.class));
     }
 }
