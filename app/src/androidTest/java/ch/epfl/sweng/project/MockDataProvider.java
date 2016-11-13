@@ -7,6 +7,7 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -24,6 +25,8 @@ public class MockDataProvider {
 
     private List<DeboxActivity> listDeboxActivityStored;
     private List<DataProvider.CategoryName> listCategoryStored;
+    private List<String> listUserActivityEnrolledStored;
+    private String userID;
 
     public DataProvider getMockDataProvider(){
 
@@ -33,10 +36,26 @@ public class MockDataProvider {
         initMocGetActivityFromUid();
         initMockGetAllCategories();
         initMockGetSpecifiedCategory();
+        initMockUserIsEnrolledInActivity();
+        initJoinActivity();
         listDeboxActivityStored = new ArrayList<>();
         listCategoryStored = new ArrayList<>();
+        userID="default";
 
         return mockDataProvider;
+    }
+
+    public void setUserIDToMock(final String id){
+        userID=id;
+        initMockUserIsEnrolledInActivity();
+        initJoinActivity();
+    }
+
+    public void setListOfEnrolledActivityToMock(List<String> list){
+        listUserActivityEnrolledStored = list;
+        initMockUserIsEnrolledInActivity();
+        initJoinActivity();
+
     }
 
     public void setListOfCategoryToMock(final List<DataProvider.CategoryName> list){
@@ -136,5 +155,34 @@ public class MockDataProvider {
                 return null;
             }
         }).when(mockDataProvider).getSpecifiedCategory(any(DataProvider.DataProviderListenerCategory.class),any(String.class));
+    }
+
+    private void initMockUserIsEnrolledInActivity(){
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerEnrolled listener = (DataProvider.DataProviderListenerEnrolled) args[0];
+               // String activityUid = (String) args[1];
+
+                boolean result = false;
+                for(String activityUid : listUserActivityEnrolledStored ) {
+
+                    if (activityUid.equals(args[1])){
+                        result = true;
+                    }
+                }
+
+                listener.getIfEnrolled(result);
+                return null;
+
+            }
+        }).when(mockDataProvider).userEnrolledInActivity(any(DataProvider.DataProviderListenerEnrolled.class),any(String.class));
+
+    }
+
+    private void initJoinActivity(){
+
     }
 }
