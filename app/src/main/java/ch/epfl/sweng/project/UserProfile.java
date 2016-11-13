@@ -59,7 +59,7 @@ public class UserProfile extends AppCompatActivity {
                 current_user = user.copy();
                 Log.d("current_user email: ", current_user.getEmail());
                 interestedIds = user.getInterestedEvents();
-                //emailTextView = (TextView) findViewById(R.id.userEmail);
+                emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
             }
 
