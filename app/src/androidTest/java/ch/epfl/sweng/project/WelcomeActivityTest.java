@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseUser;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -25,8 +24,6 @@ import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 
-//import static ch.epfl.sweng.project.MockDataProvider.setActivity;
-//import static ch.epfl.sweng.project.MockDataProvider.getMockDataProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -136,15 +133,6 @@ public class WelcomeActivityTest {
                 122.01,
                 121.0213,
                 "Sports");
-
-        if(dp==null)
-        {
-            assertEquals(true,false);
-
-        } else
-        {
-            assertEquals(true,true);
-        }
 
         //assertEquals(dp.pushActivity(dbat),"sample");
         assertEquals(dp.pushActivity(dbat),dbat.getId());

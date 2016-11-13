@@ -2,18 +2,16 @@ package ch.epfl.sweng.project;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Null;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+
 
 /**
  * Created by jeremie on 09.11.16.
@@ -24,65 +22,30 @@ public class MockDataProvider {
     @Mock
     DataProvider mockDataProvider;
 
-    private List<DeboxActivity> ll;
-
-    //when(mockDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn("return");
-    //
-    //  fonction : setListActivity
-    //
-    //
+    private List<DeboxActivity> listDeboxActivityStored;
 
     public DataProvider getMockDataProvider(){
 
             mockDataProvider = Mockito.mock(DataProvider.class);
             initBasicDataProvider();
-            ll= new ArrayList<DeboxActivity>();
+            listDeboxActivityStored= new ArrayList<>();
             return mockDataProvider;
     }
 
-
-    private void initBasicDataProvider(){
-        //TODO - add activity to list
-
-
-        //when(mockDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn("sample");
-        doAnswer(new Answer<String>() {
-            public String answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                //DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
-                //listener.getActivities(ll);
-
-                DeboxActivity dbatmp = (DeboxActivity) args[0];
-
-                ll.add(dbatmp);
-
-                return dbatmp.getId();
-            }
-        }).when(mockDataProvider).pushActivity(any(DeboxActivity.class));
-
-
-
-
-    }
-
-
-
-
-
     public void setListOfActivitiesToMock(final List<DeboxActivity> list){
 
-        ll=list;
+        listDeboxActivityStored=list;
         initMocGetAllActivities();
         initMocGetActivityFromUid();
     }
 
     public void addActivityToMock(DeboxActivity dba){
 
-        if(ll == null)
+        if(listDeboxActivityStored == null)
         {
-            ll= new ArrayList<DeboxActivity>();
+            listDeboxActivityStored= new ArrayList<>();
         }
-        ll.add(dba);
+        listDeboxActivityStored.add(dba);
         initMocGetAllActivities();
         initMocGetActivityFromUid();
 
@@ -93,7 +56,7 @@ public class MockDataProvider {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerActivities listener = (DataProvider.DataProviderListenerActivities) args[0];
-                listener.getActivities(ll);
+                listener.getActivities(listDeboxActivityStored);
                 return null;
             }
         }).when(mockDataProvider).getAllActivities(any(DataProvider.DataProviderListenerActivities.class));
@@ -106,35 +69,31 @@ public class MockDataProvider {
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
 
-                String id = (String) args[1];
-
                 DeboxActivity foundDbA = null;
 
-                for (DeboxActivity deb : ll){
+                for (DeboxActivity deb : listDeboxActivityStored){
 
-                    if(deb.getId().equals((String) args[1])){
+                    if(deb.getId().equals(args[1])){
                         foundDbA =  deb;
                     }
                 }
 
                 listener.getActivity(foundDbA);
-
                 return null;
             }
         }).when(mockDataProvider).getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString());
+    }
 
+    private void initBasicDataProvider(){
 
+        doAnswer(new Answer<String>() {
+            public String answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DeboxActivity dbatmp = (DeboxActivity) args[0];
+                listDeboxActivityStored.add(dbatmp);
+
+                return dbatmp.getId();
+            }
+        }).when(mockDataProvider).pushActivity(any(DeboxActivity.class));
     }
 }
-
-
-
-/*
-
-
-      }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
-
-        //Override getReference method to return the Mock reference
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
- */

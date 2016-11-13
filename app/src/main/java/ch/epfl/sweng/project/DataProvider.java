@@ -40,7 +40,7 @@ public class DataProvider {
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    // use for mock test
+    // use for moc test
     public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase, FirebaseUser mockUser) {
 
         deboxActivityList = new ArrayList<DeboxActivity>();
