@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,10 @@ public class User {
     private List<String>  interestedEvents;
     private String rating; //Double?
     private String photoLink;
-    private Boolean isActive;
+
+    //private Boolean isActive;
+
+    //private DataProvider mDB;
 
     /**
      * A class about user profile information that provides it to other classes.
@@ -27,33 +31,36 @@ public class User {
      * @param   interestedEvents    a list of events this user is interested in
      * @param   rating    the rating of the user
      * @param   photoLink    the link to get the photo of the user
-     * @param   isActive    status of the user - either active (1) or not (0)
      */
     public User(String id, String username, String email, List<String>  organizedEvents, List<String>  participatedEvents, List<String>  interestedEvents,
-                         String rating, String photoLink, Boolean isActive) {
-        this.id = new String(id);
-        this.username = new String(username);
-        this.email = new String(email);
-        this.organizedEvents = organizedEvents; //why not new String []? what does it change?
+                String rating, String photoLink) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.organizedEvents = organizedEvents;
         this.participatedEvents = participatedEvents;
         this.interestedEvents = interestedEvents;
-        this.rating = new String(rating);
-        this.photoLink = new String(photoLink);
-        this.isActive = new Boolean(isActive);
+        this.rating = rating;
+        this.photoLink = photoLink;
+        //this.isActive = new Boolean(isActive);
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     /**
      * @return username of the user
      */
     public String getUsername() {
-        return new String(username);
+        return this.username;
     }
 
     /**
      * @return email of the user
      */
     public String getEmail() {
-        return new String(email);
+        return this.email;
     }
 
     public List<String> getOrganizedEvents() {
@@ -73,10 +80,7 @@ public class User {
     }
 
     public List<String> getInterestedEvents() {
-        List<String> events = null;
-        for (String event : interestedEvents) {
-            events.add(new String(event));
-        }
+        List<String> events = new ArrayList<>(interestedEvents);
         return events;
     }
     /**
@@ -88,5 +92,9 @@ public class User {
 
     public String getPhotoLink() {
         return new String(photoLink);
+    }
+
+    public User copy() {
+        return new User(this.id, this.username, this.email, this.organizedEvents, this.participatedEvents, this.interestedEvents, this.rating, this.photoLink);
     }
 }
