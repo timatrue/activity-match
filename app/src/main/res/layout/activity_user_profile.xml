@@ -12,7 +12,8 @@
     <ExpandableListView
         android:id="@+id/userProfileActivityList"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/userEmail">
     </ExpandableListView>
 
 </RelativeLayout>

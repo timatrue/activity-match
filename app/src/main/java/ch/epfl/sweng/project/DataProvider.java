@@ -119,7 +119,7 @@ public class DataProvider {
         });
     }
 
-    public void getSpecifiedActivities(final DataProviderListenerUserInfo listener, final List<String> eventIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> eventIds) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -345,6 +345,8 @@ public class DataProvider {
     }
     public interface DataProviderListenerUserInfo {
         void getUserInfo(User user);
+    }
+    public interface DataProviderListenerUserEvents {
         void getUserActivities(List<DeboxActivity> activitiesList);
     }
 

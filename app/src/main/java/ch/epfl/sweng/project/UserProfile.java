@@ -26,11 +26,15 @@ public class UserProfile extends AppCompatActivity {
 
     TextView emailTextView;
     User current_user;
-    List<DeboxActivity> interested = new ArrayList<>();
-    List<DeboxActivity> participated = new ArrayList<>();
-    List<DeboxActivity> organized = new ArrayList<>();
+
+    ArrayList<String> titles = new ArrayList<String>();
     List<String> interestedIds = new ArrayList<>();
     private DataProvider dp;
+    private DataProvider dpData;
+
+    private String interestedEvents;
+    private String participatedEvents;
+    private String organizedEvents;
 
     List<String> groupList;
     List<String> childList;
@@ -38,46 +42,20 @@ public class UserProfile extends AppCompatActivity {
     ExpandableListView expListView;
     private static Context mContext;
 
-    //private String organisedEvents = getContext().getResources().getString(R.string.organised_events);
-    //private String participatedEvents = getResources().getString(R.string.participated_events);
-    //private String interestedEvents = getResources().getString(R.string.interested_events);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         mContext = getApplicationContext();
+
+        interestedEvents = getResources().getString(R.string.interested_events);
+        participatedEvents = getResources().getString(R.string.participated_events);
+        organizedEvents = getResources().getString(R.string.organised_events);
+
         createGroupList();
         createCollection();
 
-        dp = new DataProvider();
-        dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
-
-            @Override
-            public void getUserInfo(User user) {
-                current_user = user.copy();
-                Log.d("current_user email: ", current_user.getEmail());
-                interestedIds = user.getInterestedEvents();
-                emailTextView = (TextView) findViewById(R.id.userEmail);
-                emailTextView.setText(user.getEmail());
-            }
-
-            @Override
-            public void getUserActivities(List<DeboxActivity> activitiesList) {}
-        });
-        dp = new DataProvider();
-        dp.getSpecifiedActivities(new DataProvider.DataProviderListenerUserInfo(){
-
-            @Override
-            public void getUserInfo(User user) {}
-
-            @Override
-            public void getUserActivities(List<DeboxActivity> activitiesList) {
-                interested = activitiesList;
-                List<String> participatedIds = new ArrayList<String>();
-            }
-        }, interestedIds);
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
         final UserProfileExpandableListAdapter eventsExpListAdapter =
                 new UserProfileExpandableListAdapter(this, activityCollection, groupList);
@@ -96,18 +74,44 @@ public class UserProfile extends AppCompatActivity {
     private void createGroupList() {
 
         groupList = new ArrayList<String>();
-        //groupList.add(organisedEvents);
-        //groupList.add(participatedEvents);
-        //groupList.add(interestedEvents);
-        groupList.add("organisedEvents");
-        groupList.add("participatedEvents");
-        groupList.add("interestedEvents");
+        groupList.add(organizedEvents);
+        groupList.add(participatedEvents);
+        groupList.add(interestedEvents);
 
     }
+
     private void createCollection() {
+        dp = new DataProvider();
+        dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
+
+            @Override
+            public void getUserInfo(User user) {
+                current_user = user.copy();
+                Log.d("current_user email: ", current_user.getEmail());
+                interestedIds = new ArrayList<String>(user.getInterestedEvents());
+
+                dpData = new DataProvider();
+                dpData.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
+
+                    @Override
+                    public void getUserActivities(List<DeboxActivity> activitiesList) {
+                        for (DeboxActivity event : activitiesList) {
+                            titles.add(event.getTitle());
+                        }
+
+                        String[] interestedEventsArray = new String[titles.size()];
+                        loadChild(titles.toArray(interestedEventsArray));
+                        activityCollection.put(interestedEvents, childList);
+                    }
+                }, interestedIds);
+
+                emailTextView = (TextView) findViewById(R.id.userEmail);
+                emailTextView.setText(user.getEmail());
+            }
+        });
+
         String[] organisedEventsArray= { "organisedEvent1", "organisedEvent2"};
         String[] participateEventsArray = { "participatedEvent1", "participatedEvent2"};
-        String[] interestedEventsArray = { "interestedEvent1", "interestedEvent2" };
 
         activityCollection = new LinkedHashMap<String, List<String>>();
 
@@ -116,12 +120,11 @@ public class UserProfile extends AppCompatActivity {
                 loadChild(organisedEventsArray);
             } else if (group.equals("participatedEvents")){
                 loadChild(participateEventsArray);
-            } else {
-                loadChild(interestedEventsArray);
             }
             activityCollection.put(group, childList);
         }
     }
+
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();
         for (String event : events)
