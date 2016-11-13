@@ -466,7 +466,7 @@ public class CreateActivityTest {
     }
 
     @Test
-    public void noLocationChoosen() throws Exception {
+    public void noLocationChosen() throws Exception {
 
         CreateActivity activity = createActivityRule.getActivity();
 

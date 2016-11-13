@@ -14,26 +14,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-import ch.epfl.sweng.project.DataProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.WelcomeActivity;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
 
-/**
- * Created by nathan on 25.10.16.
- */
-
 public class FilterFragment extends DialogFragment {
     Button validate;
-    DataProvider mDataProvider;
     public List<String> categoryList;
-    String chosenCategory;
-    int maxDistance;
     Spinner dropdownMaxDistance;
     Spinner dropDownCategories;
 
@@ -42,21 +33,10 @@ public class FilterFragment extends DialogFragment {
     TextView startTimeTextView;
     TextView endTimeTextView;
 
-    private static final HashMap<String, Integer> maxDistanceMap;
-    static
-    {
-        maxDistanceMap = new HashMap<>();
-        maxDistanceMap.put("1 km", 1);
-        maxDistanceMap.put("5 km", 5);
-        maxDistanceMap.put("10 km", 10);
-        maxDistanceMap.put("20 km", 20);
-        maxDistanceMap.put("50 km", 50);
-        maxDistanceMap.put("All", 21000);
-    }
+    List<String> categoryListWithAll = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        List<String> categoryListWithAll = new ArrayList<String>();
         categoryListWithAll.add("All");
         categoryListWithAll.addAll(categoryList);
 
@@ -71,7 +51,7 @@ public class FilterFragment extends DialogFragment {
         dropdownMaxDistance.setOnItemSelectedListener(maxDistanceSelectedItemListener);
 
         dropDownCategories = (Spinner) rootView.findViewById(R.id.filterCategoriesDropDown);
-        ArrayAdapter<String> categoriesDropDownAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+        ArrayAdapter<String> categoriesDropDownAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 android.R.layout.simple_spinner_item, categoryListWithAll);
         categoriesDropDownAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dropDownCategories.setAdapter(categoriesDropDownAdapter);
@@ -104,9 +84,8 @@ public class FilterFragment extends DialogFragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String chosenMaxDistance = parent.getItemAtPosition(position).toString();
-            if(maxDistanceMap.get(chosenMaxDistance) != null) {
+            if(WelcomeActivity.maxDistanceMap.get(chosenMaxDistance) != null) {
                 ((WelcomeActivity)getActivity()).maxDistanceString = chosenMaxDistance;
-                maxDistance = maxDistanceMap.get(chosenMaxDistance);
             }
             else {
                 Log.d(TAG, "The max distance selected is not mapped to a value");
@@ -115,20 +94,26 @@ public class FilterFragment extends DialogFragment {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            maxDistance = maxDistanceMap.get(((WelcomeActivity)getActivity()).maxDistanceString);
+
         }
     };
 
     AdapterView.OnItemSelectedListener categoriesSelectedItemListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            chosenCategory = parent.getItemAtPosition(position).toString();
-            ((WelcomeActivity)getActivity()).filterCategory = chosenCategory;
+            String chosenCategory = parent.getItemAtPosition(position).toString();
+            if(categoryListWithAll.contains(chosenCategory)) {
+                ((WelcomeActivity)getActivity()).filterCategory = chosenCategory;
+            }
+            else {
+                Log.d(TAG, "The category selected is not in the category list");
+            }
+
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            chosenCategory = ((WelcomeActivity)getActivity()).filterCategory;
+
         }
     };
 
@@ -136,7 +121,7 @@ public class FilterFragment extends DialogFragment {
 
         @Override
         public void onClick(View v) {
-            ((WelcomeActivity)getActivity()).displaySpecifiedActivities(chosenCategory, maxDistance);
+            ((WelcomeActivity)getActivity()).displaySpecifiedActivities();
             dismiss();
         }
     };
