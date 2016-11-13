@@ -119,7 +119,27 @@ public class DataProvider {
         });
     }
 
+    public void getSpecifiedActivities(final DataProviderListenerUserInfo listener, final List<String> eventIds) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities");
 
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    if (eventIds.contains(child.getKey()))
+                        list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                }
+                listener.getUserActivities(list);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     public String pushActivity(DeboxActivity da){
 
@@ -325,6 +345,7 @@ public class DataProvider {
     }
     public interface DataProviderListenerUserInfo {
         void getUserInfo(User user);
+        void getUserActivities(List<DeboxActivity> activitiesList);
     }
 
 }
