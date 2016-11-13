@@ -146,4 +146,56 @@ public class MockDataProviderTest {
         });
     }
 
+    @Test
+    public void getSpecifiedCategoryFromMocTest(){
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        final List<DataProvider.CategoryName> listAllCategory = new ArrayList<>();
+
+        listAllCategory.add(new DataProvider.CategoryName("1","Sports"));
+        listAllCategory.add(new DataProvider.CategoryName("2","Culture"));
+
+        mocDataProvider.setListOfCategoryToMock(listAllCategory);
+
+        final List<DeboxActivity> activitiesList = new ArrayList<>();
+
+        activitiesList.add(activity1);
+        activitiesList.add(activity2);
+        activitiesList.add(activity3);
+        activitiesList.add(activity4);
+
+        mocDataProvider.setListOfActivitiesToMock(activitiesList);
+
+        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+            @Override
+            public void getCategory(List<DeboxActivity> activitiesList) {
+
+                assertEquals(activitiesList.contains(activity1),true);
+                assertEquals(activitiesList.contains(activity2),true);
+                assertEquals(activitiesList.contains(activity3),false);
+                assertEquals(activitiesList.contains(activity4),false);
+
+            }
+        },listAllCategory.get(0).getCategory());
+
+
+        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+            @Override
+            public void getCategory(List<DeboxActivity> activitiesList) {
+
+                assertEquals(activitiesList.contains(activity1),false);
+                assertEquals(activitiesList.contains(activity2),false);
+                assertEquals(activitiesList.contains(activity3),true);
+                assertEquals(activitiesList.contains(activity4),true);
+
+            }
+        },listAllCategory.get(1).getCategory());
+
+
+    }
+
 }
