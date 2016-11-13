@@ -24,7 +24,9 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 import static org.mockito.Matchers.any;
@@ -104,5 +106,68 @@ public class DisplayActivityTest {
         Assert.assertThat(activity.description.getText().toString(), is(dA.getDescription()));
 
    }
+
+
+    @UiThreadTest
+    @Test
+    public void mocDisplayActivityProperly() throws Exception {
+
+
+        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
+
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+
+        startDate.set(Calendar.YEAR, 2016);
+        startDate.set(Calendar.MONTH, 11);
+        final DeboxActivity dA = new DeboxActivity("zdkasKKLD", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Sports");
+
+        final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
+                "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.04,
+                121.0243,
+                "Sports");
+
+        //DataProvider testDataProvider = mock(DataProvider.class);
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        mocDataProvider.addActivityToMock(dA);
+        mocDataProvider.addActivityToMock(dA2);
+
+        /*when(testDataProvider.getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString())).thenAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
+                listener.getActivity(dA);
+                return null;
+            }
+        });*/
+
+
+        final DisplayActivity activity = displayActivityRule.getActivity();
+
+        //activity.setTestDBObjects(testDataProvider, testFirebaseUser);
+        activity.setTestDBObjects(dp, testFirebaseUser);
+
+        activity.initDisplay();
+
+        Assert.assertThat(activity.title.getText().toString(), is(dA.getTitle()));
+        Assert.assertThat(activity.description.getText().toString(), is(dA.getDescription()));
+        Assert.assertThat(activity.description.getText().toString(), is(dA.getDescription()));
+
+    }
 
 }

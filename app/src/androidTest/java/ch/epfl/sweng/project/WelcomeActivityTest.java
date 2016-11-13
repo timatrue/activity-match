@@ -38,8 +38,8 @@ import static org.mockito.Mockito.mock;
 @RunWith(AndroidJUnit4.class)
 public class WelcomeActivityTest {
 
-    @Mock
-    FirebaseUser testFirebaseUser;
+    //@Mock
+    //FirebaseUser testFirebaseUser;
 
     @Rule
     public ActivityTestRule<WelcomeActivity> welcomeActivityRule =
@@ -146,7 +146,8 @@ public class WelcomeActivityTest {
             assertEquals(true,true);
         }
 
-        assertEquals(dp.pushActivity(dbat),"sample");
+        //assertEquals(dp.pushActivity(dbat),"sample");
+        assertEquals(dp.pushActivity(dbat),dbat.getId());
 
         final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
 
@@ -177,7 +178,7 @@ public class WelcomeActivityTest {
 
 
 
-        mocDataProvider.setActivities(testActivityList);
+        mocDataProvider.setListOfActivitiesToMock(testActivityList);
         //setActivity(testActivityList);
 
 
@@ -229,7 +230,7 @@ public class WelcomeActivityTest {
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
 
-        mocDataProvider.setActivities(testActivityList);
+        mocDataProvider.setListOfActivitiesToMock(testActivityList);
 
         //setActivity(testActivityList);
 
