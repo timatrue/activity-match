@@ -7,10 +7,8 @@ import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,9 +32,6 @@ import static org.mockito.Mockito.mock;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class WelcomeActivityTest {
-
-    //@Mock
-    //FirebaseUser testFirebaseUser;
 
     @Rule
     public ActivityTestRule<WelcomeActivity> welcomeActivityRule =
@@ -124,7 +119,6 @@ public class WelcomeActivityTest {
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
-        //DataProvider dp = getMockDataProvider();
 
         final DeboxActivity dbat = new DeboxActivity("-","test", "user-test",
                 "description",
@@ -134,7 +128,6 @@ public class WelcomeActivityTest {
                 121.0213,
                 "Sports");
 
-        //assertEquals(dp.pushActivity(dbat),"sample");
         assertEquals(dp.pushActivity(dbat),dbat.getId());
 
         final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
@@ -164,7 +157,6 @@ public class WelcomeActivityTest {
         testActivityList.add(dA2);
 
         mocDataProvider.setListOfActivitiesToMock(testActivityList);
-        //setActivity(testActivityList);
 
         dp.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
@@ -209,17 +201,13 @@ public class WelcomeActivityTest {
         testActivityList.add(dA1);
         testActivityList.add(dA2);
 
-        //DataProvider testDataProvider = getMockDataProvider();
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
 
         mocDataProvider.setListOfActivitiesToMock(testActivityList);
 
-        //setActivity(testActivityList);
-
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
-        //Insert Mock DataProvider
-        //activity.setDataProvider(testDataProvider);
+        //Insert the moc DataProvider
         activity.setDataProvider(dp);
 
         //Press on the "Display Events" button
