@@ -231,7 +231,6 @@ public class DataProvider {
         return null;
     }
 
-
     private User getDeboxUser(String uid, Map<String, Object> activityMap) {
         String email = (String) activityMap.get("user_email");
         String username = "";
