@@ -14,12 +14,9 @@ public class User {
     private List<String> organizedEvents;
     private List<String>  participatedEvents;
     private List<String>  interestedEvents;
-    private String rating; //Double?
+    private String rating;
     private String photoLink;
 
-    //private Boolean isActive;
-
-    //private DataProvider mDB;
 
     /**
      * A class about user profile information that provides it to other classes.
@@ -42,7 +39,6 @@ public class User {
         this.interestedEvents = interestedEvents;
         this.rating = rating;
         this.photoLink = photoLink;
-        //this.isActive = new Boolean(isActive);
     }
 
     public String getId() {
@@ -64,18 +60,12 @@ public class User {
     }
 
     public List<String> getOrganizedEvents() {
-        List<String> events = null;
-        for (String event : organizedEvents) {
-            events.add(new String(event));
-        }
+        List<String> events = new ArrayList<>(organizedEvents);
         return events;
     }
 
     public List<String> getParticipatedEvents() {
-        List<String> events = null;
-        for (String event : participatedEvents) {
-            events.add(new String(event));
-        }
+        List<String> events = new ArrayList<>(participatedEvents);
         return events;
     }
 
