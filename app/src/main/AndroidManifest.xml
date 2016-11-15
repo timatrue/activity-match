@@ -65,7 +65,9 @@
             android:label="@string/create_activity_title_bar"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name=".UserProfile"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"

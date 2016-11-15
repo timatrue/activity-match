@@ -12,6 +12,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="create_activity">Organize your activity</string>
     <string name="log_out">Log out</string>
+    <string name="user_profile">User profile</string>
     <string name="sign_up">Sign up</string>
     <string name="share">Share</string>
     <string name="contact_us">Contact us</string>
@@ -25,8 +26,6 @@
     <string name="display_activities_button">Display All Events</string>
     <string name="filter_button_text">Filter the events</string>
     <string name="create_activity_button_text">Organize yours!</string>
-
-
 
 
     <!-- Create Activity -->
@@ -92,5 +91,19 @@
 
     <!-- For test/development -->
     <string name="test_text">test</string>
+
+    <!-- User Profile -->
+
+
+    <string-array name="user_info">
+        <item>Organised</item>
+        <item>Participated</item>
+        <item>Interested</item>
+    </string-array>
+
+    <string name="organised_events">Organised Events</string>
+    <string name="participated_events">Participated Events</string>
+    <string name="interested_events">Interested Events</string>
+
 
 </resources>

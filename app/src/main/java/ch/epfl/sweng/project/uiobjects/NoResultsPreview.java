@@ -29,4 +29,11 @@ public class NoResultsPreview extends LinearLayout {
         this.setPadding(10,10,10,10);
 
     }
+    public NoResultsPreview(Context context, String elem){
+        super(context);
+        setOrientation(VERTICAL);
+
+        TextView noResults = new TextView(context);
+        noResults.setText(R.string.no_results_found);
+    }
 }
