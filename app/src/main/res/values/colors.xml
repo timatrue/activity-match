@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="red">#FF0000</color>
     <color name="green">#1C8B5C</color>
+    <color name="userProfileLight">#F6FFE0</color>
 </resources>

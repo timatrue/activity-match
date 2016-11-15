@@ -1,9 +1,12 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -42,7 +45,6 @@ public class UserProfile extends AppCompatActivity {
     ExpandableListView expListView;
     private static Context mContext;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +55,9 @@ public class UserProfile extends AppCompatActivity {
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
 
+        setupUserToolBar();
         createGroupList();
         createCollection();
-
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
         final UserProfileExpandableListAdapter eventsExpListAdapter =
                 new UserProfileExpandableListAdapter(this, activityCollection, groupList);
@@ -72,14 +74,11 @@ public class UserProfile extends AppCompatActivity {
         });
     }
     private void createGroupList() {
-
         groupList = new ArrayList<String>();
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
         groupList.add(interestedEvents);
-
     }
-
     private void createCollection() {
         dp = new DataProvider();
         dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
@@ -98,18 +97,15 @@ public class UserProfile extends AppCompatActivity {
                         for (DeboxActivity event : activitiesList) {
                             titles.add(event.getTitle());
                         }
-
                         String[] interestedEventsArray = new String[titles.size()];
                         loadChild(titles.toArray(interestedEventsArray));
                         activityCollection.put(interestedEvents, childList);
                     }
                 }, interestedIds);
-
                 emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
             }
         });
-
         String[] organisedEventsArray= { "No Events"};
         String[] participateEventsArray = { "No Events"};
 
@@ -124,14 +120,21 @@ public class UserProfile extends AppCompatActivity {
             activityCollection.put(group, childList);
         }
     }
-
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();
         for (String event : events)
             childList.add(event);
     }
-
-    public static Context getContext() {
+    private static Context getContext() {
         return mContext;
+    }
+    private void setupUserToolBar(){
+        Toolbar mUserToolBar = (Toolbar) findViewById(R.id.user_toolbar);
+        mUserToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 }
