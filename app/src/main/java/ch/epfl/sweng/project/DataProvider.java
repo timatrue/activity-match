@@ -131,7 +131,27 @@ public class DataProvider {
         });
     }
 
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> eventIds) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("activities");
 
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                for(DataSnapshot child: dataSnapshot.getChildren()) {
+                    if (eventIds.contains(child.getKey()))
+                        list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                }
+                listener.getUserActivities(list);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     public String pushActivity(DeboxActivity da){
 
@@ -209,6 +229,45 @@ public class DataProvider {
 
         return null;
     }
+
+
+    private User getDeboxUser(String uid, Map<String, Object> activityMap) {
+        String email = (String) activityMap.get("user_email");
+        String username = "";
+        List<String> interestedEvents = new ArrayList<>();
+        Map<String,Map<String,Object> > enrolled = (Map<String,Map<String,Object> >) activityMap.get("enrolled");
+        for (Map<String, Object> innerMap : enrolled.values()) {
+            String activityID = (String) innerMap.get("activity ID:");
+            interestedEvents.add(activityID);
+        }
+        List<String> participatedEvents = new ArrayList<String>();
+        List<String> organizedEvents = new ArrayList<String>();
+        String rating = "";
+        String photoLink = "";
+
+        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink);
+    }
+
+    public void userProfile(final DataProviderListenerUserInfo listener){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+        //do try catch;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
+
+        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
+
 
     /**
      * Check if the current user is already enrolled in the uid activity.
@@ -299,4 +358,13 @@ public class DataProvider {
     public interface DataProviderListenerCategory {
         void getCategory(List<DeboxActivity> activitiesList);
     }
+
+    public interface DataProviderListenerUserInfo {
+        void getUserInfo(User user);
+    }
+
+    public interface DataProviderListenerUserEvents {
+        void getUserActivities(List<DeboxActivity> activitiesList);
+    }
+    
 }
