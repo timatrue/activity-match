@@ -34,21 +34,20 @@ public class DataProvider {
 
     public DataProvider() {
 
-        deboxActivityList = new ArrayList<DeboxActivity>();
+        deboxActivityList = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    // use for mock test
+    // use for moc test
     public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase, FirebaseUser mockUser) {
 
-        deboxActivityList = new ArrayList<DeboxActivity>();
+        deboxActivityList = new ArrayList<>();
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
         user = mockUser;
     }
-
 
 
     public static class CategoryName{
@@ -67,7 +66,7 @@ public class DataProvider {
     }
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
-        //database = FirebaseDatabase.getInstance();
+
         DatabaseReference myCategories = database.getReference("categories");
 
         myCategories.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -90,7 +89,7 @@ public class DataProvider {
 
     }
     public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         DatabaseReference getActivities = database.getReference("activities");
         Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
 
@@ -112,13 +111,13 @@ public class DataProvider {
     }
 
     public void getAllActivities(final DataProviderListenerActivities listener) {
-        DatabaseReference myRef = database.getReference("activities");
 
+        DatabaseReference myRef = database.getReference("activities");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> list = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
 
@@ -195,7 +194,7 @@ public class DataProvider {
     }
 
     public Void getActivityFromUid(final DataProviderListenerActivity listener, final String uid) {
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         DatabaseReference myRef = database.getReference("activities/" + uid);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -220,12 +219,7 @@ public class DataProvider {
      */
     public void userEnrolledInActivity(final DataProviderListenerEnrolled listener, final String uid) {
 
-        //database = FirebaseDatabase.getInstance();
-        //user = FirebaseAuth.getInstance().getCurrentUser();
-
         String userUid = user.getUid();
-
-        //DatabaseReference myRef = database.getReference("users/"+user.getUid()+"/enrolled");
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
 
 
