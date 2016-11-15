@@ -55,7 +55,7 @@ public class CreateActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation()
                             .getTargetContext();
-                    Intent result = new Intent(targetContext, MainActivity.class);
+                    Intent result = new Intent(targetContext, CreateActivity.class);
                     result.putExtra(CreateActivity.CREATE_ACTIVITY_TEST_KEY, CreateActivity.CREATE_ACTIVITY_TEST);
                     return result;
                 }

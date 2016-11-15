@@ -73,7 +73,7 @@ public class WelcomeActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation()
                             .getTargetContext();
-                    Intent result = new Intent(targetContext, MainActivity.class);
+                    Intent result = new Intent(targetContext, WelcomeActivity.class);
                     result.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_TEST);
                     return result;
                 }
