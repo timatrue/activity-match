@@ -46,7 +46,7 @@ public class DisplayActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation()
                             .getTargetContext();
-                    Intent result = new Intent(targetContext, MainActivity.class);
+                    Intent result = new Intent(targetContext, DisplayActivity.class);
                     result.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_TEST);
                     result.putExtra(DisplayActivity.DISPLAY_EVENT_ID, "zdkasKKLD");
                     return result;

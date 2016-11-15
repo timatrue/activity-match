@@ -3,6 +3,7 @@ package ch.epfl.sweng.project.uiobjects;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,7 +18,7 @@ import ch.epfl.sweng.project.R;
 
 public class ActivityPreview extends LinearLayout {
 
-    DeboxActivity event;
+    private DeboxActivity event;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,6 +37,7 @@ public class ActivityPreview extends LinearLayout {
 
         TextView titleView = new TextView(context);
         TextView previewtextView = new TextView(context);
+        titleView.setTextSize(22);
 
         titleView.setText(event.getTitle());
         previewtextView.setText(event.getShortDescription());
@@ -48,12 +50,18 @@ public class ActivityPreview extends LinearLayout {
         this.addView(previewtextView);
 
         GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.LTGRAY); // Changes this drawbale to use a single color instead of a gradient
-        gd.setCornerRadius(5);
+        gd.setColor(Color.rgb(0xCF, 0xD8, 0xDC)); // Changes this drawbale to use a single color instead of a gradient
+        gd.setCornerRadius(10);
         gd.setStroke(2, 0xFF000000);
-        this.setBackgroundDrawable(gd);
 
-        this.setPadding(10,10,10,10);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            //noinspection deprecation
+            this.setBackgroundDrawable(gd);
+        } else {
+            this.setBackground(gd);
+        }
+
+        this.setPadding(20,20,20,20);
 
 
     }

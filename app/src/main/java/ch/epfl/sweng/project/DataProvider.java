@@ -178,6 +178,7 @@ public class DataProvider {
         result.put("longitude",location[1]);
         result.put("category",da.getCategory());
 
+        result.put("images",da.getImageList());
 
         childUpdates.put("activities/"+key, result);
 
@@ -209,7 +210,9 @@ public class DataProvider {
             timeEnd.setTimeInMillis(timeEndMillis);
         }
 
-        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category);
+        List<String> imagesList = (ArrayList<String>) activityMap.get("images");
+
+        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList);
 
     }
 
