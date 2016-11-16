@@ -1,7 +1,9 @@
 package ch.epfl.sweng.project;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 /**
@@ -20,6 +22,7 @@ public class DeboxActivity {
     private double longitude;
     private double latitude;
     private String category;
+    private List<String> imagesList;
 
     /**
      * Allocates a <code>DeboxActivity</code> object and initializes it so that
@@ -45,9 +48,19 @@ public class DeboxActivity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.category = new String(category);
+        this.imagesList = new ArrayList<>();
     }
 
     /**
+     * @param   imagesList    the list of images name on Firebase storage
+     */
+    public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
+                         Calendar timeEnd, double latitude, double longitude, String category, List<String> imagesList) {
+        this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category);
+        this.imagesList = imagesList;
+    }
+
+    /**,
      * @return  the organizer of the Debox Activity
      */
     public String getId() { return new String(id); }
@@ -124,8 +137,7 @@ public class DeboxActivity {
      * location
      */
     public double[] getLocation() {
-        double[] location = {latitude, longitude};
-        return location;
+        return new double[]{latitude, longitude};
     }
 
     /**
@@ -134,4 +146,28 @@ public class DeboxActivity {
     public String getCategory() {
         return new String(category);
     }
+
+
+    /**
+     * @param imageName: the name of the image to insert
+     */
+    public void addImage(String imageName) {
+        imagesList.add(new String(imageName));
+    }
+
+    /**
+     * @return a deep copy of the images list
+     */
+    public List<String> getImageList() {
+        if(imagesList == null) {
+            return null;
+        }
+
+        List<String> list = new ArrayList<>();
+        for(String image: imagesList) {
+            list.add(new String(image));
+        }
+        return list;
+    }
+
 }

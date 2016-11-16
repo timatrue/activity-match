@@ -1,6 +1,8 @@
 package ch.epfl.sweng.project;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -32,10 +34,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.R.attr.category;
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static java.text.DateFormat.getDateInstance;
 
 
 public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
+
+
+    public final int PLACE_PICKER_REQUEST = 1;
+    public final int PICK_IMAGE_REQUEST = 2;
 
     final static public String CREATE_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST_KEY";
     final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
@@ -68,6 +75,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private DataProvider mDataProvider;
+
+    private ImageProvider mImageProvider;
+    private List<Uri> imagesUriList = new ArrayList<>();
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -75,7 +86,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private GoogleApiClient client;
 
     final String[] tries = {"1", "2", "three"};
-    private final static int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +137,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 getAndDisplayCategories();
             }
         }
+
+        mImageProvider = new ImageProvider();
     }
 
     //Set the DataProvider (allows test to insert a Mock DataProvider)
@@ -148,6 +160,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 dropdown.setAdapter(adapter);
             }
         });
+
     }
 
     //When user chose a category on the dropdown, saves it
@@ -176,16 +189,37 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
     }
 
+    //Start an intent to let the user chose the image he/she want to upload on the server
+    public void pickImage(View v) {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //When user has choosen a location, saves it
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
+                Place place = PlacePicker.getPlace(this, data);
                 activityLatitude = place.getLatLng().latitude;
                 activityLongitude = place.getLatLng().longitude;
 
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(requestCode == PICK_IMAGE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                //Add image URI in the list
+                imagesUriList.add(data.getData());
             }
         }
     }
@@ -204,7 +238,17 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         DeboxActivity newDeboxActivity = createActivityMethod();
 
         if(validation.equals("success")) {
-            mDataProvider.pushActivity(newDeboxActivity);
+            //Add all images name in the debox activity
+            for(Uri uri :imagesUriList) {
+                newDeboxActivity.addImage(uri.getLastPathSegment());
+            }
+            //Push the activity on the DB
+            String activityKey = mDataProvider.pushActivity(newDeboxActivity);
+
+            //Upload all selected images in a folder corresponding to activity id
+            for(Uri uri :imagesUriList) {
+                mImageProvider.UploadImage(uri, activityKey);
+            }
         }
 
         setConfirmationTextView(validation);
@@ -276,22 +320,22 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
             case "missing_field_error":
                 confirmation.setText(R.string.create_activity_missing_field_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             case "date_error":
                 confirmation.setText(R.string.create_activity_date_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             case "missing_location":
                 confirmation.setText(R.string.create_activity_location_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
 
             default:
                 confirmation.setText(R.string.create_activity_unknown_error_message);
-                confirmation.setTextColor(getResources().getColor(R.color.red));
+                confirmation.setTextColor(Color.RED);
                 break;
         }
     }

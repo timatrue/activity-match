@@ -13,14 +13,6 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
 
-
-        <Button
-            android:text="@string/filter_change_your_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/filterAddLocation"
-            android:onClick="chooseLocation" />
-
         <TextView
             android:id="@+id/filterMaxDistanceTextView"
             android:layout_width="wrap_content"
@@ -41,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/event_filter_description"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+            android:textSize="16sp" />
 
         <Spinner
             android:layout_margin="@dimen/activity_horizontal_margin"
@@ -53,6 +45,8 @@
 
         <TextView
             android:text="@string/filter_change_your_time_interval_of_interest"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -64,7 +58,6 @@
 
             <TextView
                 android:text="@string/filter_from"
-                android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -76,6 +69,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/from"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:onClick="showStartDatePickerDialog"
                 android:id="@+id/startDate" />
@@ -87,13 +83,15 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/startDate"
+                android:layout_toRightOf="@+id/startDate"
+                android:layout_below="@+id/from"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:onClick="showStartTimePickerDialog"
                 android:id="@+id/startTime" />
 
             <TextView
                 android:text="@string/filter_until"
-                android:layout_margin="@dimen/activity_horizontal_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/startDate"
@@ -106,7 +104,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/startDate"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/until"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:onClick="showEndDatePickerDialog"
                 android:id="@+id/endDate" />
@@ -118,7 +118,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@+id/startDate"
+                android:layout_toEndOf="@+id/endDate"
+                android:layout_toRightOf="@+id/endDate"
+                android:layout_below="@+id/until"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:onClick="showEndTimePickerDialog"
                 android:id="@+id/endTime" />
@@ -128,7 +130,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/endDate"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="@string/validate" />
+
+            <Button
+                android:text="@string/filter_change_your_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/endDate"
+                android:layout_toEndOf="@+id/validate"
+                android:layout_toRightOf="@+id/validate"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/filterAddLocation"
+                android:onClick="chooseLocation" />
 
         </RelativeLayout>
 

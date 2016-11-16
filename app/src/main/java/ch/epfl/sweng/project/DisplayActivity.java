@@ -7,6 +7,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     TextView description;
     TextView schedule;
 
+    LinearLayout imagesLayout;
+
     DeboxActivity activityToDisplay = null;
     GoogleMap map = null;
 
@@ -65,6 +69,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
+
+        imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
 
         mDataProvider = new DataProvider();
@@ -124,6 +130,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         map.addMarker(new MarkerOptions()
                                 .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
                                 .title(activity.getTitle()));
+                    }
+
+                    List<String> imagesList = activity.getImageList();
+                    if(imagesList != null) {
+                        new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
                     }
                 }
             }, eventId);

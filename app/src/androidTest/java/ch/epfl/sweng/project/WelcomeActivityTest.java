@@ -10,17 +10,18 @@ import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+
 import android.widget.DatePicker;
+
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.google.firebase.auth.FirebaseUser;
 
 import org.hamcrest.Matchers;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -29,6 +30,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+
+
+import static org.junit.Assert.assertEquals;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -47,20 +51,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
+
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
 import static org.mockito.Mockito.when;
+
 
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class WelcomeActivityTest {
-
-    @Mock
-    FirebaseUser testFirebaseUser;
 
     @Rule
     public ActivityTestRule<WelcomeActivity> welcomeActivityRule =
@@ -69,7 +73,7 @@ public class WelcomeActivityTest {
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation()
                             .getTargetContext();
-                    Intent result = new Intent(targetContext, MainActivity.class);
+                    Intent result = new Intent(targetContext, WelcomeActivity.class);
                     result.putExtra(WelcomeActivity.WELCOME_ACTIVITY_TEST_KEY, WelcomeActivity.WELCOME_ACTIVITY_TEST);
                     return result;
                 }
@@ -379,6 +383,152 @@ public class WelcomeActivityTest {
         }
     }
 
+
+    @Test
+    public void tmpTest(){
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        final DeboxActivity dbat = new DeboxActivity("-","test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports");
+
+        assertEquals(dp.pushActivity(dbat),dbat.getId());
+
+        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
+
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        final DeboxActivity dA1 = new DeboxActivity("zdkasKKLD", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Culture");
+        final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
+                "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.04,
+                121.0243,
+                "Sports");
+
+        testActivityList.add(dA1);
+        testActivityList.add(dA2);
+
+        mocDataProvider.setListOfActivitiesToMock(testActivityList);
+
+        List<DataProvider.CategoryName> listCategoryStored = new ArrayList<>();
+        listCategoryStored.add(new DataProvider.CategoryName("1","Sports"));
+        listCategoryStored.add(new DataProvider.CategoryName("1","Culture"));
+        mocDataProvider.setListOfCategoryToMock(listCategoryStored);
+
+        final String cat = "Sports";
+
+        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+            @Override
+            public void getCategory(List<DeboxActivity> activitiesList) {
+                for(DeboxActivity elem: activitiesList) {
+                    assertEquals(elem.getCategory(),cat);
+                }
+            }
+        },cat);
+
+        List<String> enrolledList = new ArrayList<>();
+        enrolledList.add("sample");
+        enrolledList.add(dA1.getId());
+        enrolledList.add("sampl2e");
+
+        mocDataProvider.setListOfEnrolledActivityToMock(enrolledList);
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,true);
+            }
+        }, dA1.getId());
+
+        dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean result) {
+                assertEquals(result,false);
+            }
+        },"noid");
+
+
+
+    }
+
+    @UiThreadTest
+    @Test
+    public void dpMockDisplayActivitiesProperly() throws Exception {
+
+        final List<DeboxActivity> testActivityList = new ArrayList<DeboxActivity>();
+
+        Calendar startDate = Calendar.getInstance();
+        Calendar endDate = Calendar.getInstance();
+        final DeboxActivity dA1 = new DeboxActivity("zdkasKKLD", "Nathan",
+                "Football in UNIL sport center", "Indoor football tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.01,
+                121.0213,
+                "Sports");
+        final DeboxActivity dA2 = new DeboxActivity("asdf", "Jeremie",
+                "Handball in UNIL sport center", "Indoor Handball tournaments open to every student " +
+                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                "minutes games",
+                startDate,
+                endDate,
+                122.04,
+                121.0243,
+                "Sports");
+
+        testActivityList.add(dA1);
+        testActivityList.add(dA2);
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        mocDataProvider.setListOfActivitiesToMock(testActivityList);
+
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+        //Insert the moc DataProvider
+        activity.setDataProvider(dp);
+
+        //Press on the "Display Events" button
+        activity.displayActivities.performClick();
+
+        //Check that the two events are displayed
+        assertTrue(activity.activityPreviewsLayout.getChildCount() == 2);
+        //Check that they are ActivityPreview
+        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof ActivityPreview);
+        assertTrue(activity.activityPreviewsLayout.getChildAt(1) instanceof ActivityPreview);
+        //Check that they have the same ID has the test DeboxActivity passed by the Mock
+        assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getEventId().equals(dA1.getId())) ;
+        assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getEventId().equals(dA2.getId())) ;
+        //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getChildAt(0)).getText().toString().equals(dA1.getTitle()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(0)).getChildAt(1)).getText().toString().equals(dA1.getShortDescription()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getChildAt(0)).getText().toString().equals(dA2.getTitle()));
+        assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(1)).getChildAt(1)).getText().toString().equals(dA2.getShortDescription()));
+
+    }
+
+
     @UiThreadTest
     @Test
     public void dateFilterTest() throws Exception {
@@ -638,4 +788,5 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
     }
+
 }
