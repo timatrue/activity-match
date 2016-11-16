@@ -131,7 +131,7 @@ public class DataProvider {
         });
     }
 
-    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds, final List<String> partEventsIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -141,7 +141,6 @@ public class DataProvider {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<DeboxActivity> intList = new ArrayList<>();
                 ArrayList<DeboxActivity> orgList = new ArrayList<>();
-                ArrayList<DeboxActivity> partList = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     if (intEventIds.contains(child.getKey())) {
                         intList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
@@ -149,11 +148,8 @@ public class DataProvider {
                     if (orgEventsIds.contains(child.getKey())) {
                         orgList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
                     }
-                    if (partEventsIds.contains(child.getKey())) {
-                        partList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
-                    }
                 }
-                listener.getUserActivities(intList, orgList, partList);
+                listener.getUserActivities(intList, orgList);
             }
 
             @Override
@@ -269,8 +265,6 @@ public class DataProvider {
             }
         }
 
-        List<String> participatedEvents = new ArrayList<String>();
-
         List<String> organizedEvents = new ArrayList<String>();
         boolean check_organized = userMap.containsKey("organised");
         if (check_organized == true) {
@@ -284,7 +278,7 @@ public class DataProvider {
         String rating = "";
         String photoLink = "";
 
-        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink);
+        return new User(uid, username, email, organizedEvents, interestedEvents, rating, photoLink);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
@@ -403,7 +397,7 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerUserEvents {
-        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> partList);
+        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
     }
     
 }
