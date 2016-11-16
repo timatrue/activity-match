@@ -1,12 +1,10 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;

@@ -6,4 +6,10 @@
     <color name="red">#FF0000</color>
     <color name="green">#1C8B5C</color>
     <color name="userProfileLight">#F6FFE0</color>
+
+    <!--Generic Theme Colors https://color.adobe.com/Flat-UI-color-theme-2469224 -->
+    <color name="darkGrey">#272525</color>
+    <color name="normalGrey">#42403F</color>
+    <color name="lightGrey">#757370</color>
+
 </resources>
