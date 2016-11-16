@@ -122,8 +122,8 @@ public class WelcomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        displayActivities = (Button) findViewById(R.id.displayActivities);
-        displayActivities.setOnClickListener(activitiesClickListener);
+        //displayActivities = (Button) findViewById(R.id.displayActivities);
+        //displayActivities.setOnClickListener(activitiesClickListener);
 
         filterStartCalendar = Calendar.getInstance();
         filterEndCalendar = Calendar.getInstance();
@@ -139,6 +139,7 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         }
+        getActivitiesAndDisplay();
     }
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -294,14 +295,14 @@ public class WelcomeActivity extends AppCompatActivity
             startActivity(intent);
         }
     };
-
+/*
     View.OnClickListener activitiesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             getActivitiesAndDisplay();
         }
     };
-
+*/
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 

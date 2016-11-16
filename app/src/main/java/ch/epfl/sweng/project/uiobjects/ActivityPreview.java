@@ -62,8 +62,8 @@ public class ActivityPreview extends LinearLayout {
         titleView.setText(title);
         previewtextView.setText(event.getShortDescription());
 
-        titleView.setTextColor(ContextCompat.getColor(context, R.color.darkGrey));
-        previewtextView.setTextColor(ContextCompat.getColor(context, R.color.normalGrey));
+        titleView.setTextColor(ContextCompat.getColor(context, R.color.blueDark));
+        previewtextView.setTextColor(ContextCompat.getColor(context, R.color.lightGrey));
         previewtextView.setPadding(0,0,0,8);
 
         separator.setBackgroundColor(ContextCompat.getColor(context, R.color.lightGrey));
