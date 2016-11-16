@@ -184,7 +184,20 @@ public class DataProvider {
 
         mDatabase.updateChildren(childUpdates);
 
+        copyIdOfCreatedEvent(key);
         return key;
+    }
+    private void copyIdOfCreatedEvent(String activityId){
+
+        String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
+
+        HashMap<String, Object> organisedEventsChild = new HashMap<>();
+        organisedEventsChild.put("activity ID:",activityId);
+
+        HashMap<String, Object> organisedEvents = new HashMap<>();
+        organisedEvents.put("organised/" + organisedEventsKey, organisedEventsChild);
+
+        mDatabase.child("users").child(user.getUid()).updateChildren(organisedEvents);
     }
 
     private DeboxActivity getDeboxActivity(String uid, Map<String, Object> activityMap) {
@@ -334,8 +347,8 @@ public class DataProvider {
         String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
         HashMap<String, Object> enrolled = new HashMap<>();
 
-        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
-        enrolled.put("user_email",user.getEmail());
+        enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+        enrolled.put("user_email", user.getEmail());
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
