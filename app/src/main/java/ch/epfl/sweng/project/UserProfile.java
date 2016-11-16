@@ -30,8 +30,14 @@ public class UserProfile extends AppCompatActivity {
     TextView emailTextView;
     User current_user;
 
-    ArrayList<String> titles = new ArrayList<String>();
     List<String> interestedIds = new ArrayList<>();
+    List<String> organizedIds = new ArrayList<>();
+    List<String> participatedIds = new ArrayList<>();
+
+    ArrayList<String> intTitles = new ArrayList<String>();
+    ArrayList<String> orgTitles = new ArrayList<String>();
+    ArrayList<String> partTitles = new ArrayList<String>();
+
     private DataProvider dp;
     private DataProvider dpData;
 
@@ -86,39 +92,60 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
-                Log.d("current_user email: ", current_user.getEmail());
                 interestedIds = new ArrayList<String>(user.getInterestedEvents());
+                organizedIds = new ArrayList<String>(user.getOrganizedEvents());
+                participatedIds = new ArrayList<String>(user.getParticipatedEvents());
 
                 dpData = new DataProvider();
                 dpData.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
-                    public void getUserActivities(List<DeboxActivity> activitiesList) {
-                        for (DeboxActivity event : activitiesList) {
-                            titles.add(event.getTitle());
+                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> partList) {
+                        String [] emptyEventList = { "No Events" };
+
+                        for (DeboxActivity event : intList) {
+                            intTitles.add(event.getTitle());
                         }
-                        String[] interestedEventsArray = new String[titles.size()];
-                        loadChild(titles.toArray(interestedEventsArray));
+                        String[] interestedEventsArray = new String[intTitles.size()];
+                        if (intTitles.size() != 0) {
+                            loadChild(intTitles.toArray(interestedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
                         activityCollection.put(interestedEvents, childList);
+
+                        for (DeboxActivity event : orgList) {
+                            orgTitles.add(event.getTitle());
+                        }
+                        String[] organizedEventsArray = new String[orgTitles.size()];
+                        if (orgTitles.size() != 0) {
+                            loadChild(orgTitles.toArray(organizedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
+                        activityCollection.put(organizedEvents, childList);
+
+                        for (DeboxActivity event : partList) {
+                            partTitles.add(event.getTitle());
+                        }
+                        String[] participatedEventsArray = new String[partTitles.size()];
+                        if (partTitles.size() != 0) {
+                            loadChild(partTitles.toArray(participatedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
+                        activityCollection.put(participatedEvents, childList);
                     }
-                }, interestedIds);
+                }, interestedIds, organizedIds, participatedIds);
                 emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
             }
         });
-        String[] organisedEventsArray= { "No Events"};
-        String[] participateEventsArray = { "No Events"};
+        //String[] organisedEventsArray= { "No Events"};
+        //String[] participateEventsArray = { "No Events"};
 
         activityCollection = new LinkedHashMap<String, List<String>>();
 
-        for (String group : groupList) {
-            if (group.equals(organizedEvents)) {
-                loadChild(organisedEventsArray);
-            } else if (group.equals(participatedEvents)){
-                loadChild(participateEventsArray);
-            }
-            activityCollection.put(group, childList);
-        }
     }
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();

@@ -131,7 +131,7 @@ public class DataProvider {
         });
     }
 
-    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> eventIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds, final List<String> partEventsIds) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -139,12 +139,21 @@ public class DataProvider {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> intList = new ArrayList<>();
+                ArrayList<DeboxActivity> orgList = new ArrayList<>();
+                ArrayList<DeboxActivity> partList = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
-                    if (eventIds.contains(child.getKey()))
-                        list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    if (intEventIds.contains(child.getKey())) {
+                        intList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
+                    if (orgEventsIds.contains(child.getKey())) {
+                        orgList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
+                    if (partEventsIds.contains(child.getKey())) {
+                        partList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
                 }
-                listener.getUserActivities(list);
+                listener.getUserActivities(intList, orgList, partList);
             }
 
             @Override
@@ -246,17 +255,32 @@ public class DataProvider {
         return null;
     }
 
-    private User getDeboxUser(String uid, Map<String, Object> activityMap) {
-        String email = (String) activityMap.get("user_email");
+    private User getDeboxUser(String uid, Map<String, Object> userMap) {
+        String email = (String) userMap.get("user_email");
         String username = "";
+
         List<String> interestedEvents = new ArrayList<>();
-        Map<String,Map<String,Object> > enrolled = (Map<String,Map<String,Object> >) activityMap.get("enrolled");
-        for (Map<String, Object> innerMap : enrolled.values()) {
-            String activityID = (String) innerMap.get("activity ID:");
-            interestedEvents.add(activityID);
+        boolean check_enrolled = userMap.containsKey("enrolled");
+        if (check_enrolled == true) {
+            Map<String, Map<String, Object>> enrolled = (Map<String, Map<String, Object>>) userMap.get("enrolled");
+            for (Map<String, Object> innerMap : enrolled.values()) {
+                String activityID = (String) innerMap.get("activity ID:");
+                interestedEvents.add(activityID);
+            }
         }
+
         List<String> participatedEvents = new ArrayList<String>();
+
         List<String> organizedEvents = new ArrayList<String>();
+        boolean check_organized = userMap.containsKey("organised");
+        if (check_organized == true) {
+            Map<String, Map<String, Object>> organized = (Map<String, Map<String, Object>>) userMap.get("organised");
+            for (Map<String, Object> innerMap : organized.values()) {
+                String activityID = (String) innerMap.get("activity ID:");
+                organizedEvents.add(activityID);
+            }
+        }
+
         String rating = "";
         String photoLink = "";
 
@@ -379,7 +403,7 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerUserEvents {
-        void getUserActivities(List<DeboxActivity> activitiesList);
+        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> partList);
     }
     
 }
