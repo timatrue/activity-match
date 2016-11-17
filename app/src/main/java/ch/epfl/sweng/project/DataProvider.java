@@ -281,9 +281,9 @@ public class DataProvider {
         return new User(uid, username, email, organizedEvents, interestedEvents, rating, photoLink);
     }
 
-    public void userProfile(final DataProviderListenerUserInfo listener){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userUid = user.getUid();
+    public void userProfile(final DataProviderListenerUserInfo listener, final String userUid){
+        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //final String userUid = user.getUid();
         //do try catch;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference getUserProfile = database.getReference("users/" + userUid);

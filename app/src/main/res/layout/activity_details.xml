@@ -62,6 +62,14 @@
             android:layout_alignParentStart="true" />
 
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/eventDescription"
+            android:id="@+id/eventOrganizer"
+            android:clickable="true"
+            android:onClick="showOrganizer"/>
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

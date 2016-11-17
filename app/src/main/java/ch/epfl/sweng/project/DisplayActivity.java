@@ -46,6 +46,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     TextView category;
     TextView description;
     TextView schedule;
+    TextView organizer;
 
     LinearLayout imagesLayout;
 
@@ -99,14 +100,17 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     currentActivity = activity;
                     title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+                    title.setText(activity.getTitle());
+
+                    organizer = (TextView) findViewById(R.id.eventOrganizer);
+                    organizer.setText(R.string.organizer_button);
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
 
                     activityToDisplay = activity;
                     title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+                    title.setText(activity.getTitle());
 
                     category = (TextView) findViewById(R.id.eventCategory);
                     category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
@@ -199,4 +203,5 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     .title(activityToDisplay.getTitle()));
         }
     }
+
 }

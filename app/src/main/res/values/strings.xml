@@ -51,6 +51,7 @@
 
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
+    <string name="organizer_button">Check out organizer\'s profile</string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>
@@ -104,6 +105,7 @@
     <string name="organised_events">Organised Events</string>
     <string name="participated_events">Participated Events</string>
     <string name="interested_events">Interested Events</string>
+    <string name="no_events">No Events</string>
 
 
 </resources>
