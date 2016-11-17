@@ -369,7 +369,7 @@ public class DataProvider {
      */
 
     public void joinActivity(DeboxActivity dba){
-        
+
         HashMap<String, Object> enrolledChild = new HashMap<>();
         enrolledChild.put("activity ID:",dba.getId());
 
@@ -384,12 +384,16 @@ public class DataProvider {
 
     }
 
+    /**
+     * Remove the enrollment of the user in the activity dba.
+     *
+     * @param dba
+     */
     public void leaveActivity(DeboxActivity dba){
 
         String userUid = user.getUid();
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
         final String uid = dba.getId();
-
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -397,7 +401,6 @@ public class DataProvider {
                 Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
 
                 if (listEnrolled != null) {
-
 
                     String idOfEntryToRemove = null;
 
@@ -411,16 +414,15 @@ public class DataProvider {
                         }
                     }
 
-                    mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-
+                    if(idOfEntryToRemove != null) {
+                        mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
+                    }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-
-
+                
             }
         });
 
