@@ -408,7 +408,7 @@ public class DataProvider {
      *
      * @param dba
      */
-    public void leaveActivity(DeboxActivity dba){
+    public void leaveActivity(final DeboxActivity dba){
 
         String userUid = user.getUid();
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
@@ -435,6 +435,7 @@ public class DataProvider {
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
+                        decreasesNbOfUserInActivity(dba);
                     }
                 }
             }
@@ -449,7 +450,6 @@ public class DataProvider {
     }
 
     private void incrementNbOfUserInActivity(DeboxActivity dba){
-
 
         final String uid = dba.getId();
 
@@ -478,8 +478,32 @@ public class DataProvider {
 
     private void decreasesNbOfUserInActivity(DeboxActivity dba){
 
-    }
+        final String uid = dba.getId();
 
+        DatabaseReference myRef = database.getReference("activities/" + dba.getId());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+
+                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
+
+                nbOfUser -= 1;
+
+                if(nbOfUser<0){
+                    nbOfUser=0;
+                }
+
+                HashMap<String, Object> childToUpDate = new HashMap<>();
+                childToUpDate.put("nbOfParticipants",nbOfUser);
+                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
 
     //DB Callbacks interfaces
     public interface DataProviderListenerEnrolled {
