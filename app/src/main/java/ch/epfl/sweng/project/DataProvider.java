@@ -370,6 +370,20 @@ public class DataProvider {
 
     }
 
+    public void leaveActivity(DeboxActivity dba){
+
+        //user = FirebaseAuth.getInstance().getCurrentUser();
+
+        String userUid = user.getUid();
+        DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
+        final String uid = dba.getId();
+
+
+        
+
+
+    }
+
 
     //DB Callbacks interfaces
     public interface DataProviderListenerEnrolled {
