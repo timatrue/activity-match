@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -32,6 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import ch.epfl.sweng.project.fragments.CreateValidationFragment;
+import ch.epfl.sweng.project.fragments.FilterFragment;
 
 import static android.R.attr.category;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
@@ -76,8 +80,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     private DataProvider mDataProvider;
 
-    private ImageProvider mImageProvider;
     private List<Uri> imagesUriList = new ArrayList<>();
+
+    private CreateValidationFragment validationFragment;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -112,24 +117,14 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             activityOrganizer = getString(R.string.unlogged_user);
         }
 
-        //Retrieves and displays the confirmation message after a successful activity creation
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String confirmationMessageString = bundle.getString("CONFIRMATION_MESSAGE");
-            if (confirmationMessageString != null) {
-                if(confirmationMessageString.equals("success")) {
-                    TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
-                    confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
-                    confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
-                }
-            }
-        }
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         //Check if the activity runs in test mode, if not, initialize with real Dataprovider and
         //Get categories on the DB and display them in the dropdown
+        Bundle bundle = getIntent().getExtras();
         String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
         if(test != null) {
             if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
@@ -138,7 +133,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             }
         }
 
-        mImageProvider = new ImageProvider();
     }
 
     //Set the DataProvider (allows test to insert a Mock DataProvider)
@@ -235,27 +229,24 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         validation = validateActivity();
 
-        DeboxActivity newDeboxActivity = createActivityMethod();
+        final DeboxActivity newDeboxActivity = createActivityMethod();
 
         if(validation.equals("success")) {
+            FragmentManager fm = getFragmentManager();
+            validationFragment = new CreateValidationFragment();
+            validationFragment.show(fm, "Validating your event");
+
             //Add all images name in the debox activity
             for(Uri uri :imagesUriList) {
                 newDeboxActivity.addImage(uri.getLastPathSegment());
             }
-            //Push the activity on the DB
-            String activityKey = mDataProvider.pushActivity(newDeboxActivity);
 
-            //Upload all selected images in a folder corresponding to activity id
-            for(Uri uri :imagesUriList) {
-                mImageProvider.UploadImage(uri, activityKey);
-            }
+            validationFragment.setImagesUriList(imagesUriList);
+
+            validationFragment.uploadActivity(newDeboxActivity);
         }
-
-        setConfirmationTextView(validation);
-
-
-        if(validation.equals("success")) {
-            finish();
+        else {
+            setErrorTextView(validation);
         }
     }
 
@@ -307,35 +298,27 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     /* Adds an error message in a TextView depending on the String returned by validateActivity().
     If there is no error, it stores the message in an Intent, creates a new CreateActivity instance
     and displays the validation message on a TextView in that new CreateActivity instance */
-    public void setConfirmationTextView(String validation) {
+    public void setErrorTextView(String error) {
 
-        TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
+        TextView confirmation = (TextView) findViewById(R.id.createActivityError);
+        confirmation.setTextColor(Color.RED);
 
-        switch (validation) {
-            case "success":
-                Intent intent = new Intent(this, CreateActivity.class);
-                intent.putExtra("CONFIRMATION_MESSAGE", validation);
-                startActivity(intent);
-                break;
+        switch (error) {
 
             case "missing_field_error":
                 confirmation.setText(R.string.create_activity_missing_field_error_message);
-                confirmation.setTextColor(Color.RED);
                 break;
 
             case "date_error":
                 confirmation.setText(R.string.create_activity_date_error_message);
-                confirmation.setTextColor(Color.RED);
                 break;
 
             case "missing_location":
                 confirmation.setText(R.string.create_activity_location_error_message);
-                confirmation.setTextColor(Color.RED);
                 break;
 
             default:
                 confirmation.setText(R.string.create_activity_unknown_error_message);
-                confirmation.setTextColor(Color.RED);
                 break;
         }
     }
@@ -438,4 +421,5 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
+
 }

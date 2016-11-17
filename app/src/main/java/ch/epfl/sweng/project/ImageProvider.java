@@ -61,7 +61,7 @@ public class ImageProvider {
 
     }
 
-    public void UploadImage(Uri imageUri, String folder) {
+    public void UploadImage(final Uri imageUri, String folder, final uploadListener listener) {
         //"path/to/mountains.jpg"
         // File or Blob
 
@@ -75,26 +75,30 @@ public class ImageProvider {
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                System.out.println("Upload is " + progress + "% done");
+                listener.uploadProgress(imageUri, taskSnapshot.getBytesTransferred(), taskSnapshot.getTotalByteCount());
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload is paused");
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
+                listener.uploadFailed();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // Handle successful uploads on complete
-                Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                listener.uploadSuccessful(imageUri);
             }
         });
+    }
+
+    public interface uploadListener {
+        public void uploadFailed();
+        public void uploadSuccessful(Uri uploadedFileUri);
+        public void uploadProgress(Uri fileUri, long bytesTransferred, long totalBytesCount);
     }
 
 }
