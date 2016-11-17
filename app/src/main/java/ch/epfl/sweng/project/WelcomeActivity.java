@@ -364,8 +364,9 @@ public class WelcomeActivity extends AppCompatActivity
                         for(DeboxActivity elem: activitiesList) {
                             if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+
                             }
                         }
                     }

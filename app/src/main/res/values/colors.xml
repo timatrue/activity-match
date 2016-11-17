@@ -8,11 +8,11 @@
     <color name="userProfileLight">#F6FFE0</color>
 
     <!--Generic Theme Colors https://color.adobe.com/Flat-UI-color-theme-2469224 -->
-    <color name="blueDark">#2C3E50</color>
-    <color name="darkGrey">#272525</color>
-    <color name="normalGrey">#42403F</color>
-    <color name="lightGrey">#757370</color>
-    <color name="niceRed">#E74C3C</color>
+    <color name="blueDarkDebox">#2C3E50</color>
+    <color name="darkGreyDebox">#272525</color>
+    <color name="normalGreyDebox">#42403F</color>
+    <color name="lightGreyDebox">#757370</color>
+    <color name="niceRedDebox">#E74C3C</color>
 
 
 </resources>

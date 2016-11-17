@@ -31,17 +31,14 @@ import static java.text.DateFormat.getDateInstance;
 public class ActivityPreview extends LinearLayout {
 
     private DeboxActivity event;
-    private String commaSpace;
     private String eventTime;
     private Calendar timeStart;
     private DateFormat dateFormat;
-    private String title;
 
     private TextView titleEvent;
     private TextView previewEvent;
     private TextView dateEvent;
     private TextView sizeEvent;
-    private int size;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,56 +56,27 @@ public class ActivityPreview extends LinearLayout {
         this.event = event;
         dateFormat = getDateInstance();
         timeStart = event.getTimeStart();
-
         eventTime = dateFormat.format(timeStart.getTime());
-        //commaSpace = getResources().getString(R.string.commaSpace);
-        //title = eventTime + commaSpace + event.getTitle();
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         View childLayout = inflater.inflate(R.layout.content_data_row, (ViewGroup) findViewById(R.id.activityPreviewsLayout));
         setEventPreview(event, childLayout, context);
         this.addView(childLayout);
-        /*
-        TextView titleView = new TextView(context);
-        TextView previewtextView = new TextView(context);
-        TextView separator = new TextView(context);
-        titleView.setTextSize(16);
-
-        titleView.setText(title);
-        previewtextView.setText(event.getShortDescription());
-
-        titleView.setTextColor(ContextCompat.getColor(context, R.color.blueDark));
-        previewtextView.setTextColor(ContextCompat.getColor(context, R.color.lightGrey));
-        previewtextView.setPadding(0,0,0,8);
-
-        separator.setBackgroundColor(ContextCompat.getColor(context, R.color.lightGrey));
-        separator.setHeight(1);
-
-
-        this.addView(titleView);
-        this.addView(previewtextView);
-        this.addView(separator);
-        */
 
     }
 
     private void setEventPreview(DeboxActivity event, View childLayout, Context context){
         titleEvent = (TextView) childLayout.findViewById(R.id.titleEvent);
         titleEvent.setText(event.getTitle());
-        titleEvent.setTextColor(ContextCompat.getColor(context, R.color.blueDark));
 
         previewEvent = (TextView) childLayout.findViewById(R.id.previewEvent);
         previewEvent.setText(event.getShortDescription());
-        previewEvent.setTextColor(ContextCompat.getColor(context, R.color.lightGrey));
-        previewEvent.setPadding(0,0,0,8);
 
         dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
         dateEvent.setText(eventTime);
-        dateEvent.setTextColor(ContextCompat.getColor(context, R.color.darkGrey));
 
         sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
         sizeEvent.setText("Participants: "+17);
-        sizeEvent.setTextColor(ContextCompat.getColor(context, R.color.niceRed));
     }
 
 }
