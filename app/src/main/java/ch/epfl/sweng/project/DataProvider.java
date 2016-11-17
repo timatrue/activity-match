@@ -184,7 +184,9 @@ public class DataProvider {
         result.put("longitude",location[1]);
         result.put("category",da.getCategory());
 
-        result.put("images",da.getImageList());
+        //result.put("nbMaxOfParticipants",da.get)
+
+        //result.put("images",da.getImageList());
 
         childUpdates.put("activities/"+key, result);
 
@@ -231,10 +233,20 @@ public class DataProvider {
 
         List<String> imagesList = (ArrayList<String>) activityMap.get("images");
 
-        //int nbOfParticipants = (int) activityMap.get("nbParticipants");
-        //int nbMaxOfParticipants = (int) activityMap.get("nbMaxParticipants");
 
-        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList);
+        boolean check_nbParticipants = activityMap.containsKey("nbParticipants");
+        int nbOfParticipants = -1;
+        if(check_nbParticipants){
+            nbOfParticipants = (int) activityMap.get("nbParticipants");
+        }
+
+        boolean check_nbMaxOfParticipants = activityMap.containsKey("nbMaxOfParticipants");
+        int nbMaxOfParticipants = -1;
+        if(check_nbMaxOfParticipants){
+            nbMaxOfParticipants = (int) activityMap.get("nbMaxOfParticipants");
+        }
+
+        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList,nbOfParticipants,nbMaxOfParticipants);
 
     }
 
@@ -422,7 +434,7 @@ public class DataProvider {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                
+
             }
         });
 

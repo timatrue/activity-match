@@ -23,6 +23,8 @@ public class DeboxActivity {
     private double latitude;
     private String category;
     private List<String> imagesList;
+    private int nbMaxOfParticipants;
+    private int nbOfParticipants;
 
     /**
      * Allocates a <code>DeboxActivity</code> object and initializes it so that
@@ -49,7 +51,48 @@ public class DeboxActivity {
         this.longitude = longitude;
         this.category = new String(category);
         this.imagesList = new ArrayList<>();
+        this.nbMaxOfParticipants = -1;
+        this.nbOfParticipants = -1;
 
+    }
+
+    /**
+     * Allocates a <code>DeboxActivity</code> object and initializes it so that
+     * it represents a Debox activity, containing all informations about it.
+     *
+     * @param   organizer    The name of the organizer of the activity
+     * @param   title   the title of the activity
+     * @param   description    a description of the activity
+     * @param   timeStart    the <code>Calendar</code> representing the scheduled start of the Activity
+     * @param   timeEnd    the <code>Calendar</code> representing the scheduled end of the Activity
+     * @param   longitude    the longitude of the activity's meeting point location
+     * @param   latitude    the latitude of the activity's meeting point location
+     * @param   category    the category of the activity
+     */
+    public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
+                         Calendar timeEnd, double latitude, double longitude, String category, int nbOfParticipants, int nbMaxParticipants ) {
+        this.id = new String(id);
+        this.organizer = new String(organizer);
+        this.title = new String(title);
+        this.description = new String(description);
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.category = new String(category);
+        this.imagesList = new ArrayList<>();
+        this.nbOfParticipants = nbOfParticipants;
+        this.nbMaxOfParticipants = nbMaxParticipants;
+
+    }
+    /**
+     * @param   imagesList    the list of images name on Firebase storage
+     */
+    public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
+                              Calendar timeEnd, double latitude, double longitude, String category,
+                              List<String> imagesList) {
+        this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category);
+        this.imagesList = imagesList;
     }
 
     /**
@@ -57,8 +100,9 @@ public class DeboxActivity {
      */
     public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
                          Calendar timeEnd, double latitude, double longitude, String category,
-                         List<String> imagesList) {
-        this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category);
+                         List<String> imagesList,int nbMaxOfParticipants, int nbMaxParticipants ) {
+        this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category,
+                nbMaxParticipants, nbMaxOfParticipants);
         this.imagesList = imagesList;
     }
 
@@ -147,6 +191,20 @@ public class DeboxActivity {
      */
     public String getCategory() {
         return new String(category);
+    }
+
+    /**
+     * @return the NbOfParticipants of the Debox Activity
+     */
+    public int getNbOfParticipants() {
+        return new Integer(nbOfParticipants);
+    }
+
+    /**
+     * @return the NbMaxOfParticipants of the Debox Activity
+     */
+    public int getNbMaxOfParticipants() {
+        return new Integer(nbMaxOfParticipants);
     }
 
 
