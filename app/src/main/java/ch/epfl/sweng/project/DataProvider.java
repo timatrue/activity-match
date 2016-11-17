@@ -362,16 +362,14 @@ public class DataProvider {
     }
 
     /**
-     * Enroll the user to the activity dba. If the user doesn't have an entry in users table, an
-     * entry corresponding to the user is automatically added to the table users.
+     * Enroll the user to the activity dba. If the user doesn't have an enrolled table, the enrolled
+     * table is automatically added to the user.
      *
      * @param dba
      */
 
     public void joinActivity(DeboxActivity dba){
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
+        
         HashMap<String, Object> enrolledChild = new HashMap<>();
         enrolledChild.put("activity ID:",dba.getId());
 
@@ -380,7 +378,6 @@ public class DataProvider {
         HashMap<String, Object> enrolled = new HashMap<>();
 
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
-        //enrolled.put("user_email", user.getEmail());
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
@@ -388,8 +385,6 @@ public class DataProvider {
     }
 
     public void leaveActivity(DeboxActivity dba){
-
-        //user = FirebaseAuth.getInstance().getCurrentUser();
 
         String userUid = user.getUid();
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
