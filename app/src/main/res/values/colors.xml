@@ -12,5 +12,7 @@
     <color name="darkGrey">#272525</color>
     <color name="normalGrey">#42403F</color>
     <color name="lightGrey">#757370</color>
+    <color name="niceRed">#E74C3C</color>
+
 
 </resources>

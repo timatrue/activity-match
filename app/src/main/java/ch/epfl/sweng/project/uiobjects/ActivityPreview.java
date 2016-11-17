@@ -7,7 +7,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static java.text.DateFormat.getDateInstance;
 
 
@@ -33,6 +36,12 @@ public class ActivityPreview extends LinearLayout {
     private Calendar timeStart;
     private DateFormat dateFormat;
     private String title;
+
+    private TextView titleEvent;
+    private TextView previewEvent;
+    private TextView dateEvent;
+    private TextView sizeEvent;
+    private int size;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,10 +59,16 @@ public class ActivityPreview extends LinearLayout {
         this.event = event;
         dateFormat = getDateInstance();
         timeStart = event.getTimeStart();
-        eventTime = dateFormat.format(timeStart.getTime());
-        commaSpace = getResources().getString(R.string.commaSpace);
-        title = eventTime + commaSpace + event.getTitle();
 
+        eventTime = dateFormat.format(timeStart.getTime());
+        //commaSpace = getResources().getString(R.string.commaSpace);
+        //title = eventTime + commaSpace + event.getTitle();
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View childLayout = inflater.inflate(R.layout.content_data_row, (ViewGroup) findViewById(R.id.activityPreviewsLayout));
+        setEventPreview(event, childLayout, context);
+        this.addView(childLayout);
+        /*
         TextView titleView = new TextView(context);
         TextView previewtextView = new TextView(context);
         TextView separator = new TextView(context);
@@ -68,27 +83,32 @@ public class ActivityPreview extends LinearLayout {
 
         separator.setBackgroundColor(ContextCompat.getColor(context, R.color.lightGrey));
         separator.setHeight(1);
-        //separator.setPadding(5,2,5,0);
+
 
         this.addView(titleView);
         this.addView(previewtextView);
         this.addView(separator);
-        //this.setPadding(0,2,0,0);
-        /*GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.rgb(0xCF, 0xD8, 0xDC)); // Changes this drawbale to use a single color instead of a gradient
-        gd.setCornerRadius(10);
-        gd.setStroke(2, 0xFF000000);
+        */
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            //noinspection deprecation
-            this.setBackgroundDrawable(gd);
-        } else {
-            this.setBackground(gd);
-        }*/
-        //left, top, right, bottom
+    }
 
+    private void setEventPreview(DeboxActivity event, View childLayout, Context context){
+        titleEvent = (TextView) childLayout.findViewById(R.id.titleEvent);
+        titleEvent.setText(event.getTitle());
+        titleEvent.setTextColor(ContextCompat.getColor(context, R.color.blueDark));
 
+        previewEvent = (TextView) childLayout.findViewById(R.id.previewEvent);
+        previewEvent.setText(event.getShortDescription());
+        previewEvent.setTextColor(ContextCompat.getColor(context, R.color.lightGrey));
+        previewEvent.setPadding(0,0,0,8);
 
+        dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
+        dateEvent.setText(eventTime);
+        dateEvent.setTextColor(ContextCompat.getColor(context, R.color.darkGrey));
+
+        sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
+        sizeEvent.setText("Participants: "+17);
+        sizeEvent.setTextColor(ContextCompat.getColor(context, R.color.niceRed));
     }
 
 }
