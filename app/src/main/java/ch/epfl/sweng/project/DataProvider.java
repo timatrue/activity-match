@@ -457,7 +457,17 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
 
+                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
+
+                if(nbOfUser<0){
+                    nbOfUser=0;
+                }
+
+                HashMap<String, Object> childToUpDate = new HashMap<>();
+                childToUpDate.put("nbOfParticipants",nbOfUser+1);
+                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
 
             }
 
