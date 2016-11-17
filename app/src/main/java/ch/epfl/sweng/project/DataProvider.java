@@ -184,9 +184,10 @@ public class DataProvider {
         result.put("longitude",location[1]);
         result.put("category",da.getCategory());
 
-        //result.put("nbMaxOfParticipants",da.get)
+        result.put("nbOfParticipants",da.getNbOfParticipants());
+        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
 
-        //result.put("images",da.getImageList());
+        result.put("images",da.getImageList());
 
         childUpdates.put("activities/"+key, result);
 
