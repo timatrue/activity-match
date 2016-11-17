@@ -51,6 +51,7 @@
 
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
+    <string name="Occupancy">Occupancy : </string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>

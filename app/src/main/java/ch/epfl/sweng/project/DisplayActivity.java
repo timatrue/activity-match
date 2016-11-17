@@ -59,6 +59,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private Button joinActivityButton;
     private Button leaveActivityButton;
     private TextView enrolledInfoTextView;
+    private TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
 
     @Override
@@ -72,6 +73,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
         enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
+        occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
 
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
@@ -127,6 +129,18 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             dateFormat.format(timeEnd.getTime()) +
                             " at " + timeFormat.format(timeEnd.getTime())  ;
                     schedule.setText(stringSchedule);
+
+
+                    // TODO for the moment, not all activities are correct entry for occupancy
+                    if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {
+                        if (activity.getNbMaxOfParticipants() >= 0) {
+                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants() + " / " + activity.getNbMaxOfParticipants());
+                        } else {
+                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants());
+                        }
+                    } else {
+                        occupancyTextView.setText("Invalid information about occupancy");
+                    }
 
                     if (map != null) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));

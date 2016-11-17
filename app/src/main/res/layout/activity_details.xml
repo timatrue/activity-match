@@ -23,6 +23,16 @@
             android:layout_below="@+id/eventTitle"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventSchedule"
+            android:layout_below="@+id/eventCategory"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,17 +44,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/eventSchedule"
-            android:layout_below="@+id/eventCategory"
+            android:id="@+id/eventOccupancy"
+            android:layout_below="@+id/eventDescription"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="@string/Occupancy"/>
+
 
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/joinActivity"
-            android:layout_below="@id/eventDescription">
+            android:layout_below="@id/eventOccupancy">
 
             <LinearLayout
                 android:orientation="horizontal"
