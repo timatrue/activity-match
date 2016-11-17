@@ -396,7 +396,7 @@ public class DataProvider {
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
 
 
-        //incrementNbOfUserInActivity(dba);
+        incrementNbOfUserInActivity(dba);
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
@@ -449,7 +449,7 @@ public class DataProvider {
     }
 
     private void incrementNbOfUserInActivity(DeboxActivity dba){
-        // get activity
+
 
         final String uid = dba.getId();
 
@@ -457,38 +457,16 @@ public class DataProvider {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-
-                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
-
-                //ici
-                HashMap<String, Object> childToUpDate = new HashMap<>();
-                childToUpDate.put("nbOfParticipants",nbOfUser+1);
-                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
-
-                /*
-                        HashMap<String, Object> enrolledChild = new HashMap<>();
-        enrolledChild.put("activity ID:",dba.getId());
-
-        // get unique key for enroll the activity
-        String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
-        HashMap<String, Object> enrolled = new HashMap<>();
-
-        enrolled.put("enrolled/" + enrolledKey, enrolledChild);
-
-        // update the database
-        mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
 
-                 */
-
-
-                //listener.getActivity(getDeboxActivity(uid, activityMap));
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    private void decreasesNbOfUserInActivity(DeboxActivity dba){
 
     }
 

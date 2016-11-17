@@ -100,7 +100,7 @@ public class DeboxActivity {
      */
     public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
                          Calendar timeEnd, double latitude, double longitude, String category,
-                         List<String> imagesList,int nbMaxOfParticipants, int nbMaxParticipants ) {
+                         List<String> imagesList,int nbMaxParticipants, int nbMaxOfParticipants ) {
         this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category,
                 nbMaxParticipants, nbMaxOfParticipants);
         this.imagesList = imagesList;
