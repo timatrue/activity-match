@@ -1,11 +1,9 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-<<<<<<< HEAD
-=======
 import android.content.Intent;
 import android.graphics.Color;
->>>>>>> bbab8850a77f2ee2e07f7f85381af5efeeede9b9
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
