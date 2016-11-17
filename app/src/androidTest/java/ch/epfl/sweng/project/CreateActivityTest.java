@@ -78,7 +78,7 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
         assertTrue(activity.validateActivity().equals("missing_field_error"));
         assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
         assertTrue(activity.validateActivity().equals("missing_field_error"));
         assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class CreateActivityTest {
 
         assertTrue(activity.createActivityMethod() == null);
         assertTrue(activity.validateActivity().equals("date_error"));
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class CreateActivityTest {
 
         assertTrue(activity.validateActivity().equals("date_error"));
         assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
     }
 
     @Test
@@ -490,6 +490,6 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
         assertTrue(activity.validateActivity().equals("missing_location"));
         assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_location_error_message)));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_location_error_message)));
     }
 }
