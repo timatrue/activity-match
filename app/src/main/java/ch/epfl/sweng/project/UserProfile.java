@@ -1,6 +1,11 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
+<<<<<<< HEAD
+=======
+import android.content.Intent;
+import android.graphics.Color;
+>>>>>>> bbab8850a77f2ee2e07f7f85381af5efeeede9b9
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,6 +13,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +34,17 @@ public class UserProfile extends AppCompatActivity {
     TextView emailTextView;
     User current_user;
 
-    ArrayList<String> titles = new ArrayList<String>();
     List<String> interestedIds = new ArrayList<>();
+    List<String> organizedIds = new ArrayList<>();
+
+    ArrayList<String> intTitles = new ArrayList<>();
+    ArrayList<String> orgTitles = new ArrayList<>();
+    ArrayList<String> partTitles = new ArrayList<>();
+
+    ArrayList<DeboxActivity> intEvents = new ArrayList<>();
+    ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
+    ArrayList<DeboxActivity> partEvents = new ArrayList<>();
+
     private DataProvider dp;
     private DataProvider dpData;
 
@@ -41,7 +56,7 @@ public class UserProfile extends AppCompatActivity {
     List<String> childList;
     Map<String, List<String>> activityCollection;
     ExpandableListView expListView;
-    private static Context mContext;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +87,7 @@ public class UserProfile extends AppCompatActivity {
         });
     }
     private void createGroupList() {
-        groupList = new ArrayList<String>();
+        groupList = new ArrayList<>();
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
         groupList.add(interestedEvents);
@@ -84,48 +99,69 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
-                Log.d("current_user email: ", current_user.getEmail());
-                interestedIds = new ArrayList<String>(user.getInterestedEvents());
+                interestedIds = new ArrayList<String>(user.getInterestedEventIds());
+                organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
 
                 dpData = new DataProvider();
                 dpData.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
-                    public void getUserActivities(List<DeboxActivity> activitiesList) {
-                        for (DeboxActivity event : activitiesList) {
-                            titles.add(event.getTitle());
+                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+                        String [] emptyEventList = { "No Events" };
+
+                        for (DeboxActivity event : intList) {
+                            if (event.getTimeEnd().after(Calendar.getInstance())) {
+                                intTitles.add(event.getTitle());
+                                intEvents.add(event);
+                            } else {
+                                partTitles.add(event.getTitle());
+                                partEvents.add(event);
+                            }
                         }
-                        String[] interestedEventsArray = new String[titles.size()];
-                        loadChild(titles.toArray(interestedEventsArray));
+                        String[] interestedEventsArray = new String[intTitles.size()];
+                        if (intTitles.size() != 0) {
+                            loadChild(intTitles.toArray(interestedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
                         activityCollection.put(interestedEvents, childList);
+
+                        String[] participatedEventsArray = new String[partTitles.size()];
+                        if (partTitles.size() != 0) {
+                            loadChild(partTitles.toArray(participatedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
+                        activityCollection.put(participatedEvents, childList);
+
+                        for (DeboxActivity event : orgList) {
+                            orgTitles.add(event.getTitle());
+                            orgEvents.add(event);
+                        }
+                        String[] organizedEventsArray = new String[orgTitles.size()];
+                        if (orgTitles.size() != 0) {
+                            loadChild(orgTitles.toArray(organizedEventsArray));
+                        } else {
+                            loadChild(emptyEventList);
+                        }
+                        activityCollection.put(organizedEvents, childList);
+
                     }
-                }, interestedIds);
+                }, interestedIds, organizedIds);
                 emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
             }
         });
-        String[] organisedEventsArray= { "No Events"};
-        String[] participateEventsArray = { "No Events"};
 
         activityCollection = new LinkedHashMap<String, List<String>>();
 
-        for (String group : groupList) {
-            if (group.equals(organizedEvents)) {
-                loadChild(organisedEventsArray);
-            } else if (group.equals(participatedEvents)){
-                loadChild(participateEventsArray);
-            }
-            activityCollection.put(group, childList);
-        }
     }
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();
         for (String event : events)
             childList.add(event);
     }
-    private static Context getContext() {
-        return mContext;
-    }
+
     private void setupUserToolBar(){
         Toolbar mUserToolBar = (Toolbar) findViewById(R.id.user_toolbar);
         mUserToolBar.setNavigationOnClickListener(new View.OnClickListener() {
