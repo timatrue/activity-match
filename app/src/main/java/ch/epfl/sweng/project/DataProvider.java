@@ -259,18 +259,11 @@ public class DataProvider {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        //HashMap<String, Object> enrolledChild = new HashMap<>();
-        //enrolledChild.put("activity ID:",dba.getId());
-
-        // get unique key for enroll the activity
-        //String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
         HashMap<String, Object> enrolled = new HashMap<>();
 
-        //enrolled.put("enrolled/" + enrolledKey, enrolledChild);
         enrolled.put("user_email", user.getEmail());
         enrolled.put("default_user_name",user.getDisplayName());
 
-        // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
     }
@@ -387,7 +380,7 @@ public class DataProvider {
         HashMap<String, Object> enrolled = new HashMap<>();
 
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
-        enrolled.put("user_email", user.getEmail());
+        //enrolled.put("user_email", user.getEmail());
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
