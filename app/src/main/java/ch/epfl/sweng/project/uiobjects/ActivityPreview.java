@@ -1,11 +1,7 @@
 package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +14,7 @@ import ch.epfl.sweng.project.R;
 
 import java.util.Calendar;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static java.text.DateFormat.getDateInstance;
@@ -62,7 +58,6 @@ public class ActivityPreview extends LinearLayout {
         View childLayout = inflater.inflate(R.layout.content_data_row, (ViewGroup) findViewById(R.id.activityPreviewsLayout));
         setEventPreview(event, childLayout, context);
         this.addView(childLayout);
-
     }
 
     private void setEventPreview(DeboxActivity event, View childLayout, Context context){
@@ -76,7 +71,12 @@ public class ActivityPreview extends LinearLayout {
         dateEvent.setText(eventTime);
 
         sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
-        sizeEvent.setText("Participants: "+17);
+        sizeEvent.setText("Participants: " + randomParticipants());
+    }
+    private int randomParticipants(){
+        Random random = new Random();
+        int number = random.nextInt(80 - 65) + 65;
+        return number;
     }
 
 }
