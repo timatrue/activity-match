@@ -49,13 +49,15 @@ public class DeboxActivity {
         this.longitude = longitude;
         this.category = new String(category);
         this.imagesList = new ArrayList<>();
+
     }
 
     /**
      * @param   imagesList    the list of images name on Firebase storage
      */
     public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
-                         Calendar timeEnd, double latitude, double longitude, String category, List<String> imagesList) {
+                         Calendar timeEnd, double latitude, double longitude, String category,
+                         List<String> imagesList) {
         this(id, organizer, title, description, timeStart, timeEnd, latitude, longitude, category);
         this.imagesList = imagesList;
     }

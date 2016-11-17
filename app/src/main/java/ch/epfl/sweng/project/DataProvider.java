@@ -110,6 +110,7 @@ public class DataProvider {
 
     }
 
+
     public void getAllActivities(final DataProviderListenerActivities listener) {
 
         DatabaseReference myRef = database.getReference("activities");
@@ -230,6 +231,9 @@ public class DataProvider {
 
         List<String> imagesList = (ArrayList<String>) activityMap.get("images");
 
+        //int nbOfParticipants = (int) activityMap.get("nbParticipants");
+        //int nbMaxOfParticipants = (int) activityMap.get("nbMaxParticipants");
+
         return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList);
 
     }
@@ -249,6 +253,26 @@ public class DataProvider {
         });
 
         return null;
+    }
+
+    public void initUserInDB(){
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //HashMap<String, Object> enrolledChild = new HashMap<>();
+        //enrolledChild.put("activity ID:",dba.getId());
+
+        // get unique key for enroll the activity
+        //String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+        HashMap<String, Object> enrolled = new HashMap<>();
+
+        //enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+        enrolled.put("user_email", user.getEmail());
+        enrolled.put("default_user_name",user.getDisplayName());
+
+        // update the database
+        mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
+
     }
 
     private User getDeboxUser(String uid, Map<String, Object> userMap) {

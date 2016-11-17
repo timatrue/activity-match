@@ -136,6 +136,7 @@ public class WelcomeActivity extends AppCompatActivity
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     getAllCategoriesAndLocation();
+                    mDataProvider.initUserInDB();
                 }
             }
         }
@@ -144,6 +145,7 @@ public class WelcomeActivity extends AppCompatActivity
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
+
 
     public void getAllCategoriesAndLocation() {
         getAllCategories();
