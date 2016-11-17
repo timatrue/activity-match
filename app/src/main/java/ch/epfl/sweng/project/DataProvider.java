@@ -379,7 +379,38 @@ public class DataProvider {
         final String uid = dba.getId();
 
 
-        
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                if (listEnrolled != null) {
+
+
+                    String idOfEntryToRemove = null;
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        if (activityID.equals(uid)) {
+                            idOfEntryToRemove = enrolledEntry.getKey();
+
+                        }
+                    }
+
+                    mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+
+
+            }
+        });
 
 
     }
