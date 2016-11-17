@@ -3,8 +3,6 @@ package ch.epfl.sweng.project;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -12,13 +10,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.hamcrest.Matchers;
-import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -40,7 +36,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -65,9 +60,9 @@ public class CreateActivityTest {
     @Test
     public void missingTitle() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
-        String testDescription = "test description";
+        final String testDescription = "test description";
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
@@ -84,9 +79,9 @@ public class CreateActivityTest {
     @Test
     public void missingDescription() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
-        String testTitle = "test_title";
+        final String testTitle = "test_title";
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
@@ -102,10 +97,10 @@ public class CreateActivityTest {
     @Test
     public void endDateBeforeCurrentDate() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
-        String testTitle = "test_title";
-        String testDescription = "test description";
+        final String testTitle = "test_title";
+        final String testDescription = "test description";
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
@@ -123,34 +118,34 @@ public class CreateActivityTest {
     @Test
     public void startDateAfterEndDate() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
-        String testTitle = "test_title";
-        String testDescription = "test description";
+        final String testTitle = "test_title";
+        final String testDescription = "test description";
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 3);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        /*onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
         int i = 0;
         while(i==0){
             try{
@@ -160,9 +155,9 @@ public class CreateActivityTest {
             } catch (NoMatchingViewException e) {
 
             }
-        }
+        }*/
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -193,7 +188,7 @@ public class CreateActivityTest {
     public void validActivityCreation() throws Exception {
         final CreateActivity activity = createActivityRule.getActivity();
 
-        DataProvider testDataProvider = mock(DataProvider.class);
+        final DataProvider testDataProvider = mock(DataProvider.class);
 
         when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
         doAnswer(new Answer<Void>() {
@@ -217,13 +212,13 @@ public class CreateActivityTest {
         activity.setDataProvider(testDataProvider);
         activity.getAndDisplayCategories();
 
-        String testTitle = "test_title";
-        String testCategory = "Culture";
-        String testDescription = "test description";
+        final String testTitle = "test_title";
+        final String testCategory = "Culture";
+        final String testDescription = "test description";
 
-        double longitude = 1;
-        double latitude = 0.3;
-        double[] location = {latitude, longitude};
+        final double longitude = 1;
+        final double latitude = 0.3;
+        final double[] location = {latitude, longitude};
 
         activity.activityLatitude=location[0];
         activity.activityLongitude=location[1];
@@ -232,21 +227,21 @@ public class CreateActivityTest {
         startCalendar.add(Calendar.DATE, 2);
         startCalendar.add(Calendar.HOUR, 2);
         startCalendar.add(Calendar.MINUTE, 30);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, 2);
         endCalendar.add(Calendar.HOUR, 2);
         endCalendar.add(Calendar.MINUTE, 50);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
 
         String expectedUid;
         if(activity.user != null) {
@@ -263,7 +258,7 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        /*onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
         int i = 0;
         while(i==0){
             try{
@@ -273,9 +268,9 @@ public class CreateActivityTest {
             } catch (NoMatchingViewException e) {
 
             }
-        }
+        }*/
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -322,7 +317,7 @@ public class CreateActivityTest {
     @Test
     public void correctlyDisplaysDateAndTime() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
@@ -331,30 +326,30 @@ public class CreateActivityTest {
         startCalendar.add(Calendar.DATE, 2);
         startCalendar.add(Calendar.HOUR, 2);
         startCalendar.add(Calendar.MINUTE, 30);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
-        String startDate = activity.makeDateString(startCalendar);
-        String startTime = activity.makeTimeString(startCalendar);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
+        final String startDate = activity.makeDateString(startCalendar);
+        final String startTime = activity.makeTimeString(startCalendar);
 
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, 2);
         endCalendar.add(Calendar.HOUR, 2);
         endCalendar.add(Calendar.MINUTE, 50);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
-        String endDate = activity.makeDateString(endCalendar);
-        String endTime = activity.makeTimeString(endCalendar);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
+        final String endDate = activity.makeDateString(endCalendar);
+        final String endTime = activity.makeTimeString(endCalendar);
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        /*onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
         int i = 0;
         while(i==0){
             try{
@@ -364,10 +359,9 @@ public class CreateActivityTest {
             } catch (NoMatchingViewException e) {
 
             }
-        }
+        }*/
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -395,38 +389,38 @@ public class CreateActivityTest {
     @Test
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
         DataProvider testDataProvider = mock(DataProvider.class);
         when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
         activity.setDataProvider(testDataProvider);
 
-        String testTitle = "test_title";
-        String testDescription = "test description";
+        final String testTitle = "test_title";
+        final String testDescription = "test description";
 
         activity.activityLongitude=1;
         activity.activityLatitude=1;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.MINUTE, -10);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.HOUR, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
+        /*onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
         int i = 0;
         while(i==0){
             try{
@@ -436,9 +430,9 @@ public class CreateActivityTest {
             } catch (NoMatchingViewException e) {
 
             }
-        }
+        }*/
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -468,16 +462,16 @@ public class CreateActivityTest {
     @Test
     public void noLocationChosen() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
 
-        String testTitle = "test_title";
-        String testDescription = "test description";
+        final String testTitle = "test_title";
+        final String testDescription = "test description";
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.HOUR, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
