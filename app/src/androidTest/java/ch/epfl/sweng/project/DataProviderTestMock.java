@@ -90,11 +90,18 @@ public class DataProviderTestMock {
         database = Mockito.mock(FirebaseDatabase.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
+        final String userUid = "user-uid-test";
+        final String fakeOrganisedKey = "fake-organiser-uid-key";
+        when(mUser.getUid()).thenReturn(userUid);
+        when(mDataBaseRef.child("users")).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.child(userUid)).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.child("organised")).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.push()).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.getKey()).thenReturn(fakeOrganisedKey);
 
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
         when(mChild.push()).thenReturn(mPush);
         when(mPush.getKey()).thenReturn(uuidTest);
-
         when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
 
 

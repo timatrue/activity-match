@@ -2,18 +2,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
-    <TextView
-        android:text=" "
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".UserProfile">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/user_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/userEmail" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:contentInsetStart="4dp"
+        android:elevation="4dp"
+        app:navigationIcon="?attr/homeAsUpIndicator">
+
+        <TextView
+            android:text=" "
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:textColor="@color/userProfileLight"
+            android:id="@+id/userEmail" />
+    </android.support.v7.widget.Toolbar>
 
     <ExpandableListView
         android:id="@+id/userProfileActivityList"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/userEmail">
+        android:layout_marginTop="?attr/actionBarSize">
     </ExpandableListView>
 
 </RelativeLayout>
