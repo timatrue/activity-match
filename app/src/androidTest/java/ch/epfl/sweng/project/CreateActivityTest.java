@@ -98,7 +98,7 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod() == null);
         onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
     }
-
+/*
     @Test
     public void endDateBeforeCurrentDate() throws Exception {
 
@@ -118,7 +118,7 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod() == null);
         assertTrue(activity.validateActivity().equals("date_error"));
         onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
-    }
+    }*/
 
     @Test
     public void startDateAfterEndDate() throws Exception {
@@ -391,7 +391,7 @@ public class CreateActivityTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).check(matches(withText(endTime)));
     }
-
+/*
     @Test
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
@@ -464,7 +464,7 @@ public class CreateActivityTest {
         assertTrue(activity.createActivityMethod() != null);
         assertTrue(activity.createActivityMethod().getTimeStart().after(startCalendar));
     }
-
+*/
     @Test
     public void noLocationChosen() throws Exception {
 
