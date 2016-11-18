@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+<<<<<<< HEAD
+    >
+=======
     tools:context=".UserProfile">
+>>>>>>> bbab8850a77f2ee2e07f7f85381af5efeeede9b9
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/user_toolbar"
