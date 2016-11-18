@@ -188,6 +188,7 @@ public class CreateActivityTest {
     public void missingTitle() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -206,15 +207,16 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.missing_field_error));
+        assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_field_error)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
     }
 
     @Test
     public void missingDescription() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -233,15 +235,16 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.missing_field_error));
+        assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_field_error)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
     }
 
     @Test
     public void endDateBeforeCurrentDate() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -261,15 +264,16 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.date_error));
+        assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.date_error)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
     }
 
     @Test
     public void startDateAfterEndDate() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -291,15 +295,16 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.date_error));
+        assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.date_error)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
     }
 
     @Test
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -333,7 +338,7 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.success));
+        assertThat(validation, is(ConfirmationCodes.get_success(context)));
         assertTrue(da !=  null);
         assertTrue(da.getTimeStart().after(lowerBound));
         assertTrue(da.getTimeStart().before(upperBound));
@@ -343,6 +348,7 @@ public class CreateActivityTest {
     public void noLocationChosen() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -362,15 +368,16 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.missing_location_error));
+        assertThat(validation, is(ConfirmationCodes.get_missing_location_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_location_error)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_location_error(context))));
     }
 
     @Test
     public void validActivityCreation() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
         initializeMockProvider(activity);
 
@@ -415,7 +422,7 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is(ConfirmationCodes.success));
+        assertThat(validation, is(ConfirmationCodes.get_success(context)));
         assertTrue(da != null);
         assertThat(da.getTitle(), is(testTitle));
         assertThat(da.getCategory(), is(testCategory));

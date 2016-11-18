@@ -113,9 +113,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if (bundle != null) {
             String confirmationMessageString = bundle.getString("CONFIRMATION_MESSAGE");
             if (confirmationMessageString != null) {
-                if(confirmationMessageString.equals(ConfirmationCodes.success)) {
+                if(confirmationMessageString.equals(ConfirmationCodes.get_success(this))) {
                     TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
-                    confirmationPreviousActivity.setText(ConfirmationCodes.success);
+                    confirmationPreviousActivity.setText(ConfirmationCodes.get_success(this));
                     confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
                 }
             }
@@ -240,7 +240,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         DeboxActivity newDeboxActivity = createActivityMethod(validation);
 
-        if(validation.equals(ConfirmationCodes.success)) {
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
             //Add all images name in the debox activity
             for(Uri uri :imagesUriList) {
                 newDeboxActivity.addImage(uri.getLastPathSegment());
@@ -257,7 +257,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         setConfirmationTextView(validation);
 
 
-        if(validation.equals(ConfirmationCodes.success)) {
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
             finish();
         }
     }
@@ -268,15 +268,15 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if (!activityTitle.equals("") && !activityDescription.equals("")) {
 
             if (activityLongitude == 0 || activityLatitude == 0)
-                return ConfirmationCodes.missing_location_error;
+                return ConfirmationCodes.get_missing_location_error(this);
             if (activityEndCalendar.after(activityStartCalendar)
                     && activityEndCalendar.after(Calendar.getInstance())) {
-                return ConfirmationCodes.success;
+                return ConfirmationCodes.get_success(this);
             } else {
-                return ConfirmationCodes.date_error;
+                return ConfirmationCodes.get_date_error(this);
             }
         } else {
-            return ConfirmationCodes.missing_field_error;
+            return ConfirmationCodes.get_missing_field_error(this);
         }
     }
 
@@ -286,7 +286,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         DeboxActivity newDeboxActivity = null;
 
-        if (validation.equals(ConfirmationCodes.success)) {
+        if (validation.equals(ConfirmationCodes.get_success(this))) {
             if (activityStartCalendar.before(Calendar.getInstance())) {
                     /* sets the starting time of the activity to the current time if the starting time
                     is before the current time */
@@ -314,32 +314,30 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
 
-        switch (validation) {
-            case ConfirmationCodes.success:
-                Intent intent = new Intent(this, CreateActivity.class);
-                intent.putExtra("CONFIRMATION_MESSAGE", validation);
-                startActivity(intent);
-                break;
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.putExtra("CONFIRMATION_MESSAGE", validation);
+            startActivity(intent);
+        }
 
-            case ConfirmationCodes.missing_field_error:
-                confirmation.setText(validation);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_missing_field_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            case ConfirmationCodes.date_error:
-                confirmation.setText(validation);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_date_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            case ConfirmationCodes.missing_location_error:
-                confirmation.setText(validation);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_missing_location_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            default:
-                confirmation.setText(ConfirmationCodes.unknown_error);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else {
+            confirmation.setText(ConfirmationCodes.get_unknown_error(this));
+            confirmation.setTextColor(Color.RED);
         }
     }
 
