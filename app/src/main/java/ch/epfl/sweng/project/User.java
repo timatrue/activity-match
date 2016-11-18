@@ -11,9 +11,8 @@ public class User {
     private String id;
     private String username;
     private String email;
-    private List<String> organizedEvents;
-    private List<String>  participatedEvents;
-    private List<String>  interestedEvents;
+    private List<String> organizedEventIds;
+    private List<String>  interestedEventIds;
     private String rating;
     private String photoLink;
 
@@ -24,19 +23,18 @@ public class User {
      * @param   username    the name of the user
      * @param   email   the e-mail of the user
      * @param   organizedEvents    a list of events organized by this user
-     * @param   participatedEvents    a list of events this user participated in
      * @param   interestedEvents    a list of events this user is interested in
      * @param   rating    the rating of the user
      * @param   photoLink    the link to get the photo of the user
      */
-    public User(String id, String username, String email, List<String>  organizedEvents, List<String>  participatedEvents, List<String>  interestedEvents,
+    public User(String id, String username, String email, List<String>  organizedEvents, List<String>  interestedEvents,
                 String rating, String photoLink) {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.organizedEvents = organizedEvents;
-        this.participatedEvents = participatedEvents;
-        this.interestedEvents = interestedEvents;
+        this.organizedEventIds = organizedEvents;
+        //this.participatedEvents = participatedEvents;
+        this.interestedEventIds = interestedEvents;
         this.rating = rating;
         this.photoLink = photoLink;
     }
@@ -59,18 +57,13 @@ public class User {
         return this.email;
     }
 
-    public List<String> getOrganizedEvents() {
-        List<String> events = new ArrayList<>(organizedEvents);
+    public List<String> getOrganizedEventIds() {
+        List<String> events = new ArrayList<>(organizedEventIds);
         return events;
     }
 
-    public List<String> getParticipatedEvents() {
-        List<String> events = new ArrayList<>(participatedEvents);
-        return events;
-    }
-
-    public List<String> getInterestedEvents() {
-        List<String> events = new ArrayList<>(interestedEvents);
+    public List<String> getInterestedEventIds() {
+        List<String> events = new ArrayList<>(interestedEventIds);
         return events;
     }
     /**
@@ -85,6 +78,6 @@ public class User {
     }
 
     public User copy() {
-        return new User(this.id, this.username, this.email, this.organizedEvents, this.participatedEvents, this.interestedEvents, this.rating, this.photoLink);
+        return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.rating, this.photoLink);
     }
 }

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,7 +57,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private String eventId;
     private DeboxActivity currentActivity;
     private Button joinActivityButton;
+    private Button leaveActivityButton;
     private TextView enrolledInfoTextView;
+    private TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
 
     @Override
@@ -68,7 +71,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
+        leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
         enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
+        occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
 
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
@@ -125,6 +130,18 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             " at " + timeFormat.format(timeEnd.getTime())  ;
                     schedule.setText(stringSchedule);
 
+
+                    // TODO for the moment, not all activities are correct entry for occupancy
+                    if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {
+                        if (activity.getNbMaxOfParticipants() >= 0) {
+                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants() + " / " + activity.getNbMaxOfParticipants());
+                        } else {
+                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants());
+                        }
+                    } else {
+                        occupancyTextView.setText("Invalid information about occupancy");
+                    }
+
                     if (map != null) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
                         map.addMarker(new MarkerOptions()
@@ -142,10 +159,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             // Set listener to check if user is already register in this activity or not.
             mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
                 @Override
-                public void getIfEnrolled(boolean result) {
+                public void getIfEnrolled(boolean isAlreadyEnrolled) {
 
-                    if (result) {
+                    if (isAlreadyEnrolled) {
                         enrolledInfoTextView.setVisibility(View.VISIBLE);
+                        leaveActivityButton.setVisibility(View.VISIBLE);
                     } else {
                         joinActivityButton.setVisibility(View.VISIBLE);
                     }
@@ -173,6 +191,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mDataProvider.joinActivity(currentActivity);
             enrolledInfoTextView.setVisibility(View.VISIBLE);
             joinActivityButton.setVisibility(View.INVISIBLE);
+            leaveActivityButton.setVisibility(View.VISIBLE);
 
             String toastMsg = getString(R.string.toast_success_join);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
@@ -183,6 +202,24 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    public void leaveActivity(View v){
+        if(currentActivity!= null){
+
+            mDataProvider.leaveActivity(currentActivity);
+            enrolledInfoTextView.setVisibility(View.INVISIBLE);
+            joinActivityButton.setVisibility(View.VISIBLE);
+            leaveActivityButton.setVisibility(View.INVISIBLE);
+
+
+        } else {
+
+            String toastMsg = getString(R.string.toas_fail_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
 
