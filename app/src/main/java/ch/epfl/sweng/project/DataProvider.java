@@ -257,7 +257,7 @@ public class DataProvider {
 
         List<String> interestedEvents = new ArrayList<>();
         boolean check_enrolled = userMap.containsKey("enrolled");
-        if (check_enrolled == true) {
+        if (check_enrolled) {
             Map<String, Map<String, Object>> enrolled = (Map<String, Map<String, Object>>) userMap.get("enrolled");
             for (Map<String, Object> innerMap : enrolled.values()) {
                 String activityID = (String) innerMap.get("activity ID:");
@@ -267,7 +267,7 @@ public class DataProvider {
 
         List<String> organizedEvents = new ArrayList<String>();
         boolean check_organized = userMap.containsKey("organised");
-        if (check_organized == true) {
+        if (check_organized) {
             Map<String, Map<String, Object>> organized = (Map<String, Map<String, Object>>) userMap.get("organised");
             for (Map<String, Object> innerMap : organized.values()) {
                 String activityID = (String) innerMap.get("activity ID:");
