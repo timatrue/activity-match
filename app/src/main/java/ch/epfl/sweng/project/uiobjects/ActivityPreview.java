@@ -1,16 +1,24 @@
 package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
+
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.DeboxActivity;
 import ch.epfl.sweng.project.R;
+
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.util.Random;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static java.text.DateFormat.getDateInstance;
+
 
 /**
  * Created by nathan on 07.10.16.
@@ -19,6 +27,14 @@ import ch.epfl.sweng.project.R;
 public class ActivityPreview extends LinearLayout {
 
     private DeboxActivity event;
+    private String eventTime;
+    private Calendar timeStart;
+    private DateFormat dateFormat;
+
+    private TextView titleEvent;
+    private TextView previewEvent;
+    private TextView dateEvent;
+    private TextView sizeEvent;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,36 +50,33 @@ public class ActivityPreview extends LinearLayout {
         setOrientation(VERTICAL);
 
         this.event = event;
+        dateFormat = getDateInstance();
+        timeStart = event.getTimeStart();
+        eventTime = dateFormat.format(timeStart.getTime());
 
-        TextView titleView = new TextView(context);
-        TextView previewtextView = new TextView(context);
-        titleView.setTextSize(22);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View childLayout = inflater.inflate(R.layout.content_data_row, (ViewGroup) findViewById(R.id.activityPreviewsLayout));
+        setEventPreview(event, childLayout, context);
+        this.addView(childLayout);
+    }
 
-        titleView.setText(event.getTitle());
-        previewtextView.setText(event.getShortDescription());
+    private void setEventPreview(DeboxActivity event, View childLayout, Context context){
+        titleEvent = (TextView) childLayout.findViewById(R.id.titleEvent);
+        titleEvent.setText(event.getTitle());
 
+        previewEvent = (TextView) childLayout.findViewById(R.id.previewEvent);
+        previewEvent.setText(event.getShortDescription());
 
-        titleView.setTextColor(Color.BLACK);
-        previewtextView.setTextColor(Color.BLACK);
+        dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
+        dateEvent.setText(eventTime);
 
-        this.addView(titleView);
-        this.addView(previewtextView);
-
-        GradientDrawable gd = new GradientDrawable();
-        gd.setColor(Color.rgb(0xCF, 0xD8, 0xDC)); // Changes this drawbale to use a single color instead of a gradient
-        gd.setCornerRadius(10);
-        gd.setStroke(2, 0xFF000000);
-
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            //noinspection deprecation
-            this.setBackgroundDrawable(gd);
-        } else {
-            this.setBackground(gd);
-        }
-
-        this.setPadding(20,20,20,20);
-
-
+        sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
+        sizeEvent.setText("Participants: " + randomParticipants());
+    }
+    private int randomParticipants(){
+        Random random = new Random();
+        int number = random.nextInt(80 - 65) + 65;
+        return number;
     }
 
 }

@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UserProfile">
 
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/user_toolbar"
         android:layout_width="match_parent"
