@@ -1,17 +1,13 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,9 +74,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         String test = intent.getStringExtra(DISPLAY_ACTIVITY_TEST_KEY);
         if(test.equals(DISPLAY_ACTIVITY_NO_TEST)) {
             mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            initDisplay();
+            initDisplay(false);
         }
-
     }
 
     public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
@@ -89,9 +84,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
 
-    public void initDisplay() {
-        //TODO MODIFY THIS AND MAKE IT PROPER
-        if(mFirebaseUser!=null || true) {
+    public void initDisplay(boolean test) {
+
+        if(mFirebaseUser!=null || test) {
 
             mDataProvider.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
                 @Override
@@ -164,8 +159,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     /**
      * Method call by button joinActivity. Fill a new relation between user and current
      * activity in database.
-     *
-     * @param v
      */
     public void joinActivity(View v) {
         if(currentActivity!= null){

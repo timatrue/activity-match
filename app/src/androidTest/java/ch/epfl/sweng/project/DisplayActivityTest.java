@@ -23,8 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 
-
-
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class DisplayActivityTest {
@@ -90,7 +88,7 @@ public class DisplayActivityTest {
 
         activity.setTestDBObjects(dp, testFirebaseUser);
 
-        activity.initDisplay();
+        activity.initDisplay(true);
 
         String categoryText = activity.getResources().getString(R.string.create_activity_category_text) + " " + dA1.getCategory();
         DateFormat dateFormat = getDateInstance();
