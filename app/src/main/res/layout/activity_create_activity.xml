@@ -223,7 +223,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/createActivityValidateButton"
-                android:id="@+id/createActivityConfirmation" />
+                android:id="@+id/createActivityError" />
 
             <Button
 
