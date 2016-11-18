@@ -114,9 +114,9 @@ public class CreateActivityTest {
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
 
+        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
         assertTrue(activity.createActivityMethod() == null);
         assertTrue(activity.validateActivity().equals("date_error"));
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
         onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
     }
 
