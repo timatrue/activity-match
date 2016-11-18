@@ -122,7 +122,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     String stringSchedule = dateFormat.format(timeStart.getTime()) +
                             " at " + timeFormat.format(timeStart.getTime()) + " to " +
                             dateFormat.format(timeEnd.getTime()) +
-                            " at " + timeFormat.format(timeEnd.getTime())  ;
+                            " at " + timeFormat.format(timeEnd.getTime());
                     schedule.setText(stringSchedule);
 
                     if (map != null) {
