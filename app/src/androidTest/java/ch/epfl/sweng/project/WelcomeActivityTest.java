@@ -163,29 +163,18 @@ public class WelcomeActivityTest {
         return listCategory;
     }
 
-    private void initializeMockProvider(final WelcomeActivity activity, final String filterCategory) {
+    private void initializeMockProvider(final WelcomeActivity activity) {
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setListOfCategoryToMock(categoryList);
-        if(!filterCategory.equals("All")) {
-            dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
-                @Override
-                public void getCategory(List<DeboxActivity> activitiesList) {
-                    for(DeboxActivity elem: activitiesList) {
-                        assertEquals(elem.getCategory(), filterCategory);
-                    }
-                }
-            },filterCategory);
-        }
         activity.setDataProvider(dp);
         activity.getAllCategories();
     }
 
     //Shows how to use the mock data provider
     @Test
-    public void mockDataProviderExampleTest(){
+    public void mockDataProviderTest(){
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
@@ -283,7 +272,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         //Press on the "Display Events" button
         activity.displayActivities.performClick();
@@ -338,7 +327,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -374,7 +363,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -412,7 +401,7 @@ public class WelcomeActivityTest {
 
         final String filterCategory = "Culture";
 
-        initializeMockProvider(activity, filterCategory);
+        initializeMockProvider(activity);
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -448,7 +437,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -483,7 +472,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         final String testCategory = "Culture";
         final String testMaxDistanceString = "50 km";
@@ -569,7 +558,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        initializeMockProvider(activity, "All");
+        initializeMockProvider(activity);
 
         final String testCategory = "Culture";
         final String testMaxDistanceString = "50 km";
