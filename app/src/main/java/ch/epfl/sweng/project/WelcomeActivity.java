@@ -262,11 +262,11 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener filterEventsListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            CategoryFragment(v);
+            CategoryFragment();
         }
     };
 
-    protected void CategoryFragment(View v){
+    protected void CategoryFragment(){
         FragmentManager fm = getFragmentManager();
         dialogFragment = new FilterFragment ();
         dialogFragment.categoryList = categories;
@@ -309,8 +309,10 @@ public class WelcomeActivity extends AppCompatActivity
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
+            Log.d(TAG, "PlacePicker: GooglePlayServicesRepairableException");
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
+            Log.d(TAG, "PlacePicker: GooglePlayServicesNotAvailableException");
         }
     }
 
@@ -368,7 +370,7 @@ public class WelcomeActivity extends AppCompatActivity
                             }
                         }
                     }
-                    mDataProvider = new DataProvider();
+                    //mDataProvider = new DataProvider();
                 }
             });
         }
@@ -398,7 +400,7 @@ public class WelcomeActivity extends AppCompatActivity
                             }
                         }
                     }
-                    mDataProvider = new DataProvider();
+                    //mDataProvider = new DataProvider();
                 }
             }, filterCategory);
         }
@@ -451,7 +453,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 

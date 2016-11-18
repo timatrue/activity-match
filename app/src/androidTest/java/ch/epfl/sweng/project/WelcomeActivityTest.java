@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
@@ -164,6 +163,27 @@ public class WelcomeActivityTest {
         return listCategory;
     }
 
+    private void initializeMockProvider(final WelcomeActivity activity, final String filterCategory) {
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
+        mocDataProvider.setListOfCategoryToMock(categoryList);
+        if(!filterCategory.equals("All")) {
+            dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+                @Override
+                public void getCategory(List<DeboxActivity> activitiesList) {
+                    for(DeboxActivity elem: activitiesList) {
+                        assertEquals(elem.getCategory(), filterCategory);
+                    }
+                }
+            },filterCategory);
+        }
+        activity.setDataProvider(dp);
+        activity.getAllCategories();
+    }
+
+    //Shows how to use the mock data provider
     @Test
     public void mockDataProviderExampleTest(){
 
@@ -261,13 +281,9 @@ public class WelcomeActivityTest {
     @Test
     public void DisplayActivitiesProperly() throws Exception {
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
-        //Insert Mock DataProvider
-        activity.setDataProvider(dp);
+
+        initializeMockProvider(activity, "All");
 
         //Press on the "Display Events" button
         activity.displayActivities.performClick();
@@ -322,12 +338,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
-        //Insert Mock DataProvider
-        activity.setDataProvider(dp);
+        initializeMockProvider(activity, "All");
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -363,12 +374,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
-        //Insert Mock DataProvider
-        activity.setDataProvider(dp);
+        initializeMockProvider(activity, "All");
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -404,30 +410,15 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
+        final String filterCategory = "Culture";
 
-        final String filteredCategory = "Culture";
-
-        dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
-            @Override
-            public void getCategory(List<DeboxActivity> activitiesList) {
-                for(DeboxActivity elem: activitiesList) {
-                    assertEquals(elem.getCategory(),filteredCategory);
-                }
-            }
-        },filteredCategory);
-
-        //Insert Mock DataProvider
-        activity.setDataProvider(dp);
+        initializeMockProvider(activity, filterCategory);
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
-        activity.filterCategory = filteredCategory;
+        activity.filterCategory = filterCategory;
         activity.maxDistanceString = "All";
         activity.centerLongitude = 6.642266;
         activity.centerLatitude = 46.777245;
@@ -444,7 +435,7 @@ public class WelcomeActivityTest {
         //Checks that the DeboxActivities titles correspond to the ones that should have been selected
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
-            if(deboxActivityList.get(i).getCategory().equals(filteredCategory)) {
+            if(deboxActivityList.get(i).getCategory().equals(filterCategory)) {
                 assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
@@ -457,12 +448,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
-        //Insert Mock DataProvider
-        activity.setDataProvider(dp);
+        initializeMockProvider(activity, "All");
 
         /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
         in the displaySpecifiedActivities() function */
@@ -493,19 +479,11 @@ public class WelcomeActivityTest {
     }
 
     @Test
-    public void clickingFilterButtonsPicksTheRightParameters() throws Exception {
+    public void UITest() throws Exception {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
-        mocDataProvider.setListOfCategoryToMock(categoryList);
-
-        activity.setDataProvider(dp);
-
-        activity.getAllCategories();
+        initializeMockProvider(activity, "All");
 
         final String testCategory = "Culture";
         final String testMaxDistanceString = "50 km";
@@ -568,10 +546,7 @@ public class WelcomeActivityTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.endTime)).perform(ViewActions.scrollTo()).check(matches(withText(endTime)));
 
-        ViewInteraction appCompatButton6 = onView(
-                allOf(withId(R.id.validate), withText("Validate")));
-        appCompatButton6.perform(scrollTo(), click());
-
+        onView(allOf(withId(R.id.validate), withText("Validate"))).perform(scrollTo(), click());
 
         assertThat(activity.filterCategory, is(testCategory));
         assertThat(activity.maxDistanceString, is(testMaxDistanceString));
@@ -594,15 +569,7 @@ public class WelcomeActivityTest {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
 
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-
-        mocDataProvider.setListOfCategoryToMock(categoryList);
-
-        activity.setDataProvider(dp);
-
-        activity.getAllCategories();
+        initializeMockProvider(activity, "All");
 
         final String testCategory = "Culture";
         final String testMaxDistanceString = "50 km";
