@@ -70,8 +70,8 @@ public class ActivityPreview extends LinearLayout {
         dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
         dateEvent.setText(eventTime);
 
-        sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
-        sizeEvent.setText("Participants: " + randomParticipants());
+        //sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
+        //sizeEvent.setText("Participants: " + randomParticipants());
     }
     private int randomParticipants(){
         Random random = new Random();

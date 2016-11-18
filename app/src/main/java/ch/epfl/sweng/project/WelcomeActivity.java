@@ -138,7 +138,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     mDataProvider.initUserInDB();
 
-                    getActivitiesAndDisplay();
+                    getAllCategoriesAndLocation();
 
                 }
             }
