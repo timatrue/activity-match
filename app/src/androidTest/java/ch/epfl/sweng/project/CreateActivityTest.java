@@ -206,9 +206,9 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("missing_field_error"));
+        assertThat(validation, is(ConfirmationCodes.missing_field_error));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_field_error)));
     }
 
     @Test
@@ -233,9 +233,9 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("missing_field_error"));
+        assertThat(validation, is(ConfirmationCodes.missing_field_error));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_field_error)));
     }
 
     @Test
@@ -261,9 +261,9 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("date_error"));
+        assertThat(validation, is(ConfirmationCodes.date_error));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.date_error)));
     }
 
     @Test
@@ -291,9 +291,9 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("date_error"));
+        assertThat(validation, is(ConfirmationCodes.date_error));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.date_error)));
     }
 
     @Test
@@ -333,7 +333,7 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("success"));
+        assertThat(validation, is(ConfirmationCodes.success));
         assertTrue(da !=  null);
         assertTrue(da.getTimeStart().after(lowerBound));
         assertTrue(da.getTimeStart().before(upperBound));
@@ -362,9 +362,9 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("missing_location"));
+        assertThat(validation, is(ConfirmationCodes.missing_location_error));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_location_error_message)));
+        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.missing_location_error)));
     }
 
     @Test
@@ -415,7 +415,7 @@ public class CreateActivityTest {
             }
         });
 
-        assertThat(validation, is("success"));
+        assertThat(validation, is(ConfirmationCodes.success));
         assertTrue(da != null);
         assertThat(da.getTitle(), is(testTitle));
         assertThat(da.getCategory(), is(testCategory));
