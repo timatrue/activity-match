@@ -1,12 +1,12 @@
 package ch.epfl.sweng.project;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,8 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.R.attr.category;
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
+import static com.google.android.gms.internal.zzs.TAG;
 import static java.text.DateFormat.getDateInstance;
 
 
@@ -70,7 +69,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     double activityLatitude = 0;
     double activityLongitude = 0;
     String activityCategory = "default_category";
-    String validation = "default_validation";
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -84,8 +82,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
-    final String[] tries = {"1", "2", "three"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +113,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if (bundle != null) {
             String confirmationMessageString = bundle.getString("CONFIRMATION_MESSAGE");
             if (confirmationMessageString != null) {
-                if(confirmationMessageString.equals("success")) {
+                if(confirmationMessageString.equals(ConfirmationCodes.get_success(this))) {
                     TextView confirmationPreviousActivity = (TextView) findViewById(R.id.createActivityConfirmation);
-                    confirmationPreviousActivity.setText(R.string.create_activity_confirmation_message);
+                    confirmationPreviousActivity.setText(ConfirmationCodes.get_success(this));
                     confirmationPreviousActivity.setTextColor(getResources().getColor(R.color.green));
                 }
             }
@@ -130,13 +126,19 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         //Check if the activity runs in test mode, if not, initialize with real Dataprovider and
         //Get categories on the DB and display them in the dropdown
-        String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
-        if(test != null) {
-            if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
-                setDataProvider(new DataProvider());
-                getAndDisplayCategories();
+        if(bundle != null) {
+            String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
+            if(test != null) {
+                if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
+                    setDataProvider(new DataProvider());
+                    getAndDisplayCategories();
+                }
             }
         }
+        else {
+            Log.d(TAG, "Dataprovider is not initialized: Bundle is null");
+        }
+
 
         mImageProvider = new ImageProvider();
     }
@@ -151,16 +153,15 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
-                List<String> stringList = new ArrayList<String>();
+                List<String> stringList = new ArrayList<>();
                 for (DataProvider.CategoryName cat : items) {
                     stringList.add(cat.getCategory());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateActivity.this, android.R.layout.simple_spinner_item, stringList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateActivity.this, android.R.layout.simple_spinner_item, stringList);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dropdown.setAdapter(adapter);
             }
         });
-
     }
 
     //When user chose a category on the dropdown, saves it
@@ -184,8 +185,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             e.printStackTrace();
+            Log.d(TAG, "PlacePicker: GooglePlayServicesRepairableException");
         } catch (GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
+            Log.d(TAG, "PlacePicker: GooglePlayServicesNotAvailableException");
         }
     }
 
@@ -233,11 +236,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         EditText DescriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
         activityDescription = DescriptionEditText.getText().toString();
 
-        validation = validateActivity();
+        String validation = validateActivity();
 
-        DeboxActivity newDeboxActivity = createActivityMethod();
+        DeboxActivity newDeboxActivity = createActivityMethod(validation);
 
-        if(validation.equals("success")) {
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
             //Add all images name in the debox activity
             for(Uri uri :imagesUriList) {
                 newDeboxActivity.addImage(uri.getLastPathSegment());
@@ -254,7 +257,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         setConfirmationTextView(validation);
 
 
-        if(validation.equals("success")) {
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
             finish();
         }
     }
@@ -262,28 +265,28 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     /* Checks the parameters entered by the user an returns a String with the corresponding error
     or success */
     public String validateActivity() {
-        if (!activityTitle.equals("") && !activityDescription.equals("") && !activityCategory.equals("")) {
+        if (!activityTitle.equals("") && !activityDescription.equals("")) {
 
-            if (activityLongitude== 0 || activityLatitude==0)
-                return "missing_location";
+            if (activityLongitude == 0 || activityLatitude == 0)
+                return ConfirmationCodes.get_missing_location_error(this);
             if (activityEndCalendar.after(activityStartCalendar)
                     && activityEndCalendar.after(Calendar.getInstance())) {
-                return "success";
+                return ConfirmationCodes.get_success(this);
             } else {
-                return "date_error";
+                return ConfirmationCodes.get_date_error(this);
             }
         } else {
-            return "missing_field_error";
+            return ConfirmationCodes.get_missing_field_error(this);
         }
     }
 
     /* Returns a DeboxActivity instance with the parameters entered in the by the user or null if
     the parameters are incorrect */
-    public DeboxActivity createActivityMethod() {
+    public DeboxActivity createActivityMethod(String validation) {
 
         DeboxActivity newDeboxActivity = null;
 
-        if (validation.equals("success")) {
+        if (validation.equals(ConfirmationCodes.get_success(this))) {
             if (activityStartCalendar.before(Calendar.getInstance())) {
                     /* sets the starting time of the activity to the current time if the starting time
                     is before the current time */
@@ -312,32 +315,30 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         TextView confirmation = (TextView) findViewById(R.id.createActivityConfirmation);
 
-        switch (validation) {
-            case "success":
-                Intent intent = new Intent(this, CreateActivity.class);
-                intent.putExtra("CONFIRMATION_MESSAGE", validation);
-                startActivity(intent);
-                break;
+        if(validation.equals(ConfirmationCodes.get_success(this))) {
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.putExtra("CONFIRMATION_MESSAGE", validation);
+            startActivity(intent);
+        }
 
-            case "missing_field_error":
-                confirmation.setText(R.string.create_activity_missing_field_error_message);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_missing_field_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            case "date_error":
-                confirmation.setText(R.string.create_activity_date_error_message);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_date_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            case "missing_location":
-                confirmation.setText(R.string.create_activity_location_error_message);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else if(validation.equals(ConfirmationCodes.get_missing_location_error(this))) {
+            confirmation.setText(validation);
+            confirmation.setTextColor(Color.RED);
+        }
 
-            default:
-                confirmation.setText(R.string.create_activity_unknown_error_message);
-                confirmation.setTextColor(Color.RED);
-                break;
+        else {
+            confirmation.setText(ConfirmationCodes.get_unknown_error(this));
+            confirmation.setTextColor(Color.RED);
         }
     }
 
