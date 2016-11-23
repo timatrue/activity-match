@@ -11,6 +11,7 @@
 
 
     <dimen name="create_activity_margin">16dp</dimen>
-
+    <dimen name="textsize">20sp</dimen>
+    <dimen name="text_view_height">50dp</dimen>
 
 </resources>

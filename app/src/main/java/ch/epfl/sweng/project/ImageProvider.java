@@ -25,6 +25,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.List;
 
+import ch.epfl.sweng.project.uiobjects.SquareImageView;
+
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
@@ -64,13 +66,14 @@ public class ImageProvider {
     public void previewImage(Context context,  String folder,  View childLayout, String imageName){
 
         StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
-        ImageView imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
+        SquareImageView imageView = (SquareImageView) childLayout.findViewById(R.id.activityImage);
 
         Glide.with(context)
                 .using(new FirebaseImageLoader())
                 .load(storageReference)
-                .placeholder(R.mipmap.ic_welcome_list)
+                .centerCrop()
                 .into(imageView);
+
     }
 
     public void UploadImage(Uri imageUri, String folder) {

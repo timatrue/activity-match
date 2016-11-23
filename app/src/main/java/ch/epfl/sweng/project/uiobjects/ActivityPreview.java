@@ -84,14 +84,19 @@ public class ActivityPreview extends LinearLayout {
 
         imagesList = event.getImageList();
         imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
+        TextView imageTextImage = (TextView) childLayout.findViewById(R.id.activityTextImage);
         eventId = event.getId();
-
 
         if(imagesList != null){
             String image = imagesList.get(0);
             new ImageProvider().previewImage(context, eventId, childLayout, image);
+
         } else {
-            imageView.setImageResource(R.mipmap.ic_welcome_list);
+            imageTextImage.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+            String letter = event.getTitle().substring(0,1);
+            imageTextImage.setText(letter);
+            imageTextImage.setTextSize(getResources().getDimension(R.dimen.textsize));
         }
     }
     private int randomParticipants(){
