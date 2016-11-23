@@ -71,6 +71,7 @@ public class DataProviderTest {
 
     private final Map<String, Object> activityMap = new HashMap<>();
 
+
     @Test
     public void testPushActivity() {
 
@@ -81,11 +82,18 @@ public class DataProviderTest {
         database = Mockito.mock(FirebaseDatabase.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
+        final String userUid = "user-uid-test";
+        final String fakeOrganisedKey = "fake-organiser-uid-key";
+        when(mUser.getUid()).thenReturn(userUid);
+        when(mDataBaseRef.child("users")).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.child(userUid)).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.child("organised")).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.push()).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.getKey()).thenReturn(fakeOrganisedKey);
 
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
         when(mChild.push()).thenReturn(mPush);
         when(mPush.getKey()).thenReturn(uuidTest);
-
         when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
 
 
@@ -93,7 +101,10 @@ public class DataProviderTest {
         String result = dp.pushActivity(deboxActivityTest);
 
         assertEquals(uuidTest,result);
+
     }
+
+
 
     @Test
     public void testGetActivityFromUid() {
@@ -148,6 +159,8 @@ public class DataProviderTest {
 
         }, uuidTest);
     }
+
+
 
     @Test
     public void testUserEnrolledInActivity() {
@@ -354,6 +367,7 @@ public class DataProviderTest {
 
             }
         },deboxActivityTest.getCategory());
+
     }
 
 
@@ -452,6 +466,7 @@ public class DataProviderTest {
                 assertTrue(activity.getLocation()[1] == deboxActivityTest2.getLocation()[1]);
                 assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest2.getTimeEnd().getTimeInMillis());
                 assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest2.getTimeStart().getTimeInMillis());
+
             }
         });
     }

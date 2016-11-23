@@ -302,7 +302,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                     activityEndCalendar,
                     activityLatitude,
                     activityLongitude,
-                    activityCategory);
+                    activityCategory
+                    );
         }
         return newDeboxActivity;
     }

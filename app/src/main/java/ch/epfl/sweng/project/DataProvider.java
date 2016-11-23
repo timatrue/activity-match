@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -110,6 +111,7 @@ public class DataProvider {
 
     }
 
+
     public void getAllActivities(final DataProviderListenerActivities listener) {
 
         DatabaseReference myRef = database.getReference("activities");
@@ -131,7 +133,7 @@ public class DataProvider {
         });
     }
 
-    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> eventIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -139,12 +141,17 @@ public class DataProvider {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<DeboxActivity> list = new ArrayList<DeboxActivity>();
+                ArrayList<DeboxActivity> intList = new ArrayList<>();
+                ArrayList<DeboxActivity> orgList = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
-                    if (eventIds.contains(child.getKey()))
-                        list.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    if (intEventIds.contains(child.getKey())) {
+                        intList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
+                    if (orgEventsIds.contains(child.getKey())) {
+                        orgList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
                 }
-                listener.getUserActivities(list);
+                listener.getUserActivities(intList, orgList);
             }
 
             @Override
@@ -178,13 +185,29 @@ public class DataProvider {
         result.put("longitude",location[1]);
         result.put("category",da.getCategory());
 
+        result.put("nbOfParticipants",da.getNbOfParticipants());
+        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
+
         result.put("images",da.getImageList());
 
         childUpdates.put("activities/"+key, result);
 
         mDatabase.updateChildren(childUpdates);
 
+        copyIdOfCreatedEvent(key);
         return key;
+    }
+    private void copyIdOfCreatedEvent(String activityId){
+
+        String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
+
+        HashMap<String, Object> organisedEventsChild = new HashMap<>();
+        organisedEventsChild.put("activity ID:",activityId);
+
+        HashMap<String, Object> organisedEvents = new HashMap<>();
+        organisedEvents.put("organised/" + organisedEventsKey, organisedEventsChild);
+
+        mDatabase.child("users").child(user.getUid()).updateChildren(organisedEvents);
     }
 
     private DeboxActivity getDeboxActivity(String uid, Map<String, Object> activityMap) {
@@ -212,7 +235,22 @@ public class DataProvider {
 
         List<String> imagesList = (ArrayList<String>) activityMap.get("images");
 
-        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList);
+
+        boolean check_nbParticipants = activityMap.containsKey("nbOfParticipants");
+        int nbOfParticipants = -1;
+        if(check_nbParticipants){
+            //nbOfParticipants = (int) activityMap.get("nbOfParticipants");
+            nbOfParticipants = Integer.valueOf(activityMap.get("nbOfParticipants").toString());
+        }
+
+        boolean check_nbMaxOfParticipants = activityMap.containsKey("nbMaxOfParticipants");
+        int nbMaxOfParticipants = -1;
+        if(check_nbMaxOfParticipants){
+            //nbMaxOfParticipants = (int) activityMap.get("nbMaxOfParticipants");
+            nbMaxOfParticipants = Integer.valueOf(activityMap.get("nbMaxOfParticipants").toString());
+        }
+
+        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList,nbOfParticipants,nbMaxOfParticipants);
 
     }
 
@@ -233,22 +271,47 @@ public class DataProvider {
         return null;
     }
 
+    public void initUserInDB(){
 
-    private User getDeboxUser(String uid, Map<String, Object> activityMap) {
-        String email = (String) activityMap.get("user_email");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        HashMap<String, Object> enrolled = new HashMap<>();
+
+        enrolled.put("user_email", user.getEmail());
+        enrolled.put("default_user_name",user.getDisplayName());
+
+        mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
+
+    }
+
+    private User getDeboxUser(String uid, Map<String, Object> userMap) {
+        String email = (String) userMap.get("user_email");
         String username = "";
+
         List<String> interestedEvents = new ArrayList<>();
-        Map<String,Map<String,Object> > enrolled = (Map<String,Map<String,Object> >) activityMap.get("enrolled");
-        for (Map<String, Object> innerMap : enrolled.values()) {
-            String activityID = (String) innerMap.get("activity ID:");
-            interestedEvents.add(activityID);
+        boolean check_enrolled = userMap.containsKey("enrolled");
+        if (check_enrolled == true) {
+            Map<String, Map<String, Object>> enrolled = (Map<String, Map<String, Object>>) userMap.get("enrolled");
+            for (Map<String, Object> innerMap : enrolled.values()) {
+                String activityID = (String) innerMap.get("activity ID:");
+                interestedEvents.add(activityID);
+            }
         }
-        List<String> participatedEvents = new ArrayList<String>();
+
         List<String> organizedEvents = new ArrayList<String>();
+        boolean check_organized = userMap.containsKey("organised");
+        if (check_organized == true) {
+            Map<String, Map<String, Object>> organized = (Map<String, Map<String, Object>>) userMap.get("organised");
+            for (Map<String, Object> innerMap : organized.values()) {
+                String activityID = (String) innerMap.get("activity ID:");
+                organizedEvents.add(activityID);
+            }
+        }
+
         String rating = "";
         String photoLink = "";
 
-        return new User(uid, username, email, organizedEvents, participatedEvents, interestedEvents, rating, photoLink);
+        return new User(uid, username, email, organizedEvents, interestedEvents, rating, photoLink);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
@@ -315,15 +378,13 @@ public class DataProvider {
     }
 
     /**
-     * Enroll the user to the activity dba. If the user doesn't have an entry in users table, an
-     * entry corresponding to the user is automatically added to the table users.
+     * Enroll the user to the activity dba. If the user doesn't have an enrolled table, the enrolled
+     * table is automatically added to the user.
      *
      * @param dba
      */
 
     public void joinActivity(DeboxActivity dba){
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
 
         HashMap<String, Object> enrolledChild = new HashMap<>();
         enrolledChild.put("activity ID:",dba.getId());
@@ -332,14 +393,117 @@ public class DataProvider {
         String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
         HashMap<String, Object> enrolled = new HashMap<>();
 
-        enrolled.put("enrolled/"+enrolledKey,enrolledChild);
-        enrolled.put("user_email",user.getEmail());
+        enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+
+
+        incrementNbOfUserInActivity(dba);
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
     }
 
+    /**
+     * Remove the enrollment of the user in the activity dba.
+     *
+     * @param dba
+     */
+    public void leaveActivity(final DeboxActivity dba){
+
+        String userUid = user.getUid();
+        DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
+        final String uid = dba.getId();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                if (listEnrolled != null) {
+
+                    String idOfEntryToRemove = null;
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        if (activityID.equals(uid)) {
+                            idOfEntryToRemove = enrolledEntry.getKey();
+
+                        }
+                    }
+
+                    if(idOfEntryToRemove != null) {
+                        mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
+                        decreasesNbOfUserInActivity(dba);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void incrementNbOfUserInActivity(DeboxActivity dba){
+
+        final String uid = dba.getId();
+
+        DatabaseReference myRef = database.getReference("activities/" + dba.getId());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+
+                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
+
+                if(nbOfUser<0){
+                    nbOfUser=0;
+                }
+
+                HashMap<String, Object> childToUpDate = new HashMap<>();
+                childToUpDate.put("nbOfParticipants",nbOfUser+1);
+                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    private void decreasesNbOfUserInActivity(DeboxActivity dba){
+
+        final String uid = dba.getId();
+
+        DatabaseReference myRef = database.getReference("activities/" + dba.getId());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+
+                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
+
+                nbOfUser -= 1;
+
+                if(nbOfUser<0){
+                    nbOfUser=0;
+                }
+
+                HashMap<String, Object> childToUpDate = new HashMap<>();
+                childToUpDate.put("nbOfParticipants",nbOfUser);
+                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
 
     //DB Callbacks interfaces
     public interface DataProviderListenerEnrolled {
@@ -367,7 +531,7 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerUserEvents {
-        void getUserActivities(List<DeboxActivity> activitiesList);
+        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
     }
     
 }

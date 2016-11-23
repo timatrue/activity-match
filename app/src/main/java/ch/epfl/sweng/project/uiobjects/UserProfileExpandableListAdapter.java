@@ -23,14 +23,13 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
     private Activity context;
     private Map<String, List<String>> activityCollections;
     private List<String> activities;
+
     public UserProfileExpandableListAdapter(Activity context, Map<String,List<String>> activityCollections,
                                             List<String> activities){
         this.context = context;
         this.activityCollections = activityCollections;
         this.activities = activities;
-
     }
-
     public Object getChild(int groupPosition, int childPosition){
         String position = activities.get(groupPosition);
         return activityCollections.get(position).get(childPosition);
@@ -38,6 +37,8 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
+
+    //getChildView stands for explicit group's events
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent){
         final String activity = (String)getChild(groupPosition, childPosition);
@@ -63,6 +64,8 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
     public long getGroupId(int groupPosition) {
         return groupPosition;
     }
+
+    //getGroupView stands for group's headers, for example "Interested events"
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent){
         String activityName = (String) getGroup(groupPosition);
