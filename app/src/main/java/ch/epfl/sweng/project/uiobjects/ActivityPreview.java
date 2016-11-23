@@ -6,17 +6,21 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.DeboxActivity;
+import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
 
 import java.util.Calendar;
 import java.text.DateFormat;
+import java.util.List;
 import java.util.Random;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static ch.epfl.sweng.project.R.id.imageView;
 import static java.text.DateFormat.getDateInstance;
 
 
@@ -35,6 +39,11 @@ public class ActivityPreview extends LinearLayout {
     private TextView previewEvent;
     private TextView dateEvent;
     private TextView sizeEvent;
+
+    private List<String> imagesList;
+    private ImageView imageView;
+    private String eventId;
+    LinearLayout imagesLayout;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,6 +81,18 @@ public class ActivityPreview extends LinearLayout {
 
         sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
         sizeEvent.setText("Participants: " + randomParticipants());
+
+        imagesList = event.getImageList();
+        imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
+        eventId = event.getId();
+
+
+        if(imagesList != null){
+            String image = imagesList.get(0);
+            new ImageProvider().previewImage(context, eventId, childLayout, image);
+        } else {
+            imageView.setImageResource(R.mipmap.ic_welcome_list);
+        }
     }
     private int randomParticipants(){
         Random random = new Random();

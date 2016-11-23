@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Layout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -59,6 +60,17 @@ public class ImageProvider {
                     .into(imageView);
         }
 
+    }
+    public void previewImage(Context context,  String folder,  View childLayout, String imageName){
+
+        StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
+        ImageView imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
+
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .placeholder(R.mipmap.ic_welcome_list)
+                .into(imageView);
     }
 
     public void UploadImage(Uri imageUri, String folder) {
