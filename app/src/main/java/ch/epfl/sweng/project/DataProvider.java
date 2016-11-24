@@ -286,7 +286,7 @@ public class DataProvider {
 
     private User getDeboxUser(String uid, Map<String, Object> userMap) {
         String email = (String) userMap.get("user_email");
-        String username = "";
+        String username = (String) userMap.get("default_user_name");
 
         List<String> interestedEvents = new ArrayList<>();
         boolean check_enrolled = userMap.containsKey("enrolled");
