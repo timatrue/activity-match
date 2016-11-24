@@ -71,10 +71,10 @@ public class User {
      * @return rating of the user
      */
     public String getRating() {
-        if (this.ratingNb != 0) {
-            return Integer.toString(Math.round(ratingSum/ratingNb));
+        if (this.ratingNb > 0) {
+            return Float.toString(((float)ratingSum/ratingNb)/2);
         }
-        return Integer.toString(this.ratingNb);
+        return Integer.toString(-1);
     }
 
     public int getRatingSum(){
