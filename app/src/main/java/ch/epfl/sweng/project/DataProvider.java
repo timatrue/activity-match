@@ -112,7 +112,6 @@ public class DataProvider {
 
                 if (isAlreadyEnrolled) {
 
-
                     getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
                         @Override
                         public void getIfActivityIsPast(boolean result) {

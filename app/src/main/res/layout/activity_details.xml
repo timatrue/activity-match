@@ -53,8 +53,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/enrolledInfo"
-            android:visibility="invisible"
+            android:id="@+id/StatusInfo"
             android:text="@string/joinActivity_satus"
             android:layout_below="@+id/eventOccupancy"
             android:layout_alignParentLeft="true"
@@ -68,7 +67,7 @@
             android:onClick="joinActivity"
             android:visibility="invisible"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/enrolledInfo"
+            android:layout_below="@+id/StatusInfo"
             android:layout_alignParentStart="true" />
 
         <Button
@@ -82,21 +81,41 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/leaveActivity"
+        android:id="@+id/rankLayout"
+        android:visibility="invisible">
+
+
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rankWidget" />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tmpButton"
-            android:text="Leave Tmp button"
-            android:onClick="tmpFeature"
-            android:layout_below="@+id/leaveActivity"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:id="@+id/rateButton"
+            android:text="@string/rateButton"
+            android:onClick="rateButtonPressed" />
+
+    </LinearLayout>
+
+
+
+
+
+
 
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tmpButton">
+            android:layout_below="@+id/rankLayout">
 
             <LinearLayout
                 android:orientation="horizontal"
