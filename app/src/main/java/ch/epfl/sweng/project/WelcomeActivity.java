@@ -424,7 +424,7 @@ public class WelcomeActivity extends AppCompatActivity
         return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
 
-    private void getActivitiesAndDisplay() {
+    public void getActivitiesAndDisplay() {
         cleanLinearLayout(activityPreviewsLayout);
         mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 

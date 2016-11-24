@@ -12,6 +12,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import android.widget.DatePicker;
 
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -277,8 +278,9 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        //Press on the "Display Events" button
-        activity.displayActivities.performClick();
+        //Press on the "Display Events" button, the test will be obsolete. No need to keep it
+        //activity.displayActivities.performClick();
+        activity.getActivitiesAndDisplay();
 
         //Check that the five events are displayed
         final int activityCount = activity.activityPreviewsLayout.getChildCount();
@@ -296,8 +298,8 @@ public class WelcomeActivityTest {
 
         //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
         for(int i=0; i<activityCount; i++) {
-            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0)).getText().toString().equals(deboxActivityList.get(i).getTitle()));
-            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(1)).getText().toString().equals(deboxActivityList.get(i).getShortDescription()));
+            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString().equals(deboxActivityList.get(i).getTitle()));
+            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString().equals(deboxActivityList.get(i).getShortDescription()));
         }
     }
 
@@ -354,7 +356,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -392,7 +394,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -430,7 +432,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(deboxActivityList.get(i).getCategory().equals(filterCategory)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -466,7 +468,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++) {
             if (deboxActivityList.get(i).getTimeStart().before(activity.filterEndCalendar) && deboxActivityList.get(i).getTimeEnd().after(activity.filterStartCalendar)) {
-                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
