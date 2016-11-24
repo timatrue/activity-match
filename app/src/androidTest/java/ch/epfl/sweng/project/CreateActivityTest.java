@@ -3,8 +3,6 @@ package ch.epfl.sweng.project;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -12,15 +10,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.hamcrest.Matchers;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,12 +32,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {
@@ -61,200 +51,88 @@ public class CreateActivityTest {
                 }
             };
 
+    private Calendar currentCalendar = Calendar.getInstance();
 
-    @Test
-    public void missingTitle() throws Exception {
+    //The list of categories for the spinner in the UI tests
+    private final List<DataProvider.CategoryName> categoryList = createCategoryList();
 
-        CreateActivity activity = createActivityRule.getActivity();
-
-        String testDescription = "test description";
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
-
-        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
-        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
-
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-        assertTrue(activity.validateActivity().equals("missing_field_error"));
-        assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
+    //Returns the calendar that is 'nDays' days later than the input calendar
+    private Calendar addDays(Calendar calendar, int nDays) {
+        Calendar newCalendar = (Calendar) calendar.clone();
+        newCalendar.add(Calendar.DATE, nDays);
+        return newCalendar;
     }
 
-    @Test
-    public void missingDescription() throws Exception {
-
-        CreateActivity activity = createActivityRule.getActivity();
-
-        String testTitle = "test_title";
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
-
-        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
-
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-        assertTrue(activity.validateActivity().equals("missing_field_error"));
-        assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_missing_field_error_message)));
-    }
-
-    @Test
-    public void endDateBeforeCurrentDate() throws Exception {
-
-        CreateActivity activity = createActivityRule.getActivity();
-
-        String testTitle = "test_title";
-        String testDescription = "test description";
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
-
-        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
-        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
-
-
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-        assertTrue(activity.createActivityMethod() == null);
-        assertTrue(activity.validateActivity().equals("date_error"));
-        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
-    }
-
-    @Test
-    public void startDateAfterEndDate() throws Exception {
-
-        CreateActivity activity = createActivityRule.getActivity();
-
-        String testTitle = "test_title";
-        String testDescription = "test description";
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
-
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DATE, 3);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
-
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DATE, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
-
-        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
-        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
-
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
-        int i = 0;
-        while(i==0){
-            try{
-                onView(withId(R.id.createActivityStartDate)).perform(click());
-                i=1;
-
-            } catch (NoMatchingViewException e) {
-
-            }
+    //Returns the list of possible categories for the spinner
+    private List<DataProvider.CategoryName> createCategoryList() {
+        List<DataProvider.CategoryName> listCategory = new ArrayList<>();
+        String[] categoryList = {"Sports", "Culture"};
+        String categoryId = "defaultId";
+        for (String category : categoryList) {
+            listCategory.add(new DataProvider.CategoryName(categoryId, category));
         }
+        return listCategory;
+    }
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityStartTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(startHour, startMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(endHour, endMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-
-        assertTrue(activity.validateActivity().equals("date_error"));
-        assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_date_error_message)));
+    private void initializeMockProvider(final CreateActivity activity) {
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        mocDataProvider.setListOfCategoryToMock(categoryList);
+        activity.setDataProvider(dp);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.getAndDisplayCategories();
+            }
+        });
     }
 
     @Test
-    public void validActivityCreation() throws Exception {
+    public void UITest() throws Exception {
         final CreateActivity activity = createActivityRule.getActivity();
 
-        DataProvider testDataProvider = mock(DataProvider.class);
+        initializeMockProvider(activity);
 
-        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                final DataProvider.DataProviderListenerCategories listener = (DataProvider.DataProviderListenerCategories) args[0];
-                final List<DataProvider.CategoryName> list = new ArrayList<>();
-                DataProvider.CategoryName cat1 = new DataProvider.CategoryName("Hello", "Sport");
-                DataProvider.CategoryName cat2 = new DataProvider.CategoryName("Hello", "Culture");
-                list.add(cat1);
-                list.add(cat2);
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.getCategories(list);
-                    }
-                });
-                return null;
-            }
-        }).when(testDataProvider).getAllCategories(any(DataProvider.DataProviderListenerCategories.class));
-        activity.setDataProvider(testDataProvider);
-        activity.getAndDisplayCategories();
-
-        String testTitle = "test_title";
-        String testCategory = "Culture";
-        String testDescription = "test description";
-
-        double longitude = 1;
-        double latitude = 0.3;
-        double[] location = {latitude, longitude};
-
-        activity.activityLatitude=location[0];
-        activity.activityLongitude=location[1];
+        final String testTitle = "test_title";
+        final String testCategory = "Culture";
+        final String testDescription = "test description";
+        final double testLatitude = 0.3;
+        final double testLongitude = 1;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 2);
         startCalendar.add(Calendar.HOUR, 2);
         startCalendar.add(Calendar.MINUTE, 30);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
+        final String startDate = activity.makeDateString(startCalendar);
+        final String startTime = activity.makeTimeString(startCalendar);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.DATE, 2);
         endCalendar.add(Calendar.HOUR, 2);
         endCalendar.add(Calendar.MINUTE, 50);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
+        final String endDate = activity.makeDateString(endCalendar);
+        final String endTime = activity.makeTimeString(endCalendar);
 
-        String expectedUid;
+        String testOrganizer;
         if(activity.user != null) {
-            expectedUid = activity.user.getUid();
+            testOrganizer = activity.user.getUid();
         }
         else {
-            expectedUid = activity.getString(R.string.unlogged_user);
+            testOrganizer = activity.getString(R.string.unlogged_user);
         }
+
+        activity.activityLatitude = testLatitude;
+        activity.activityLongitude = testLongitude;
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
 
@@ -263,111 +141,7 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
-        int i = 0;
-        while(i==0){
-            try{
-                onView(withId(R.id.createActivityStartDate)).perform(click());
-                i=1;
-
-            } catch (NoMatchingViewException e) {
-
-            }
-        }
-
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityStartTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(startHour, startMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(endHour, endMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        //onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-
-//        assertTrue(activity.validateActivity().equals("success"));
-
-  /*      DeboxActivity da = activity.createActivityMethod();
-        assertTrue(da != null);
-        assertTrue(da.getTitle().equals(testTitle));
-        assertTrue(da.getCategory().equals(testCategory));
-        assertTrue(da.getDescription().equals(testDescription));
-        assertTrue(da.getTimeStart().get(Calendar.YEAR) == startYear);
-        assertTrue(da.getTimeStart().get(Calendar.MONTH) == startMonth);
-        assertTrue(da.getTimeStart().get(Calendar.DAY_OF_MONTH) == startDay);
-        assertTrue(da.getTimeStart().get(Calendar.HOUR_OF_DAY) == startHour);
-        assertTrue(da.getTimeStart().get(Calendar.MINUTE) == startMinute);
-        assertTrue(da.getTimeEnd().get(Calendar.YEAR) == endYear);
-        assertTrue(da.getTimeEnd().get(Calendar.MONTH) == endMonth);
-        assertTrue(da.getTimeEnd().get(Calendar.DAY_OF_MONTH) == endDay);
-        assertTrue(da.getTimeEnd().get(Calendar.HOUR_OF_DAY) == endHour);
-        assertTrue(da.getTimeEnd().get(Calendar.MINUTE) == endMinute);
-        assertTrue(da.getOrganizer().equals(expectedUid));
-        assertTrue(da.getLocation()[0] == location[0]);
-        assertTrue(da.getLocation()[1] == location[1]);*/
-    }
-
-    @Test
-    public void correctlyDisplaysDateAndTime() throws Exception {
-
-        CreateActivity activity = createActivityRule.getActivity();
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
-
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DATE, 2);
-        startCalendar.add(Calendar.HOUR, 2);
-        startCalendar.add(Calendar.MINUTE, 30);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
-        String startDate = activity.makeDateString(startCalendar);
-        String startTime = activity.makeTimeString(startCalendar);
-
-
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DATE, 2);
-        endCalendar.add(Calendar.HOUR, 2);
-        endCalendar.add(Calendar.MINUTE, 50);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
-        String endDate = activity.makeDateString(endCalendar);
-        String endTime = activity.makeTimeString(endCalendar);
-
-        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
-
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
-        int i = 0;
-        while(i==0){
-            try{
-                onView(withId(R.id.createActivityStartDate)).perform(click());
-                i=1;
-
-            } catch (NoMatchingViewException e) {
-
-            }
-        }
-
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-
+        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
         onView(withId(android.R.id.button1)).perform(click());
@@ -390,106 +164,281 @@ public class CreateActivityTest {
                 .perform(PickerActions.setTime(endHour, endMinute));
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).check(matches(withText(endTime)));
+
+        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
+
+        assertThat(activity.activityTitle, is(testTitle));
+        assertThat(activity.activityDescription, is(testDescription));
+        assertThat(activity.activityOrganizer, is(testOrganizer));
+        assertThat(activity.activityStartCalendar.get(Calendar.YEAR), is(startYear));
+        assertThat(activity.activityStartCalendar.get(Calendar.MONTH), is(startMonth));
+        assertThat(activity.activityStartCalendar.get(Calendar.DAY_OF_MONTH), is(startDay));
+        assertThat(activity.activityStartCalendar.get(Calendar.HOUR_OF_DAY), is(startHour));
+        assertThat(activity.activityStartCalendar.get(Calendar.MINUTE), is(startMinute));
+        assertThat(activity.activityEndCalendar.get(Calendar.YEAR), is(endYear));
+        assertThat(activity.activityEndCalendar.get(Calendar.MONTH), is(endMonth));
+        assertThat(activity.activityEndCalendar.get(Calendar.DAY_OF_MONTH), is(endDay));
+        assertThat(activity.activityEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
+        assertThat(activity.activityEndCalendar.get(Calendar.MINUTE), is(endMinute));
+        assertThat(activity.activityLatitude, is(testLatitude));
+        assertThat(activity.activityLongitude, is(testLongitude));
+    }
+
+    @Test
+    public void missingTitle() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
+    }
+
+    @Test
+    public void missingDescription() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
+    }
+
+    @Test
+    public void endDateBeforeCurrentDate() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
+    }
+
+    @Test
+    public void startDateAfterEndDate() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+        activity.activityStartCalendar = addDays(currentCalendar, 3);
+        activity.activityEndCalendar = addDays(currentCalendar, 2);
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
     }
 
     @Test
     public void startTimeBeforeCurrentTimeIsReplaced() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
-        DataProvider testDataProvider = mock(DataProvider.class);
-        when(testDataProvider.pushActivity(any(DeboxActivity.class))).thenReturn(null);
-        activity.setDataProvider(testDataProvider);
-
-        String testTitle = "test_title";
-        String testDescription = "test description";
-
-        activity.activityLongitude=1;
-        activity.activityLatitude=1;
+        initializeMockProvider(activity);
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.MINUTE, -10);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-        int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
-        int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
-        int startMinute = startCalendar.get(Calendar.MINUTE);
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.add(Calendar.HOUR, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
-        int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
-        int endMinute = endCalendar.get(Calendar.MINUTE);
 
-        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
-        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
+        Calendar lowerBound = Calendar.getInstance();
+        lowerBound.add(Calendar.MINUTE, -1);
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo());
-        int i = 0;
-        while(i==0){
-            try{
-                onView(withId(R.id.createActivityStartDate)).perform(click());
-                i=1;
+        Calendar upperBound = Calendar.getInstance();
+        upperBound.add(Calendar.MINUTE, 1);
 
-            } catch (NoMatchingViewException e) {
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 0.3;
+        activity.activityStartCalendar = startCalendar;
+        activity.activityEndCalendar = endCalendar;
 
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
             }
-        }
+        });
 
-        //onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityStartTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(startHour, startMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(endHour, endMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        //onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-
-        //assertTrue(activity.validateActivity().equals("success"));
-        //assertTrue(activity.createActivityMethod() != null);
-        //assertTrue(activity.createActivityMethod().getTimeStart().after(startCalendar));
+        assertThat(validation, is(ConfirmationCodes.get_success(context)));
+        assertTrue(da !=  null);
+        assertTrue(da.getTimeStart().after(lowerBound));
+        assertTrue(da.getTimeStart().before(upperBound));
     }
 
     @Test
     public void noLocationChosen() throws Exception {
 
-        CreateActivity activity = createActivityRule.getActivity();
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
 
-        String testTitle = "test_title";
-        String testDescription = "test description";
+        initializeMockProvider(activity);
 
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.HOUR, 2);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-        int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityStartCalendar = addDays(currentCalendar, 1);
+        activity.activityEndCalendar = addDays(currentCalendar, 2);
 
-        onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
-        onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
-        onView(withId(android.R.id.button1)).perform(click());
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
 
-        onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
-        assertTrue(activity.validateActivity().equals("missing_location"));
-        assertTrue(activity.createActivityMethod() == null);
-        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(R.string.create_activity_location_error_message)));
+        assertThat(validation, is(ConfirmationCodes.get_missing_location_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_location_error(context))));
+    }
+
+    @Test
+    public void validActivityCreation() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        final String testTitle = "test_title";
+        final String testCategory = "Sports";
+        final String testDescription = "test description";
+        final double testLatitude = 0.3;
+        final double testLongitude = 1;
+        final String testOrganizer = "BobID";
+
+        final Calendar startCalendar = addDays(currentCalendar, 1);
+        final int startYear = startCalendar.get(Calendar.YEAR);
+        final int startMonth = startCalendar.get(Calendar.MONTH);
+        final int startDay = startCalendar.get(Calendar.DAY_OF_MONTH);
+        final int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
+        final int startMinute = startCalendar.get(Calendar.MINUTE);
+
+        final Calendar endCalendar = addDays(currentCalendar, 2);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        final int endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
+        final int endMinute = endCalendar.get(Calendar.MINUTE);
+
+        activity.activityTitle = testTitle;
+        activity.activityCategory = testCategory;
+        activity.activityDescription = testDescription;
+        activity.activityLatitude = testLatitude;
+        activity.activityLongitude = testLongitude;
+        activity.activityStartCalendar = startCalendar;
+        activity.activityEndCalendar = endCalendar;
+        activity.activityOrganizer = testOrganizer;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_success(context)));
+        assertTrue(da != null);
+        assertThat(da.getTitle(), is(testTitle));
+        assertThat(da.getCategory(), is(testCategory));
+        assertThat(da.getDescription(), is(testDescription));
+        assertThat(da.getTimeStart().get(Calendar.YEAR), is(startYear));
+        assertThat(da.getTimeStart().get(Calendar.MONTH), is(startMonth));
+        assertThat(da.getTimeStart().get(Calendar.DAY_OF_MONTH), is(startDay));
+        assertThat(da.getTimeStart().get(Calendar.HOUR_OF_DAY), is(startHour));
+        assertThat(da.getTimeStart().get(Calendar.MINUTE), is(startMinute));
+        assertThat(da.getTimeEnd().get(Calendar.YEAR), is(endYear));
+        assertThat(da.getTimeEnd().get(Calendar.MONTH), is(endMonth));
+        assertThat(da.getTimeEnd().get(Calendar.DAY_OF_MONTH), is(endDay));
+        assertThat(da.getTimeEnd().get(Calendar.HOUR_OF_DAY), is(endHour));
+        assertThat(da.getTimeEnd().get(Calendar.MINUTE), is(endMinute));
+        assertThat(da.getOrganizer(), is(testOrganizer));
+        assertThat(da.getLocation()[0], is(testLatitude));
+        assertThat(da.getLocation()[1], is(testLongitude));
     }
 }
