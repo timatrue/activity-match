@@ -77,6 +77,14 @@ public class User {
         return Integer.toString(this.ratingNb);
     }
 
+    public int getRatingSum(){
+        return ratingSum;
+    }
+
+    public int getRatingNb(){
+        return ratingNb;
+    }
+
     public String getPhotoLink() {
         return new String(photoLink);
     }

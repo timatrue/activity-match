@@ -250,7 +250,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         if(currentActivity!= null){
 
-            ratingLayout.setVisibility(View.INVISIBLE);
+            //ratingLayout.setVisibility(View.INVISIBLE);
             int rank = Math.round(rankWidgetRatingBar.getRating()*2);
             mDataProvider.rankUser(currentActivity.getId(),rank);
 

@@ -338,7 +338,7 @@ public class DataProvider {
         });
     }
 
-    public void rankUser(final String uid, int rank){
+    public void rankUser(final String uid, final int rank){
 
 
         // Remove Activity Uid of User:enrolled
@@ -397,19 +397,78 @@ public class DataProvider {
         mDatabase.child("users").child(user.getUid()).updateChildren(ranked);
 
 
-
-
-
-
-
         // Get organizer of activity
+        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
-        // Add rank and increment value of rank
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+                final String idOrganiser = activity.getOrganizer();
+
+                // icii
 
 
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference getUserProfile = database.getReference("users/" + idOrganiser);
+
+
+                getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                        User deboxOrganiser = getDeboxUser(idOrganiser, userMap);
+
+                        int ratingSum = deboxOrganiser.getRatingSum();
+                        int ratingNb = deboxOrganiser.getRatingNb();
+
+                        ratingNb += 1;
+                        ratingSum += rank;
+
+                        mDatabase.child("users").child(idOrganiser).child("ratingNb").setValue(ratingNb);
+                        mDatabase.child("users").child(idOrganiser).child("ratingSum").setValue(ratingSum);
+                    }
+
+
+
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+/*
+
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+        //do try catch;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
+
+        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+ */
+
+
+
+
+
+
+            }
+        },uid);
 
 
     }
+
 
     public String pushActivity(DeboxActivity da){
 
@@ -557,7 +616,7 @@ public class DataProvider {
             }
         }
 
-        Integer ratingNb = 0;
+        Integer ratingNb = -1;
         if (userMap.containsKey("ratingNb")) {
             ratingNb = (int) userMap.get("ratingNb");
         }
@@ -764,6 +823,7 @@ public class DataProvider {
     }
 
     //DB Callbacks interfaces
+
 
     private interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);

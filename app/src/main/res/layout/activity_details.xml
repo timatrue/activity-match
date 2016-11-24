@@ -87,7 +87,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/leaveActivity"
         android:id="@+id/rankLayout"
-        android:visibility="invisible">
+        android:visibility="visible">
 
 
 
