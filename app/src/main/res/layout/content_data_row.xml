@@ -7,8 +7,9 @@
 
     <ch.epfl.sweng.project.uiobjects.SquareLinearLayout
         android:id="@+id/leftBlock"
-        android:layout_width="@dimen/text_view_height"
-        android:layout_height="@dimen/text_view_height"
+        android:layout_width="@dimen/imagePreview"
+        android:layout_height="@dimen/imagePreview"
+        android:layout_centerVertical="true"
         android:orientation="vertical"
         android:background="@drawable/rectangle">
 
