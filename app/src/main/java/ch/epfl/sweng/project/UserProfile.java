@@ -2,10 +2,12 @@ package ch.epfl.sweng.project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -13,11 +15,11 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
-import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
+
+import android.util.Log;
+import android.widget.TextView;
 
 
 /**
@@ -75,23 +77,9 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                String eventId;
-                if (groupList.get(groupPosition).equals(organizedEvents)) {
-                    eventId = orgEvents.get(childPosition).getId();
-                } else if (groupList.get(groupPosition).equals(participatedEvents)) {
-                    eventId = partEvents.get(childPosition).getId();
-                } else if (groupList.get(groupPosition).equals(interestedEvents)){
-                    eventId = intEvents.get(childPosition).getId();
-                } else {
-                    return true;
-                }
-                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
-                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
-                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
-                startActivity(intent);
-                //final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
-                //Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
-                //        .show();
+                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
+                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+                        .show();
                 return true;
             }
         });
@@ -103,8 +91,6 @@ public class UserProfile extends AppCompatActivity {
         groupList.add(interestedEvents);
     }
     private void createCollection() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userUid = user.getUid();
         dp = new DataProvider();
         dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
@@ -119,7 +105,7 @@ public class UserProfile extends AppCompatActivity {
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
-                        String [] emptyEventList = { getResources().getString(R.string.no_events) };
+                        String [] emptyEventList = { "No Events" };
 
                         for (DeboxActivity event : intList) {
                             if (event.getTimeEnd().after(Calendar.getInstance())) {
@@ -163,7 +149,7 @@ public class UserProfile extends AppCompatActivity {
                 emailTextView = (TextView) findViewById(R.id.userEmail);
                 emailTextView.setText(user.getEmail());
             }
-        }, userUid);
+        });
 
         activityCollection = new LinkedHashMap<String, List<String>>();
 

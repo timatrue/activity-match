@@ -99,15 +99,14 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     currentActivity = activity;
                     title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle());
-
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
 
                     activityToDisplay = activity;
                     title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle());
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
                     category = (TextView) findViewById(R.id.eventCategory);
                     category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
@@ -230,5 +229,4 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     .title(activityToDisplay.getTitle()));
         }
     }
-
 }

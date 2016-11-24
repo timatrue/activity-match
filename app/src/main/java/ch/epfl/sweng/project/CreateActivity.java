@@ -319,22 +319,20 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         TextView confirmation = (TextView) findViewById(R.id.createActivityError);
         confirmation.setTextColor(Color.RED);
 
-        switch (error) {
-            case "missing_field_error":
-                confirmation.setText(R.string.create_activity_missing_field_error_message);
-                break;
+        if(error.equals(ConfirmationCodes.get_missing_field_error(this))) {
+            confirmation.setText(error);
+        }
 
-            case "date_error":
-                confirmation.setText(R.string.create_activity_date_error_message);
-                break;
+        else if(error.equals(ConfirmationCodes.get_date_error(this))) {
+            confirmation.setText(error);
+        }
 
-            case "missing_location":
-                confirmation.setText(R.string.create_activity_location_error_message);
-                break;
+        else if(error.equals(ConfirmationCodes.get_missing_location_error(this))) {
+            confirmation.setText(error);
+        }
 
-            default:
-                confirmation.setText(R.string.create_activity_unknown_error_message);
-                break;
+        else {
+            confirmation.setText(ConfirmationCodes.get_unknown_error(this));
         }
     }
 

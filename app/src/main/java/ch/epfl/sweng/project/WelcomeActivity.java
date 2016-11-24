@@ -135,15 +135,11 @@ public class WelcomeActivity extends AppCompatActivity
             if (test != null) {
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
-
-                    mDataProvider.initUserInDB();
-
                     getAllCategoriesAndLocation();
-
+                    mDataProvider.initUserInDB();
                 }
             }
         }
-        //getActivitiesAndDisplay();
     }
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -371,9 +367,8 @@ public class WelcomeActivity extends AppCompatActivity
                         for(DeboxActivity elem: activitiesList) {
                             if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                ap.setOnClickListener(previewClickListener);
                                 activityPreviewsLayout.addView(ap, layoutParams);
-
+                                ap.setOnClickListener(previewClickListener);
                             }
                         }
                     }
@@ -432,8 +427,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                //layoutParams.setMargins(30, 20, 30, 0);
-                layoutParams.setMargins(5, 8, 5, 0);
+                layoutParams.setMargins(30, 20, 30, 0);
 
                 activityPreviewsLayout.removeAllViews();
                 for(DeboxActivity elem: activitiesList) {
