@@ -76,6 +76,33 @@ public class DataProvider {
         ACTIVITY_PAST,;
     }
 
+
+    /*
+                                     +----------+
+                                     |Enrolled ?|
+                                     +--+----+--+
+                                yes     |    |     no
+                     +------------------+    +------------------+
+                     |                           +-----------+  |
+                 +---+--+                                    +--+---+
+                 |Past ?|                                    |Past ?|
+                 +-+--+-+                                    +-+--+-+
+             yes   |  |    no                           yes    |  |      no
+          +--------+  +---------+                +-------------+  +-----------------+
+          |                     |                |                                  |
+          +                     +            +---+----+                         +---+--------+
+    :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
+                                             +-+----+-+                         +-+--------+-+
+                                           yes |    | no                     yes  |        |   no
+                                        +------+    +---+                   +-----+        +------+
+                                        +               +                   +                     +
+                                 :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
+
+
+
+ */
+
+
     public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
 
 
