@@ -106,7 +106,6 @@ public class DataProvider {
     public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
 
 
-
         userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
             @Override
             public void getIfEnrolled(boolean isAlreadyEnrolled) {
@@ -126,8 +125,6 @@ public class DataProvider {
                         }
                     });
 
-
-
                 } else {
 
                     getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
@@ -135,13 +132,32 @@ public class DataProvider {
                         public void getIfActivityIsPast(boolean result) {
                             if(result){
 
-                                // Ranked ?
-                                listener.getUserState(UserStatus.ACTIVITY_PAST);
+                                getIfAlreadyRanked(uid,new DataProviderListenerAlreadyRanked(){
+                                    @Override
+                                    public void getIfRanked(boolean result) {
+                                        if(result){
+                                            listener.getUserState(UserStatus.ALREADY_RANKED);
+
+                                        } else {
+                                            listener.getUserState(UserStatus.ACTIVITY_PAST);
+                                        }
+
+                                    }
+                                });
 
                             } else {
 
-                                // Place left ?
-                                listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
+                                getIfPlaceLeftInActivity(uid, new DataProviderListenerPlaceFreeInActivity() {
+                                    @Override
+                                    public void getIfFreePlace(boolean result) {
+                                        if(result){
+                                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
+                                        } else {
+                                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
+                                        }
+                                    }
+                                });
+
                             }
                         }
                     });
@@ -151,6 +167,64 @@ public class DataProvider {
 
     }
 
+    private void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
+
+        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
+
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+                if(activity.getNbMaxOfParticipants()<=0){
+                    listener.getIfFreePlace(true);
+                } else {
+                    if(activity.getNbMaxOfParticipants()>activity.getNbOfParticipants()){
+                        listener.getIfFreePlace(true);
+                    } else {
+                        listener.getIfFreePlace(false);
+                    }
+                }
+            }
+        },uid);
+
+    }
+
+
+    private void getIfAlreadyRanked(final String uid, final DataProviderListenerAlreadyRanked listener){
+
+        String userUid = user.getUid();
+        DatabaseReference myRef = database.getReference("users/" + userUid + "/ranked");
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                Boolean alreadyEnrolled = false;
+
+                if (listEnrolled != null) {
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        if (activityID.equals(uid)) {
+                            alreadyEnrolled = true;
+                        }
+                    }
+                }
+                listener.getIfRanked(alreadyEnrolled);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
 
     private void getIfActivityIsPast(final String uid, final DataProviderListenerIsPast listener){
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
@@ -324,7 +398,7 @@ public class DataProvider {
         mDatabase.child("users").child(user.getUid()).updateChildren(ranked);
 
 
-        
+
 
 
 
@@ -684,6 +758,14 @@ public class DataProvider {
     }
 
     //DB Callbacks interfaces
+
+    private interface DataProviderListenerPlaceFreeInActivity{
+        void getIfFreePlace(boolean result);
+    }
+
+    private interface DataProviderListenerAlreadyRanked{
+        void getIfRanked(boolean result);
+    }
 
     private interface DataProviderListenerIsPast{
         void getIfActivityIsPast(boolean result);
