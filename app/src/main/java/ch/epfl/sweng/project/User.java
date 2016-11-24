@@ -13,29 +13,32 @@ public class User {
     private String email;
     private List<String> organizedEventIds;
     private List<String>  interestedEventIds;
-    private String rating;
+    private Integer ratingNb;
+    private Integer ratingSum;
     private String photoLink;
 
 
     /**
      * A class about user profile information that provides it to other classes.
-     *
+     * @param   id    the id of the user
      * @param   username    the name of the user
      * @param   email   the e-mail of the user
      * @param   organizedEvents    a list of events organized by this user
      * @param   interestedEvents    a list of events this user is interested in
-     * @param   rating    the rating of the user
+     * @param   ratingNb    number of users that rated this user
+     * @param   ratingSum   sum of rating points that was given to the user
      * @param   photoLink    the link to get the photo of the user
      */
     public User(String id, String username, String email, List<String>  organizedEvents, List<String>  interestedEvents,
-                String rating, String photoLink) {
+                Integer ratingNb, Integer ratingSum, String photoLink) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.organizedEventIds = organizedEvents;
-        //this.participatedEvents = participatedEvents;
         this.interestedEventIds = interestedEvents;
-        this.rating = rating;
+        this.ratingNb = ratingNb;
+        this.ratingSum = ratingSum;
+//        this.rating = rating;
         this.photoLink = photoLink;
     }
 
@@ -58,19 +61,20 @@ public class User {
     }
 
     public List<String> getOrganizedEventIds() {
-        List<String> events = new ArrayList<>(organizedEventIds);
-        return events;
+        return new ArrayList<>(organizedEventIds);
     }
 
     public List<String> getInterestedEventIds() {
-        List<String> events = new ArrayList<>(interestedEventIds);
-        return events;
+        return new ArrayList<>(interestedEventIds);
     }
     /**
      * @return rating of the user
      */
     public String getRating() {
-        return new String(rating);
+        if (this.ratingNb != 0) {
+            return Integer.toString(Math.round(ratingSum/ratingNb));
+        }
+        return Integer.toString(this.ratingNb);
     }
 
     public String getPhotoLink() {
@@ -78,6 +82,6 @@ public class User {
     }
 
     public User copy() {
-        return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.rating, this.photoLink);
+        return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.ratingNb, this.ratingSum, this.photoLink);
     }
 }

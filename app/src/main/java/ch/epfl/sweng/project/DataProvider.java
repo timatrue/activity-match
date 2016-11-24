@@ -289,8 +289,7 @@ public class DataProvider {
         String username = "";
 
         List<String> interestedEvents = new ArrayList<>();
-        boolean check_enrolled = userMap.containsKey("enrolled");
-        if (check_enrolled == true) {
+        if (userMap.containsKey("enrolled")) {
             Map<String, Map<String, Object>> enrolled = (Map<String, Map<String, Object>>) userMap.get("enrolled");
             for (Map<String, Object> innerMap : enrolled.values()) {
                 String activityID = (String) innerMap.get("activity ID:");
@@ -298,9 +297,8 @@ public class DataProvider {
             }
         }
 
-        List<String> organizedEvents = new ArrayList<String>();
-        boolean check_organized = userMap.containsKey("organised");
-        if (check_organized == true) {
+        List<String> organizedEvents = new ArrayList<>();
+        if (userMap.containsKey("organised")) {
             Map<String, Map<String, Object>> organized = (Map<String, Map<String, Object>>) userMap.get("organised");
             for (Map<String, Object> innerMap : organized.values()) {
                 String activityID = (String) innerMap.get("activity ID:");
@@ -308,10 +306,19 @@ public class DataProvider {
             }
         }
 
-        String rating = "";
+        Integer ratingNb = 0;
+        if (userMap.containsKey("ratingNb")) {
+            ratingNb = (int) userMap.get("ratingNb");
+        }
+
+        Integer ratingSum = 0;
+        if (userMap.containsKey("ratingSum")) {
+            ratingSum = (int) userMap.get("ratingSum");
+        }
+
         String photoLink = "";
 
-        return new User(uid, username, email, organizedEvents, interestedEvents, rating, photoLink);
+        return new User(uid, username, email, organizedEvents, interestedEvents, ratingNb, ratingSum, photoLink);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
