@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project;
 
 import android.util.Log;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,6 +66,47 @@ public class DataProvider {
             return this.nameCategory;
         }
     }
+
+    public enum UserStatus{
+        ENROLLED,
+        NOT_ENROLLED,
+        MUST_BE_RANKED,
+        ALREADY_RANKED,
+        ACTIVITY_PAST;
+    }
+
+    public void getCurrentUserState(final String uid,final DataProviderListenerUserState listener){
+
+
+
+        userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            @Override
+            public void getIfEnrolled(boolean isAlreadyEnrolled) {
+
+                if (isAlreadyEnrolled) {
+                    listener.getUserState(UserStatus.ENROLLED);
+                    //enrolledInfoTextView.setVisibility(View.VISIBLE);
+                    //leaveActivityButton.setVisibility(View.VISIBLE);
+                } else {
+                    listener.getUserState(UserStatus.NOT_ENROLLED);
+                    //joinActivityButton.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }, uid);
+
+
+
+
+
+
+
+
+
+
+        //return UserState.ENROLLED;
+    }
+
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
 
@@ -508,6 +550,10 @@ public class DataProvider {
     //DB Callbacks interfaces
     public interface DataProviderListenerEnrolled {
         void getIfEnrolled(boolean result);
+    }
+
+    public interface DataProviderListenerUserState {
+        void getUserState(UserStatus result);
     }
 
     public interface DataProviderListenerActivity {
