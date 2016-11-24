@@ -122,8 +122,8 @@ public class WelcomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        displayActivities = (Button) findViewById(R.id.displayActivities);
-        displayActivities.setOnClickListener(activitiesClickListener);
+        //displayActivities = (Button) findViewById(R.id.displayActivities);
+        //displayActivities.setOnClickListener(activitiesClickListener);
 
         filterStartCalendar = Calendar.getInstance();
         filterEndCalendar = Calendar.getInstance();
@@ -136,10 +136,15 @@ public class WelcomeActivity extends AppCompatActivity
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     getAllCategoriesAndLocation();
+
+                    getActivitiesAndDisplay();
+
                     mDataProvider.initUserInDB();
+
                 }
             }
         }
+        //getActivitiesAndDisplay();
     }
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -296,14 +301,14 @@ public class WelcomeActivity extends AppCompatActivity
             startActivity(intent);
         }
     };
-
+/*
     View.OnClickListener activitiesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             getActivitiesAndDisplay();
         }
     };
-
+*/
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -367,8 +372,9 @@ public class WelcomeActivity extends AppCompatActivity
                         for(DeboxActivity elem: activitiesList) {
                             if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
                                 ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
                                 ap.setOnClickListener(previewClickListener);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+
                             }
                         }
                     }
@@ -418,7 +424,7 @@ public class WelcomeActivity extends AppCompatActivity
         return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
 
-    private void getActivitiesAndDisplay() {
+    public void getActivitiesAndDisplay() {
         cleanLinearLayout(activityPreviewsLayout);
         mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
@@ -427,7 +433,8 @@ public class WelcomeActivity extends AppCompatActivity
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(30, 20, 30, 0);
+                //layoutParams.setMargins(30, 20, 30, 0);
+                layoutParams.setMargins(5, 8, 5, 0);
 
                 activityPreviewsLayout.removeAllViews();
                 for(DeboxActivity elem: activitiesList) {

@@ -12,6 +12,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import android.widget.DatePicker;
 
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -50,6 +51,7 @@ import static org.junit.Assert.assertThat;
 
 import static org.junit.Assert.assertTrue;
 
+// TODO For now all test on this class are suspended ! Waiting on issue #54 to fixe and improve new features test
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -152,6 +154,7 @@ public class WelcomeActivityTest {
         return activityList;
     }
 
+
     //Returns the list of possible categories for the spinner
     private List<DataProvider.CategoryName> createCategoryList() {
         List<DataProvider.CategoryName> listCategory = new ArrayList<>();
@@ -173,6 +176,7 @@ public class WelcomeActivityTest {
     }
 
     //Shows how to use the mock data provider
+
     @Test
     public void mockDataProviderTest(){
 
@@ -274,8 +278,9 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        //Press on the "Display Events" button
-        activity.displayActivities.performClick();
+        //Press on the "Display Events" button, the test will be obsolete. No need to keep it
+        //activity.displayActivities.performClick();
+        activity.getActivitiesAndDisplay();
 
         //Check that the five events are displayed
         final int activityCount = activity.activityPreviewsLayout.getChildCount();
@@ -293,8 +298,8 @@ public class WelcomeActivityTest {
 
         //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
         for(int i=0; i<activityCount; i++) {
-            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0)).getText().toString().equals(deboxActivityList.get(i).getTitle()));
-            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(1)).getText().toString().equals(deboxActivityList.get(i).getShortDescription()));
+            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString().equals(deboxActivityList.get(i).getTitle()));
+            assertTrue(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString().equals(deboxActivityList.get(i).getShortDescription()));
         }
     }
 
@@ -329,8 +334,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        in the displaySpecifiedActivities() function */
+        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        // in the displaySpecifiedActivities() function
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = "All";
@@ -351,11 +356,13 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
     }
+
+
 
     @UiThreadTest
     @Test
@@ -365,8 +372,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        in the displaySpecifiedActivities() function */
+        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        // in the displaySpecifiedActivities() function
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = "All";
@@ -387,7 +394,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -403,8 +410,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        in the displaySpecifiedActivities() function */
+        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        // in the displaySpecifiedActivities() function
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = filterCategory;
@@ -425,7 +432,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(deboxActivityList.get(i).getCategory().equals(filterCategory)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -439,8 +446,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        in the displaySpecifiedActivities() function */
+        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        //in the displaySpecifiedActivities() function
         Calendar startCalendar = addDays(currentCalendar,3);
         Calendar endCalendar = addDays(currentCalendar,6);
         activity.filterCategory = "All";
@@ -461,7 +468,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++) {
             if (deboxActivityList.get(i).getTimeStart().before(activity.filterEndCalendar) && deboxActivityList.get(i).getTimeEnd().after(activity.filterStartCalendar)) {
-                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -627,5 +634,6 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.DAY_OF_MONTH), is(endDay));
         assertThat(activity.filterEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
+
     }
 }
