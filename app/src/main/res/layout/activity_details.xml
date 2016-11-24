@@ -87,7 +87,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/leaveActivity"
         android:id="@+id/rankLayout"
-        android:visibility="visible">
+        android:visibility="invisible">
 
 
 
@@ -104,12 +104,6 @@
             android:onClick="rateButtonPressed" />
 
     </LinearLayout>
-
-
-
-
-
-
 
 
         <HorizontalScrollView
@@ -138,7 +132,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_alignParentBottom="true"
         android:id="@+id/relativeLayout">
 
         <fragment
