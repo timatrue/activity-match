@@ -152,7 +152,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             }, eventId);
 
             // Set listener to check if user is already register in this activity or not.
-            mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
+            /*mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
                 @Override
                 public void getIfEnrolled(boolean isAlreadyEnrolled) {
 
@@ -164,7 +164,22 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     }
 
                 }
-            }, eventId);
+            }, eventId);*/
+            mDataProvider.getCurrentUserStatus(eventId, new DataProvider.DataProviderListenerUserState() {
+                @Override
+                public void getUserState(DataProvider.UserStatus status) {
+                    if(status == DataProvider.UserStatus.ENROLLED){
+                        enrolledInfoTextView.setVisibility(View.VISIBLE);
+                        leaveActivityButton.setVisibility(View.VISIBLE);
+
+                    } else {
+                        joinActivityButton.setVisibility(View.VISIBLE);
+
+                    }
+
+                    Log.e("Status  : ",status.toString());
+                }
+            });
 
 
             MapFragment mapFragment = (MapFragment) getFragmentManager()

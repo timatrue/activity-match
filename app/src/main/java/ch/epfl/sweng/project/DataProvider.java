@@ -69,13 +69,14 @@ public class DataProvider {
 
     public enum UserStatus{
         ENROLLED,
-        NOT_ENROLLED,
+        NOT_ENROLLED_NOT_FULL,
+        NOT_ENROLLED_FULL,
         MUST_BE_RANKED,
         ALREADY_RANKED,
-        ACTIVITY_PAST;
+        ACTIVITY_PAST,;
     }
 
-    public void getCurrentUserState(final String uid,final DataProviderListenerUserState listener){
+    public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
 
 
 
@@ -84,14 +85,36 @@ public class DataProvider {
             public void getIfEnrolled(boolean isAlreadyEnrolled) {
 
                 if (isAlreadyEnrolled) {
-                    listener.getUserState(UserStatus.ENROLLED);
-                    //enrolledInfoTextView.setVisibility(View.VISIBLE);
-                    //leaveActivityButton.setVisibility(View.VISIBLE);
-                } else {
-                    listener.getUserState(UserStatus.NOT_ENROLLED);
-                    //joinActivityButton.setVisibility(View.VISIBLE);
-                }
 
+
+                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
+                        @Override
+                        public void getIfActivityIsPast(boolean result) {
+                            if(result){
+                                listener.getUserState(UserStatus.MUST_BE_RANKED);
+
+                            } else {
+                                listener.getUserState(UserStatus.ENROLLED);
+                            }
+                        }
+                    });
+
+
+
+                } else {
+
+                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
+                        @Override
+                        public void getIfActivityIsPast(boolean result) {
+                            if(result){
+                                listener.getUserState(UserStatus.ACTIVITY_PAST);
+
+                            } else {
+                                listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
+                            }
+                        }
+                    });
+                }
             }
         }, uid);
 
@@ -105,6 +128,25 @@ public class DataProvider {
 
 
         //return UserState.ENROLLED;
+    }
+
+
+    private void getIfActivityIsPast(final String uid, final DataProviderListenerIsPast listener){
+        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
+
+            @Override
+            public void getActivity(DeboxActivity activity) {
+
+                Calendar currentCalendar = Calendar.getInstance();
+                if(activity.getTimeEnd().before(currentCalendar)){
+                    listener.getIfActivityIsPast(true);
+                } else {
+                    listener.getIfActivityIsPast(false);
+
+                }
+            }
+        },uid);
+
     }
 
 
@@ -548,12 +590,17 @@ public class DataProvider {
     }
 
     //DB Callbacks interfaces
+
+    private interface DataProviderListenerIsPast{
+        void getIfActivityIsPast(boolean result);
+    }
+
     public interface DataProviderListenerEnrolled {
         void getIfEnrolled(boolean result);
     }
 
     public interface DataProviderListenerUserState {
-        void getUserState(UserStatus result);
+        void getUserState(UserStatus status);
     }
 
     public interface DataProviderListenerActivity {
