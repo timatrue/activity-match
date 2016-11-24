@@ -26,9 +26,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
-/**
- * Created by olga on 19.10.16.
- */
 
 public class Login extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
