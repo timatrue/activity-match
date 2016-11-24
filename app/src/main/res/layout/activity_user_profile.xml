@@ -44,12 +44,48 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ExpandableListView
-        android:id="@+id/userProfileActivityList"
-        android:layout_below="@id/user_toolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:id="@+id/rankLayout"
+        android:layout_below="@id/user_toolbar">
+
+        <TextView
+            android:text="@string/rank_text"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/rankWidget"
+            android:layout_alignEnd="@+id/rankWidget"
+            android:layout_marginRight="241dp"
+            android:layout_marginEnd="241dp"
+            android:layout_marginTop="18dp"
+            android:id="@+id/textView" />
+
+        <RatingBar
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:isIndicator="true"
+            android:max="100"
+            android:stepSize="0.01"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/userRank" />
+
+    </RelativeLayout>
+
+    <ExpandableListView
+        android:id="@+id/userProfileActivityList"
+        android:layout_below="@id/rankLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     </ExpandableListView>
+
 
 </RelativeLayout>

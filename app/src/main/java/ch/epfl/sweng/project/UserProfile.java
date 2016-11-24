@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -148,6 +150,22 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
+    private void displayUserRanking() {
+        RatingBar userRank = (RatingBar) findViewById(R.id.userRank);
+        if(userRank == null) {
+            return;
+        }
+
+        double rank = current_user.getRating();
+        if(rank != -1) {
+            userRank.setProgress((int) (rank/5 * userRank.getMax()));
+        }
+        else {
+            ((RelativeLayout) userRank.getParent()).removeAllViews();
+        }
+    }
+
+
     private void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
@@ -165,6 +183,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
+                displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
 

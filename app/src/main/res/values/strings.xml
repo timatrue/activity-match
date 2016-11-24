@@ -72,10 +72,10 @@
     <!-- Join activity -->
     <string name="joinActivity_button">Join this activity</string>
     <string name="leaveActivity_button">Leave this activity</string>
-    <string name="joinActivity_satus">You are registered for this activity </string>
+    <string name="joinActivity_satus">Current Stat is loading  ... </string>
     <string name="toast_success_join">You have successfully joined this activity</string>
     <string name="toas_fail_join">Something wrong with network.. Try again in few seconds </string>
-
+    <string name="rateButton">Rate me NOW !</string>
 
     <!-- Fragment Filter -->
     <string name="hello_fragment">hello fragment</string>
@@ -118,6 +118,6 @@
     <string name="participated_events">Participated Events</string>
     <string name="interested_events">Interested Events</string>
     <string name="no_events">No Events</string>
-
+    <string name="rank_text">Your ranking:</string>
 
 </resources>

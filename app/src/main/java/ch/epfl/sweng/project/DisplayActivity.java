@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+
+import ch.epfl.sweng.project.DataProvider.UserStatus;
 
 import static java.text.DateFormat.getDateInstance;
 
@@ -54,9 +58,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private DeboxActivity currentActivity;
     private Button joinActivityButton;
     private Button leaveActivityButton;
-    private TextView enrolledInfoTextView;
+    private RatingBar rankWidgetRatingBar;
+    private TextView statusInfoTextView;
     private TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
+    private LinearLayout ratingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +74,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
-        enrolledInfoTextView = (TextView) findViewById(R.id.enrolledInfo);
+        rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
+        statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
-
+        ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
 
@@ -151,20 +158,48 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                 }
             }, eventId);
 
-            // Set listener to check if user is already register in this activity or not.
-            mDataProvider.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
-                @Override
-                public void getIfEnrolled(boolean isAlreadyEnrolled) {
 
-                    if (isAlreadyEnrolled) {
-                        enrolledInfoTextView.setVisibility(View.VISIBLE);
-                        leaveActivityButton.setVisibility(View.VISIBLE);
-                    } else {
-                        joinActivityButton.setVisibility(View.VISIBLE);
+            mDataProvider.getCurrentUserStatus(eventId, new DataProvider.DataProviderListenerUserState() {
+                @Override
+                public void getUserState(UserStatus status) {
+
+                    switch(status){
+                        case ENROLLED:
+                            leaveActivityButton.setVisibility(View.VISIBLE);
+                            statusInfoTextView.setText("You are enrolled in this Activity");
+
+                            break;
+                        case NOT_ENROLLED_NOT_FULL:
+                            joinActivityButton.setVisibility(View.VISIBLE);
+                            statusInfoTextView.setText("You can joins this activity");
+
+                            break;
+                        case NOT_ENROLLED_FULL:
+                            statusInfoTextView.setText("This activity is full sorry for you ");
+
+                            break;
+                        case MUST_BE_RANKED:
+                            ratingLayout.setVisibility(View.VISIBLE);
+                            statusInfoTextView.setText("Please Rank this activity");
+
+                            break;
+                        case ALREADY_RANKED:
+                            statusInfoTextView.setText("You have already rank this activity");
+
+                            break;
+                        case ACTIVITY_PAST:
+                            statusInfoTextView.setText("This activty has past you canot join it");
+
+                            break;
+                        default:
+
+                            break;
+
                     }
 
+                    Log.e("Status  : ",status.toString());
                 }
-            }, eventId);
+            });
 
 
             MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -182,9 +217,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         if(currentActivity!= null){
 
             mDataProvider.joinActivity(currentActivity);
-            enrolledInfoTextView.setVisibility(View.VISIBLE);
             joinActivityButton.setVisibility(View.INVISIBLE);
-            leaveActivityButton.setVisibility(View.VISIBLE);
+
 
             String toastMsg = getString(R.string.toast_success_join);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
@@ -201,10 +235,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         if(currentActivity!= null){
 
             mDataProvider.leaveActivity(currentActivity);
-            enrolledInfoTextView.setVisibility(View.INVISIBLE);
-            joinActivityButton.setVisibility(View.VISIBLE);
             leaveActivityButton.setVisibility(View.INVISIBLE);
-
 
         } else {
 
@@ -212,6 +243,23 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
         }
 
+
+    }
+
+    public void rateButtonPressed(View v){
+
+        if(currentActivity!= null){
+
+            ratingLayout.setVisibility(View.INVISIBLE);
+            int rank = Math.round(rankWidgetRatingBar.getRating());
+            mDataProvider.rankUser(currentActivity.getId(),rank);
+
+        } else {
+
+            // TODO change message error
+            String toastMsg = getString(R.string.toas_fail_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+        }
 
     }
 
