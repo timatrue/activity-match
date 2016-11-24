@@ -23,6 +23,16 @@
             android:layout_below="@+id/eventTitle"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventSchedule"
+            android:layout_below="@+id/eventCategory"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,11 +44,29 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/eventSchedule"
-            android:layout_below="@+id/eventCategory"
+            android:id="@+id/eventOccupancy"
+            android:layout_below="@+id/eventDescription"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="@string/Occupancy"/>
 
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/joinActivity"
+            android:layout_below="@id/eventOccupancy">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:id="@+id/imagesLayout">
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
 
         <TextView
             android:layout_width="match_parent"
@@ -46,9 +74,10 @@
             android:id="@+id/enrolledInfo"
             android:visibility="invisible"
             android:text="@string/joinActivity_satus"
+            android:layout_alignBaseline="@+id/joinActivity"
+            android:layout_alignBottom="@+id/joinActivity"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentStart="true" />
 
         <Button
             android:layout_width="match_parent"
@@ -61,22 +90,16 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
 
-
-        <HorizontalScrollView
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/joinActivity"
-            android:layout_below="@id/eventDescription">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:id="@+id/imagesLayout">
-
-            </LinearLayout>
-
-        </HorizontalScrollView>
+            android:id="@+id/leaveActivity"
+            android:text="@string/leaveActivity_button"
+            android:onClick="leaveActivity"
+            android:visibility="invisible"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
     </RelativeLayout>
 

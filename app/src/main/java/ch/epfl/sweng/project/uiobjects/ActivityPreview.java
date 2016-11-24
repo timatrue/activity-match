@@ -88,8 +88,10 @@ public class ActivityPreview extends LinearLayout {
         eventId = event.getId();
 
         if(imagesList != null){
-            String image = imagesList.get(0);
-            new ImageProvider().previewImage(context, eventId, childLayout, image);
+            if(imagesList.size() > 0) {
+                String image = imagesList.get(0);
+                new ImageProvider().previewImage(context, eventId, childLayout, image);
+            }
 
         } else {
             imageTextImage.setVisibility(View.VISIBLE);
