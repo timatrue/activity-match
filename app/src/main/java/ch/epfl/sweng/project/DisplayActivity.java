@@ -231,9 +231,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void tmpFeature(View v){
-        Log.e("tag","------------------------");
-        if(currentActivity!= null){
 
+        if(currentActivity!= null){
+            Log.e("tag","------------------------");
             //mDataProvider.leaveActivity(currentActivity);
             mDataProvider.rankUser(currentActivity.getId(),4);
            // enrolledInfoTextView.setVisibility(View.INVISIBLE);

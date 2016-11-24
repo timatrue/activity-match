@@ -92,21 +92,25 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tmpButton">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:id="@+id/imagesLayout">
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
     </RelativeLayout>
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:id="@+id/imagesLayout">
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
 
 
 

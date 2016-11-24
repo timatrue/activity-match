@@ -265,12 +265,69 @@ public class DataProvider {
         });
     }
 
-    public void rankUser(String uid, int rank){
+    public void rankUser(final String uid, int rank){
 
 
         // Remove Activity Uid of User:enrolled
 
+
+        String userUid = user.getUid();
+        DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
+
+                if (listEnrolled != null) {
+
+                    String idOfEntryToRemove = null;
+
+                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
+
+                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
+
+                        if (activityID.equals(uid)) {
+                            idOfEntryToRemove = enrolledEntry.getKey();
+
+                        }
+                    }
+
+                    if(idOfEntryToRemove != null) {
+                        mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
+                        //decreasesNbOfUserInActivity(dba);
+                    } else {
+                        //TODO Something wrong happends ...
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         // Add Activity Uid in User:ranked
+
+        HashMap<String, Object> rankedChild = new HashMap<>();
+        rankedChild.put("activity ID:",uid);
+        rankedChild.put("rank:",rank);
+
+        // get unique key for enroll the activity
+        String enrolledKey = mDatabase.child("users").child(user.getUid()).child("ranked").push().getKey();
+        HashMap<String, Object> ranked = new HashMap<>();
+
+        ranked.put("ranked/" + enrolledKey, rankedChild);
+
+        // update the database
+        mDatabase.child("users").child(user.getUid()).updateChildren(ranked);
+
+
+        
+
+
+
 
         // Get organizer of activity
 
