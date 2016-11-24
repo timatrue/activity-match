@@ -203,13 +203,13 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
         assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
     }
 
     @Test
@@ -231,13 +231,13 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
         assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
     }
 
     @Test
@@ -260,13 +260,13 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
         assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
     }
 
     @Test
@@ -291,13 +291,13 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
         assertThat(validation, is(ConfirmationCodes.get_date_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_date_error(context))));
     }
 
     @Test
@@ -334,7 +334,7 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
@@ -364,13 +364,13 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 
         assertThat(validation, is(ConfirmationCodes.get_missing_location_error(context)));
         assertTrue(da == null);
-        onView(withId(R.id.createActivityConfirmation)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_location_error(context))));
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_location_error(context))));
     }
 
     @Test
@@ -418,7 +418,7 @@ public class CreateActivityTest {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.setConfirmationTextView(validation);
+                activity.setErrorTextView(validation);
             }
         });
 

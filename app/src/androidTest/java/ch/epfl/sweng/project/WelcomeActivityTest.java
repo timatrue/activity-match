@@ -51,7 +51,6 @@ import static org.junit.Assert.assertThat;
 
 import static org.junit.Assert.assertTrue;
 
-// TODO For now all test on this class are suspended ! Waiting on issue #54 to fixe and improve new features test
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -334,8 +333,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        // in the displaySpecifiedActivities() function
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = "All";
@@ -363,7 +362,6 @@ public class WelcomeActivityTest {
     }
 
 
-
     @UiThreadTest
     @Test
     public void changingCenterLocationTest() throws Exception {
@@ -372,8 +370,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        // in the displaySpecifiedActivities() function
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = "All";
@@ -410,8 +408,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        // in the displaySpecifiedActivities() function
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
         Calendar startCalendar = currentCalendar;
         Calendar endCalendar = addDays(currentCalendar,30);
         activity.filterCategory = filterCategory;
@@ -446,8 +444,8 @@ public class WelcomeActivityTest {
 
         initializeMockProvider(activity);
 
-        // Sets the parameters of the WelcomeActivity that are usually set by the user and are required
-        //in the displaySpecifiedActivities() function
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
         Calendar startCalendar = addDays(currentCalendar,3);
         Calendar endCalendar = addDays(currentCalendar,6);
         activity.filterCategory = "All";
@@ -513,6 +511,7 @@ public class WelcomeActivityTest {
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo(), click());
         onData(allOf(is(instanceOf(String.class)), is(testMaxDistanceString))).inRoot(isPlatformPopup()).perform(click());
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo()).check(matches(withSpinnerText(testMaxDistanceString)));
+
 
         onView(withId(R.id.filterCategoriesDropDown)).perform(scrollTo(), click());
         onData(allOf(is(instanceOf(String.class)), is(testCategory))).inRoot(isPlatformPopup()).perform(click());

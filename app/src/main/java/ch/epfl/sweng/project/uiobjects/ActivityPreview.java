@@ -108,4 +108,3 @@ public class ActivityPreview extends LinearLayout {
     }
 
 }
-

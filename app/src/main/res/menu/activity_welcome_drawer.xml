@@ -4,10 +4,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_profile"
-            android:title="@string/user_profile"
-
-
-            />
+            android:icon="@drawable/user"
+            android:title="@string/user_profile" />
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/ic_menu_login"
