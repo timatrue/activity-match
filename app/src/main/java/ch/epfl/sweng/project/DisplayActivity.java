@@ -230,6 +230,25 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
     }
 
+    public void tmpFeature(View v){
+        Log.e("tag","------------------------");
+        if(currentActivity!= null){
+
+            //mDataProvider.leaveActivity(currentActivity);
+            mDataProvider.rankUser(currentActivity.getId(),4);
+           // enrolledInfoTextView.setVisibility(View.INVISIBLE);
+            //joinActivityButton.setVisibility(View.VISIBLE);
+            //leaveActivityButton.setVisibility(View.INVISIBLE);
+
+
+        } else {
+
+            String toastMsg = getString(R.string.toas_fail_join);
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

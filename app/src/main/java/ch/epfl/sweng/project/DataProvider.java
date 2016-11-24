@@ -134,9 +134,13 @@ public class DataProvider {
                         @Override
                         public void getIfActivityIsPast(boolean result) {
                             if(result){
+
+                                // Ranked ?
                                 listener.getUserState(UserStatus.ACTIVITY_PAST);
 
                             } else {
+
+                                // Place left ?
                                 listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
                             }
                         }
@@ -145,16 +149,6 @@ public class DataProvider {
             }
         }, uid);
 
-
-
-
-
-
-
-
-
-
-        //return UserState.ENROLLED;
     }
 
 
@@ -269,6 +263,22 @@ public class DataProvider {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    public void rankUser(String uid, int rank){
+
+
+        // Remove Activity Uid of User:enrolled
+
+        // Add Activity Uid in User:ranked
+
+        // Get organizer of activity
+
+        // Add rank and increment value of rank
+
+
+
+
     }
 
     public String pushActivity(DeboxActivity da){
