@@ -50,8 +50,6 @@
             android:layout_alignParentStart="true"
             android:text="@string/Occupancy"/>
 
-
-
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,6 +87,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
+
+
+
+
 
         <Button
             android:layout_width="match_parent"
