@@ -421,7 +421,12 @@ public class DataProvider {
                         int ratingSum = deboxOrganiser.getRatingSum();
                         int ratingNb = deboxOrganiser.getRatingNb();
 
-                        ratingNb += 1;
+                        if(ratingNb==-1){
+                            ratingNb = 1;
+                        } else {
+                            ratingNb += 1;
+                        }
+
                         ratingSum += rank;
 
                         mDatabase.child("users").child(idOrganiser).child("ratingNb").setValue(ratingNb);
@@ -618,12 +623,15 @@ public class DataProvider {
 
         Integer ratingNb = -1;
         if (userMap.containsKey("ratingNb")) {
-            ratingNb = (int) userMap.get("ratingNb");
+            //ratingNb = (int) userMap.get("ratingNb");
+            ratingNb = Integer.valueOf(userMap.get("ratingNb").toString());
+
         }
 
         Integer ratingSum = 0;
         if (userMap.containsKey("ratingSum")) {
-            ratingSum = (int) userMap.get("ratingSum");
+            //ratingSum = (int) userMap.get("ratingSum");
+            ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
         String photoLink = "";
