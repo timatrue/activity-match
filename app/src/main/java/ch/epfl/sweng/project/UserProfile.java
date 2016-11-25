@@ -145,20 +145,22 @@ public class UserProfile extends AppCompatActivity {
     private void displayUserImage() {
         final ImageView userImage = (ImageView) findViewById(R.id.userImage);
         user = FirebaseAuth.getInstance().getCurrentUser();
-        final Uri photoUrl = user.getPhotoUrl();
 
-        new Thread(new Runnable() {
-            public void run() {
-                final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        userImage.setImageBitmap(bitmap);
-                    }
-                });
-            }
-        }).start();
+        if(user != null) {
+            final Uri photoUrl = user.getPhotoUrl();
 
+            new Thread(new Runnable() {
+                public void run() {
+                    final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            userImage.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     private void displayUserRanking() {
