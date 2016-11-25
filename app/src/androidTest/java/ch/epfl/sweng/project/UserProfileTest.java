@@ -134,7 +134,7 @@ public class UserProfileTest {
         activity.setDataProvider(dp);
         activity.activityCollection = new LinkedHashMap<String, List<String>>();
         activity.createCollection();
-        activity.setExpListView();
+       // activity.setExpListView();
     }
 
 
@@ -252,7 +252,7 @@ public class UserProfileTest {
         activity.setDataProvider(dp);
         activity.activityCollection = new LinkedHashMap<String, List<String>>();
         activity.createCollection();
-        activity.setExpListView();
+        //activity.setExpListView();
 
 
 //        assertThat((String) activity.emailTextView.getText(), is("def_email"));

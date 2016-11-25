@@ -67,9 +67,9 @@ public class UserProfile extends AppCompatActivity {
     private DataProvider dp;
     private DataProvider dpData;
 
-    private String interestedEvents;
-    private String participatedEvents;
-    private String organizedEvents;
+    public String interestedEvents;
+    public String participatedEvents;
+    public String organizedEvents;
 
     List<String> groupList;
     List<String> childList;
@@ -185,7 +185,7 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
-    private void createCollection() {
+    public void createCollection() {
         activityMap = new HashMap<>();
 
         dp = new DataProvider();

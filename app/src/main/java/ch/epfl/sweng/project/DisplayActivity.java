@@ -60,7 +60,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private Button leaveActivityButton;
     private RatingBar rankWidgetRatingBar;
     private TextView statusInfoTextView;
-    private TextView occupancyTextView;
+    public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
     private LinearLayout ratingLayout;
 
