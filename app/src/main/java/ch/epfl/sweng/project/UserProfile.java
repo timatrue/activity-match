@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -48,6 +47,8 @@ public class UserProfile extends AppCompatActivity {
     final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
 
+
+    private DataProvider mDataProvider;
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -64,7 +65,6 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
 
-    private DataProvider dp;
     private DataProvider dpData;
 
     public String interestedEvents;
@@ -89,39 +89,30 @@ public class UserProfile extends AppCompatActivity {
         organizedEvents = getResources().getString(R.string.organised_events);
 
 
-
-        setupUserToolBar();
-        displayUserImage();
         createGroupList();
-        createCollection();
-        expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        final UserProfileExpandableListAdapter eventsExpListAdapter =
-                new UserProfileExpandableListAdapter(this, activityCollection, groupList);
-        expListView.setAdapter(eventsExpListAdapter);
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent,
-                                        View v, int groupPosition, int childPosition, long id) {
-                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
-                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
-                        .show();
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String test = bundle.getString(USER_PROFILE_TEST_KEY);
+            if (test != null) {
+                if (test.equals(USER_PROFILE_NO_TEST)) {
+                    setDataProvider(new DataProvider());
+                    setupUserToolBar();
+                    displayUserImage();
+                    createCollection();
+                    setExpListView();
 
-                String eventId = activityMap.get(selected).getId();
-                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
-                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
-                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
-                startActivity(intent);
-
-                return true;
+                }
             }
-        });
+        }
+
+
     }
 
 
 
     public void setDataProvider(DataProvider dataProvider) {
-     //   mDataProvider = dataProvider;
+        mDataProvider = dataProvider;
     }
 
     public Bitmap getBitmapFromURL(String src) {
@@ -189,10 +180,8 @@ public class UserProfile extends AppCompatActivity {
 
     public void createCollection() {
         activityMap = new HashMap<>();
-        activityCollection = new LinkedHashMap<String, List<String>>();
 
-        dp = new DataProvider();
-        dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
+        mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
             @Override
             public void getUserInfo(User user) {
@@ -201,8 +190,7 @@ public class UserProfile extends AppCompatActivity {
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
 
-                dpData = new DataProvider();
-                dpData.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
+                mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
@@ -262,7 +250,15 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String test = bundle.getString(USER_PROFILE_TEST_KEY);
+            if (test != null) {
+                if (test.equals(USER_PROFILE_NO_TEST)) {
+                    activityCollection = new LinkedHashMap<>();
+                }
+            }
+        }
 
     }
 
@@ -278,6 +274,31 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+    }
+
+    public void setExpListView() {
+        expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
+        final UserProfileExpandableListAdapter eventsExpListAdapter =
+                new UserProfileExpandableListAdapter(this, activityCollection, groupList);
+        expListView.setAdapter(eventsExpListAdapter);
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent,
+                                        View v, int groupPosition, int childPosition, long id) {
+                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
+                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+                        .show();
+
+
+                String eventId = activityMap.get(selected).getId();
+                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                startActivity(intent);
+
+                return true;
             }
         });
     }
