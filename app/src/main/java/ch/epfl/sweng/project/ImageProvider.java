@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.Layout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -23,6 +24,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.List;
+
+import ch.epfl.sweng.project.uiobjects.SquareImageView;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
@@ -58,6 +61,18 @@ public class ImageProvider {
                     .load(storageReference)
                     .into(imageView);
         }
+
+    }
+    public void previewImage(Context context,  String folder,  View childLayout, String imageName){
+
+        StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
+        SquareImageView imageView = (SquareImageView) childLayout.findViewById(R.id.activityImage);
+
+        Glide.with(context)
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .centerCrop()
+                .into(imageView);
 
     }
 

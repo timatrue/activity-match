@@ -48,6 +48,11 @@ public class UserProfile extends AppCompatActivity {
     private FirebaseUser user ;
 
     TextView nameTextView;
+    final static public String USER_PROFILE_TEST_KEY = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST_KEY";
+    final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
+    final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
+
+    TextView emailTextView;
     User current_user;
 
     List<String> interestedIds = new ArrayList<>();
@@ -61,12 +66,11 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
 
-    private DataProvider dp;
-    private DataProvider dpData;
+    private DataProvider mDataProvider;
 
-    private String interestedEvents;
-    private String participatedEvents;
-    private String organizedEvents;
+    String interestedEvents;
+    String participatedEvents;
+    String organizedEvents;
 
     List<String> groupList;
     List<String> childList;
@@ -87,22 +91,26 @@ public class UserProfile extends AppCompatActivity {
         setupUserToolBar();
         displayUserImage();
         createGroupList();
-        createCollection();
-        expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        final UserProfileExpandableListAdapter eventsExpListAdapter =
-                new UserProfileExpandableListAdapter(this, activityCollection, groupList);
-        expListView.setAdapter(eventsExpListAdapter);
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent,
-                                        View v, int groupPosition, int childPosition, long id) {
-                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
-                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
-                        .show();
-                return true;
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String test = bundle.getString(USER_PROFILE_TEST_KEY);
+            if (test != null) {
+                if (test.equals(USER_PROFILE_NO_TEST)) {
+                    setDataProvider(new DataProvider());
+                    mDataProvider.initUserInDB();
+
+                    createCollection();
+                    setExpListView();
+                }
             }
-        });
+        }
     }
+
+    public void setDataProvider(DataProvider dataProvider) {
+        mDataProvider = dataProvider;
+    }
+
     public Bitmap getBitmapFromURL(String src) {
         try {
             java.net.URL url = new java.net.URL(src);
@@ -146,11 +154,10 @@ public class UserProfile extends AppCompatActivity {
         groupList.add(participatedEvents);
         groupList.add(interestedEvents);
     }
-    private void createCollection() {
 
+    public void createCollection() {
 
-        dp = new DataProvider();
-        dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
+        mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
             @Override
             public void getUserInfo(User user) {
@@ -158,11 +165,11 @@ public class UserProfile extends AppCompatActivity {
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
 
-                dpData = new DataProvider();
-                dpData.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
+                mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+
                         String [] emptyEventList = { "No Events" };
 
                         for (DeboxActivity event : intList) {
@@ -216,8 +223,15 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        activityCollection = new LinkedHashMap<String, List<String>>();
-
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String test = bundle.getString(USER_PROFILE_TEST_KEY);
+            if (test != null) {
+                if (test.equals(USER_PROFILE_NO_TEST)) {
+                    activityCollection = new LinkedHashMap<>();
+                }
+            }
+        }
     }
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();
@@ -231,6 +245,23 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+    }
+
+    public void setExpListView() {
+        expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
+        final UserProfileExpandableListAdapter eventsExpListAdapter =
+                new UserProfileExpandableListAdapter(this, activityCollection, groupList);
+        expListView.setAdapter(eventsExpListAdapter);
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent,
+                                        View v, int groupPosition, int childPosition, long id) {
+                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
+                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
+                        .show();
+                return true;
             }
         });
     }

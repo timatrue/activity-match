@@ -5,13 +5,15 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.DeboxActivity;
+import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
 
+import java.util.List;
 /**
  * Created by nathan on 07.10.16.
  */
@@ -19,6 +21,11 @@ import ch.epfl.sweng.project.R;
 public class ActivityPreview extends LinearLayout {
 
     private DeboxActivity event;
+
+    private List<String> imagesList;
+    private ImageView imageView;
+    private String eventId;
+    LinearLayout imagesLayout;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,16 +61,14 @@ public class ActivityPreview extends LinearLayout {
         gd.setCornerRadius(10);
         gd.setStroke(2, 0xFF000000);
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             //noinspection deprecation
             this.setBackgroundDrawable(gd);
         } else {
             this.setBackground(gd);
         }
 
-        this.setPadding(20,20,20,20);
-
-
+        this.setPadding(20, 20, 20, 20);
     }
 
 }
