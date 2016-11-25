@@ -80,7 +80,7 @@ public class ActivityPreview extends LinearLayout {
         dateEvent.setText(eventTime);
 
         sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
-        sizeEvent.setText("Participants: " + randomParticipants());
+        sizeEvent.setText("Participants: " + event.getNbOfParticipants());
 
         imagesList = event.getImageList();
         imageView = (ImageView) childLayout.findViewById(R.id.activityImage);

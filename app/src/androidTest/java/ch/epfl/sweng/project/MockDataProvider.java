@@ -27,6 +27,7 @@ public class MockDataProvider {
     private List<DataProvider.CategoryName> listCategoryStored;
     private List<String> listUserActivityEnrolledStored;
     private String userID;
+    private User user;
 
     public DataProvider getMockDataProvider(){
 
@@ -38,12 +39,21 @@ public class MockDataProvider {
         initMockGetSpecifiedCategory();
         initMockUserIsEnrolledInActivity();
         initJoinActivity();
+        initMockUserProfile();
+        initMockGetSpecifiedActivities();
         listDeboxActivityStored = new ArrayList<>();
         listCategoryStored = new ArrayList<>();
         listUserActivityEnrolledStored = new ArrayList<>();
         userID="default";
+        user = new User("def_id", "def_username", "def_email", new ArrayList<String>(), new ArrayList<String>(),
+                "def_rating", "def_photoLink");
 
         return mockDataProvider;
+    }
+
+    public void setUserToMock(User newUser){
+        user = newUser;
+        initMockUserProfile();
     }
 
     public void setUserIDToMock(final String id){
@@ -195,5 +205,47 @@ public class MockDataProvider {
                 return null;
             }
         }).when(mockDataProvider).joinActivity(any(DeboxActivity.class));
+    }
+
+    private void initMockUserProfile(){
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerUserInfo listener = (DataProvider.DataProviderListenerUserInfo) args[0];
+
+                listener.getUserInfo(user);
+                return null;
+            }
+        }).when(mockDataProvider).userProfile(any(DataProvider.DataProviderListenerUserInfo.class));
+    }
+
+    private void initMockGetSpecifiedActivities(){
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerUserEvents listener = (DataProvider.DataProviderListenerUserEvents) args[0];
+                List<String> intEvents = (List<String>) args[1];
+                List<String> orgEvents = (List<String>) args[2];
+                List<DeboxActivity> intDA = new ArrayList<>();
+                List<DeboxActivity> orgDA = new ArrayList<>();
+                for (String uid : intEvents){
+                    for (DeboxActivity deb : listDeboxActivityStored){
+                        if(deb.getId().equals(uid)){
+                            intDA.add(deb);
+                        }
+                    }
+                }
+                for (String uid : orgEvents){
+                    for (DeboxActivity deb : listDeboxActivityStored){
+                        if(deb.getId().equals(uid)){
+                            orgDA.add(deb);
+                        }
+                    }
+                }
+
+                listener.getUserActivities(intDA, orgDA);
+                return null;
+            }
+        }).when(mockDataProvider).getSpecifiedActivities(any(DataProvider.DataProviderListenerUserEvents.class), any(List.class), any(List.class));
     }
 }
