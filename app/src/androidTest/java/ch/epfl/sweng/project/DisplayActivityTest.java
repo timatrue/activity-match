@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -18,6 +19,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.text.DateFormat.getDateInstance;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +38,7 @@ public class DisplayActivityTest {
 
     @Rule
     public ActivityTestRule<DisplayActivity> displayActivityRule =
-            new ActivityTestRule<DisplayActivity>(DisplayActivity.class){
+            new ActivityTestRule<DisplayActivity>(DisplayActivity.class) {
                 @Override
                 protected Intent getActivityIntent() {
                     Context targetContext = InstrumentationRegistry.getInstrumentation()
@@ -59,8 +64,8 @@ public class DisplayActivityTest {
                 "Nathan",
                 "Football in UNIL sport center",
                 "Indoor football tournaments open to every student " +
-                "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
-                "minutes games",
+                        "of UNIL and EPFL, teams are formed 15 minutes before and tournament consists of 11 " +
+                        "minutes games",
                 startDate,
                 endDate,
                 122.01,
@@ -102,5 +107,17 @@ public class DisplayActivityTest {
         assertThat(activity.category.getText().toString(), is(categoryText));
         assertThat(activity.description.getText().toString(), is(dA1.getDescription()));
         assertThat(activity.schedule.getText().toString(), is(scheduleText));
+
+        final String dA1OccupancyText;
+        if (!(dA1.getNbMaxOfParticipants() == -1 && dA1.getNbOfParticipants() == -1)) {
+            if (dA1.getNbMaxOfParticipants() >= 0) {
+                dA1OccupancyText = "Occupancy : " + dA1.getNbOfParticipants() + " / " + dA1.getNbMaxOfParticipants();
+            } else {
+                dA1OccupancyText = "Occupancy : " + dA1.getNbOfParticipants();
+            }
+        } else {
+            dA1OccupancyText = "Invalid information about occupancy";
+        }
+        assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
     }
 }
