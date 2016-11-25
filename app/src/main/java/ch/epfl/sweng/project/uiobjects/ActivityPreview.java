@@ -28,6 +28,7 @@ import static ch.epfl.sweng.project.R.id.imageView;
 import static java.text.DateFormat.getDateInstance;
 
 
+import java.util.List;
 /**
  * Created by nathan on 07.10.16.
  */
@@ -121,11 +122,6 @@ public class ActivityPreview extends LinearLayout {
 
             imageView.setImageBitmap(bitmap);
         }
-    }
-    private int randomParticipants(){
-        Random random = new Random();
-        int number = random.nextInt(80 - 65) + 65;
-        return number;
     }
 
 }

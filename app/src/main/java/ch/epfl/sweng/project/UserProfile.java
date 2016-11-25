@@ -44,6 +44,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class UserProfile extends AppCompatActivity {
 
+    final static public String USER_PROFILE_TEST_KEY = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST_KEY";
+    final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
+    final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
+
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -84,6 +88,8 @@ public class UserProfile extends AppCompatActivity {
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
 
+
+
         setupUserToolBar();
         displayUserImage();
         createGroupList();
@@ -112,6 +118,11 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
+
+
+    public void setDataProvider(DataProvider dataProvider) {
+     //   mDataProvider = dataProvider;
+    }
 
     public Bitmap getBitmapFromURL(String src) {
         try {

@@ -81,10 +81,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
 
-        mDataProvider = new DataProvider();
-
         String test = intent.getStringExtra(DISPLAY_ACTIVITY_TEST_KEY);
         if(test.equals(DISPLAY_ACTIVITY_NO_TEST)) {
+            mDataProvider = new DataProvider();
             mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             initDisplay(false);
         }
@@ -131,7 +130,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             dateFormat.format(timeEnd.getTime()) +
                             " at " + timeFormat.format(timeEnd.getTime());
                     schedule.setText(stringSchedule);
-
 
                     // TODO for the moment, not all activities are correct entry for occupancy
                     if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {

@@ -136,9 +136,9 @@ public class WelcomeActivity extends AppCompatActivity
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     getAllCategoriesAndLocation();
+
                     getActivitiesAndDisplay();
                     mDataProvider.initUserInDB();
-
 
                 }
             }
@@ -464,6 +464,7 @@ public class WelcomeActivity extends AppCompatActivity
 
         if (id == R.id.nav_user_profile) {
             Intent intent = new Intent(this, UserProfile.class);
+            intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
             startActivity(intent);
         } else if (id == R.id.nav_log_out) {
             //Return to Login Activity and logout
