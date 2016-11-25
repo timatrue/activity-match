@@ -137,7 +137,7 @@ public class UserProfileTest {
         activity.setExpListView();
     }
 
-    /*
+
     @UiThreadTest
     @Test
     public void ListsCorrectDeboxActivitiesUnderCorrectLabels(){
@@ -239,7 +239,7 @@ public class UserProfileTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };*/
-   // }
+    }
 
     @UiThreadTest
     @Test
