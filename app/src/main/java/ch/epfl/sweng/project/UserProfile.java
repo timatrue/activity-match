@@ -177,7 +177,7 @@ public class UserProfile extends AppCompatActivity {
     }
 
 
-    private void createGroupList() {
+    public void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
@@ -187,6 +187,7 @@ public class UserProfile extends AppCompatActivity {
 
     public void createCollection() {
         activityMap = new HashMap<>();
+        activityCollection = new LinkedHashMap<String, List<String>>();
 
         dp = new DataProvider();
         dp.userProfile(new DataProvider.DataProviderListenerUserInfo(){
@@ -259,7 +260,7 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        activityCollection = new LinkedHashMap<String, List<String>>();
+
 
     }
 
