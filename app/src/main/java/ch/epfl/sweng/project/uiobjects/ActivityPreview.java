@@ -2,6 +2,10 @@ package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,11 +101,25 @@ public class ActivityPreview extends LinearLayout {
             }
 
         } else {
+            /*
             imageTextImage.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.GONE);
             String letter = event.getTitle().substring(0,1);
             imageTextImage.setText(letter);
-            imageTextImage.setTextSize(getResources().getDimension(R.dimen.textsize));
+            imageTextImage.setTextSize(getResources().getDimension(R.dimen.textsize));*/
+
+            String letter = event.getTitle().substring(0,1);
+            Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(100);
+            paint.setTextAlign(Paint.Align.CENTER);
+            int xPos = (canvas.getWidth()/2);
+            int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
+            canvas.drawText(letter, xPos, yPos, paint);
+
+            imageView.setImageBitmap(bitmap);
         }
     }
     private int randomParticipants(){
