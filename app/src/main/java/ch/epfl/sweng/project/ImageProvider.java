@@ -63,6 +63,7 @@ public class ImageProvider {
         }
 
     }
+
     public void previewImage(Context context,  String folder,  View childLayout, String imageName){
 
         StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
