@@ -97,7 +97,6 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    setupUserToolBar();
                     displayUserImage();
                     createCollection();
                     setExpListView();
@@ -105,6 +104,8 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         }
+
+        setupUserToolBar();
 
 
     }
@@ -292,12 +293,15 @@ public class UserProfile extends AppCompatActivity {
                         .show();
 
 
-                String eventId = activityMap.get(selected).getId();
-                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
-                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
-                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
-                startActivity(intent);
-
+                if (activityMap.get(selected) != null) {
+                    String eventId = activityMap.get(selected).getId();
+                    if (eventId != null) {
+                        Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                        intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+                        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                        startActivity(intent);
+                    }
+                }
                 return true;
             }
         });
