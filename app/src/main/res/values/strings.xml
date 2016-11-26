@@ -51,9 +51,18 @@
     <string name="create_activity_upload_image">Upload Image</string>
 
 
+    <!-- Create Activity Validation Fragment -->
+    <string name="creation_validation_text">Uploading in progress&#8230;</string>
+    <string name="creation_validation_complete_text">Uploading completed</string>
+    <string name="creation_validation_button_text">OK</string>
+    <string name="creation_rate_text"></string>
+
+
+
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
+    <string name="organizer_button">Check out organizer\'s profile</string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>
@@ -108,6 +117,7 @@
     <string name="organised_events">Organised Events</string>
     <string name="participated_events">Participated Events</string>
     <string name="interested_events">Interested Events</string>
+    <string name="no_events">No Events</string>
 
 
 </resources>

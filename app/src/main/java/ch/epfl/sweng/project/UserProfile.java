@@ -1,13 +1,26 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.Window;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
@@ -19,6 +32,11 @@ import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import javax.net.ssl.HttpsURLConnection;
+
 
 /**
  * Created by olga on 07.11.16.
@@ -27,6 +45,9 @@ import android.widget.TextView;
 
 public class UserProfile extends AppCompatActivity {
 
+    private FirebaseUser user ;
+
+    TextView nameTextView;
     final static public String USER_PROFILE_TEST_KEY = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST_KEY";
     final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
@@ -68,6 +89,7 @@ public class UserProfile extends AppCompatActivity {
         organizedEvents = getResources().getString(R.string.organised_events);
 
         setupUserToolBar();
+        displayUserImage();
         createGroupList();
 
         Bundle bundle = getIntent().getExtras();
@@ -89,13 +111,55 @@ public class UserProfile extends AppCompatActivity {
         mDataProvider = dataProvider;
     }
 
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpsURLConnection connection = (HttpsURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            myBitmap = Bitmap.createScaledBitmap(myBitmap, 240, 240, false);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private void displayUserImage() {
+        final ImageView userImage = (ImageView) findViewById(R.id.userImage);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+
+            final Uri photoUrl = user.getPhotoUrl();
+
+            new Thread(new Runnable() {
+                public void run() {
+                    final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            userImage.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }).start();
+        }
+
+    }
+
     private void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
         groupList.add(interestedEvents);
     }
+
     public void createCollection() {
+
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
             @Override
@@ -150,8 +214,15 @@ public class UserProfile extends AppCompatActivity {
 
                     }
                 }, interestedIds, organizedIds);
-                emailTextView = (TextView) findViewById(R.id.userEmail);
-                emailTextView.setText(user.getEmail());
+                nameTextView = (TextView) findViewById(R.id.userName);
+                String userName =  user.getUsername();
+                if(userName == null) {
+                    userName = user.getEmail();
+                }
+                if(userName != null) {
+                    nameTextView.setText(user.getUsername());
+                }
+
             }
         });
 
