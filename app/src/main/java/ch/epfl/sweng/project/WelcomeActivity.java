@@ -122,8 +122,8 @@ public class WelcomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
 
-        displayActivities = (Button) findViewById(R.id.displayActivities);
-        displayActivities.setOnClickListener(activitiesClickListener);
+ //       displayActivities = (Button) findViewById(R.id.displayActivities);
+ //       displayActivities.setOnClickListener(activitiesClickListener);
 
         filterStartCalendar = Calendar.getInstance();
         filterEndCalendar = Calendar.getInstance();
@@ -136,9 +136,7 @@ public class WelcomeActivity extends AppCompatActivity
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     getAllCategoriesAndLocation();
-
-                    getActivitiesAndDisplay();
-
+                    displaySpecifiedActivities();
                     mDataProvider.initUserInDB();
 
                 }

@@ -45,7 +45,7 @@ public class UserProfileTest {
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
 
     private User testUser = new User("Bob", "username", "email", organizedEvents,
-            interestedEvents, "rating", "photoLink");
+            interestedEvents, 4, 8, "slls");
 
     //The list of DeboxActivity designed for testing
     private final List<DeboxActivity> deboxActivityList = createDeboxActivityList();
@@ -145,6 +145,7 @@ public class UserProfileTest {
         final UserProfile activity = userProfileRule.getActivity();
         initializeMockProvider(activity);
 
+
        // assertThat((String) activity.emailTextView.getText(), is(testUser.getEmail()));
 
         List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
@@ -240,6 +241,7 @@ public class UserProfileTest {
             }
         };*/
     }
+
 
     @UiThreadTest
     @Test

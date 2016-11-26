@@ -5,10 +5,6 @@
     android:id="@+id/content_welcome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ch.epfl.sweng.project.WelcomeActivity"
     tools:showIn="@layout/app_bar_welcome">
@@ -18,7 +14,6 @@
         android:id="@+id/activityPreviewsScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/displayActivities"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/filterActivity">
 
@@ -60,6 +55,7 @@
         android:text="@string/filter_button_text"
         android:textColor="@android:color/white"
         android:background="?attr/colorPrimary"
+        android:layout_margin="@dimen/activity_horizontal_margin"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -73,6 +69,7 @@
         android:text="@string/create_activity_button_text"
         android:textColor="@android:color/white"
         android:background="?attr/colorPrimary"
+        android:layout_margin="@dimen/activity_horizontal_margin"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

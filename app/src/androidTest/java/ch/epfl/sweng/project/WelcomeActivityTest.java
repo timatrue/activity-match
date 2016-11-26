@@ -362,7 +362,6 @@ public class WelcomeActivityTest {
         }
     }
 
-
     @UiThreadTest
     @Test
     public void changingCenterLocationTest() throws Exception {

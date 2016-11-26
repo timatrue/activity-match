@@ -4,29 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import android.util.Log;
@@ -45,14 +43,15 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class UserProfile extends AppCompatActivity {
 
-    private FirebaseUser user ;
-
-    TextView nameTextView;
     final static public String USER_PROFILE_TEST_KEY = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST_KEY";
     final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
 
-    TextView emailTextView;
+
+    private DataProvider mDataProvider;
+    private FirebaseUser user ;
+
+    TextView nameTextView;
     User current_user;
 
     List<String> interestedIds = new ArrayList<>();
@@ -66,15 +65,16 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
 
-    private DataProvider mDataProvider;
+    private DataProvider dpData;
 
-    String interestedEvents;
-    String participatedEvents;
-    String organizedEvents;
+    public String interestedEvents;
+    public String participatedEvents;
+    public String organizedEvents;
 
     List<String> groupList;
     List<String> childList;
     Map<String, List<String>> activityCollection;
+    Map<String, DeboxActivity> activityMap;
     ExpandableListView expListView;
     private Context mContext;
 
@@ -88,8 +88,7 @@ public class UserProfile extends AppCompatActivity {
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
 
-        setupUserToolBar();
-        displayUserImage();
+
         createGroupList();
 
         Bundle bundle = getIntent().getExtras();
@@ -98,14 +97,20 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    mDataProvider.initUserInDB();
-
+                    displayUserImage();
                     createCollection();
                     setExpListView();
+
                 }
             }
         }
+
+        setupUserToolBar();
+
+
     }
+
+
 
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
@@ -132,8 +137,8 @@ public class UserProfile extends AppCompatActivity {
     private void displayUserImage() {
         final ImageView userImage = (ImageView) findViewById(R.id.userImage);
         user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null) {
 
+        if(user != null) {
             final Uri photoUrl = user.getPhotoUrl();
 
             new Thread(new Runnable() {
@@ -148,23 +153,41 @@ public class UserProfile extends AppCompatActivity {
                 }
             }).start();
         }
-
     }
 
-    private void createGroupList() {
+    private void displayUserRanking() {
+        RatingBar userRank = (RatingBar) findViewById(R.id.userRank);
+        if(userRank == null) {
+            return;
+        }
+
+        double rank = current_user.getRating();
+        if(rank != -1) {
+            userRank.setProgress((int) (rank/5 * userRank.getMax()));
+        }
+        else {
+            ((RelativeLayout) userRank.getParent()).removeAllViews();
+        }
+    }
+
+
+    public void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
         groupList.add(interestedEvents);
     }
 
+
     public void createCollection() {
+        activityMap = new HashMap<>();
 
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
+                displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
 
@@ -172,16 +195,17 @@ public class UserProfile extends AppCompatActivity {
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
-
                         String [] emptyEventList = { "No Events" };
 
                         for (DeboxActivity event : intList) {
                             if (event.getTimeEnd().after(Calendar.getInstance())) {
                                 intTitles.add(event.getTitle());
                                 intEvents.add(event);
+                                activityMap.put(event.getTitle(), event);
                             } else {
                                 partTitles.add(event.getTitle());
                                 partEvents.add(event);
+                                activityMap.put(event.getTitle(), event);
                             }
                         }
                         String[] interestedEventsArray = new String[intTitles.size()];
@@ -203,6 +227,7 @@ public class UserProfile extends AppCompatActivity {
                         for (DeboxActivity event : orgList) {
                             orgTitles.add(event.getTitle());
                             orgEvents.add(event);
+                            activityMap.put(event.getTitle(), event);
                         }
                         String[] organizedEventsArray = new String[orgTitles.size()];
                         if (orgTitles.size() != 0) {
@@ -235,7 +260,9 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         }
+
     }
+
     private void loadChild(String[] events) {
         childList = new ArrayList<String>();
         for (String event : events)
@@ -264,6 +291,17 @@ public class UserProfile extends AppCompatActivity {
                 final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
                 Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
                         .show();
+
+
+                if (activityMap.get(selected) != null) {
+                    String eventId = activityMap.get(selected).getId();
+                    if (eventId != null) {
+                        Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                        intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+                        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                        startActivity(intent);
+                    }
+                }
                 return true;
             }
         });
