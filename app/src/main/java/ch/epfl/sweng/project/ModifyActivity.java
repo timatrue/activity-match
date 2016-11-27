@@ -1,8 +1,6 @@
 package ch.epfl.sweng.project;
 
-import android.app.Activity;
 import android.app.FragmentManager;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -26,7 +24,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -37,27 +34,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
-import ch.epfl.sweng.project.fragments.FilterFragment;
-
-import static android.R.attr.category;
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 import static com.google.android.gms.internal.zzs.TAG;
-
 import static java.text.DateFormat.getDateInstance;
 
 
-public class CreateActivity extends AppCompatActivity implements CalendarPickerListener {
-
-
-    protected static boolean TEST_MODE = false;
-    public final int PLACE_PICKER_REQUEST = 1;
-    public final int PICK_IMAGE_REQUEST = 2;
-
-    final static public String CREATE_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST_KEY";
-    final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
-    final static public String CREATE_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST";
-
+public class ModifyActivity extends CreateActivity {
 
     TextView startDateTextView;
     TextView endDateTextView;
@@ -159,7 +141,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 for (DataProvider.CategoryName cat : items) {
                     stringList.add(cat.getCategory());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateActivity.this, android.R.layout.simple_spinner_item, stringList);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(ModifyActivity.this, android.R.layout.simple_spinner_item, stringList);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 dropdown.setAdapter(adapter);
             }
