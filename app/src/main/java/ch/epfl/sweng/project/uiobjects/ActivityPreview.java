@@ -111,6 +111,7 @@ public class ActivityPreview extends LinearLayout {
             imageTextImage.setTextSize(getResources().getDimension(R.dimen.textsize));*/
 
             String letter = event.getTitle().substring(0,1);
+            letter =  letter.toUpperCase();
             Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
