@@ -1,6 +1,7 @@
 package ch.epfl.sweng.project;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import org.junit.Test;
@@ -29,6 +30,7 @@ public class DataProviderTest {
 
     final private String uuidTest = "uuid-test-111";
     final private String uuidTest2 = "uuid-test-222";
+    final private String uuidTest3 = "uuid-test-333";
 
     @Mock
     DatabaseReference mDataBaseRef;
@@ -52,6 +54,10 @@ public class DataProviderTest {
     DataSnapshot dsChild3;
     @Mock
     Query mQuery;
+    @Mock
+    DatabaseReference myRef2;
+    @Mock
+    DatabaseReference myRef3;
 
     private final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
@@ -479,11 +485,20 @@ public class DataProviderTest {
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
         database = Mockito.mock(FirebaseDatabase.class);
         myRef = Mockito.mock(DatabaseReference.class);
+        myRef2 = Mockito.mock(DatabaseReference.class);
+        myRef3 = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+        final DataSnapshot ds2 = Mockito.mock(DataSnapshot.class);
+        final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
 
-        //Create Map from deboxactivities
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+        when(database.getReference("activities/" + uuidTest2)).thenReturn(myRef2);
+        when(database.getReference("activities/" + uuidTest3)).thenReturn(myRef3);
+
+
+        final Map<String, Object> activityMap = new HashMap<>();
+        //Create Map for deboxActivity
         activityMap.put("title", deboxActivityTest.getTitle());
         activityMap.put("description", deboxActivityTest.getDescription());
         activityMap.put("category", deboxActivityTest.getCategory());
@@ -492,14 +507,42 @@ public class DataProviderTest {
         activityMap.put("organizer", deboxActivityTest.getOrganizer());
         activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
         activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
-        activityMap.put("nbMaxOfParticipants",10);
-        activityMap.put("nbOfParticipants", 5);
+        activityMap.put("nbMaxOfParticipants",-1);
+        activityMap.put("nbOfParticipants", 10);
+
+        final Map<String, Object> activityMap2 = new HashMap<>();
+        //Create Map for deboxActivity
+        activityMap2.put("title", deboxActivityTest.getTitle());
+        activityMap2.put("description", deboxActivityTest.getDescription());
+        activityMap2.put("category", deboxActivityTest.getCategory());
+        activityMap2.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMap2.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMap2.put("organizer", deboxActivityTest.getOrganizer());
+        activityMap2.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMap2.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap2.put("nbMaxOfParticipants",10);
+        activityMap2.put("nbOfParticipants", 5);
+
+        final Map<String, Object> activityMap3 = new HashMap<>();
+        //Create Map for deboxActivity
+        activityMap3.put("title", deboxActivityTest.getTitle());
+        activityMap3.put("description", deboxActivityTest.getDescription());
+        activityMap3.put("category", deboxActivityTest.getCategory());
+        activityMap3.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMap3.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMap3.put("organizer", deboxActivityTest.getOrganizer());
+        activityMap3.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMap3.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap3.put("nbMaxOfParticipants",10);
+        activityMap3.put("nbOfParticipants", 10);
 
 
 
 
         //Override getValue() to always return the Map for the test
         when(ds.getValue()).thenReturn(activityMap);
+        when(ds2.getValue()).thenReturn(activityMap2);
+        when(ds3.getValue()).thenReturn(activityMap3);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
         doAnswer(new Answer<Void>() {
@@ -511,8 +554,26 @@ public class DataProviderTest {
             }
         }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds2);
+                return null;
+            }
+        }).when(myRef2).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds3);
+                return null;
+            }
+        }).when(myRef3).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
         //Override getReference method to return the Mock reference
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+       // when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -522,6 +583,20 @@ public class DataProviderTest {
             @Override
             public void getIfFreePlace(boolean result) {
                 assertTrue(result);
+            }
+        });
+
+        dp.getIfPlaceLeftInActivity(uuidTest2, new DataProvider.DataProviderListenerPlaceFreeInActivity() {
+            @Override
+            public void getIfFreePlace(boolean result) {
+                assertTrue(result);
+            }
+        });
+
+        dp.getIfPlaceLeftInActivity(uuidTest3, new DataProvider.DataProviderListenerPlaceFreeInActivity() {
+            @Override
+            public void getIfFreePlace(boolean result) {
+                assertFalse(result);
             }
         });
 
