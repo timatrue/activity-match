@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Layout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +28,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.util.List;
 
+import ch.epfl.sweng.project.uiobjects.CircularImageView;
 import ch.epfl.sweng.project.uiobjects.SquareImageView;
 
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
@@ -64,16 +68,26 @@ public class ImageProvider {
 
     }
 
-    public void previewImage(Context context,  String folder,  View childLayout, String imageName){
+    public void previewImage(final Context context,  String folder,  View childLayout, String imageName){
 
         StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
-        SquareImageView imageView = (SquareImageView) childLayout.findViewById(R.id.activityImage);
+        final ImageView imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
 
-        Glide.with(context)
+       /* Glide.with(context)
                 .using(new FirebaseImageLoader())
                 .load(storageReference)
                 .centerCrop()
-                .into(imageView);
+                .into(imageView); */
+
+        Glide.with(context).using(new FirebaseImageLoader()).load(storageReference).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                imageView.setImageDrawable(circularBitmapDrawable);
+            }
+        });
 
     }
 

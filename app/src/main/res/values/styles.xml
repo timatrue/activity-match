@@ -19,7 +19,13 @@
 
     <style name="LinearProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@android:color/holo_green_dark</item>
-        <item name="android:background">@android:color/darker_gray</item>
     </style>
+
+    <style name="LoadProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@android:color/holo_green_dark</item>
+    </style>
+
+
+
 
 </resources>

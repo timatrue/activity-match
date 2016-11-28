@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -49,8 +50,9 @@ public class UserProfile extends AppCompatActivity {
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
 
 
+    private RatingBar userRank;
 
-    UserProfileExpandableListAdapter eventsExpListAdapter;
+    private UserProfileExpandableListAdapter eventsExpListAdapter;
 
     private DataProvider mDataProvider;
     private FirebaseUser user ;
@@ -158,7 +160,7 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void displayUserRanking() {
-        RatingBar userRank = (RatingBar) findViewById(R.id.userRank);
+        userRank = (RatingBar) findViewById(R.id.userRank);
         if(userRank == null) {
             return;
         }
@@ -170,6 +172,7 @@ public class UserProfile extends AppCompatActivity {
         else {
             ((RelativeLayout) userRank.getParent()).removeAllViews();
         }
+        userRank.setVisibility(View.VISIBLE);
     }
 
 
@@ -227,6 +230,10 @@ public class UserProfile extends AppCompatActivity {
                     nameTextView.setText(user.getUsername());
                 }
 
+                expListView.setVisibility(View.VISIBLE);
+
+                (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+
             }
         });
 
@@ -255,10 +262,7 @@ public class UserProfile extends AppCompatActivity {
 
     public void setExpListView() {
 
-
-
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-
         eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
         expListView.setAdapter(eventsExpListAdapter);
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {

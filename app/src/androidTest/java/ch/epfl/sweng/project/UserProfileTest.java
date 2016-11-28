@@ -132,7 +132,7 @@ public class UserProfileTest {
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setUserToMock(testUser);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<String>>();
+        activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
         activity.createCollection();
         activity.setExpListView();
     }
@@ -148,17 +148,17 @@ public class UserProfileTest {
 
        // assertThat((String) activity.emailTextView.getText(), is(testUser.getEmail()));
 
-        List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
+        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(2));
         assertTrue(orgEvents.contains("da2"));
         assertTrue(orgEvents.contains("da3"));
 
-        List<String> intEvents = activity.activityCollection.get(activity.interestedEvents);
+        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
         assertThat(intEvents.size(), is(2));
         assertTrue(intEvents.contains("da4"));
         assertTrue(intEvents.contains("da5"));
 
-        List<String> parEvents = activity.activityCollection.get(activity.participatedEvents);
+        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
         assertThat(parEvents.size(), is(1));
         assertTrue(parEvents.contains("da1"));
 
@@ -252,22 +252,22 @@ public class UserProfileTest {
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<String>>();
+        activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
         activity.createCollection();
         activity.setExpListView();
 
 
 //        assertThat((String) activity.emailTextView.getText(), is("def_email"));
 
-        List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
+        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(1));
         assertTrue(orgEvents.contains("No Events"));
 
-        List<String> intEvents = activity.activityCollection.get(activity.interestedEvents);
+        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
         assertThat(intEvents.size(), is(1));
         assertTrue(intEvents.contains("No Events"));
 
-        List<String> parEvents = activity.activityCollection.get(activity.participatedEvents);
+        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
         assertThat(parEvents.size(), is(1));
         assertTrue(parEvents.contains("No Events"));
     }

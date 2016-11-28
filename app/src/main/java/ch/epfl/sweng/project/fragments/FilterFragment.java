@@ -121,7 +121,11 @@ public class FilterFragment extends DialogFragment {
 
         @Override
         public void onClick(View v) {
-            ((WelcomeActivity)getActivity()).displaySpecifiedActivities();
+            WelcomeActivity wa = ((WelcomeActivity)getActivity());
+            wa.displaySpecifiedActivities();
+            wa.cleanLinearLayout(wa.activityPreviewsLayout);
+            getActivity().findViewById(R.id.loadingProgressBar).setVisibility(View.VISIBLE);
+
             dismiss();
         }
     };
