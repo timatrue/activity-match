@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -48,6 +49,9 @@ public class UserProfile extends AppCompatActivity {
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
 
 
+
+    UserProfileExpandableListAdapter eventsExpListAdapter;
+
     private DataProvider mDataProvider;
     private FirebaseUser user ;
 
@@ -72,9 +76,8 @@ public class UserProfile extends AppCompatActivity {
     public String organizedEvents;
 
     List<String> groupList;
-    List<String> childList;
-    Map<String, List<String>> activityCollection;
-    Map<String, DeboxActivity> activityMap;
+    List<DeboxActivity> childList;
+    Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
     private Context mContext;
 
@@ -106,7 +109,6 @@ public class UserProfile extends AppCompatActivity {
         }
 
         setupUserToolBar();
-
 
     }
 
@@ -180,7 +182,6 @@ public class UserProfile extends AppCompatActivity {
 
 
     public void createCollection() {
-        activityMap = new HashMap<>();
 
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
 
@@ -201,41 +202,19 @@ public class UserProfile extends AppCompatActivity {
                             if (event.getTimeEnd().after(Calendar.getInstance())) {
                                 intTitles.add(event.getTitle());
                                 intEvents.add(event);
-                                activityMap.put(event.getTitle(), event);
                             } else {
                                 partTitles.add(event.getTitle());
                                 partEvents.add(event);
-                                activityMap.put(event.getTitle(), event);
                             }
                         }
-                        String[] interestedEventsArray = new String[intTitles.size()];
-                        if (intTitles.size() != 0) {
-                            loadChild(intTitles.toArray(interestedEventsArray));
-                        } else {
-                            loadChild(emptyEventList);
-                        }
-                        activityCollection.put(interestedEvents, childList);
-
-                        String[] participatedEventsArray = new String[partTitles.size()];
-                        if (partTitles.size() != 0) {
-                            loadChild(partTitles.toArray(participatedEventsArray));
-                        } else {
-                            loadChild(emptyEventList);
-                        }
-                        activityCollection.put(participatedEvents, childList);
+                        activityCollection.put(interestedEvents, intEvents);
+                        activityCollection.put(participatedEvents, partEvents);
 
                         for (DeboxActivity event : orgList) {
                             orgTitles.add(event.getTitle());
                             orgEvents.add(event);
-                            activityMap.put(event.getTitle(), event);
                         }
-                        String[] organizedEventsArray = new String[orgTitles.size()];
-                        if (orgTitles.size() != 0) {
-                            loadChild(orgTitles.toArray(organizedEventsArray));
-                        } else {
-                            loadChild(emptyEventList);
-                        }
-                        activityCollection.put(organizedEvents, childList);
+                        activityCollection.put(organizedEvents, orgEvents);
 
                     }
                 }, interestedIds, organizedIds);
@@ -263,11 +242,6 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
-    private void loadChild(String[] events) {
-        childList = new ArrayList<String>();
-        for (String event : events)
-            childList.add(event);
-    }
 
     private void setupUserToolBar(){
         Toolbar mUserToolBar = (Toolbar) findViewById(R.id.user_toolbar);
@@ -280,30 +254,85 @@ public class UserProfile extends AppCompatActivity {
     }
 
     public void setExpListView() {
+
+
+
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        final UserProfileExpandableListAdapter eventsExpListAdapter =
-                new UserProfileExpandableListAdapter(this, activityCollection, groupList);
+
+        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
         expListView.setAdapter(eventsExpListAdapter);
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent,
                                         View v, int groupPosition, int childPosition, long id) {
-                final String selected = (String) eventsExpListAdapter.getChild(groupPosition, childPosition);
-                Toast.makeText(getBaseContext(), selected, Toast.LENGTH_LONG)
-                        .show();
+                final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
+                if(selected != null) {
+                    Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
+                            .show();
 
-
-                if (activityMap.get(selected) != null) {
-                    String eventId = activityMap.get(selected).getId();
-                    if (eventId != null) {
-                        Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
-                        intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
-                        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
-                        startActivity(intent);
+                    if (selected != null) {
+                        String eventId = selected.getId();
+                        launchDisplayActivity(eventId);
                     }
                 }
                 return true;
             }
         });
     }
+
+    UserProfileExpandableListAdapter.modifyDeleteListener eventsModifyDeleteListener = new UserProfileExpandableListAdapter.modifyDeleteListener() {
+
+        @Override
+        public void onItemModified(int groupPosition, int childPosition) {
+            final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
+            Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
+                    .show();
+
+            if (selected != null) {
+                String eventId = selected.getId();
+                launchModifyActivity(eventId);
+            }
+        }
+
+        @Override
+        public void onItemDeleted(int groupPosition, int childPosition) {
+            final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
+            Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
+                    .show();
+
+            if (selected != null) {
+                String eventId = selected.getId();
+                launchDisplayActivity(eventId);
+            }
+        }
+
+        @Override
+        public void onItemClicked(int groupPosition, int childPosition) {
+
+            final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
+            Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
+                    .show();
+
+            if (selected != null) {
+                String eventId = selected.getId();
+                launchDisplayActivity(eventId);
+            }
+        }
+
+    };
+
+    private void launchDisplayActivity(String eventId) {
+        Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+        intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+        intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+        startActivity(intent);
+    }
+
+    private void launchModifyActivity(String eventId) {
+        Intent intent = new Intent(getApplicationContext(), ModifyActivity.class);
+        intent.putExtra(ModifyActivity.CREATE_ACTIVITY_TEST_KEY, ModifyActivity.CREATE_ACTIVITY_NO_TEST);
+        intent.putExtra(ModifyActivity.MODIFY_ACTIVITY_EVENT_ID, eventId);
+        startActivity(intent);
+    }
+
 }
