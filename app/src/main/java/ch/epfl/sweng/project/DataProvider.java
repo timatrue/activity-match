@@ -166,7 +166,7 @@ public class DataProvider {
 
     }
 
-    private void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
+    public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
@@ -833,7 +833,7 @@ public class DataProvider {
     //DB Callbacks interfaces
 
 
-    private interface DataProviderListenerPlaceFreeInActivity{
+    public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
     }
 

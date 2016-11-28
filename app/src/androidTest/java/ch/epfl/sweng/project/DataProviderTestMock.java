@@ -2,6 +2,9 @@ package ch.epfl.sweng.project;
 
 /**
  * Created by nathan on 03.11.16.
+ *
+ *  This class must be delete the real one is DataProviderTest
+ *  TODO Delete this class
  */
 
 

@@ -69,6 +69,8 @@ public class DataProviderTest {
             121.0213,
             "Sports");
 
+
+
     private final Map<String, Object> activityMap = new HashMap<>();
 
 
@@ -469,5 +471,59 @@ public class DataProviderTest {
 
             }
         });
+    }
+
+    @Test
+    public void testGetIfPlaceLeftInActivity(){
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        //Create Map from deboxactivities
+        activityMap.put("title", deboxActivityTest.getTitle());
+        activityMap.put("description", deboxActivityTest.getDescription());
+        activityMap.put("category", deboxActivityTest.getCategory());
+        activityMap.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMap.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMap.put("organizer", deboxActivityTest.getOrganizer());
+        activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap.put("nbMaxOfParticipants",10);
+        activityMap.put("nbOfParticipants", 5);
+
+
+
+
+        //Override getValue() to always return the Map for the test
+        when(ds.getValue()).thenReturn(activityMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+
+        dp.getIfPlaceLeftInActivity(uuidTest, new DataProvider.DataProviderListenerPlaceFreeInActivity() {
+            @Override
+            public void getIfFreePlace(boolean result) {
+                assertTrue(result);
+            }
+        });
+
     }
 }
