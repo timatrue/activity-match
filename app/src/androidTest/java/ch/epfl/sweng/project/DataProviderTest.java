@@ -720,6 +720,103 @@ public class DataProviderTest {
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.initUserInDB();
 
+    }
+
+    @Test
+    public void testJoinActivityAndIncrementNbOfUserInActivity(){
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        DatabaseReference myRefIncrement = Mockito.mock(DatabaseReference.class);
+
+
+        // init moc for joinActivity
+        final String fakeUserID = "fakeUserID";
+        final String fakeEnrolledKey = "enrolledKeyID";
+        when(mUser.getUid()).thenReturn(fakeUserID);
+        when(myRef.child("users")).thenReturn(myRef);
+        when(myRef.child(fakeUserID)).thenReturn(myRef);
+        when(myRef.child("enrolled")).thenReturn(myRef);
+        when(myRef.push()).thenReturn(myRef);
+        when(myRef.getKey()).thenReturn(fakeEnrolledKey);
+
+        final int nbOfParticipants = 10;
+        final int nbMaxParticipants= 20;
+
+        final DeboxActivity dbaTest = new DeboxActivity(uuidTest,"test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+
+                HashMap<String, Object> enrolledChild = (HashMap<String, Object>) objectBuild.get("enrolled/"+fakeEnrolledKey);
+
+                assertEquals(enrolledChild.get("activity ID:"),dbaTest.getId());
+
+                return null;
+            }
+        }).when(myRef).updateChildren(anyMap());
+
+        // init moc for incrementNbOfUserInActivity
+
+        when(database.getReference("activities/" + dbaTest.getId())).thenReturn(myRefIncrement);
+
+        final Map<String, Object> activityMap1 = new HashMap<>();
+        //Create Map for deboxActivity
+        activityMap1.put("title", dbaTest.getTitle());
+        activityMap1.put("description", dbaTest.getDescription());
+        activityMap1.put("category", dbaTest.getCategory());
+        activityMap1.put("latitude", dbaTest.getLocation()[0]);
+        activityMap1.put("longitude", dbaTest.getLocation()[1]);
+        activityMap1.put("organizer", dbaTest.getOrganizer());
+        activityMap1.put("timeEnd", dbaTest.getTimeEnd().getTimeInMillis());
+        activityMap1.put("timeStart", dbaTest.getTimeStart().getTimeInMillis());
+        activityMap1.put("nbOfParticipants", nbOfParticipants);
+        activityMap1.put("nbMaxOfParticipants",nbMaxParticipants);
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+        when(ds1.getValue()).thenReturn(activityMap1);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds1);
+                return null;
+            }
+        }).when(myRefIncrement).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        when(myRef.child("activities")).thenReturn(myRef);
+        when(myRef.child(dbaTest.getId())).thenReturn(myRefIncrement);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+
+                assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants+1);
+
+                return null;
+            }
+        }).when(myRefIncrement).updateChildren(anyMap());
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.joinActivity(dbaTest);
 
     }
 

@@ -697,6 +697,7 @@ public class DataProvider {
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
 
 
+        // TODO remove
         incrementNbOfUserInActivity(dba);
 
         // update the database
