@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import org.junit.Test;
@@ -122,14 +123,16 @@ public class DataProviderTest {
         when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
         //Create Map from deboxactivities
-        activityMap.put("title", deboxActivityTest.getTitle());
+        final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
+
+        /*activityMap.put("title", deboxActivityTest.getTitle());
         activityMap.put("description", deboxActivityTest.getDescription());
         activityMap.put("category", deboxActivityTest.getCategory());
         activityMap.put("latitude", deboxActivityTest.getLocation()[0]);
         activityMap.put("longitude", deboxActivityTest.getLocation()[1]);
         activityMap.put("organizer", deboxActivityTest.getOrganizer());
         activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
 
         //Override getValue() to always return the Map for the test
         when(ds.getValue()).thenReturn(activityMap);
@@ -315,16 +318,17 @@ public class DataProviderTest {
         when(mQuery.equalTo(anyString())).thenReturn(mQuery);
 
 
-        final Map<String, Object> activityMapCat = new HashMap<>();
+        //final Map<String, Object> activityMapCat = new HashMap<>();
+        final Map<String, Object> activityMapCat = toolsBuildMapFromDebox(deboxActivityTest);
 
-        activityMapCat.put("title", deboxActivityTest.getTitle());
+        /*activityMapCat.put("title", deboxActivityTest.getTitle());
         activityMapCat.put("description", deboxActivityTest.getDescription());
         activityMapCat.put("category", deboxActivityTest.getCategory());
         activityMapCat.put("latitude", deboxActivityTest.getLocation()[0]);
         activityMapCat.put("longitude", deboxActivityTest.getLocation()[1]);
         activityMapCat.put("organizer", deboxActivityTest.getOrganizer());
         activityMapCat.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMapCat.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMapCat.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
 
         when(dsChild1.getKey()).thenReturn(uuidTest);
         when(dsChild1.getValue()).thenReturn(activityMapCat);
@@ -392,30 +396,34 @@ public class DataProviderTest {
 
         when(database.getReference("activities")).thenReturn(myRef);
 
-        final Map<String, Object> activityMap1 = new HashMap<>();
+        //final Map<String, Object> activityMap1 = new HashMap<>();
+        final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(deboxActivityTest);
 
-        activityMap1.put("title", deboxActivityTest.getTitle());
+
+
+        /*activityMap1.put("title", deboxActivityTest.getTitle());
         activityMap1.put("description", deboxActivityTest.getDescription());
         activityMap1.put("category", deboxActivityTest.getCategory());
         activityMap1.put("latitude", deboxActivityTest.getLocation()[0]);
         activityMap1.put("longitude", deboxActivityTest.getLocation()[1]);
         activityMap1.put("organizer", deboxActivityTest.getOrganizer());
         activityMap1.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
 
         when(dsChild1.getKey()).thenReturn(uuidTest);
         when(dsChild1.getValue()).thenReturn(activityMap1);
 
-        final Map<String, Object> activityMap2 = new HashMap<>();
+        //final Map<String, Object> activityMap2 = new HashMap<>();
+        final Map<String, Object> activityMap2 = toolsBuildMapFromDebox(deboxActivityTest2);
 
-        activityMap2.put("title", deboxActivityTest2.getTitle());
+        /*activityMap2.put("title", deboxActivityTest2.getTitle());
         activityMap2.put("description", deboxActivityTest2.getDescription());
         activityMap2.put("category", deboxActivityTest2.getCategory());
         activityMap2.put("latitude", deboxActivityTest2.getLocation()[0]);
         activityMap2.put("longitude", deboxActivityTest2.getLocation()[1]);
         activityMap2.put("organizer", deboxActivityTest2.getOrganizer());
         activityMap2.put("timeEnd", deboxActivityTest2.getTimeEnd().getTimeInMillis());
-        activityMap2.put("timeStart", deboxActivityTest2.getTimeStart().getTimeInMillis());
+        activityMap2.put("timeStart", deboxActivityTest2.getTimeStart().getTimeInMillis());*/
 
 
 
@@ -501,45 +509,14 @@ public class DataProviderTest {
         when(database.getReference("activities/" + uuidTest3)).thenReturn(myRef3);
 
 
-        final Map<String, Object> activityMap1 = new HashMap<>();
         //Create Map for deboxActivity
-        activityMap1.put("title", deboxActivityTest.getTitle());
-        activityMap1.put("description", deboxActivityTest.getDescription());
-        activityMap1.put("category", deboxActivityTest.getCategory());
-        activityMap1.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap1.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap1.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap1.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
-        activityMap1.put("nbMaxOfParticipants",-1);
-        activityMap1.put("nbOfParticipants", 10);
+        final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(deboxActivityTest,10,-1);
 
-        final Map<String, Object> activityMap2 = new HashMap<>();
         //Create Map for deboxActivity
-        activityMap2.put("title", deboxActivityTest.getTitle());
-        activityMap2.put("description", deboxActivityTest.getDescription());
-        activityMap2.put("category", deboxActivityTest.getCategory());
-        activityMap2.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap2.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap2.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap2.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap2.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
-        activityMap2.put("nbMaxOfParticipants",10);
-        activityMap2.put("nbOfParticipants", 5);
+        final Map<String, Object> activityMap2 = toolsBuildMapFromDebox(deboxActivityTest,5,10);
 
-        final Map<String, Object> activityMap3 = new HashMap<>();
         //Create Map for deboxActivity
-        activityMap3.put("title", deboxActivityTest.getTitle());
-        activityMap3.put("description", deboxActivityTest.getDescription());
-        activityMap3.put("category", deboxActivityTest.getCategory());
-        activityMap3.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap3.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap3.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap3.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap3.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
-        activityMap3.put("nbMaxOfParticipants",10);
-        activityMap3.put("nbOfParticipants", 10);
-
+        final Map<String, Object> activityMap3 = toolsBuildMapFromDebox(deboxActivityTest,10,10);
 
         //Override getValue() to always return the Map for the test
         when(ds1.getValue()).thenReturn(activityMap1);
@@ -771,19 +748,7 @@ public class DataProviderTest {
 
         when(database.getReference("activities/" + dbaTest.getId())).thenReturn(myRefIncrement);
 
-        final Map<String, Object> activityMap1 = new HashMap<>();
-        //Create Map for deboxActivity
-        activityMap1.put("title", dbaTest.getTitle());
-        activityMap1.put("description", dbaTest.getDescription());
-        activityMap1.put("category", dbaTest.getCategory());
-        activityMap1.put("latitude", dbaTest.getLocation()[0]);
-        activityMap1.put("longitude", dbaTest.getLocation()[1]);
-        activityMap1.put("organizer", dbaTest.getOrganizer());
-        activityMap1.put("timeEnd", dbaTest.getTimeEnd().getTimeInMillis());
-        activityMap1.put("timeStart", dbaTest.getTimeStart().getTimeInMillis());
-        activityMap1.put("nbOfParticipants", nbOfParticipants);
-        activityMap1.put("nbMaxOfParticipants",nbMaxParticipants);
-
+        final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(dbaTest);
         final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
         when(ds1.getValue()).thenReturn(activityMap1);
 
@@ -819,5 +784,159 @@ public class DataProviderTest {
         dp.joinActivity(dbaTest);
 
     }
+
+    @Test
+    public void testLeaveActivityAndDecreasesNbOfUserInActivity(){
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final int nbOfParticipants = 10;
+        final int nbMaxParticipants= 20;
+
+        final DeboxActivity dbaTest = new DeboxActivity(uuidTest,"test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        // init moc for joinActivity
+        final String fakeUserID = "fakeUserID";
+        final String fakeEnrolledKey = "enrolledKeyID";
+        when(mUser.getUid()).thenReturn(fakeUserID);
+
+        when(database.getReference("users/" + fakeUserID + "/enrolled")).thenReturn(myRef);
+
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:","fakeID");
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",dbaTest.getId());
+
+        enrolledMap.put("enrolledID1",enrolledMap1);
+        enrolledMap.put(fakeEnrolledKey,enrolledMap2);
+
+
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+        when(ds1.getValue()).thenReturn(enrolledMap);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds1);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        when(myRef.child("users")).thenReturn(myRef);
+        when(myRef.child(fakeUserID)).thenReturn(myRef);
+        when(myRef.child("enrolled")).thenReturn(myRef);
+        when(myRef.child(fakeEnrolledKey)).thenReturn(myRef);
+
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                assertEquals(true,true);
+
+                return null;
+            }
+        }).when(myRef).removeValue();
+
+        DatabaseReference myRefDec = Mockito.mock(DatabaseReference.class);
+
+        when(database.getReference("activities/" + dbaTest.getId())).thenReturn(myRefDec);
+        final DataSnapshot ds2 = Mockito.mock(DataSnapshot.class);
+
+        //Create Map for deboxActivity
+        final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(dbaTest);
+
+
+        //Override getValue() to always return the Map for the test
+        when(ds2.getValue()).thenReturn(activityMap1);
+
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds2);
+                return null;
+            }
+        }).when(myRefDec).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+        when(myRef.child("activities")).thenReturn(myRef);
+        when(myRef.child(dbaTest.getId())).thenReturn(myRef);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+
+                assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants-1);
+
+                return null;
+            }
+        }).when(myRef).updateChildren(anyMap());
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+        dp.leaveActivity(dbaTest);
+
+    }
+
+
+    public Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba){
+
+        Map<String, Object>  activityMap = new HashMap<>();
+
+        activityMap.put("title", dba.getTitle());
+        activityMap.put("description", dba.getDescription());
+        activityMap.put("category", dba.getCategory());
+        activityMap.put("latitude", dba.getLocation()[0]);
+        activityMap.put("longitude", dba.getLocation()[1]);
+        activityMap.put("organizer", dba.getOrganizer());
+        activityMap.put("timeEnd", dba.getTimeEnd().getTimeInMillis());
+        activityMap.put("timeStart", dba.getTimeStart().getTimeInMillis());
+        activityMap.put("nbOfParticipants", dba.getNbOfParticipants());
+        activityMap.put("nbMaxOfParticipants",dba.getNbMaxOfParticipants());
+
+        return  activityMap;
+
+    }
+
+    public Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba, int nbOfParticipants, int nbMaxOfParticipants){
+
+        Map<String, Object>  activityMap = new HashMap<>();
+
+        activityMap.put("title", dba.getTitle());
+        activityMap.put("description", dba.getDescription());
+        activityMap.put("category", dba.getCategory());
+        activityMap.put("latitude", dba.getLocation()[0]);
+        activityMap.put("longitude", dba.getLocation()[1]);
+        activityMap.put("organizer", dba.getOrganizer());
+        activityMap.put("timeEnd", dba.getTimeEnd().getTimeInMillis());
+        activityMap.put("timeStart", dba.getTimeStart().getTimeInMillis());
+        activityMap.put("nbOfParticipants", nbOfParticipants);
+        activityMap.put("nbMaxOfParticipants", nbMaxOfParticipants);
+
+        return  activityMap;
+
+    }
+
+
 
 }
