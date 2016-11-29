@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class DataProviderTest {
 
     final private String uuidTest = "uuid-test-111";
     final private String uuidTest2 = "uuid-test-222";
-    final private String uuidTest3 = "uuid-test-333";
+
 
     @Mock
     DatabaseReference mDataBaseRef;
@@ -54,10 +55,7 @@ public class DataProviderTest {
     DataSnapshot dsChild3;
     @Mock
     Query mQuery;
-    @Mock
-    DatabaseReference myRef2;
-    @Mock
-    DatabaseReference myRef3;
+
 
     private final DeboxActivity deboxActivityTest = new DeboxActivity(uuidTest,"test", "user-test",
             "description",
@@ -484,31 +482,37 @@ public class DataProviderTest {
 
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
         database = Mockito.mock(FirebaseDatabase.class);
-        myRef = Mockito.mock(DatabaseReference.class);
-        myRef2 = Mockito.mock(DatabaseReference.class);
-        myRef3 = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
+        DatabaseReference myRef1 = Mockito.mock(DatabaseReference.class);
+        DatabaseReference myRef2= Mockito.mock(DatabaseReference.class);
+        DatabaseReference myRef3 = Mockito.mock(DatabaseReference.class);
+
+        final String uuidTest1 = "uuid-test-111";
+        final String uuidTest2 = "uuid-test-222";
+        final String uuidTest3 = "uuid-test-333";
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
         final DataSnapshot ds2 = Mockito.mock(DataSnapshot.class);
         final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
 
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+        when(database.getReference("activities/" + uuidTest1)).thenReturn(myRef1);
         when(database.getReference("activities/" + uuidTest2)).thenReturn(myRef2);
         when(database.getReference("activities/" + uuidTest3)).thenReturn(myRef3);
 
 
-        final Map<String, Object> activityMap = new HashMap<>();
+        final Map<String, Object> activityMap1 = new HashMap<>();
         //Create Map for deboxActivity
-        activityMap.put("title", deboxActivityTest.getTitle());
-        activityMap.put("description", deboxActivityTest.getDescription());
-        activityMap.put("category", deboxActivityTest.getCategory());
-        activityMap.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
-        activityMap.put("nbMaxOfParticipants",-1);
-        activityMap.put("nbOfParticipants", 10);
+        activityMap1.put("title", deboxActivityTest.getTitle());
+        activityMap1.put("description", deboxActivityTest.getDescription());
+        activityMap1.put("category", deboxActivityTest.getCategory());
+        activityMap1.put("latitude", deboxActivityTest.getLocation()[0]);
+        activityMap1.put("longitude", deboxActivityTest.getLocation()[1]);
+        activityMap1.put("organizer", deboxActivityTest.getOrganizer());
+        activityMap1.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
+        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());
+        activityMap1.put("nbMaxOfParticipants",-1);
+        activityMap1.put("nbOfParticipants", 10);
 
         final Map<String, Object> activityMap2 = new HashMap<>();
         //Create Map for deboxActivity
@@ -537,10 +541,8 @@ public class DataProviderTest {
         activityMap3.put("nbOfParticipants", 10);
 
 
-
-
         //Override getValue() to always return the Map for the test
-        when(ds.getValue()).thenReturn(activityMap);
+        when(ds1.getValue()).thenReturn(activityMap1);
         when(ds2.getValue()).thenReturn(activityMap2);
         when(ds3.getValue()).thenReturn(activityMap3);
 
@@ -549,7 +551,7 @@ public class DataProviderTest {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
+                listener.onDataChange(ds1);
                 return null;
             }
         }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
@@ -572,12 +574,8 @@ public class DataProviderTest {
             }
         }).when(myRef3).addListenerForSingleValueEvent(any(ValueEventListener.class));
 
-        //Override getReference method to return the Mock reference
-       // when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
-
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
-
 
         dp.getIfPlaceLeftInActivity(uuidTest, new DataProvider.DataProviderListenerPlaceFreeInActivity() {
             @Override
@@ -601,4 +599,90 @@ public class DataProviderTest {
         });
 
     }
+
+    @Test
+    public void testUserProfile(){
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+
+        final String fakeUserID1 = "fakeUserID1";
+        final String fakeName = "fakeUserName";
+        final String fakeEmail = "fakeemail@gmail.com";
+        final String uuidTest1 = "uuid-test-111";
+        final String uuidTest2 = "uuid-test-222";
+        final String uuidTest3 = "uuid-test-333";
+        final int ratingNb = 3;
+        final int ratingSum = 14;
+
+        when(mUser.getUid()).thenReturn(fakeUserID1);
+        when(database.getReference(any(String.class))).thenReturn(myRef);
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:",uuidTest1);
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",uuidTest2);
+
+        enrolledMap.put("enrolledID1",enrolledMap1);
+        enrolledMap.put("enrolledID2",enrolledMap2);
+
+
+        final Map<String, Object> organisedMap1 = new HashMap<>();
+        organisedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> organisedMap = new HashMap<>();
+        organisedMap.put("organisedID1",organisedMap1);
+
+        final Map<String, Object> userMap = new HashMap<>();
+
+        userMap.put("default_user_name",fakeName);
+        userMap.put("enrolled",enrolledMap);
+        userMap.put("organised",organisedMap);
+        userMap.put("ratingNb",ratingNb);
+        userMap.put("ratingSum",ratingSum);
+        userMap.put("user_email",fakeEmail);
+
+        when(ds1.getValue()).thenReturn(userMap);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds1);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.userProfile(new DataProvider.DataProviderListenerUserInfo() {
+            @Override
+            public void getUserInfo(User user) {
+                List<String> checkInterested = new ArrayList<>();
+                checkInterested.add(uuidTest1);
+                checkInterested.add(uuidTest2);
+                assertEquals(user.getInterestedEventIds(),checkInterested);
+
+                List<String> checkOrganizedList = new ArrayList<>();
+                checkOrganizedList.add(uuidTest3);
+                assertEquals(user.getOrganizedEventIds(),checkOrganizedList);
+
+                assertEquals(user.getRatingNb(),ratingNb);
+                assertEquals(user.getRatingSum(),ratingSum);
+                assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
+                assertEquals(user.getPhotoLink(),"");
+                assertEquals(user.getEmail(),fakeEmail);
+                assertEquals(user.getUsername(),fakeName);
+
+            }
+        });
+
+    }
+
 }

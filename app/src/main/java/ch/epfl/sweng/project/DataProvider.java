@@ -441,32 +441,6 @@ public class DataProvider {
 
                     }
                 });
-/*
-
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
-
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                listener.getUserInfo(getDeboxUser(userUid, userMap));
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-
- */
-
-
-
-
-
 
             }
         },uid);
@@ -640,13 +614,15 @@ public class DataProvider {
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
 
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
