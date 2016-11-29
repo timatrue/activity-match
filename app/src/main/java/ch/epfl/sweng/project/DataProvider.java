@@ -562,7 +562,7 @@ public class DataProvider {
 
     public void initUserInDB(){
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        //user = FirebaseAuth.getInstance().getCurrentUser();
 
         HashMap<String, Object> enrolled = new HashMap<>();
 

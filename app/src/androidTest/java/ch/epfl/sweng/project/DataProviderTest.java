@@ -685,4 +685,42 @@ public class DataProviderTest {
 
     }
 
+    @Test
+    public void testInitUserInDB(){
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final String fakeUserID = "fakeUserID";
+        final String fakeUserEmail = "fakeEmail@fake.com";
+        final String fakeUserName = "fakeUserName";
+
+        when(mUser.getUid()).thenReturn(fakeUserID);
+        when(mUser.getEmail()).thenReturn(fakeUserEmail);
+        when(mUser.getDisplayName()).thenReturn(fakeUserName);
+
+        //when(myRef.child(anyString())).thenReturn(myRef);
+        when(myRef.child("users")).thenReturn(myRef);
+        when(myRef.child(fakeUserID)).thenReturn(myRef);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+
+                assertEquals(objectBuild.get("user_email"),fakeUserEmail);
+                assertEquals(objectBuild.get("default_user_name"),fakeUserName);
+
+                return null;
+            }
+        }).when(myRef).updateChildren(anyMap());
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+        dp.initUserInDB();
+
+
+    }
+
 }
