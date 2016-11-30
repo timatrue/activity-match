@@ -42,12 +42,54 @@ import static java.text.DateFormat.getDateInstance;
 public class ModifyActivity extends CreateActivity {
 
     public final static String MODIFY_ACTIVITY_EVENT_ID = "ch.epfl.sweng.project.ModifyActivity.MODIFY_ACTIVITY_EVENT_ID";
+    private DataProvider dp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_activity);
+
+        dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+                EditText titleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
+                titleEditText.setText(activity.getTitle());
+
+                EditText descriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
+                descriptionEditText.setText(activity.getDescription());
+
+                startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
+                endDateTextView = (TextView) findViewById(R.id.createActivityEndDate);
+                startTimeTextView = (TextView) findViewById(R.id.createActivityStartTime);
+                endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
+
+                DateFormat dateFormat = getDateInstance();
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                Calendar timeStart = activity.getTimeStart();
+                Calendar timeEnd = activity.getTimeEnd();
+                startDateTextView.setText(dateFormat.format(timeStart.getTime()));
+                endDateTextView.setText(dateFormat.format(timeEnd.getTime()));
+                startTimeTextView.setText(timeFormat.format(timeStart.getTime()));
+                endTimeTextView.setText(timeFormat.format(timeEnd.getTime()));
+
+                dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
+                dropdown.setOnItemSelectedListener(selectedItemListener);
+                
+            }
+        }, MODIFY_ACTIVITY_EVENT_ID);
 
     }
 
+    AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            activityCategory = parent.getItemAtPosition(position).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            //another interface callback
+        }
+    };
 
 }
