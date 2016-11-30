@@ -80,6 +80,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     double activityLatitude = 0;
     double activityLongitude = 0;
     String activityCategory = "default_category";
+    private int minuteDivisor;
+    private int minuteDelay;
+    //private int twoHours = getResources().getInteger(R.integer.two_hours);
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -99,6 +102,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_activity);
+        minuteDivisor = getResources().getInteger(R.integer.minute_divisor);
+        minuteDelay = getResources().getInteger(R.integer.minute_delay);
 
         startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
         endDateTextView = (TextView) findViewById(R.id.createActivityEndDate);
@@ -107,7 +112,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         startTimeTextView = (TextView) findViewById(R.id.createActivityStartTime);
         endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
-        startTimeTextView.setText(makeTimeString(activityStartCalendar));
+        //startTimeTextView.setText(makeTimeString(activityStartCalendar));
+        startTimeTextView.setText(makeTimeString(roundTime()));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
         dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
@@ -397,6 +403,13 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             activityEndCalendar.set(Calendar.MINUTE, minute);
             endTimeTextView.setText(makeTimeString(activityEndCalendar));
         }
+    }
+    private Calendar roundTime(){
+        Calendar roundTime = Calendar.getInstance();
+        int unRoundedMinutes = roundTime.get(Calendar.MINUTE);
+        int remainder = unRoundedMinutes % minuteDivisor;
+        roundTime.add(Calendar.MINUTE, -remainder+minuteDelay);
+        return  roundTime;
     }
 
     /**
