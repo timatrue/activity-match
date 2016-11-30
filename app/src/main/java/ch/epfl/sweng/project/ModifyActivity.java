@@ -74,22 +74,10 @@ public class ModifyActivity extends CreateActivity {
 
                 dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
                 dropdown.setOnItemSelectedListener(selectedItemListener);
-                
+
             }
         }, MODIFY_ACTIVITY_EVENT_ID);
 
     }
-
-    AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            activityCategory = parent.getItemAtPosition(position).toString();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            //another interface callback
-        }
-    };
 
 }
