@@ -84,6 +84,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private DataProvider mDataProvider;
+    private ImageProvider mImageProvider;
 
     private List<Uri> imagesUriList = new ArrayList<>();
 
@@ -132,6 +133,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if(test != null) {
             if(test.equals(CREATE_ACTIVITY_NO_TEST)) {
                 setDataProvider(new DataProvider());
+                setImageProvider(new ImageProvider());
                 getAndDisplayCategories();
             }
             else {
@@ -148,6 +150,14 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     //Set the DataProvider (allows test to insert a Mock DataProvider)
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
+    }
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        mImageProvider = imageProvider;
+    }
+
+    public CreateValidationFragment getValidationFragment() {
+        return validationFragment;
     }
 
     //Get Categories available on the DB and display them in the dropdown
@@ -245,9 +255,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         String valid = ConfirmationCodes.get_success(this);
         if(validation.equals(valid)) {
-            if(!TEST_MODE) {
+            if(/*!TEST_MODE*/true) {
                 FragmentManager fm = getFragmentManager();
                 validationFragment = new CreateValidationFragment();
+                validationFragment.setDataProvider(mDataProvider);
+                validationFragment.setImageProvider(mImageProvider);
                 validationFragment.show(fm, "Validating your event");
                 //Add all images name in the debox activity
                 for (Uri uri : imagesUriList) {
@@ -255,7 +267,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 }
 
                 validationFragment.setImagesUriList(imagesUriList);
-
 
                 validationFragment.uploadActivity(newDeboxActivity);
             }
@@ -435,4 +446,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         client.disconnect();
     }
 
+
+    public void setImageList(ArrayList<Uri> imageList) {
+        this.imagesUriList = imageList;
+    }
 }

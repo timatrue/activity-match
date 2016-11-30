@@ -86,7 +86,6 @@ public class CreateValidationFragment extends DialogFragment {
 
         getDialog().setTitle(R.string.event_filter_title);
 
-
         //dismiss();
 
         return rootView;
@@ -124,8 +123,6 @@ public class CreateValidationFragment extends DialogFragment {
 
     public void uploadActivity(DeboxActivity activity)
     {
-        mDataProvider = new DataProvider();
-        mImageProvider = new ImageProvider();
         //Push the activity on the DB
         String activityKey = mDataProvider.pushActivity(activity);
         nbFilesUploaded++;
@@ -176,7 +173,7 @@ public class CreateValidationFragment extends DialogFragment {
     ImageProvider.uploadListener uploadListener = new ImageProvider.uploadListener() {
         @Override
         public void uploadFailed() {
-            System.out.print("dlfksl");
+            //TODO Implements on failed
         }
 
         @Override
@@ -192,4 +189,11 @@ public class CreateValidationFragment extends DialogFragment {
         }
     };
 
+    public void setImageProvider(ImageProvider imageProvider) {
+        this.mImageProvider = imageProvider;
+    }
+
+    public void setDataProvider(DataProvider dataProvider) {
+        this.mDataProvider = dataProvider;
+    }
 }
