@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,10 +32,12 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
@@ -70,6 +74,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     TimePickerFragment endTimeFragment;
 
     Spinner dropdown;
+    private AutoCompleteTextView proSpinner;
+    private List<String> stringList;
 
     String activityId = "default_id";
     String activityOrganizer = "default_organizer";
@@ -119,8 +125,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         //startTimeTextView.setText(makeTimeString(roundTime()));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
-        dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
-        dropdown.setOnItemSelectedListener(selectedItemListener);
+        //dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
+        //dropdown.setOnItemSelectedListener(selectedItemListener);
 
         if(user != null) {
             activityOrganizer = user.getUid();
@@ -163,15 +169,52 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories(){
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
-                List<String> stringList = new ArrayList<>();
+                stringList = new ArrayList<>();
                 for (DataProvider.CategoryName cat : items) {
                     stringList.add(cat.getCategory());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateActivity.this, android.R.layout.simple_spinner_item, stringList);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                dropdown.setAdapter(adapter);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateActivity.this, android.R.layout.simple_dropdown_item_1line, stringList);
+                proSpinner = (AutoCompleteTextView)
+                        findViewById(R.id.proSpinner);
+                proSpinner.setAdapter(adapter);
+                proSpinner.setThreshold(1);
+                proSpinner.setValidator(new Validator());
+                proSpinner.setOnFocusChangeListener(new FocusListener());
+                proSpinner.setOnItemSelectedListener(selectedItemListener);
+                proSpinner.setOnTouchListener(new View.OnTouchListener(){
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event){
+                        proSpinner.showDropDown();
+                        proSpinner.setError(null);
+                        return false;
+                    }
+                });
             }
         });
+    }
+    class Validator implements AutoCompleteTextView.Validator{
+        @Override
+        public boolean isValid(CharSequence userInput){
+         Log.v("Test", "Checking if valid: "+ userInput);
+            Collections.sort(stringList);
+            if( Collections.binarySearch(stringList, userInput.toString()) > 0 ){
+                return true;
+            }
+            return false;
+        }
+        @Override
+        public CharSequence fixText(CharSequence invalidUserInput){
+            proSpinner.setError("Invalid category");
+            return "Invalid category";
+        }
+    }
+    class FocusListener implements View.OnFocusChangeListener{
+        @Override
+        public void onFocusChange(View v,boolean hasFocus){
+            if(v.getId() == R.id.proSpinner && !hasFocus){
+                ((AutoCompleteTextView)v).performValidation();
+            }
+        }
     }
 
     //When user chose a category on the dropdown, saves it

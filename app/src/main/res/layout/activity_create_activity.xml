@@ -35,9 +35,7 @@
                 android:ems="10"
                 android:background="#EEE"
                 android:id="@+id/createActivityTitleEditText"
-                android:layout_below="@+id/createActivityTitle"
-                android:layout_alignLeft="@+id/createActivityCategory"
-                android:layout_alignStart="@+id/createActivityCategory" />
+                android:layout_below="@+id/createActivityTitle" />
 
             <LinearLayout
                 android:layout_marginTop="@dimen/create_activity_margin"
@@ -47,27 +45,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:text="@string/create_activity_category"
-                    android:layout_width="wrap_content"
+                <AutoCompleteTextView
+                    android:id="@+id/proSpinner"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:id="@+id/createActivityCategory"
-                    android:layout_above="@+id/createActivityDescriptionTextView"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="0.5"
-                    android:layout_alignParentEnd="true" />
-
-                <Spinner
-                    android:id="@+id/createActivityCategoryDropDown"
-                    android:layout_width="157dp"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/btn_dropdown"
-                    android:spinnerMode="dropdown"
+                    android:ems="10"
+                    android:layout_gravity="center"
+                    android:dropDownVerticalOffset="5dp"
+                    android:dropDownWidth="wrap_content"
+                    android:hint="@string/select_category_hint"
                     android:layout_below="@+id/createActivityTitleEditText"
-                    android:layout_alignRight="@+id/createActivityCategory"
-                    android:layout_alignEnd="@+id/createActivityCategory"
-                    android:layout_weight="0.5"
                     android:layout_alignLeft="@+id/createActivityStartTime"
                     android:layout_alignStart="@+id/createActivityStartTime" />
 

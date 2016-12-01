@@ -32,7 +32,7 @@
 
     <!-- Create Activity -->
     <string name="create_activity_title_bar">Event organizer</string>
-    <string name="create_activity_title">Organize your activity : \nChoose a title and describe it</string>
+    <string name="create_activity_title">Organize your exciting event:</string>
     <string name="create_activity_name_hint">The title of your activity</string>
     <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Describe the activity you\'re planning</string>
@@ -119,5 +119,6 @@
     <string name="interested_events">Interested Events</string>
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
+    <string name="select_category_hint">Select category</string>
 
 </resources>

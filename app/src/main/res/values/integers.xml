@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Create Activity class, adjusting time -->
     <integer name="minute_divisor">15</integer>
     <integer name="start_minutes_delay">15</integer>
     <integer name="end_minutes_delay">60</integer>
