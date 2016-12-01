@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,6 +49,13 @@ public class ModifyActivity extends CreateActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String eventId = getIntent().getStringExtra(MODIFY_ACTIVITY_EVENT_ID);
+
+        TextView modifyActivityTitle = (TextView) findViewById(R.id.createActivityTitle);
+        modifyActivityTitle.setText(R.string.modify_activity_title);
+        Button modifyActivityLocation = (Button) findViewById(R.id.createActivityLocation);
+        modifyActivityLocation.setText(R.string.modify_activity_set_location);
+        Button modifyActivityButton = (Button) findViewById(R.id.createActivityValidateButton);
+        modifyActivityButton.setText(R.string.modify_activity_modify_activity_button);
 
         dp = new DataProvider();
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
