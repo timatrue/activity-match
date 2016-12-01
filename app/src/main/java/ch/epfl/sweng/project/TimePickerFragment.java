@@ -16,18 +16,23 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
-    public static Calendar roundTime;
+    public Calendar roundTime;
+    private Calendar currentTime;
     CalendarPickerListener pickerListener;
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current time as the default values for the picker
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
+        // Use the current time or rounded time (if exists) as the default values for the picker
+        if(roundTime != null) {
+            currentTime = roundTime;
+        } else {
+            currentTime = Calendar.getInstance();
+        }
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, roundTime.get(Calendar.HOUR_OF_DAY), roundTime.get(Calendar.MINUTE),
+        return new TimePickerDialog(getActivity(), this, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 

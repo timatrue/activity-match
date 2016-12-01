@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="minute_divisor">15</integer>
-    <integer name="minute_delay">15</integer>
-    <integer name="two_hours">1</integer>
+    <integer name="start_minutes_delay">15</integer>
+    <integer name="end_minutes_delay">60</integer>
 </resources>

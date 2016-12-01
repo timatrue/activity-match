@@ -81,8 +81,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     double activityLongitude = 0;
     String activityCategory = "default_category";
     private int minuteDivisor;
-    private int minuteDelay;
-    private int twoHours;
+    private int minuteDelayStartTime;
+    private int minuteDelayEndTime;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -104,8 +104,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         setContentView(R.layout.activity_create_activity);
 
         minuteDivisor = getResources().getInteger(R.integer.minute_divisor);
-        minuteDelay = getResources().getInteger(R.integer.minute_delay);
-        twoHours = getResources().getInteger(R.integer.two_hours);
+        minuteDelayStartTime = getResources().getInteger(R.integer.start_minutes_delay);
+        minuteDelayEndTime = getResources().getInteger(R.integer.end_minutes_delay);
         roundTime();
 
         startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
@@ -409,21 +409,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
     }
 
-
     public void roundTime(){
-        /*roundTime = Calendar.getInstance();
-        int unRoundedMinutes = roundTime.get(Calendar.MINUTE);
-        int remainder = unRoundedMinutes % minuteDivisor;
-        roundTime.add(Calendar.MINUTE, -remainder+minuteDelay);
-        return  roundTime;*/
-
         int minutes = activityStartCalendar.get(Calendar.MINUTE);
-        int hours = activityStartCalendar.get(Calendar.HOUR_OF_DAY);
         int remainder = minutes % minuteDivisor;
-        activityStartCalendar.add(Calendar.MINUTE, -remainder + minuteDelay);
-        activityEndCalendar.add(Calendar.MINUTE, -remainder + 120);
-        //activityEndCalendar.add(Calendar.HOUR_OF_DAY, hours);
-
+        activityStartCalendar.add(Calendar.MINUTE, -remainder + minuteDelayStartTime);
+        activityEndCalendar.add(Calendar.MINUTE, -remainder + minuteDelayEndTime + minuteDelayStartTime);
     }
 
     /**
