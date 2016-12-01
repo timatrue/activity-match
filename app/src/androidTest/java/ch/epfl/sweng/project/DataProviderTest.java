@@ -918,8 +918,6 @@ public class DataProviderTest {
         final String mocOtherActivityID = "mocOtherActivityID";
         final String mocUserIDToRank = "mocUserIDToRank";
 
-
-
         when(mUser.getUid()).thenReturn(mocUserID);
         when(database.getReference("users/" + mocUserID + "/enrolled")).thenReturn(myRef);
 
@@ -933,8 +931,6 @@ public class DataProviderTest {
 
         enrolledMap.put(mocEnrolledKey1,enrolledMap1);
         enrolledMap.put(mocEnrolledKey2,enrolledMap2);
-
-
 
         final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
         when(ds1.getValue()).thenReturn(enrolledMap);
@@ -991,7 +987,6 @@ public class DataProviderTest {
         }).when(myRef).updateChildren(anyMap());
 
 
-
         final int nbOfParticipants = 10;
         final int nbMaxParticipants = 20;
         final DeboxActivity dbaTest = new DeboxActivity(mocActivityIDToRank,mocUserIDToRank, "user-test",
@@ -1007,9 +1002,6 @@ public class DataProviderTest {
         DatabaseReference myRefGetActivity = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("activities/" + mocActivityIDToRank)).thenReturn(myRefGetActivity);
-
-
-
 
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(dbaTest);
         final DataSnapshot ds2 = Mockito.mock(DataSnapshot.class);
@@ -1029,7 +1021,6 @@ public class DataProviderTest {
         when(myRef.child(mocUserIDToRank)).thenReturn(myRef);
 
 
-
         DatabaseReference myRefUserToRank = Mockito.mock(DatabaseReference.class);
         DatabaseReference myRefRatingNb = Mockito.mock(DatabaseReference.class);
         DatabaseReference myRefRatingSum = Mockito.mock(DatabaseReference.class);
@@ -1037,12 +1028,10 @@ public class DataProviderTest {
         when(database.getReference("users/"+mocUserIDToRank)).thenReturn(myRefUserToRank);
 
 
-
         //build user to rank
         final Map<String, Object> userToRankMap= new HashMap<>();
         final Map<String, Object> enrolledMapEmpty= new HashMap<>();
         final Map<String, Object> organisedMapEmpty= new HashMap<>();
-
 
         userToRankMap.put("default_user_name","userToBeRanked");
         userToRankMap.put("enrolled",enrolledMapEmpty);
@@ -1089,21 +1078,9 @@ public class DataProviderTest {
             }
         }).when(myRefRatingSum).setValue(Matchers.anyObject());
 
-
-
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
         dp.rankUser(dbaTest.getId(),rank);
-
-
-
-
-        //TODO : to be test !
-
-
-
-
-
 
     }
 
