@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.support.test.filters.LargeTest;
+
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -19,7 +21,7 @@ import static org.mockito.Mockito.doAnswer;
 /**
  * Created by jeremie on 09.11.16.
  */
-
+@LargeTest
 public class MockDataProvider {
 
     @Mock
