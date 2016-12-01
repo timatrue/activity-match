@@ -1,22 +1,32 @@
 package ch.epfl.sweng.project;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.DatePicker;
 
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +36,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID;
 import static java.text.DateFormat.getDateInstance;
 import static org.junit.Assert.assertEquals;
 
@@ -67,6 +80,10 @@ public class WelcomeActivityTest {
                     return result;
                 }
             };
+
+    /*@Rule
+    public ActivityTestRule<Login> loginRule = new ActivityTestRule<>(Login.class);*/
+
 
     private Calendar currentCalendar = Calendar.getInstance();
 
@@ -296,10 +313,10 @@ public class WelcomeActivityTest {
 
         //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
         for(int i=0; i<activityCount; i++) {
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
-//           assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString(), is(deboxActivityList.get(i).getShortDescription()));
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(deboxActivityList.get(i).getTimeStart().getTime())));
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.sizeEvent)).getText().toString(), is("Participants: " + deboxActivityList.get(i).getNbOfParticipants()));
+            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString(), is(deboxActivityList.get(i).getShortDescription()));
+            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(deboxActivityList.get(i).getTimeStart().getTime())));
+            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.sizeEvent)).getText().toString(), is("Participants: " + deboxActivityList.get(i).getNbOfParticipants()));
         }
     }
 
@@ -356,7 +373,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-//                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -392,7 +409,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-//                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -430,7 +447,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
             if(deboxActivityList.get(i).getCategory().equals(filterCategory)) {
-//                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -466,7 +483,7 @@ public class WelcomeActivityTest {
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++) {
             if (deboxActivityList.get(i).getTimeStart().before(activity.filterEndCalendar) && deboxActivityList.get(i).getTimeEnd().after(activity.filterStartCalendar)) {
-//                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
                 displayedActivityCount += 1;
             }
         }
@@ -511,7 +528,6 @@ public class WelcomeActivityTest {
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo(), click());
         onData(allOf(is(instanceOf(String.class)), is(testMaxDistanceString))).inRoot(isPlatformPopup()).perform(click());
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo()).check(matches(withSpinnerText(testMaxDistanceString)));
-
 
         onView(withId(R.id.filterCategoriesDropDown)).perform(scrollTo(), click());
         onData(allOf(is(instanceOf(String.class)), is(testCategory))).inRoot(isPlatformPopup()).perform(click());
@@ -633,6 +649,59 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.DAY_OF_MONTH), is(endDay));
         assertThat(activity.filterEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
+    }
 
+    @Test
+    public void navMenuUserProfileWorks() throws Exception {
+
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        ActivityTestRule<UserProfile> mActivityTestRule = new ActivityTestRule<>(UserProfile.class);
+
+        initializeMockProvider(activity);
+
+        onView(allOf(withContentDescription(R.string.navigation_drawer_open),
+                withParent(withId(R.id.toolbar)), isDisplayed()))
+                .perform(click());
+
+        onView(allOf(withId(R.id.design_menu_item_text), withText(R.string.user_profile), isDisplayed())).perform(click());
+
+        //TODO: replace these 3 assertions with a proper way to recognize we're in user profile (like checking the title?)
+        onView(withText(R.string.organised_events)).check(matches(isDisplayed()));
+        onView(withText(R.string.participated_events)).check(matches(isDisplayed()));
+        onView(withText(R.string.interested_events)).check(matches(isDisplayed()));
+    }
+
+    @UiThreadTest
+    @Test
+    public void emptyActivityListTest() throws Exception {
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        final List<DeboxActivity> emptyActivityList = new ArrayList<>();
+        mocDataProvider.setListOfActivitiesToMock(emptyActivityList);
+        mocDataProvider.setListOfCategoryToMock(categoryList);
+        activity.setDataProvider(dp);
+        activity.getAllCategories();
+
+        activity.filterCategory = "All";
+
+        //Calls the method that filters and displays the activities
+        activity.displaySpecifiedActivities();
+
+        final int activityCountAll = activity.activityPreviewsLayout.getChildCount();
+        assertThat(activityCountAll, is(1));
+
+        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof NoResultsPreview);
+
+        activity.filterCategory = "Culture";
+
+        activity.displaySpecifiedActivities();
+
+        final int activityCountCulture = activity.activityPreviewsLayout.getChildCount();
+        assertThat(activityCountCulture, is(1));
+
+        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof NoResultsPreview);
     }
 }

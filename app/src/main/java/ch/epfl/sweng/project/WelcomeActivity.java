@@ -469,7 +469,6 @@ public class WelcomeActivity extends AppCompatActivity
             //Return to Login Activity and logout
             setResult(Login.RE_LOG_OUT);
             finish();
-
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
