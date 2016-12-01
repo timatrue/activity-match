@@ -16,9 +16,8 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
-
+    public static Calendar roundTime;
     CalendarPickerListener pickerListener;
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,7 +27,7 @@ public class TimePickerFragment extends DialogFragment
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, hour, minute,
+        return new TimePickerDialog(getActivity(), this, roundTime.get(Calendar.HOUR_OF_DAY), roundTime.get(Calendar.MINUTE),
                 DateFormat.is24HourFormat(getActivity()));
     }
 

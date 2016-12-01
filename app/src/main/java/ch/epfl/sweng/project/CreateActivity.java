@@ -82,7 +82,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     String activityCategory = "default_category";
     private int minuteDivisor;
     private int minuteDelay;
-    //private int twoHours = getResources().getInteger(R.integer.two_hours);
+    private int twoHours;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -102,8 +102,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_activity);
+
         minuteDivisor = getResources().getInteger(R.integer.minute_divisor);
         minuteDelay = getResources().getInteger(R.integer.minute_delay);
+        twoHours = getResources().getInteger(R.integer.two_hours);
+        roundTime();
 
         startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
         endDateTextView = (TextView) findViewById(R.id.createActivityEndDate);
@@ -112,8 +115,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         startTimeTextView = (TextView) findViewById(R.id.createActivityStartTime);
         endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
-        //startTimeTextView.setText(makeTimeString(activityStartCalendar));
-        startTimeTextView.setText(makeTimeString(roundTime()));
+        startTimeTextView.setText(makeTimeString(activityStartCalendar));
+        //startTimeTextView.setText(makeTimeString(roundTime()));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
 
         dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
@@ -147,7 +150,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         else {
             Log.d(TAG, "Dataprovider is not initialized: Bundle is null");
         }
-
 
     }
 
@@ -367,12 +369,14 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     public void showStartTimePickerDialog(View v) {
         startTimeFragment = new TimePickerFragment();
+        startTimeFragment.roundTime = activityStartCalendar;
         startTimeFragment.show(getSupportFragmentManager(), "timePicker");
         startTimeFragment.setPickerListener(this);
     }
 
     public void showEndTimePickerDialog(View v) {
         endTimeFragment = new TimePickerFragment();
+        endTimeFragment.roundTime = activityEndCalendar;
         endTimeFragment.show(getSupportFragmentManager(), "timePicker");
         endTimeFragment.setPickerListener(this);
     }
@@ -404,12 +408,22 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             endTimeTextView.setText(makeTimeString(activityEndCalendar));
         }
     }
-    private Calendar roundTime(){
-        Calendar roundTime = Calendar.getInstance();
+
+
+    public void roundTime(){
+        /*roundTime = Calendar.getInstance();
         int unRoundedMinutes = roundTime.get(Calendar.MINUTE);
         int remainder = unRoundedMinutes % minuteDivisor;
         roundTime.add(Calendar.MINUTE, -remainder+minuteDelay);
-        return  roundTime;
+        return  roundTime;*/
+
+        int minutes = activityStartCalendar.get(Calendar.MINUTE);
+        int hours = activityStartCalendar.get(Calendar.HOUR_OF_DAY);
+        int remainder = minutes % minuteDivisor;
+        activityStartCalendar.add(Calendar.MINUTE, -remainder + minuteDelay);
+        activityEndCalendar.add(Calendar.MINUTE, -remainder + 120);
+        //activityEndCalendar.add(Calendar.HOUR_OF_DAY, hours);
+
     }
 
     /**
