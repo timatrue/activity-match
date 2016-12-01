@@ -51,6 +51,10 @@
     <string name="create_activity_category_text">Category: </string>
     <string name="create_activity_upload_image">Upload Image</string>
 
+    <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>
+    <string name="modify_activity_set_location">Change location</string>
+    <string name="modify_activity_modify_activity_button">Modify activity</string>
+
 
     <!-- Create Activity Validation Fragment -->
     <string name="creation_validation_text">Uploading in progress&#8230;</string>
