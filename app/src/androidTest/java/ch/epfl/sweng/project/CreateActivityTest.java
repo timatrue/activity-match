@@ -136,7 +136,7 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityCategoryDropDown)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withId(R.id.proSpinner)).perform(ViewActions.scrollTo()).perform(click());
         onData(allOf(is(instanceOf(String.class)), is(testCategory))).perform(click());
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());

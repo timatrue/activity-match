@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,9 +74,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     TimePickerFragment startTimeFragment;
     TimePickerFragment endTimeFragment;
 
-    Spinner dropdown;
+
     private AutoCompleteTextView proSpinner;
     private List<String> stringList;
+    private String emptyString;
 
     String activityId = "default_id";
     String activityOrganizer = "default_organizer";
@@ -113,6 +115,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         minuteDelayStartTime = getResources().getInteger(R.integer.start_minutes_delay);
         minuteDelayEndTime = getResources().getInteger(R.integer.end_minutes_delay);
         roundTime();
+        setupUserToolBar();
 
         startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
         endDateTextView = (TextView) findViewById(R.id.createActivityEndDate);
@@ -122,11 +125,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         startTimeTextView = (TextView) findViewById(R.id.createActivityStartTime);
         endTimeTextView = (TextView) findViewById(R.id.createActivityEndTime);
         startTimeTextView.setText(makeTimeString(activityStartCalendar));
-        //startTimeTextView.setText(makeTimeString(roundTime()));
         endTimeTextView.setText(makeTimeString(activityEndCalendar));
-
-        //dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
-        //dropdown.setOnItemSelectedListener(selectedItemListener);
 
         if(user != null) {
             activityOrganizer = user.getUid();
@@ -195,7 +194,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     class Validator implements AutoCompleteTextView.Validator{
         @Override
         public boolean isValid(CharSequence userInput){
-         Log.v("Test", "Checking if valid: "+ userInput);
+         //Log.v("Test", "Checking if valid: "+ userInput);
             Collections.sort(stringList);
             if( Collections.binarySearch(stringList, userInput.toString()) > 0 ){
                 return true;
@@ -204,8 +203,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
         @Override
         public CharSequence fixText(CharSequence invalidUserInput){
-            proSpinner.setError("Invalid category");
-            return "Invalid category";
+            String invalidCategory = getResources().getString(R.string.create_activity_invalid_category);
+            emptyString = getResources().getString(R.string.emptyString);
+            proSpinner.setError(invalidCategory);
+            return emptyString;
         }
     }
     class FocusListener implements View.OnFocusChangeListener{
@@ -451,14 +452,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             endTimeTextView.setText(makeTimeString(activityEndCalendar));
         }
     }
-
     public void roundTime(){
         int minutes = activityStartCalendar.get(Calendar.MINUTE);
         int remainder = minutes % minuteDivisor;
         activityStartCalendar.add(Calendar.MINUTE, -remainder + minuteDelayStartTime);
         activityEndCalendar.add(Calendar.MINUTE, -remainder + minuteDelayEndTime + minuteDelayStartTime);
     }
-
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -493,6 +492,15 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+    private void setupUserToolBar(){
+        Toolbar mUserToolBar = (Toolbar) findViewById(R.id.create_activity_toolbar);
+        mUserToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
 }
