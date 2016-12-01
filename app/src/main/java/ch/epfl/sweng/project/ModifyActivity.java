@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -81,10 +82,23 @@ public class ModifyActivity extends CreateActivity {
                 startTimeTextView.setText(timeFormat.format(activityStartCalendar.getTime()));
                 endTimeTextView.setText(timeFormat.format(activityEndCalendar.getTime()));
 
+                Button modifyButton = (Button) findViewById(R.id.createActivityValidateButton);
+                modifyButton.setText(R.string.modifyButtonText);
+
+
                 List<String> imagesList = activity.getImageList();
+
                 if(imagesList != null) {
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
                 }
+
+                ArrayList<Uri> UriList = new ArrayList<Uri>();
+
+                for(String image : imagesList) {
+                    UriList.add(Uri.parse(image));
+                }
+                setImageList(UriList);
+
 
             }
         }, eventId);

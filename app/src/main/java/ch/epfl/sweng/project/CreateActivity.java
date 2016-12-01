@@ -60,6 +60,10 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     final static public String CREATE_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST";
 
 
+
+    final static public String CREATE_ACTIVITY_DEFAULT_ID = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_DEFAULT_ID";
+
+
     TextView startDateTextView;
     TextView endDateTextView;
     TextView startTimeTextView;
@@ -72,7 +76,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     Spinner dropdown;
 
-    String activityId = "default_id";
+    String activityId = CREATE_ACTIVITY_DEFAULT_ID;
     String activityOrganizer = "default_organizer";
     String activityTitle = "";
     String activityDescription = "";

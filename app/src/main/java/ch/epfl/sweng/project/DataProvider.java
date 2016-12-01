@@ -471,14 +471,12 @@ public class DataProvider {
             }
         },uid);
 
-
     }
 
-
-    public String pushActivity(DeboxActivity da){
+    public String pushActivity(final DeboxActivity da){
 
         String key;
-        if (mDatabase.child("activities").child(da.getId()) != null) {
+        if (!da.getId().equals(CreateActivity.CREATE_ACTIVITY_DEFAULT_ID)) {
             key = da.getId();
         } else {
             key = mDatabase.child("activities").push().getKey();
