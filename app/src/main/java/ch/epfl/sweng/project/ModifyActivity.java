@@ -93,19 +93,11 @@ public class ModifyActivity extends CreateActivity {
                 Button modifyButton = (Button) findViewById(R.id.createActivityValidateButton);
                 modifyButton.setText(R.string.modifyButtonText);
 
-
                 imagesNameList = activity.getImageList();
 
                 if(imagesNameList != null) {
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesNameList);
                 }
-
-                ArrayList<Uri> UriList = new ArrayList<Uri>();
-
-
-                Uri.Builder builder = new Uri.Builder();
-
-
 
             }
         }, eventId);

@@ -74,10 +74,12 @@ public class CreateValidationFragment extends DialogFragment {
         updateRunnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (handler) {
-                    updateProgress();
-                    if(nbFilesToUpload != nbFilesUploaded) {
-                        handler.postDelayed(this, 40);
+                if(isAdded()) {
+                    synchronized (handler) {
+                        updateProgress();
+                        if (nbFilesToUpload != nbFilesUploaded) {
+                            handler.postDelayed(this, 40);
+                        }
                     }
                 }
             }
@@ -193,6 +195,8 @@ public class CreateValidationFragment extends DialogFragment {
             imagesToUploadMap.put(fileUri, totalBytesCount);
         }
     };
+
+
 
     public void setImageProvider(ImageProvider imageProvider) {
         this.mImageProvider = imageProvider;

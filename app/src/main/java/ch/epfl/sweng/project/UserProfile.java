@@ -230,7 +230,9 @@ public class UserProfile extends AppCompatActivity {
                     nameTextView.setText(user.getUsername());
                 }
 
-                expListView.setVisibility(View.VISIBLE);
+                if(expListView != null) {
+                    expListView.setVisibility(View.VISIBLE);
+                }
 
                 (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
 

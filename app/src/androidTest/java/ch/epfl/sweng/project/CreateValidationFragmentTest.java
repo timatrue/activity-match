@@ -146,16 +146,6 @@ public class CreateValidationFragmentTest {
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityStartDate)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(startYear, startMonth + 1, startDay));
-        onView(withId(android.R.id.button1)).perform(click());
-
-        onView(withId(R.id.createActivityStartTime)).perform(ViewActions.scrollTo()).perform(click());
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
-                .perform(PickerActions.setTime(startHour, startMinute));
-        onView(withId(android.R.id.button1)).perform(click());
-
         onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .perform(PickerActions.setDate(endYear, endMonth + 1, endDay));
@@ -223,6 +213,7 @@ public class CreateValidationFragmentTest {
         TextView tv = (TextView) createValidationFragment.getView().findViewById(R.id.createValidationUploadRate);
 
         assertEquals(tv.getText(), "0%");
+
     }
 
 
