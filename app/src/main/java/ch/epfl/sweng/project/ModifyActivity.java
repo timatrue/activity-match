@@ -47,8 +47,8 @@ public class ModifyActivity extends CreateActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_activity);
 
+        dp = new DataProvider();
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -72,12 +72,8 @@ public class ModifyActivity extends CreateActivity {
                 startTimeTextView.setText(timeFormat.format(timeStart.getTime()));
                 endTimeTextView.setText(timeFormat.format(timeEnd.getTime()));
 
-                dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
-                dropdown.setOnItemSelectedListener(selectedItemListener);
-
             }
-        }, MODIFY_ACTIVITY_EVENT_ID);
-
+        }, getIntent().getStringExtra(MODIFY_ACTIVITY_EVENT_ID));
     }
 
 }
