@@ -518,6 +518,11 @@ public class DataProvider {
         return key;
     }
 
+    public void deleteActivity(DeboxActivity da) {
+        String key = da.getId();
+        mDatabase.child("activities").child(key).removeValue();
+    }
+
     private void copyIdOfCreatedEvent(String activityId){
 
         String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();

@@ -230,7 +230,9 @@ public class UserProfile extends AppCompatActivity {
                     nameTextView.setText(user.getUsername());
                 }
 
-                expListView.setVisibility(View.VISIBLE);
+                if(expListView != null) {
+                    expListView.setVisibility(View.VISIBLE);
+                }
 
                 (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
 
@@ -301,12 +303,16 @@ public class UserProfile extends AppCompatActivity {
         @Override
         public void onItemDeleted(int groupPosition, int childPosition) {
             final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
-            Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
+            Toast.makeText(getBaseContext(), "Event deleted", Toast.LENGTH_SHORT)
                     .show();
 
             if (selected != null) {
-                String eventId = selected.getId();
-                launchDisplayActivity(eventId);
+                mDataProvider.deleteActivity(selected);
+                activityCollection.get(organizedEvents).remove(selected);
+
+                ((UserProfileExpandableListAdapter) expListView.getExpandableListAdapter()).notifyDataSetChanged();
+                //createCollection();
+                //setExpListView();
             }
         }
 
