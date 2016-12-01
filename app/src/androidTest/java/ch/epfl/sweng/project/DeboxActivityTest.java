@@ -95,6 +95,9 @@ public final class DeboxActivityTest {
                 testCategory,
                 testImageList);
 
+
+        final List<String> newTestImageList = null;
+
         DeboxActivity dA4 = new DeboxActivity(
                 testDaId,
                 testOrganizer,
@@ -105,7 +108,7 @@ public final class DeboxActivityTest {
                 testLatitude,
                 testLongitude,
                 testCategory,
-                null);
+                newTestImageList);
 
 
         //checks if each constructor works properly
