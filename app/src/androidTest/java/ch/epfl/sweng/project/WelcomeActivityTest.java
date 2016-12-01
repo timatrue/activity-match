@@ -283,6 +283,7 @@ public class WelcomeActivityTest {
         assertTrue(distance > 28 && distance < 29);
 
     }
+    /*
 
     @Test
     public void maxDistanceMapTest() throws Exception {
@@ -290,7 +291,7 @@ public class WelcomeActivityTest {
         assertThat(WelcomeActivity.maxDistanceMap.get("10 km"), is(10));
         assertThat(WelcomeActivity.maxDistanceMap.get("All"), is(21000));
         assertTrue(WelcomeActivity.maxDistanceMap.get("") == null);
-    }
+    }*/
 
     @UiThreadTest
     @Test
