@@ -6,6 +6,7 @@ package ch.epfl.sweng.project;
         import org.junit.Test;
         import org.junit.runner.RunWith;
 
+        import java.util.ArrayList;
         import java.util.Arrays;
         import java.util.Calendar;
         import java.util.List;
@@ -49,7 +50,9 @@ public final class DeboxActivityTest {
         final double testLatitude = 0.3;
         final double testLongitude = 1;
         final String testCategory = "Sports";
-        final List<String> testImageList = Arrays.asList("image1", "image2");
+        List<String> testImageList = new ArrayList<>();
+        testImageList.add("image1");
+        testImageList.add("image2");
         final int testNbOfParticipants = 10;
         final int testNbMaxParticipants = 20;
 
@@ -74,6 +77,8 @@ public final class DeboxActivityTest {
 
         assertThat(dA.getShortDescription(13).length(), is(13));
         assertThat(dA.getShortDescription().length(), is(64));
+        assertThat(dA.getShortDescription(testDescription.length() + 50).length(), is(testDescription.length()));
+        assertThat(dA.getShortDescription(2), is("..."));
         assertThat(dA.getDescription(), is(testDescription));
 
         assertThat(dA.getTimeStart().get(Calendar.YEAR), Matchers.is(startYear));
@@ -93,5 +98,10 @@ public final class DeboxActivityTest {
         assertThat(dA.getImageList(), is(testImageList));
         assertThat(dA.getNbOfParticipants(), is(testNbOfParticipants));
         assertThat(dA.getNbMaxOfParticipants(), is(testNbMaxParticipants));
+
+        final String newImage = "image3";
+        testImageList.add(newImage);
+        dA.addImage(newImage);
+        assertThat(dA.getImageList(), is(testImageList));
     }
 }
