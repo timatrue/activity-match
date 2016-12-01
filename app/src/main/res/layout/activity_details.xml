@@ -5,159 +5,169 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventTitle"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventCategory"
-            android:layout_below="@+id/eventTitle"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventSchedule"
-            android:layout_below="@+id/eventCategory"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventDescription"
-            android:layout_below="@+id/eventSchedule"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/eventOccupancy"
-            android:layout_below="@+id/eventDescription"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="@string/Occupancy"/>
-
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/StatusInfo"
-            android:text="@string/joinActivity_satus"
-            android:layout_below="@+id/eventOccupancy"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/joinActivity"
-                android:text="@string/joinActivity_button"
-                android:onClick="joinActivity"
-                android:visibility="invisible"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/leaveActivity"
-                android:text="@string/leaveActivity_button"
-                android:onClick="leaveActivity"
-                android:visibility="invisible"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-        </RelativeLayout>
-
-
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/leaveActivity"
-            android:id="@+id/rankLayout"
-            android:visibility="invisible">
-
-
-            <RatingBar
-                android:layout_marginStart="@dimen/fab_margin"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:layout_width="wrap_content"
-                android:stepSize="1"
-                android:layout_height="wrap_content"
-                android:id="@+id/rankWidget" />
-
-            <Button
-                android:layout_marginRight="@dimen/fab_margin"
-                android:layout_marginEnd="@dimen/fab_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rateButton"
-                android:text="@string/rateButton"
-                android:onClick="rateButtonPressed" />
-
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/joinActivity"
-            android:layout_below="@id/eventOccupancy">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:id="@+id/imagesLayout">
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!--
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventTitle"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+                 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventCategory"
+                    android:layout_below="@+id/eventTitle"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventSchedule"
+                    android:layout_below="@+id/eventCategory"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventDescription"
+                    android:layout_below="@+id/eventSchedule"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/eventOccupancy"
+                    android:layout_below="@+id/eventDescription"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/Occupancy"/>
+
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/StatusInfo"
+                    android:text="@string/joinActivity_satus"
+                    android:layout_below="@+id/eventOccupancy"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/joinActivity"
+                        android:text="@string/joinActivity_button"
+                        android:onClick="joinActivity"
+                        android:visibility="invisible"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/leaveActivity"
+                        android:text="@string/leaveActivity_button"
+                        android:onClick="leaveActivity"
+                        android:visibility="invisible"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                </RelativeLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/leaveActivity"
+                    android:id="@+id/rankLayout"
+                    android:visibility="invisible">
+
+
+                    <RatingBar
+                        android:layout_marginStart="@dimen/fab_margin"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_width="wrap_content"
+                        android:stepSize="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rankWidget" />
+
+                    <Button
+                        android:layout_marginRight="@dimen/fab_margin"
+                        android:layout_marginEnd="@dimen/fab_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rateButton"
+                        android:text="@string/rateButton"
+                        android:onClick="rateButtonPressed" />
+
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_above="@+id/joinActivity"
+                    android:layout_below="@id/eventOccupancy">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/imagesLayout">
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
 
             </LinearLayout>
 
-        </HorizontalScrollView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:id="@+id/relativeLayout">
+
+                <fragment
+                    android:name="com.google.android.gms.maps.MapFragment"
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true" />
+
+            </RelativeLayout>
 
 
+        </LinearLayout>
 
-    </LinearLayout>
-
-
-
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/relativeLayout">
-
-        <fragment
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true" />
-
-    </RelativeLayout>
+    </ScrollView>
 
 
 </LinearLayout>

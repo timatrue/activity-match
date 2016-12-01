@@ -104,15 +104,14 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                 public void getActivity(DeboxActivity activity) {
 
                     currentActivity = activity;
-                    title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+                  /*  title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle() */
+                    getSupportActionBar().setTitle(activity.getTitle());
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
 
                     activityToDisplay = activity;
-                    title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
                     category = (TextView) findViewById(R.id.eventCategory);
                     category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
@@ -151,7 +150,15 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     List<String> imagesList = activity.getImageList();
                     if(imagesList != null) {
-                        new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+                        if(imagesList.size() != 0) {
+                            new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+                        }
+                        else {
+                            ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                        }
+                    }
+                    else {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
                     }
                 }
             }, eventId);

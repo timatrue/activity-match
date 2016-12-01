@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -167,10 +169,12 @@ public class CreateValidationFragmentTest {
 
     }
 
-    @Test
+    CreateActivity activity;
+
+    @Before
     public void UploadSuccessfulTest() throws Exception {
 
-        final CreateActivity activity = createActivityRule.getActivity();
+        activity  = createActivityRule.getActivity();
       //  initializeMockProvider(activity);
 
         ArrayList<Uri> imagesUriList = new ArrayList<>();
@@ -209,26 +213,16 @@ public class CreateValidationFragmentTest {
 
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
-        /*
-
-        for (Uri uri : imagesUriList) {
-            deboxActivity.addImage(uri.getLastPathSegment());
-        }
+    }
 
 
-        createValidationFragment.setImagesUriList(imagesUriList);
+    @Test
+    public void setup() {
+        CreateValidationFragment createValidationFragment = activity.getValidationFragment();
 
-        Looper.prepare();
+        TextView tv = (TextView) createValidationFragment.getView().findViewById(R.id.createValidationUploadRate);
 
-        createValidationFragment.uploadActivity(deboxActivity);
-
-        TextView tv = (TextView) activity.findViewById(R.id.createValidationUploadRate);
-
-        while(!tv.getText().equals("100%")) {
-
-        }
-        int a = 1;*/
-
+        assertEquals(tv.getText(), "0%");
     }
 
 

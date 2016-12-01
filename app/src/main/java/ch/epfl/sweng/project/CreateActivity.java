@@ -59,6 +59,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
     final static public String CREATE_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST";
 
+    boolean creation = true;
+
+
+    final static public String CREATE_ACTIVITY_DEFAULT_ID = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_DEFAULT_ID";
+
 
     TextView startDateTextView;
     TextView endDateTextView;
@@ -72,7 +77,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     Spinner dropdown;
 
-    String activityId = "default_id";
+    String activityId = CREATE_ACTIVITY_DEFAULT_ID;
     String activityOrganizer = "default_organizer";
     String activityTitle = "";
     String activityDescription = "";
@@ -88,6 +93,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private ImageProvider mImageProvider;
 
     private List<Uri> imagesUriList = new ArrayList<>();
+    protected List<String> imagesNameList = new ArrayList<>();
 
     private CreateValidationFragment validationFragment;
 
@@ -266,13 +272,20 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 validationFragment.setImageProvider(mImageProvider);
                 validationFragment.show(fm, "Validating your event");
                 //Add all images name in the debox activity
+
                 for (Uri uri : imagesUriList) {
-                    newDeboxActivity.addImage(uri.getLastPathSegment());
+                    imagesNameList.add(uri.getLastPathSegment());
                 }
+
+                for (String name : imagesNameList) {
+                    newDeboxActivity.addImage(name);
+                }
+
 
                 validationFragment.setImagesUriList(imagesUriList);
 
-                validationFragment.uploadActivity(newDeboxActivity);
+
+                validationFragment.uploadActivity(newDeboxActivity, creation);
             }
         }
         else {
