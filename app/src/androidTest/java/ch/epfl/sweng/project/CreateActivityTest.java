@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
+import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
@@ -26,12 +27,14 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.CursorMatchers.withRowString;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -136,8 +139,10 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityCategoryDropDown)).perform(ViewActions.scrollTo()).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is(testCategory))).perform(click());
+        onView(withId(R.id.proSpinner)).perform(ViewActions.scrollTo()).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(testCategory)))
+                .inRoot(RootMatchers.withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .perform(click());
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -254,6 +259,19 @@ public class CreateActivityTest {
         activity.activityLongitude = 1;
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.add(Calendar.DATE, -2);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+
+        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(endYear, endMonth, endDay));
+
+        onView(withId(android.R.id.button1)).perform(click());
+
 
         final String validation = activity.validateActivity();
         final DeboxActivity da = activity.createActivityMethod(validation);

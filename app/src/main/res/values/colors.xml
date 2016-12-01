@@ -9,10 +9,14 @@
 
     <!--Generic Theme Colors https://color.adobe.com/Flat-UI-color-theme-2469224 -->
     <color name="blueDarkDebox">#2C3E50</color>
+    <color name="niceBlueDebox">#3498DB</color>
     <color name="darkGreyDebox">#272525</color>
+    <color name="niceWhiteDebox">#F6FFE0</color>
     <color name="normalGreyDebox">#42403F</color>
     <color name="lightGreyDebox">#757370</color>
+    <color name="strokeGreyDebox">#E5E1DD</color>
     <color name="niceRedDebox">#E74C3C</color>
+
 
 
 </resources>

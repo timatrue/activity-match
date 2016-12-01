@@ -7,6 +7,7 @@
     <string name="share_text">Hi! Whatsup? Do you want to check out what kind of activities are available nearby you? Take a look at ActivityMatch! http://activitymatch.azurewebsites.net</string>
     <string name="web_client_id">431266647672-cjab4sklue3hi342jko98a3bvcii8mnc.apps.googleusercontent.com</string>
     <string name="commaSpace">,\u0020</string>
+    <string name="emptyString">""</string>
 
 
     <!-- Welcome Activity navigation Drawer strings -->
@@ -32,24 +33,29 @@
 
     <!-- Create Activity -->
     <string name="create_activity_title_bar">Event organizer</string>
-    <string name="create_activity_title">Organize your activity : \nChoose a title and describe it</string>
-    <string name="create_activity_name_hint">The title of your activity</string>
+    <string name="create_activity_title">Organize your exciting event</string>
+    <string name="create_activity_name_hint">The title of your event</string>
     <string name="create_activity_category">Category</string>
-    <string name="create_activity_description_hint">Describe the activity you\'re planning</string>
-    <string name="create_activity_confirmation_message">Activity successfully created</string>
-    <string name="create_activity_date_error_message">Invalid dates and/or time</string>
-    <string name="create_activity_location_error_message">Please select a location</string>
-    <string name="create_activity_missing_field_error_message">Missing required field informations</string>
+    <string name="create_activity_description_hint">Give details about yours event</string>
+    <string name="create_activity_confirmation_message">Event successfully created</string>
     <string name="create_activity_name_textView">Name</string>
     <string name="create_activity_description_textView">Description</string>
-    <string name="create_activity_starting_time_textView">Starting time</string>
-    <string name="create_activity_ending_time_textView">Ending time</string>
-    <string name="create_activity_create_activity_button">Create activity</string>
+
+    <string name="create_activity_starting_time_textView">Starts at</string>
+    <string name="create_activity_ending_time_textView">Ends at\u0020\u0020</string>
+    <string name="create_activity_create_activity_button">Create event</string>
     <string name="modifyButtonText">Modify activity</string>
     <string name="create_activity_unknown_error_message">Unknown error</string>
+
     <string name="create_activity_set_location">Choose location</string>
     <string name="create_activity_category_text">Category: </string>
     <string name="create_activity_upload_image">Upload Image</string>
+    <string name="create_activity_header">Event\'s Organiser</string>
+
+    <string name="create_activity_invalid_category">Invalid category</string>
+    <string name="create_activity_date_error_message">Invalid dates and/or time</string>
+    <string name="create_activity_location_error_message">Please select a location</string>
+    <string name="create_activity_missing_field_error_message">Missing required field informations</string>
 
     <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>
     <string name="modify_activity_set_location">Change location</string>
@@ -124,5 +130,7 @@
     <string name="interested_events">Interested Events</string>
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
+    <string name="select_category_hint">Select category</string>
+
 
 </resources>
