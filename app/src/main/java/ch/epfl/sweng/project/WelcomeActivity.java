@@ -375,18 +375,20 @@ public class WelcomeActivity extends AppCompatActivity
                     layoutParams.setMargins(30, 20, 30, 0);
 
                     cleanLinearLayout(activityPreviewsLayout);
-                    if (activitiesList.isEmpty()) {
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                        }
+                        listEmpty = false;
+                    }
+
+                    if (listEmpty) {
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
-
-                    } else {
-                        for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
-                                ap.setOnClickListener(previewClickListener);
-                            }
-                        }
                     }
                     //mDataProvider = new DataProvider();
 
@@ -407,18 +409,21 @@ public class WelcomeActivity extends AppCompatActivity
                     layoutParams.setMargins(30, 20, 30, 0);
 
                     cleanLinearLayout(activityPreviewsLayout);
-                    if (activitiesList.isEmpty()) {
+
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                            listEmpty = false;
+                        }
+                    }
+
+                    if (listEmpty) {
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
-
-                    } else {
-                        for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
-                                ap.setOnClickListener(previewClickListener);
-                            }
-                        }
                     }
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
