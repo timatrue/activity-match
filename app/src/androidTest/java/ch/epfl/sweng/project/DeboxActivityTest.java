@@ -70,7 +70,52 @@ public final class DeboxActivityTest {
                 testNbOfParticipants,
                 testNbMaxParticipants);
 
+        DeboxActivity dA2 = new DeboxActivity(
+                testDaId,
+                testOrganizer,
+                testTitle,
+                testDescription,
+                startCalendar,
+                endCalendar,
+                testLatitude,
+                testLongitude,
+                testCategory,
+                testNbOfParticipants,
+                testNbMaxParticipants);
 
+        DeboxActivity dA3 = new DeboxActivity(
+                testDaId,
+                testOrganizer,
+                testTitle,
+                testDescription,
+                startCalendar,
+                endCalendar,
+                testLatitude,
+                testLongitude,
+                testCategory,
+                testImageList);
+
+        DeboxActivity dA4 = new DeboxActivity(
+                testDaId,
+                testOrganizer,
+                testTitle,
+                testDescription,
+                startCalendar,
+                endCalendar,
+                testLatitude,
+                testLongitude,
+                testCategory,
+                null);
+
+
+        //checks if each constructor works properly
+        assertThat(dA.getId(), is (dA2.getId()));
+        assertThat(dA.getId(), is (dA3.getId()));
+        assertThat(dA2.getImageList().isEmpty(), is(true));
+        assertThat(dA3.getNbOfParticipants(), is(0));
+        assertThat(dA3.getNbMaxOfParticipants(), is(-1));
+
+        //checks the methods
         assertThat(dA.getId(), is(testDaId));
         assertThat(dA.getOrganizer(), is(testOrganizer));
         assertThat(dA.getTitle(), is(testTitle));
@@ -99,9 +144,13 @@ public final class DeboxActivityTest {
         assertThat(dA.getNbOfParticipants(), is(testNbOfParticipants));
         assertThat(dA.getNbMaxOfParticipants(), is(testNbMaxParticipants));
 
+        //checks the addImage method
         final String newImage = "image3";
         testImageList.add(newImage);
         dA.addImage(newImage);
         assertThat(dA.getImageList(), is(testImageList));
+
+        //checks the case the image list provided is null
+        assertThat(dA4.getImageList(), is((List<String>) null));
     }
 }
