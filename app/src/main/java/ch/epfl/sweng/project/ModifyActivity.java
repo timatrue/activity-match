@@ -49,6 +49,7 @@ public class ModifyActivity extends CreateActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String eventId = getIntent().getStringExtra(MODIFY_ACTIVITY_EVENT_ID);
+        creation = false;
 
         TextView modifyActivityTitle = (TextView) findViewById(R.id.createActivityTitle);
         modifyActivityTitle.setText(R.string.modify_activity_title);

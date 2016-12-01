@@ -59,6 +59,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     final static public String CREATE_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_NO_TEST";
     final static public String CREATE_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_TEST";
 
+    boolean creation = true;
 
     TextView startDateTextView;
     TextView endDateTextView;
@@ -261,7 +262,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 validationFragment.setImagesUriList(imagesUriList);
 
 
-                validationFragment.uploadActivity(newDeboxActivity);
+                validationFragment.uploadActivity(newDeboxActivity, creation);
             }
         }
         else {
