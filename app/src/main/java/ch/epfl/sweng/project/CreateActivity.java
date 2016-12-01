@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +90,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     private CreateValidationFragment validationFragment;
 
+    LinearLayout imagesLayout;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -112,6 +115,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         dropdown = (Spinner)findViewById(R.id.createActivityCategoryDropDown);
         dropdown.setOnItemSelectedListener(selectedItemListener);
+        imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
         if(user != null) {
             activityOrganizer = user.getUid();

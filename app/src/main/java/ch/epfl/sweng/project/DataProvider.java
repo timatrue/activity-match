@@ -477,8 +477,12 @@ public class DataProvider {
 
     public String pushActivity(DeboxActivity da){
 
-
-        String key = mDatabase.child("activities").push().getKey();
+        String key;
+        if (mDatabase.child("activities").child(da.getId()) != null) {
+            key = da.getId();
+        } else {
+            key = mDatabase.child("activities").push().getKey();
+        }
 
         Map<String, Object> childUpdates = new HashMap<>();
         HashMap<String, Object> result = new HashMap<>();
@@ -513,7 +517,9 @@ public class DataProvider {
         return key;
     }
     private void copyIdOfCreatedEvent(String activityId){
-
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //DatabaseReference getOrganizedEvents = database.getReference("users/" + user.getUid() + "/" + "organised");
+        //getOrganizedEvents
         String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
 
         HashMap<String, Object> organisedEventsChild = new HashMap<>();

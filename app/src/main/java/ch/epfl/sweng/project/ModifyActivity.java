@@ -47,16 +47,27 @@ public class ModifyActivity extends CreateActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final String eventId = getIntent().getStringExtra(MODIFY_ACTIVITY_EVENT_ID);
 
         dp = new DataProvider();
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
+                activityId = eventId;
+                activityOrganizer = activity.getOrganizer();
+                activityTitle = activity.getTitle();
+                activityDescription = activity.getDescription();
+                activityStartCalendar = activity.getTimeStart();
+                activityEndCalendar = activity.getTimeEnd();
+                activityLatitude = activity.getLocation()[0];
+                activityLongitude = activity.getLocation()[1];
+                activityCategory = activity.getCategory();
+
                 EditText titleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
-                titleEditText.setText(activity.getTitle());
+                titleEditText.setText(activityTitle);
 
                 EditText descriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
-                descriptionEditText.setText(activity.getDescription());
+                descriptionEditText.setText(activityDescription);
 
                 startDateTextView = (TextView) findViewById(R.id.createActivityStartDate);
                 endDateTextView = (TextView) findViewById(R.id.createActivityEndDate);
@@ -65,15 +76,18 @@ public class ModifyActivity extends CreateActivity {
 
                 DateFormat dateFormat = getDateInstance();
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                Calendar timeStart = activity.getTimeStart();
-                Calendar timeEnd = activity.getTimeEnd();
-                startDateTextView.setText(dateFormat.format(timeStart.getTime()));
-                endDateTextView.setText(dateFormat.format(timeEnd.getTime()));
-                startTimeTextView.setText(timeFormat.format(timeStart.getTime()));
-                endTimeTextView.setText(timeFormat.format(timeEnd.getTime()));
+                startDateTextView.setText(dateFormat.format(activityStartCalendar.getTime()));
+                endDateTextView.setText(dateFormat.format(activityEndCalendar.getTime()));
+                startTimeTextView.setText(timeFormat.format(activityStartCalendar.getTime()));
+                endTimeTextView.setText(timeFormat.format(activityEndCalendar.getTime()));
+
+                List<String> imagesList = activity.getImageList();
+                if(imagesList != null) {
+                    new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+                }
 
             }
-        }, getIntent().getStringExtra(MODIFY_ACTIVITY_EVENT_ID));
+        }, eventId);
     }
 
 }
