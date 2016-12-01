@@ -57,7 +57,7 @@ public class CreateActivityTest {
     private final List<DataProvider.CategoryName> categoryList = createCategoryList();
 
     //Returns the calendar that is 'nDays' days later than the input calendar
-    private Calendar addDays(Calendar calendar, int nDays) {
+    public static Calendar addDays(Calendar calendar, int nDays) {
         Calendar newCalendar = (Calendar) calendar.clone();
         newCalendar.add(Calendar.DATE, nDays);
         return newCalendar;

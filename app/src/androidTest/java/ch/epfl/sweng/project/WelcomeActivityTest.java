@@ -278,7 +278,8 @@ public class WelcomeActivityTest {
 
         //Press on the "Display Events" button, the test will be obsolete. No need to keep it
         //activity.displayActivities.performClick();
-        activity.getActivitiesAndDisplay();
+        activity.getAllCategoriesAndLocation();
+        activity.displaySpecifiedActivities();
 
         //Check that the five events are displayed
         final int activityCount = activity.activityPreviewsLayout.getChildCount();
