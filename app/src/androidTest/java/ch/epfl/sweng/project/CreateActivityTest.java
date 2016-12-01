@@ -258,6 +258,8 @@ public class CreateActivityTest {
         activity.activityLatitude = 1;
         activity.activityLongitude = 1;
 
+        activity.activityCategory = "Culture";
+
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
         Calendar endCalendar = Calendar.getInstance();
@@ -301,6 +303,7 @@ public class CreateActivityTest {
         activity.activityLongitude = 1;
         activity.activityStartCalendar = addDays(currentCalendar, 3);
         activity.activityEndCalendar = addDays(currentCalendar, 2);
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
@@ -344,6 +347,8 @@ public class CreateActivityTest {
         activity.activityLongitude = 0.3;
         activity.activityStartCalendar = startCalendar;
         activity.activityEndCalendar = endCalendar;
+
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 

@@ -56,6 +56,8 @@ public class WelcomeActivity extends AppCompatActivity
     //radius of Earth in km
     final static double EARTH_RADIUS = 6371;
 
+    private boolean TEST_MODE = false;
+
     final static public String WELCOME_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST_KEY";
     final static public String WELCOME_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_NO_TEST";
     final static public String WELCOME_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST";
@@ -138,7 +140,10 @@ public class WelcomeActivity extends AppCompatActivity
                     getAllCategoriesAndLocation();
                     displaySpecifiedActivities();
                     mDataProvider.initUserInDB();
-
+                    TEST_MODE = false;
+                }
+                else {
+                    TEST_MODE = true;
                 }
             }
         }
@@ -148,9 +153,11 @@ public class WelcomeActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
-        getAllCategoriesAndLocation();
-        displaySpecifiedActivities();
+        if(!TEST_MODE) {
+            (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+            getAllCategoriesAndLocation();
+            displaySpecifiedActivities();
+        }
     }
 
     public void setDataProvider(DataProvider dataProvider) {
