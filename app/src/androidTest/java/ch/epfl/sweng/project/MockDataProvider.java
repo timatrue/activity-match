@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -49,6 +51,11 @@ public class MockDataProvider {
                 10, 5, "def_photoLink");
 
         return mockDataProvider;
+    }
+
+    @Test
+    public void fakeTest(){
+        assertEquals(true,true);
     }
 
     public void setUserToMock(User newUser){
