@@ -189,6 +189,7 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
+                categories.clear();
                 for (DataProvider.CategoryName cat : items) {
                     categories.add(cat.getCategory());
                 }
