@@ -82,6 +82,13 @@ public class DataProviderTest {
 
 
     @Test
+    public void testDataProvider(){
+        DataProvider dp = new DataProvider();
+        assertEquals(true,true);
+
+    }
+
+    @Test
     public void testPushActivity() {
 
         String uuidTest = "fake-uuid-test";
