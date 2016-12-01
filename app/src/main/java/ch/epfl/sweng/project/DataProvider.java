@@ -368,9 +368,8 @@ public class DataProvider {
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-                        //decreasesNbOfUserInActivity(dba);
                     } else {
-                        //TODO Something wrong happends ...
+                        //TODO Something wrong happens ...
                     }
                 }
             }
@@ -408,7 +407,8 @@ public class DataProvider {
                 // icii
 
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                // To be check if it's work like this...
+                //FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference getUserProfile = database.getReference("users/" + idOrganiser);
 
 

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -895,6 +896,214 @@ public class DataProviderTest {
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.leaveActivity(dbaTest);
+
+    }
+
+    @Test
+    public void testGetSpecifiedActivities(){
+
+    }
+
+    @Test
+    public void testRankUser(){
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final String mocUserID = "mocUserID";
+        final String mocEnrolledKey1 = "mocEnrolledKeyID1";
+        final String mocEnrolledKey2 = "mocEnrolledKeyID2";
+        final String mocActivityIDToRank = "mocActivityIDToRank";
+        final String mocOtherActivityID = "mocOtherActivityID";
+        final String mocUserIDToRank = "mocUserIDToRank";
+
+
+
+        when(mUser.getUid()).thenReturn(mocUserID);
+        when(database.getReference("users/" + mocUserID + "/enrolled")).thenReturn(myRef);
+
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+
+        enrolledMap1.put("activity ID:",mocOtherActivityID);
+        enrolledMap2.put("activity ID:",mocActivityIDToRank);
+
+        enrolledMap.put(mocEnrolledKey1,enrolledMap1);
+        enrolledMap.put(mocEnrolledKey2,enrolledMap2);
+
+
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+        when(ds1.getValue()).thenReturn(enrolledMap);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds1);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        when(myRef.child("users")).thenReturn(myRef);
+        when(myRef.child(mocUserID)).thenReturn(myRef);
+        when(myRef.child("enrolled")).thenReturn(myRef);
+        when(myRef.child(mocEnrolledKey2)).thenReturn(myRef);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                assertEquals(true,true);
+
+                return null;
+            }
+        }).when(myRef).removeValue();
+
+
+        // next build moc for part Add Activity Uid in User:ranked
+        DatabaseReference addRankedRef = Mockito.mock(DatabaseReference.class);
+        final String rankedKey = "rankedKey";
+
+        when(myRef.child("ranked")).thenReturn(addRankedRef);
+        when(addRankedRef.push()).thenReturn(addRankedRef);
+        when(addRankedRef.getKey()).thenReturn(rankedKey);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+
+
+                HashMap<String, Object> objectBuild2 = (HashMap<String, Object>)objectBuild.get("ranked/" + rankedKey);
+
+                String id = (String) objectBuild2.get("activity ID:");
+                assertEquals(id,mocActivityIDToRank);
+
+
+                return null;
+            }
+        }).when(myRef).updateChildren(anyMap());
+
+
+
+        final int nbOfParticipants = 10;
+        final int nbMaxParticipants = 20;
+        final DeboxActivity dbaTest = new DeboxActivity(mocActivityIDToRank,mocUserIDToRank, "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        DatabaseReference myRefGetActivity = Mockito.mock(DatabaseReference.class);
+
+        when(database.getReference("activities/" + mocActivityIDToRank)).thenReturn(myRefGetActivity);
+
+
+
+
+        final Map<String, Object> activityMap = toolsBuildMapFromDebox(dbaTest);
+        final DataSnapshot ds2 = Mockito.mock(DataSnapshot.class);
+        when(ds2.getValue()).thenReturn(activityMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds2);
+                return null;
+            }
+        }).when(myRefGetActivity).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        when(myRef.child(mocUserIDToRank)).thenReturn(myRef);
+
+
+
+        DatabaseReference myRefUserToRank = Mockito.mock(DatabaseReference.class);
+        DatabaseReference myRefRatingNb = Mockito.mock(DatabaseReference.class);
+        DatabaseReference myRefRatingSum = Mockito.mock(DatabaseReference.class);
+
+        when(database.getReference("users/"+mocUserIDToRank)).thenReturn(myRefUserToRank);
+
+
+
+        //build user to rank
+        final Map<String, Object> userToRankMap= new HashMap<>();
+        final Map<String, Object> enrolledMapEmpty= new HashMap<>();
+        final Map<String, Object> organisedMapEmpty= new HashMap<>();
+
+
+        userToRankMap.put("default_user_name","userToBeRanked");
+        userToRankMap.put("enrolled",enrolledMapEmpty);
+        userToRankMap.put("organised",organisedMapEmpty);
+        userToRankMap.put("ratingNb",-1);
+        userToRankMap.put("ratingSum",0);
+        userToRankMap.put("user_email","mailToRank@gmail.com");
+
+        final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
+        when(ds3.getValue()).thenReturn(userToRankMap);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds3);
+                return null;
+            }
+        }).when(myRefUserToRank).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        when(myRef.child("ratingNb")).thenReturn(myRefRatingNb);
+        when(myRef.child("ratingSum")).thenReturn(myRefRatingSum);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                int ratingNB = (int) args [0];
+                assertEquals(ratingNB,1);
+                return null;
+            }
+        }).when(myRefRatingNb).setValue(Matchers.anyObject());
+
+
+        final int rank = 4;
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                int ratingNB = (int) args [0];
+                assertEquals(ratingNB,rank);
+                return null;
+            }
+        }).when(myRefRatingSum).setValue(Matchers.anyObject());
+
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.rankUser(dbaTest.getId(),rank);
+
+
+
+
+        //TODO : to be test !
+
+
+
+
+
 
     }
 
