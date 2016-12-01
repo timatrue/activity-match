@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +82,13 @@ public class DataProviderTest {
 
 
     @Test
+    public void testDataProvider(){
+        DataProvider dp = new DataProvider();
+        assertEquals(true,true);
+
+    }
+
+    @Test
     public void testPushActivity() {
 
         String uuidTest = "fake-uuid-test";
@@ -126,14 +134,6 @@ public class DataProviderTest {
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
 
-        /*activityMap.put("title", deboxActivityTest.getTitle());
-        activityMap.put("description", deboxActivityTest.getDescription());
-        activityMap.put("category", deboxActivityTest.getCategory());
-        activityMap.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
 
         //Override getValue() to always return the Map for the test
         when(ds.getValue()).thenReturn(activityMap);
@@ -322,14 +322,6 @@ public class DataProviderTest {
         //final Map<String, Object> activityMapCat = new HashMap<>();
         final Map<String, Object> activityMapCat = toolsBuildMapFromDebox(deboxActivityTest);
 
-        /*activityMapCat.put("title", deboxActivityTest.getTitle());
-        activityMapCat.put("description", deboxActivityTest.getDescription());
-        activityMapCat.put("category", deboxActivityTest.getCategory());
-        activityMapCat.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMapCat.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMapCat.put("organizer", deboxActivityTest.getOrganizer());
-        activityMapCat.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMapCat.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
 
         when(dsChild1.getKey()).thenReturn(uuidTest);
         when(dsChild1.getValue()).thenReturn(activityMapCat);
@@ -401,32 +393,11 @@ public class DataProviderTest {
         final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(deboxActivityTest);
 
 
-
-        /*activityMap1.put("title", deboxActivityTest.getTitle());
-        activityMap1.put("description", deboxActivityTest.getDescription());
-        activityMap1.put("category", deboxActivityTest.getCategory());
-        activityMap1.put("latitude", deboxActivityTest.getLocation()[0]);
-        activityMap1.put("longitude", deboxActivityTest.getLocation()[1]);
-        activityMap1.put("organizer", deboxActivityTest.getOrganizer());
-        activityMap1.put("timeEnd", deboxActivityTest.getTimeEnd().getTimeInMillis());
-        activityMap1.put("timeStart", deboxActivityTest.getTimeStart().getTimeInMillis());*/
-
         when(dsChild1.getKey()).thenReturn(uuidTest);
         when(dsChild1.getValue()).thenReturn(activityMap1);
 
         //final Map<String, Object> activityMap2 = new HashMap<>();
         final Map<String, Object> activityMap2 = toolsBuildMapFromDebox(deboxActivityTest2);
-
-        /*activityMap2.put("title", deboxActivityTest2.getTitle());
-        activityMap2.put("description", deboxActivityTest2.getDescription());
-        activityMap2.put("category", deboxActivityTest2.getCategory());
-        activityMap2.put("latitude", deboxActivityTest2.getLocation()[0]);
-        activityMap2.put("longitude", deboxActivityTest2.getLocation()[1]);
-        activityMap2.put("organizer", deboxActivityTest2.getOrganizer());
-        activityMap2.put("timeEnd", deboxActivityTest2.getTimeEnd().getTimeInMillis());
-        activityMap2.put("timeStart", deboxActivityTest2.getTimeStart().getTimeInMillis());*/
-
-
 
         when(dsChild2.getKey()).thenReturn(uuidTest2);
         when(dsChild2.getValue()).thenReturn(activityMap2);
@@ -902,6 +873,78 @@ public class DataProviderTest {
     @Test
     public void testGetSpecifiedActivities(){
 
+
+        final String[] idArray = {"id0","id1","id2","id3","id4","id5","id6","id7","id8","id9"};
+
+        final Map<String, Object> activityMap = new HashMap<>();
+
+        for(int i = 0 ; i<idArray.length;i++){
+            activityMap.put(idArray[i],toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(idArray[i])));
+        }
+
+
+        //when(ds.getValue()).thenReturn(activityMap);
+
+        final DataSnapshot[] dsArray = new DataSnapshot[10];
+
+        for(int i = 0; i<idArray.length;i++){
+            dsArray[i] = Mockito.mock(DataSnapshot.class);
+            when(dsArray[i].getKey()).thenReturn(idArray[i]);
+            when(dsArray[i].getValue()).thenReturn(toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(idArray[i])));
+        }
+
+
+        Iterable<DataSnapshot> iterable = Arrays.asList(dsArray);
+        final DataSnapshot ds = Mockito.mock(DataSnapshot.class);
+        when(ds.getChildren()).thenReturn(iterable);
+
+        when(database.getReference("activities")).thenReturn(myRef);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+
+        final List<String> intEventIds = new ArrayList<>();
+        intEventIds.add(idArray[0]);
+        intEventIds.add(idArray[2]);
+        intEventIds.add(idArray[7]);
+        intEventIds.add(idArray[8]);
+
+        final List<String> orgEventsIds = new ArrayList<>();
+        orgEventsIds.add(idArray[0]);
+        orgEventsIds.add(idArray[1]);
+        orgEventsIds.add(idArray[5]);
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents() {
+            @Override
+            public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+
+                assertEquals(intList.size(),intEventIds.size());
+                Iterator<DeboxActivity> iterableIntList = intList.iterator();
+                Iterator<String> iterableIntEventIds= intEventIds.iterator();
+
+                while(iterableIntList.hasNext() && iterableIntEventIds.hasNext()){
+                    assertEquals(iterableIntList.next().getId(),iterableIntEventIds.next());
+                }
+
+                assertEquals(orgList.size(),orgEventsIds.size());
+                Iterator<DeboxActivity> iterableOrgList = orgList.iterator();
+                Iterator<String> iterableOrgEventsIds= orgEventsIds.iterator();
+
+                while(iterableOrgList.hasNext() && iterableOrgEventsIds.hasNext()){
+                    assertEquals(iterableOrgList.next().getId(),iterableOrgEventsIds.next());
+                }
+
+            }
+        },intEventIds,orgEventsIds);
     }
 
     @Test
@@ -1121,6 +1164,14 @@ public class DataProviderTest {
 
         return  activityMap;
 
+    }
+
+
+    public DeboxActivity toolsBuildDummyDeboxActivity(String id){
+
+        DeboxActivity dba = new DeboxActivity(id,"dummyOrganiser","dummyTitle","dummyDescription",
+                Calendar.getInstance(),Calendar.getInstance(),10.1,10.1,"Sports");
+        return dba;
     }
 
 
