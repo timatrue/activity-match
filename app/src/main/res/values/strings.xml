@@ -55,6 +55,7 @@
     <string name="create_activity_invalid_category">Invalid category</string>
     <string name="create_activity_date_error_message">Invalid dates and/or time</string>
     <string name="create_activity_location_error_message">Please select a location</string>
+    <string name="create_activity_category_error_message">Please select a category</string>
     <string name="create_activity_missing_field_error_message">Missing required field informations</string>
 
     <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>

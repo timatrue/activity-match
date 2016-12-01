@@ -93,7 +93,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     Calendar activityEndCalendar = Calendar.getInstance();
     double activityLatitude = 0;
     double activityLongitude = 0;
-    String activityCategory = "default_category";
+    String activityCategory = null;
     private int minuteDivisor;
     private int minuteDelayStartTime;
     private int minuteDelayEndTime;
@@ -202,7 +202,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 proSpinner.setThreshold(1);
                 proSpinner.setValidator(new Validator());
                 proSpinner.setOnFocusChangeListener(new FocusListener());
-                proSpinner.setOnItemSelectedListener(selectedItemListener);
+                proSpinner.setOnItemClickListener(selectedItemListener);
                 proSpinner.setOnTouchListener(new View.OnTouchListener(){
                     @Override
                     public boolean onTouch(View v, MotionEvent event){
@@ -229,6 +229,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             String invalidCategory = getResources().getString(R.string.create_activity_invalid_category);
             emptyString = getResources().getString(R.string.emptyString);
             proSpinner.setError(invalidCategory);
+            activityCategory = null;
             return emptyString;
         }
     }
@@ -242,17 +243,16 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     }
 
     //When user chose a category on the dropdown, saves it
-    AdapterView.OnItemSelectedListener selectedItemListener = new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemClickListener selectedItemListener = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             activityCategory = parent.getItemAtPosition(position).toString();
         }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            //another interface callback
-        }
     };
+
+
 
     //When click on the choose a location button, start the PLacePicker activity
     public void chooseLocation(View v) {
@@ -313,6 +313,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         EditText DescriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
         activityDescription = DescriptionEditText.getText().toString();
 
+
         String validation = validateActivity();
 
 
@@ -353,8 +354,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     public String validateActivity() {
         if (!activityTitle.equals("") && !activityDescription.equals("")) {
 
-            if (activityLongitude == 0 || activityLatitude == 0)
+            if (activityLongitude == 0 || activityLatitude == 0) {
                 return ConfirmationCodes.get_missing_location_error(this);
+            }
+            if (activityCategory == null) {
+                return ConfirmationCodes.get_missing_category_error(this);
+            }
             if (activityEndCalendar.after(activityStartCalendar)
                     && activityEndCalendar.after(Calendar.getInstance())) {
                 return ConfirmationCodes.get_success(this);
