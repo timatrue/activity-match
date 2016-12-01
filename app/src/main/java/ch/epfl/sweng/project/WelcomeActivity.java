@@ -95,7 +95,8 @@ public class WelcomeActivity extends AppCompatActivity
     private final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
     Location mLastLocation;
     LocationRequest mLocationRequest;
-    boolean permission_granted;
+    boolean permission_granted = false;
+    boolean permission_already_asked = false;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -143,6 +144,15 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+        getAllCategoriesAndLocation();
+        displaySpecifiedActivities();
+    }
+
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
@@ -155,13 +165,16 @@ public class WelcomeActivity extends AppCompatActivity
         createLocationRequest();
 
 
-        //The permissions need to be asked to the user at runtime for newer APIs
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-        } else {
-            permission_granted = true;
-            initializeGoogleApiClient();
+        if(!permission_already_asked) {
+            permission_already_asked = true;
+            //The permissions need to be asked to the user at runtime for newer APIs
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+            } else {
+                permission_granted = true;
+                initializeGoogleApiClient();
+            }
         }
     }
 
