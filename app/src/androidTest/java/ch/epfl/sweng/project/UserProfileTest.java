@@ -44,7 +44,7 @@ public class UserProfileTest {
     private List<String> organizedEvents = Arrays.asList("id2", "id3");
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
 
-    private User testUser = new User("Bob", "username", "email", organizedEvents,
+    private User testUser = new User("id", "Bob", "email", organizedEvents,
             interestedEvents, 4, 8, "slls");
 
     //The list of DeboxActivity designed for testing
@@ -132,7 +132,7 @@ public class UserProfileTest {
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setUserToMock(testUser);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<String>>();
+        activity.activityCollection = new LinkedHashMap<>();
         activity.createCollection();
         activity.setExpListView();
     }
@@ -146,7 +146,7 @@ public class UserProfileTest {
         initializeMockProvider(activity);
 
 
-       // assertThat((String) activity.emailTextView.getText(), is(testUser.getEmail()));
+        assertThat((String) activity.nameTextView.getText(), is(testUser.getUsername()));
 
         List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(2));
@@ -248,16 +248,21 @@ public class UserProfileTest {
     public void EmptyEventLists() {
 
         final UserProfile activity = userProfileRule.getActivity();
+
+        final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
+                new ArrayList<String>(), 4, 8, "slls");
+
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
+        mocDataProvider.setUserToMock(newUser);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<String>>();
+        activity.activityCollection = new LinkedHashMap<>();
         activity.createCollection();
         activity.setExpListView();
 
 
-//        assertThat((String) activity.emailTextView.getText(), is("def_email"));
+        assertThat((String) activity.nameTextView.getText(), is("Bob"));
 
         List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(1));
@@ -271,4 +276,26 @@ public class UserProfileTest {
         assertThat(parEvents.size(), is(1));
         assertTrue(parEvents.contains("No Events"));
     }
+
+    @UiThreadTest
+    @Test
+    public void whenNullUsernameUsesEmailInstead() {
+
+        final UserProfile activity = userProfileRule.getActivity();
+
+        final User newUser = new User("id", null, "email", organizedEvents,
+                interestedEvents, 4, 8, "slls");
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
+        mocDataProvider.setUserToMock(newUser);
+        activity.setDataProvider(dp);
+        activity.activityCollection = new LinkedHashMap<>();
+        activity.createCollection();
+        activity.setExpListView();
+
+        assertThat((String) activity.nameTextView.getText(), is("email"));
+    }
+
 }

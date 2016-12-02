@@ -1,32 +1,22 @@
 package ch.epfl.sweng.project;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.DatePicker;
 
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
-import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +29,6 @@ import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID;
 import static java.text.DateFormat.getDateInstance;
 import static org.junit.Assert.assertEquals;
 
@@ -80,9 +69,6 @@ public class WelcomeActivityTest {
                     return result;
                 }
             };
-
-    /*@Rule
-    public ActivityTestRule<Login> loginRule = new ActivityTestRule<>(Login.class);*/
 
 
     private Calendar currentCalendar = Calendar.getInstance();
@@ -655,8 +641,6 @@ public class WelcomeActivityTest {
     public void navMenuUserProfileWorks() throws Exception {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();
-
-        ActivityTestRule<UserProfile> mActivityTestRule = new ActivityTestRule<>(UserProfile.class);
 
         initializeMockProvider(activity);
 

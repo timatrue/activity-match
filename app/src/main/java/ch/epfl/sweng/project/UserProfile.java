@@ -245,7 +245,7 @@ public class UserProfile extends AppCompatActivity {
                     userName = user.getEmail();
                 }
                 if(userName != null) {
-                    nameTextView.setText(user.getUsername());
+                    nameTextView.setText(userName);
                 }
 
             }

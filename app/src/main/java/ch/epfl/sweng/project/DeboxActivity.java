@@ -51,8 +51,8 @@ public class DeboxActivity {
         this.longitude = longitude;
         this.category = new String(category);
         this.imagesList = new ArrayList<>();
-        this.nbMaxOfParticipants = -1;
         this.nbOfParticipants = 0;
+        this.nbMaxOfParticipants = -1;
 
     }
 
