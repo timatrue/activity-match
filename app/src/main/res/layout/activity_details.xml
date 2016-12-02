@@ -138,7 +138,6 @@
                         android:orientation="horizontal"
                         android:layout_height="match_parent"
                         android:layout_width="wrap_content"
-                        android:layout_gravity="center"
                         android:id="@+id/imagesLayout">
 
                     </LinearLayout>
