@@ -96,8 +96,11 @@ public class ModifyActivity extends CreateActivity {
                 imagesNameList = activity.getImageList();
 
                 if(imagesNameList != null) {
+                    ((Button) findViewById(R.id.createActivityUploadImage)).setText("Add images");
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesNameList);
                 }
+
+
 
             }
         }, eventId);

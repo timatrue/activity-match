@@ -299,7 +299,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if(requestCode == PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 //Add image URI in the list
-                imagesUriList.add(data.getData());
+                if(imagesUriList.contains(data.getData())) {
+
+                }
+                else {
+                    imagesUriList.add(data.getData());
+                }
             }
         }
     }
