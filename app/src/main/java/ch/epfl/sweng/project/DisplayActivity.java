@@ -208,7 +208,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
     }
-    
+
     /**
      * Method call by button joinActivity. Fill a new relation between user and current
      * activity in database.
