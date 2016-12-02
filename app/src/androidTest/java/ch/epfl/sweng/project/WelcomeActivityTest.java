@@ -637,25 +637,6 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
     }
 
-    @Test
-    public void navMenuUserProfileWorks() throws Exception {
-
-        final WelcomeActivity activity = welcomeActivityRule.getActivity();
-
-        initializeMockProvider(activity);
-
-        onView(allOf(withContentDescription(R.string.navigation_drawer_open),
-                withParent(withId(R.id.toolbar)), isDisplayed()))
-                .perform(click());
-
-        onView(allOf(withId(R.id.design_menu_item_text), withText(R.string.user_profile), isDisplayed())).perform(click());
-
-        //TODO: replace these 3 assertions with a proper way to recognize we're in user profile (like checking the title?)
-        onView(withText(R.string.organised_events)).check(matches(isDisplayed()));
-        onView(withText(R.string.participated_events)).check(matches(isDisplayed()));
-        onView(withText(R.string.interested_events)).check(matches(isDisplayed()));
-    }
-
     @UiThreadTest
     @Test
     public void emptyActivityListTest() throws Exception {
