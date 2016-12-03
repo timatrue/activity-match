@@ -74,10 +74,12 @@ public class CreateValidationFragment extends DialogFragment {
         updateRunnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (handler) {
-                    updateProgress();
-                    if(nbFilesToUpload != nbFilesUploaded) {
-                        handler.postDelayed(this, 40);
+                if(isAdded()) {
+                    synchronized (handler) {
+                        updateProgress();
+                        if (nbFilesToUpload != nbFilesUploaded) {
+                            handler.postDelayed(this, 40);
+                        }
                     }
                 }
             }
@@ -85,7 +87,6 @@ public class CreateValidationFragment extends DialogFragment {
         updateRunnable.run();
 
         getDialog().setTitle(R.string.event_filter_title);
-
 
         //dismiss();
 
@@ -122,12 +123,15 @@ public class CreateValidationFragment extends DialogFragment {
         nbFilesToUpload = imagesUriList.size() + 1;
     }
 
-    public void uploadActivity(DeboxActivity activity)
+    public void uploadActivity(DeboxActivity activity, boolean creation)
     {
-        mDataProvider = new DataProvider();
-        mImageProvider = new ImageProvider();
         //Push the activity on the DB
-        String activityKey = mDataProvider.pushActivity(activity);
+        String activityKey;
+        if (creation) {
+            activityKey = mDataProvider.pushActivity(activity);
+        } else {
+            activityKey = mDataProvider.updateActivity(activity);
+        }
         nbFilesUploaded++;
 
         //Upload all selected images in a folder corresponding to activity id
@@ -176,7 +180,7 @@ public class CreateValidationFragment extends DialogFragment {
     ImageProvider.uploadListener uploadListener = new ImageProvider.uploadListener() {
         @Override
         public void uploadFailed() {
-            System.out.print("dlfksl");
+            //TODO Implements on failed
         }
 
         @Override
@@ -192,4 +196,13 @@ public class CreateValidationFragment extends DialogFragment {
         }
     };
 
+
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        this.mImageProvider = imageProvider;
+    }
+
+    public void setDataProvider(DataProvider dataProvider) {
+        this.mDataProvider = dataProvider;
+    }
 }

@@ -38,6 +38,14 @@ public final class ConfirmationCodes extends AppCompatActivity {
         return missing_location_error;
     }
 
+    private static String missing_category;
+    public static String get_missing_category_error(Context context) {
+        if (unknown_error == null) {
+            unknown_error = context.getResources().getString(R.string.create_activity_category_error_message);
+        }
+        return unknown_error;
+    }
+
     private static String unknown_error;
     public static String get_unknown_error(Context context) {
         if (unknown_error == null) {

@@ -11,4 +11,11 @@
         <item name="colorAccent">@android:color/holo_green_dark</item>
         <item name="android:progressBackgroundTint">@android:color/darker_gray</item>
     </style>
+
+    <style name="LoadProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:progressBackgroundTint">@android:color/darker_gray</item>
+    </style>
+
+
 </resources>

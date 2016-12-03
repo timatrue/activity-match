@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/niceRedDebox</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,7 +19,13 @@
 
     <style name="LinearProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@android:color/holo_green_dark</item>
-        <item name="android:background">@android:color/darker_gray</item>
     </style>
+
+    <style name="LoadProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+
+
 
 </resources>

@@ -267,41 +267,7 @@ public class WelcomeActivityTest {
         },"noid");
     }
 
-    //UI thread test because we need to access UI elements (Textviews, etc...)
-    @UiThreadTest
-    @Test
-    public void DisplayActivitiesProperly() throws Exception {
 
-        final WelcomeActivity activity = welcomeActivityRule.getActivity();
-
-        initializeMockProvider(activity);
-
-        //Press on the "Display Events" button, the test will be obsolete. No need to keep it
-        //activity.displayActivities.performClick();
-        activity.getActivitiesAndDisplay();
-
-        //Check that the five events are displayed
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(deboxActivityList.size()));
-
-        //Check that they are ActivityPreview
-        for(int i=0; i<activityCount; i++) {
-            assertTrue(activity.activityPreviewsLayout.getChildAt(i) instanceof ActivityPreview);
-        }
-
-        //Check that they have the same ID has the test DeboxActivity passed by the Mock
-        for(int i=0; i<activityCount; i++) {
-            assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getEventId().equals(deboxActivityList.get(i).getId()));
-        }
-
-        //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
-        for(int i=0; i<activityCount; i++) {
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
-//           assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString(), is(deboxActivityList.get(i).getShortDescription()));
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(deboxActivityList.get(i).getTimeStart().getTime())));
-//            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.sizeEvent)).getText().toString(), is("Participants: " + deboxActivityList.get(i).getNbOfParticipants()));
-        }
-    }
 
     @Test
     public void distanceFromCenterIsCalculatedProperly() throws Exception {
@@ -317,6 +283,7 @@ public class WelcomeActivityTest {
         assertTrue(distance > 28 && distance < 29);
 
     }
+    /*
 
     @Test
     public void maxDistanceMapTest() throws Exception {
@@ -324,7 +291,7 @@ public class WelcomeActivityTest {
         assertThat(WelcomeActivity.maxDistanceMap.get("10 km"), is(10));
         assertThat(WelcomeActivity.maxDistanceMap.get("All"), is(21000));
         assertTrue(WelcomeActivity.maxDistanceMap.get("") == null);
-    }
+    }*/
 
     @UiThreadTest
     @Test
@@ -633,6 +600,38 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.DAY_OF_MONTH), is(endDay));
         assertThat(activity.filterEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
+
+    }
+
+
+    //UI thread test because we need to access UI elements (Textviews, etc...)
+    @UiThreadTest
+    @Test
+    public void DisplayActivitiesProperly() throws Exception {
+
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        initializeMockProvider(activity);
+
+        //Press on the "Display Events" button, the test will be obsolete. No need to keep it
+        //activity.displayActivities.performClick();
+        activity.getAllCategoriesAndLocation();
+        activity.displaySpecifiedActivities();
+
+        //Check that the five events are displayed
+        final int activityCount = activity.activityPreviewsLayout.getChildCount();
+        //check that all activites are displayed, except the dA1 which is in more than 7 days
+        assertThat(activityCount, is(deboxActivityList.size()-1));
+
+        //Check that they are ActivityPreview
+        for(int i=0; i<activityCount; i++) {
+            assertTrue(activity.activityPreviewsLayout.getChildAt(i) instanceof ActivityPreview);
+        }
+
+        //Check that they have the same ID has the test DeboxActivity passed by the Mock
+        for(int i=0; i<activityCount; i++) {
+            assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getEventId().equals(deboxActivityList.get(i+1).getId()));
+        }
 
     }
 }

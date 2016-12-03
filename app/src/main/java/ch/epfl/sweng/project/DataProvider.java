@@ -166,7 +166,7 @@ public class DataProvider {
 
     }
 
-    private void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
+    public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
@@ -312,7 +312,7 @@ public class DataProvider {
     }
 
     public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -368,9 +368,8 @@ public class DataProvider {
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-                        //decreasesNbOfUserInActivity(dba);
                     } else {
-                        //TODO Something wrong happends ...
+                        //TODO Something wrong happens ...
                     }
                 }
             }
@@ -408,7 +407,8 @@ public class DataProvider {
                 // icii
 
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                // To be check if it's work like this...
+                //FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference getUserProfile = database.getReference("users/" + idOrganiser);
 
 
@@ -441,77 +441,62 @@ public class DataProvider {
 
                     }
                 });
-/*
-
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
-
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                listener.getUserInfo(getDeboxUser(userUid, userMap));
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-
- */
-
-
-
-
-
 
             }
         },uid);
 
-
     }
 
-
-    public String pushActivity(DeboxActivity da){
-
+    public String pushActivity(final DeboxActivity da){
 
         String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        HashMap<String, Object> result = new HashMap<>();
-
-        double location [] = da.getLocation();
-
-        result.put("organizer",da.getOrganizer());
-        result.put("title",da.getTitle());
-        result.put("description",da.getDescription());
-
-
-        long tmStart = da.getTimeStart().getTimeInMillis();
-        long tmEnd = da.getTimeEnd().getTimeInMillis();
-        result.put("timeStart",tmStart);
-        result.put("timeEnd",tmEnd);
-
-
-        result.put("latitude",location[0]);
-        result.put("longitude",location[1]);
-        result.put("category",da.getCategory());
-
-        result.put("nbOfParticipants",da.getNbOfParticipants());
-        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
-
-        result.put("images",da.getImageList());
-
+        HashMap<String, Object> result = createActivityMap(da);
         childUpdates.put("activities/"+key, result);
-
         mDatabase.updateChildren(childUpdates);
 
         copyIdOfCreatedEvent(key);
         return key;
     }
+
+    private HashMap<String,Object> createActivityMap(DeboxActivity da) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        double location [] = da.getLocation();
+        result.put("organizer",da.getOrganizer());
+        result.put("title",da.getTitle());
+        result.put("description",da.getDescription());
+        long tmStart = da.getTimeStart().getTimeInMillis();
+        long tmEnd = da.getTimeEnd().getTimeInMillis();
+        result.put("timeStart",tmStart);
+        result.put("timeEnd",tmEnd);
+        result.put("latitude",location[0]);
+        result.put("longitude",location[1]);
+        result.put("category",da.getCategory());
+        result.put("nbOfParticipants",da.getNbOfParticipants());
+        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
+        result.put("images",da.getImageList());
+
+        return result;
+    }
+
+    public String updateActivity(DeboxActivity da) {
+        String key = da.getId();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        HashMap<String, Object> result = createActivityMap(da);
+        childUpdates.put("activities/"+key, result);
+        mDatabase.updateChildren(childUpdates);
+
+        return key;
+    }
+
+    public void deleteActivity(DeboxActivity da) {
+        String key = da.getId();
+        mDatabase.child("activities").child(key).removeValue();
+    }
+
     private void copyIdOfCreatedEvent(String activityId){
 
         String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
@@ -588,7 +573,7 @@ public class DataProvider {
 
     public void initUserInDB(){
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        //user = FirebaseAuth.getInstance().getCurrentUser();
 
         HashMap<String, Object> enrolled = new HashMap<>();
 
@@ -640,13 +625,15 @@ public class DataProvider {
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
 
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
@@ -721,6 +708,7 @@ public class DataProvider {
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
 
 
+        // TODO remove
         incrementNbOfUserInActivity(dba);
 
         // update the database
@@ -833,7 +821,7 @@ public class DataProvider {
     //DB Callbacks interfaces
 
 
-    private interface DataProviderListenerPlaceFreeInActivity{
+    public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
     }
 
