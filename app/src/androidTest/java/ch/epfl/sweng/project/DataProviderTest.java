@@ -424,7 +424,6 @@ public class DataProviderTest {
         //Overrride getChildren to always return interable of DataSnapshot
         when(ds.getChildren()).thenReturn(iterable);
 
-
         //Override addListenerForSingleValueEvent method for test to always return our value
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
