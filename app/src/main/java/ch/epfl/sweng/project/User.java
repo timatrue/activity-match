@@ -12,7 +12,8 @@ public class User {
     private String username;
     private String email;
     private List<String> organizedEventIds;
-    private List<String>  interestedEventIds;
+    private List<String> interestedEventIds;
+    private List<String> rankedEventIds;
     private Integer ratingNb;
     private Integer ratingSum;
     private String photoLink;
@@ -30,12 +31,13 @@ public class User {
      * @param   photoLink    the link to get the photo of the user
      */
     public User(String id, String username, String email, List<String>  organizedEvents, List<String>  interestedEvents,
-                Integer ratingNb, Integer ratingSum, String photoLink) {
+                List<String> rankedEventIds, Integer ratingNb, Integer ratingSum, String photoLink) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.organizedEventIds = organizedEvents;
         this.interestedEventIds = interestedEvents;
+        this.rankedEventIds = rankedEventIds;
         this.ratingNb = ratingNb;
         this.ratingSum = ratingSum;
 //        this.rating = rating;
@@ -67,6 +69,10 @@ public class User {
     public List<String> getInterestedEventIds() {
         return new ArrayList<>(interestedEventIds);
     }
+
+    public List<String> getRankedEventIds() {
+        return new ArrayList<>(rankedEventIds);
+    }
     /**
      * @return rating of the user
      */
@@ -90,6 +96,7 @@ public class User {
     }
 
     public User copy() {
-        return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.ratingNb, this.ratingSum, this.photoLink);
+        return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.rankedEventIds,
+                this.ratingNb, this.ratingSum, this.photoLink);
     }
 }

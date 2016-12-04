@@ -43,9 +43,10 @@ public class UserProfileTest {
 
     private List<String> organizedEvents = Arrays.asList("id2", "id3");
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
+    private List<String> rankedEvents = Arrays.asList("id2");
 
     private User testUser = new User("Bob", "username", "email", organizedEvents,
-            interestedEvents, 4, 8, "slls");
+            interestedEvents, rankedEvents, 4, 8, "slls");
 
     //The list of DeboxActivity designed for testing
     private final List<DeboxActivity> deboxActivityList = createDeboxActivityList();

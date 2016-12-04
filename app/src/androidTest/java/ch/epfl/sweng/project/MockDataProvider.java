@@ -1,5 +1,8 @@
 package ch.epfl.sweng.project;
 
+import android.support.test.filters.LargeTest;
+
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -9,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -46,10 +50,11 @@ public class MockDataProvider {
         listUserActivityEnrolledStored = new ArrayList<>();
         userID="default";
         user = new User("def_id", "def_username", "def_email", new ArrayList<String>(), new ArrayList<String>(),
-                10, 5, "def_photoLink");
+                new ArrayList<String>(),10, 5, "def_photoLink");
 
         return mockDataProvider;
     }
+
 
     public void setUserToMock(User newUser){
         user = newUser;
@@ -64,7 +69,7 @@ public class MockDataProvider {
 
     public void setListOfEnrolledActivityToMock(List<String> list){
         listUserActivityEnrolledStored = list;
-        initMockUserIsEnrolledInActivity();
+        initMockUserIsEnrolledInActivity(); 
         initJoinActivity();
 
     }
