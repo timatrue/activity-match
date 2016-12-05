@@ -50,7 +50,7 @@ public class ImageProvider {
         ///
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
-        int dp = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
+        int screenHeight = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
 
         for(String imageName: imagesList)  {
             // Reference to an image file in Firebase Storage
@@ -65,11 +65,10 @@ public class ImageProvider {
             Glide.with(context)
                     .using(new FirebaseImageLoader())
                     .load(storageReference)
-                    .override(screenWidth,dp)
+                    .override(screenWidth,screenHeight)
                     .centerCrop()
                     .into(imageView);
         }
-
     }
 
     public void previewImage(final Context context,  String folder, final ImageView imageView, String imageName){

@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -84,7 +85,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
         ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
-
+        setupUserToolBar();
 
         String test = intent.getStringExtra(DISPLAY_ACTIVITY_TEST_KEY);
         if(test.equals(DISPLAY_ACTIVITY_NO_TEST)) {
@@ -112,9 +113,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                 public void getActivity(DeboxActivity activity) {
 
                     currentActivity = activity;
-                  /*  title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle() */
-                    getSupportActionBar().setTitle(activity.getTitle());
+                    title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle());
+                    //selectedEvent.getTitle()
+
+                    //getSupportActionBar().setTitle(activity.getTitle());
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
@@ -297,5 +300,14 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
                     .title(activityToDisplay.getTitle()));
         }
+    }
+    private void setupUserToolBar(){
+        Toolbar mUserToolBar = (Toolbar) findViewById(R.id.display_activity_toolbar);
+        mUserToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 }
