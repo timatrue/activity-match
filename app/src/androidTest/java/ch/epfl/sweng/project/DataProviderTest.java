@@ -76,11 +76,13 @@ public class DataProviderTest {
             121.0213,
             "Sports");
 
+    //private final Map<String, Object> activityMap = new HashMap<>();
 
 
-    private final Map<String, Object> activityMap = new HashMap<>();
-
-
+    /**
+     * Test the function public String pushActivity(DeboxActivity da) of the dataProvider
+     *
+     */
     @Test
     public void testDataProvider(){
         DataProvider dp = new DataProvider();
@@ -121,7 +123,11 @@ public class DataProviderTest {
     }
 
 
-
+    /**
+     * Test the function :  public Void getActivityFromUid(final DataProviderListenerActivity
+     * listener, final String uid) of the dataProvider. getActivityFromUid return the activity with
+     * the uid.
+     */
     @Test
     public void testGetActivityFromUid() {
         mDataBaseRef = Mockito.mock(DatabaseReference.class);
@@ -134,19 +140,11 @@ public class DataProviderTest {
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
 
-
         //Override getValue() to always return the Map for the test
         when(ds.getValue()).thenReturn(activityMap);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRef,ds);
 
         //Override getReference method to return the Mock reference
         when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
@@ -157,21 +155,18 @@ public class DataProviderTest {
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
-                assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
-                assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
-                assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
-                assertEquals(activity.getId(),deboxActivityTest.getId());
-                assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
-                assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
-                assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
-                assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
+                assertTrue(toolsActivitiesEquals(activity,deboxActivityTest));
             }
 
         }, uuidTest);
     }
 
 
-
+    /**
+     * Test the function : public void userEnrolledInActivity(final DataProviderListenerEnrolled listener
+     * , final String uid).  userEnrolledInActivity check if the user is enrolled in the activity corresponding
+     * to the uid
+     */
     @Test
     public void testUserEnrolledInActivity() {
 
@@ -212,14 +207,7 @@ public class DataProviderTest {
         when(ds.getValue()).thenReturn(resultMap);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRef,ds);
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
@@ -245,6 +233,10 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * Test the function :  public void getAllCategories(final DataProviderListenerCategories listener).
+     * getAllCategories return all categories that are in the dataBase
+     */
     @Test
     public void testGetAllCategories() {
 
@@ -278,14 +270,7 @@ public class DataProviderTest {
         when(ds.getChildren()).thenReturn(iterable);
 
         //Override addListenerForSingleValueEvent method for test to always return our value
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRef,ds);
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
@@ -302,6 +287,11 @@ public class DataProviderTest {
         });
     }
 
+    /**
+     * Test the function public void getSpecifiedCategory(final DataProviderListenerCategory listener,
+     * String specifiedCategory). getSpecifiedCategory return all activities corresponding to the specified
+     * category.
+     */
     @Test
     public void testGetSpecifiedCategory() {
 
@@ -353,19 +343,13 @@ public class DataProviderTest {
         dp.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
             @Override
             public void getCategory(List<DeboxActivity> activitiesList) {
-                //for(DeboxActivity activity: activitiesList.)
+
                 assertEquals(activitiesList.size(),2);
                 for(int i = 0; i<activitiesList.size();i++)
                 {
                     DeboxActivity activity = activitiesList.get(i);
-                    assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
-                    assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
-                    assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
-                    assertEquals(activity.getId(),deboxActivityTest.getId());
-                    assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
-                    assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
-                    assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
-                    assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
+                    assertTrue(toolsActivitiesEquals(activity,deboxActivityTest));
+
                 }
 
             }
@@ -374,6 +358,10 @@ public class DataProviderTest {
     }
 
 
+    /**
+     * Test the function public void getAllActivities(final DataProviderListenerActivities listener).
+     * getAllActivities return to the listener all activities contain in the database.
+     */
     @Test
     public void testGetAllActivities() {
 
@@ -389,14 +377,11 @@ public class DataProviderTest {
 
         when(database.getReference("activities")).thenReturn(myRef);
 
-        //final Map<String, Object> activityMap1 = new HashMap<>();
         final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(deboxActivityTest);
-
 
         when(dsChild1.getKey()).thenReturn(uuidTest);
         when(dsChild1.getValue()).thenReturn(activityMap1);
 
-        //final Map<String, Object> activityMap2 = new HashMap<>();
         final Map<String, Object> activityMap2 = toolsBuildMapFromDebox(deboxActivityTest2);
 
         when(dsChild2.getKey()).thenReturn(uuidTest2);
@@ -412,14 +397,7 @@ public class DataProviderTest {
 
 
         //Override addListenerForSingleValueEvent method for test to always return our value
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRef,ds);
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -431,32 +409,21 @@ public class DataProviderTest {
                 assertEquals(activitiesList.size(),listDS.length);
 
                 DeboxActivity activity = activitiesList.get(0);
-
-                assertEquals(activity.getTitle(),deboxActivityTest.getTitle());
-                assertEquals(activity.getDescription(),deboxActivityTest.getDescription());
-                assertEquals(activity.getCategory(),deboxActivityTest.getCategory());
-                assertEquals(activity.getId(),deboxActivityTest.getId());
-                assertTrue(activity.getLocation()[0] == deboxActivityTest.getLocation()[0]);
-                assertTrue(activity.getLocation()[1] == deboxActivityTest.getLocation()[1]);
-                assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest.getTimeEnd().getTimeInMillis());
-                assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest.getTimeStart().getTimeInMillis());
-
+                assertTrue(toolsActivitiesEquals(activity,deboxActivityTest));
 
                 activity = activitiesList.get(1);
+                assertTrue(toolsActivitiesEquals(activity,deboxActivityTest2));
 
-                assertEquals(activity.getTitle(),deboxActivityTest2.getTitle());
-                assertEquals(activity.getDescription(),deboxActivityTest2.getDescription());
-                assertEquals(activity.getCategory(),deboxActivityTest2.getCategory());
-                assertEquals(activity.getId(),deboxActivityTest2.getId());
-                assertTrue(activity.getLocation()[0] == deboxActivityTest2.getLocation()[0]);
-                assertTrue(activity.getLocation()[1] == deboxActivityTest2.getLocation()[1]);
-                assertEquals(activity.getTimeEnd().getTimeInMillis(),deboxActivityTest2.getTimeEnd().getTimeInMillis());
-                assertEquals(activity.getTimeStart().getTimeInMillis(),deboxActivityTest2.getTimeStart().getTimeInMillis());
 
             }
         });
     }
 
+    /**
+     * Test the function public void getIfPlaceLeftInActivity(final String uid,
+     * final DataProviderListenerPlaceFreeInActivity listener). getIfPlaceLeftInActivity take the
+     * activity with the id uid on the dataBase and go check if the activity has place left or not
+     */
     @Test
     public void testGetIfPlaceLeftInActivity(){
 
@@ -496,32 +463,9 @@ public class DataProviderTest {
         when(ds3.getValue()).thenReturn(activityMap3);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds1);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds2);
-                return null;
-            }
-        }).when(myRef2).addListenerForSingleValueEvent(any(ValueEventListener.class));
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds3);
-                return null;
-            }
-        }).when(myRef3).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRef, ds1);
+        toolsBuildAnswerForListener(myRef2, ds2);
+        toolsBuildAnswerForListener(myRef3, ds3);
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -549,6 +493,11 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * Test the function : public void userProfile(final DataProviderListenerUserInfo listener)
+     * userProfile return the userProfile of the current user.
+     *
+     */
     @Test
     public void testUserProfile(){
 
@@ -587,25 +536,28 @@ public class DataProviderTest {
         final Map<String, Object> organisedMap = new HashMap<>();
         organisedMap.put("organisedID1",organisedMap1);
 
+
+        final Map<String, Object> rankedMap1 = new HashMap<>();
+        rankedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> rankedMap = new HashMap<>();
+        rankedMap.put("rankedID1",rankedMap1);
+
+
         final Map<String, Object> userMap = new HashMap<>();
 
         userMap.put("default_user_name",fakeName);
         userMap.put("enrolled",enrolledMap);
         userMap.put("organised",organisedMap);
+        userMap.put("ranked",rankedMap);
         userMap.put("ratingNb",ratingNb);
         userMap.put("ratingSum",ratingSum);
         userMap.put("user_email",fakeEmail);
 
         when(ds1.getValue()).thenReturn(userMap);
 
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds1);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -622,6 +574,10 @@ public class DataProviderTest {
                 checkOrganizedList.add(uuidTest3);
                 assertEquals(user.getOrganizedEventIds(),checkOrganizedList);
 
+                List<String> checkRankedList = new ArrayList<>();
+                checkRankedList.add(uuidTest3);
+                assertEquals(user.getRankedEventIds(),checkRankedList);
+
                 assertEquals(user.getRatingNb(),ratingNb);
                 assertEquals(user.getRatingSum(),ratingSum);
                 assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
@@ -634,6 +590,11 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * Test the function : public void initUserInDB(). initUserInDB is use to be sure that an user
+     * profile corresponding to the current user is present in the database. If there is no userProfile
+     * in the dataBase, the profile is automatically created.
+     */
     @Test
     public void testInitUserInDB(){
 
@@ -671,6 +632,11 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * This function test the functions public void joinActivity(DeboxActivity dba) and
+     * private void incrementNbOfUserInActivity(DeboxActivity dba). incrementNbOfUserInActivity is
+     * a private method of dataProvider, so it is test by calling the method joinActivity.
+     */
     @Test
     public void testJoinActivityAndIncrementNbOfUserInActivity(){
 
@@ -725,14 +691,7 @@ public class DataProviderTest {
         when(ds1.getValue()).thenReturn(activityMap1);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds1);
-                return null;
-            }
-        }).when(myRefIncrement).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRefIncrement,ds1);
 
 
         when(myRef.child("activities")).thenReturn(myRef);
@@ -757,6 +716,11 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * Test the functions public void leaveActivity(final DeboxActivity dba) and private void
+     * decreasesNbOfUserInActivity(DeboxActivity dba). decreasesNbOfUserInActivity is
+     * a private method of dataProvider, so it is test by calling the method leaveActivity.
+     */
     @Test
     public void testLeaveActivityAndDecreasesNbOfUserInActivity(){
 
@@ -800,15 +764,8 @@ public class DataProviderTest {
         final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
         when(ds1.getValue()).thenReturn(enrolledMap);
 
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds1);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
 
 
         when(myRef.child("users")).thenReturn(myRef);
@@ -840,14 +797,7 @@ public class DataProviderTest {
 
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds2);
-                return null;
-            }
-        }).when(myRefDec).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRefDec,ds2);
 
         when(myRef.child("activities")).thenReturn(myRef);
         when(myRef.child(dbaTest.getId())).thenReturn(myRef);
@@ -870,6 +820,12 @@ public class DataProviderTest {
 
     }
 
+    /**
+     *  This function test ublic void getSpecifiedActivities(final DataProviderListenerUserEvents
+     *  listener, final List<String> intEventIds, final List<String> orgEventsIds). This function fetch
+     *  all activity in the dataBase and store them in the intEventIds, orgEventsIDs if they are related
+     *  to the current User... getSpecifiedActivities must be deleted
+     */
     @Test
     public void testGetSpecifiedActivities(){
 
@@ -900,14 +856,8 @@ public class DataProviderTest {
 
         when(database.getReference("activities")).thenReturn(myRef);
 
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds);
 
 
         final List<String> intEventIds = new ArrayList<>();
@@ -947,6 +897,11 @@ public class DataProviderTest {
         },intEventIds,orgEventsIds);
     }
 
+    /**
+     * Test the function : public void rankUser(final String uid, final int rank)
+     * the function rankUser attribute a rank of the organiser of the activity with id uid
+     *
+     */
     @Test
     public void testRankUser(){
 
@@ -979,14 +934,8 @@ public class DataProviderTest {
         when(ds1.getValue()).thenReturn(enrolledMap);
 
 
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds1);
-                return null;
-            }
-        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
 
 
         when(myRef.child("users")).thenReturn(myRef);
@@ -1051,14 +1000,7 @@ public class DataProviderTest {
         when(ds2.getValue()).thenReturn(activityMap);
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds2);
-                return null;
-            }
-        }).when(myRefGetActivity).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        toolsBuildAnswerForListener(myRefGetActivity,ds2);
 
 
         when(myRef.child(mocUserIDToRank)).thenReturn(myRef);
@@ -1086,14 +1028,8 @@ public class DataProviderTest {
         final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
         when(ds3.getValue()).thenReturn(userToRankMap);
 
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                ValueEventListener listener = (ValueEventListener) args[0];
-                listener.onDataChange(ds3);
-                return null;
-            }
-        }).when(myRefUserToRank).addListenerForSingleValueEvent(any(ValueEventListener.class));
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRefUserToRank,ds3);
 
 
         when(myRef.child("ratingNb")).thenReturn(myRefRatingNb);
@@ -1127,8 +1063,197 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * Test the function : public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity,
+     * final DataProviderListenerUserState listener). The function getCurrentUserStatusSimplified return
+     * the status between the user and the activity passed in parameter.
+     */
 
-    public Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba){
+    @Test
+    public void testGetCurrentUserStatusSimplified(){
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> organisedMap = new HashMap<>();
+        final Map<String, Object> rankedMap = new HashMap<>();
+
+        // build to getStatus ENROLLED
+        Calendar start1 = Calendar.getInstance();
+        start1.add(Calendar.HOUR,2);
+        Calendar end1 = Calendar.getInstance();
+        end1.add(Calendar.HOUR,2);
+
+        final String id1 = "id1";
+        DeboxActivity dbaEnrolled = new DeboxActivity(id1,"dummyOrganiser","dummyTitle","dummyDescription",
+                start1 ,end1 ,10.1,10.1,"Sports");
+
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:",id1);
+        enrolledMap.put("enrolledID1",enrolledMap1);
+
+
+        // build to getStatus NOT_ENROLLED_NOT_FULL
+        Calendar start2 = Calendar.getInstance();
+        start2.add(Calendar.HOUR,2);
+        Calendar end2 = Calendar.getInstance();
+        end2.add(Calendar.HOUR,2);
+
+        final String id2 = "id2";
+        DeboxActivity dbaNoEnrolledNoFull = new DeboxActivity(id2,"dummyOrganiser","dummyTitle","dummyDescription",
+                start2 ,end2 ,10.1,10.1,"Sports");
+
+        // build to getStatus NOT_ENROLLED_FULL
+        Calendar start3 = Calendar.getInstance();
+        start3.add(Calendar.HOUR,2);
+        Calendar end3 = Calendar.getInstance();
+        end3.add(Calendar.HOUR,2);
+
+        final String id3 = "id3";
+        DeboxActivity dbaNoEnrolledFull = new DeboxActivity(id3,"dummyOrganiser","dummyTitle","dummyDescription",
+                start3 ,end3 ,10.1,10.1,"Sports",10,10);
+
+
+        // build to getStatus MUST_BE_RANKED
+        Calendar start4 = Calendar.getInstance();
+        start4.add(Calendar.HOUR,-2);
+        Calendar end4 = Calendar.getInstance();
+        end4.add(Calendar.HOUR,-2);
+
+        final String id4 = "id4";
+        DeboxActivity dbaNoEnrolledMustBeRanked = new DeboxActivity(id4,"dummyOrganiser","dummyTitle","dummyDescription",
+                start4 ,end4 ,10.1,10.1,"Sports");
+
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",id4);
+        enrolledMap.put("enrolledID2",enrolledMap2);
+
+
+        // build to getStatus ALREADY_RANKED
+        Calendar start5 = Calendar.getInstance();
+        start5.add(Calendar.HOUR,-2);
+        Calendar end5 = Calendar.getInstance();
+        end5.add(Calendar.HOUR,-2);
+
+        final String id5 = "id5";
+        DeboxActivity dbaNoEnrolledAlreadyRanked = new DeboxActivity(id5,"dummyOrganiser","dummyTitle","dummyDescription",
+                start5 ,end5 ,10.1,10.1,"Sports");
+
+        final Map<String, Object> rankedMap1 = new HashMap<>();
+        rankedMap1.put("activity ID:",id5);
+        rankedMap.put("rankedID1",rankedMap1);
+
+
+        // build to getStatus ACTIVITY_PAST
+        Calendar start6 = Calendar.getInstance();
+        start6.add(Calendar.HOUR,-2);
+        Calendar end6 = Calendar.getInstance();
+        end6.add(Calendar.HOUR,-2);
+
+        final String id6 = "id6";
+        DeboxActivity dbaNoEnrolledActivityPast = new DeboxActivity(id6,"dummyOrganiser","dummyTitle","dummyDescription",
+                start6 ,end6 ,10.1,10.1,"Sports");
+
+
+        final Map<String, Object> userMap = new HashMap<>();
+
+        final String userID ="userID";
+        userMap.put("default_user_name","fakeUserName");
+        userMap.put("enrolled",enrolledMap);
+        userMap.put("organised",organisedMap);
+        userMap.put("ranked",rankedMap);
+        userMap.put("ratingNb",1);
+        userMap.put("ratingSum",3);
+        userMap.put("user_email","fakeemail@noemail.com");
+
+
+        final DataSnapshot ds = Mockito.mock(DataSnapshot.class);
+        when(ds.getValue()).thenReturn(userMap);
+
+        when(mUser.getUid()).thenReturn(userID);
+        when(database.getReference(anyString())).thenReturn(myRef);
+
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds);
+
+
+
+        DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
+
+        dp.getCurrentUserStatusSimplified(dbaEnrolled, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.ENROLLED);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledNoFull, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.NOT_ENROLLED_NOT_FULL);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledFull, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.NOT_ENROLLED_FULL);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledMustBeRanked, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.MUST_BE_RANKED);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledAlreadyRanked, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.ALREADY_RANKED);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledActivityPast, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.ACTIVITY_PAST);
+            }
+        });
+
+
+    }
+
+    /**
+     * This fonction compare to activities to check if they are equalls.
+     * @param dba1 first activity
+     * @param dba2 second activity
+     * @return return true if they are equals otherwise return false
+     */
+    private boolean toolsActivitiesEquals(DeboxActivity dba1, DeboxActivity dba2){
+
+        if(dba1.getTitle().equals(dba2.getTitle()) &&
+                dba1.getDescription().equals(dba2.getDescription()) &&
+                dba1.getCategory().equals(dba2.getCategory()) &&
+                dba1.getId().equals(dba2.getId()) &&
+                dba1.getLocation()[0] == dba2.getLocation()[0] &&
+                dba1.getLocation()[1] == dba2.getLocation()[1] &&
+                dba1.getTimeEnd().equals(dba2.getTimeEnd()) &&
+                dba1.getTimeStart().equals(dba2.getTimeStart())) {
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * This function use to build the hashMap corresponding to the activity passed in parameter.
+     * Use to emulate the result of the dataBase.
+     *
+     * @param dba the deboxActivity use to build the hashMap
+     * @return an hashMap that contains all information of the activity
+     */
+    private Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba){
 
         Map<String, Object>  activityMap = new HashMap<>();
 
@@ -1147,7 +1272,18 @@ public class DataProviderTest {
 
     }
 
-    public Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba, int nbOfParticipants, int nbMaxOfParticipants){
+    /**
+     * This function use to build the hashMap corresponding to the activity passed in parameter (we can
+     * specified the number max of participants and the number of participants. Use to emulate the result
+     * of the dataBase.
+     *
+     * @param dba the deboxActivity use to build the hashMap
+     * @param nbOfParticipants the number of participants
+     * @param nbMaxOfParticipants the number max of participants
+     * @return an hashMap that contains all information of the activity
+     */
+
+    private Map<String, Object> toolsBuildMapFromDebox(DeboxActivity dba, int nbOfParticipants, int nbMaxOfParticipants){
 
         Map<String, Object>  activityMap = new HashMap<>();
 
@@ -1166,14 +1302,44 @@ public class DataProviderTest {
 
     }
 
+    /**
+     * This function is used to create an activity with a specified unique id.
+     *
+     * @param UID unique id of the application
+     * @return standard DeboxActivity with specified id
+     */
+    private DeboxActivity toolsBuildDummyDeboxActivity(String UID){
 
-    public DeboxActivity toolsBuildDummyDeboxActivity(String id){
+        String organiser = "emptyOrganiser";
+        String title = "emptyTitle";
+        String description = "emptydescription";
+        double latitude = 10.1;
+        double longitude = 10.1;
+        String category = "Sports";
 
-        DeboxActivity dba = new DeboxActivity(id,"dummyOrganiser","dummyTitle","dummyDescription",
-                Calendar.getInstance(),Calendar.getInstance(),10.1,10.1,"Sports");
+        DeboxActivity dba = new DeboxActivity(UID,organiser,title,description,
+                Calendar.getInstance(),Calendar.getInstance(),latitude,longitude,category);
         return dba;
     }
 
+    /**
+     * This function is use to set the answer to send when a listener is add on the a Database
+     * reference.
+     *
+     * @param myRef the DataBaseReference
+     * @param ds the DataSnapshot to send at the DataBaseReference Listener
+     */
+    private void toolsBuildAnswerForListener(DatabaseReference myRef, final DataSnapshot ds){
 
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                ValueEventListener listener = (ValueEventListener) args[0];
+                listener.onDataChange(ds);
+                return null;
+            }
+        }).when(myRef).addListenerForSingleValueEvent(any(ValueEventListener.class));
+
+    }
 
 }

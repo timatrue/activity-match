@@ -25,6 +25,7 @@ public class UserTest {
         testOrganizedEvents.add("Event1");
         testOrganizedEvents.add("Event2");
         List<String> testInterestedEvents = new ArrayList<>();
+        List<String> testRankedEvents = new ArrayList<>();
         testInterestedEvents.add("Event3");
         testInterestedEvents.add("Event4");
         final int testRatingNb = 10;
@@ -38,6 +39,7 @@ public class UserTest {
                 testEmail,
                 testOrganizedEvents,
                 testInterestedEvents,
+                testRankedEvents,
                 testRatingNb,
                 testRatingSum,
                 testPhotoLink);
@@ -50,6 +52,7 @@ public class UserTest {
                 testEmail,
                 testOrganizedEvents,
                 testInterestedEvents,
+                testRankedEvents,
                 newTestratingNb,
                 testRatingSum,
                 testPhotoLink);
