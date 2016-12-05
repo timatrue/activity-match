@@ -1,13 +1,18 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
+import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +91,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mDataProvider = new DataProvider();
             mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             initDisplay(false);
+
+
         }
+
     }
 
     public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
@@ -147,11 +155,19 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                                 .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
                                 .title(activity.getTitle()));
                     }
+                    //
 
+
+
+                    //
                     List<String> imagesList = activity.getImageList();
+
                     if(imagesList != null) {
                         if(imagesList.size() != 0) {
                             new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+
+
+
                         }
                         else {
                             ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());

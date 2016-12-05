@@ -1,13 +1,18 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -42,11 +47,17 @@ public class ImageProvider {
 
 
     public void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
+        ///
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int screenWidth = metrics.widthPixels;
+        int dp = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
+
         for(String imageName: imagesList)  {
             // Reference to an image file in Firebase Storage
             StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
 
             ImageView imageView = new ImageView(context);
+            //imageView.setAdjustViewBounds(true);
 
             imageLayout.addView(imageView);
 
@@ -54,6 +65,8 @@ public class ImageProvider {
             Glide.with(context)
                     .using(new FirebaseImageLoader())
                     .load(storageReference)
+                    .override(screenWidth,dp)
+                    .centerCrop()
                     .into(imageView);
         }
 
