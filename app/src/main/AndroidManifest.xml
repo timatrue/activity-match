@@ -50,6 +50,7 @@
 
         <activity android:name=".DisplayActivity"
             android:label="@string/display_activity_title_bar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".CreateActivity"

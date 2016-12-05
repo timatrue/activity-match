@@ -1,175 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/display_activity_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:contentInsetStart="4dp"
+            android:elevation="4dp"
+            app:navigationIcon="?attr/homeAsUpIndicator">
+
+            <TextView
+                android:id="@+id/titleEvent"
+                android:text=""
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="@color/niceWhiteDebox"
+                android:maxLines="1"
+                android:ellipsize="end"
+                 />
+
+        </android.support.v7.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <!--
-                <TextView
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/descriptionBlockLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventTitle"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-                 -->
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventCategory"
-                    android:layout_below="@+id/eventTitle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventSchedule"
-                    android:layout_below="@+id/eventCategory"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventDescription"
-                    android:layout_below="@+id/eventSchedule"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventOccupancy"
-                    android:layout_below="@+id/eventDescription"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/Occupancy"/>
-
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/StatusInfo"
-                    android:text="@string/joinActivity_satus"
-                    android:layout_below="@+id/eventOccupancy"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <Button
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/joinActivity"
-                        android:text="@string/joinActivity_button"
-                        android:onClick="joinActivity"
-                        android:visibility="invisible"
+                        android:id="@+id/eventCategory"
+                        android:layout_below="@+id/eventTitle"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
 
-                    <Button
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/leaveActivity"
-                        android:text="@string/leaveActivity_button"
-                        android:onClick="leaveActivity"
-                        android:visibility="invisible"
+                        android:id="@+id/eventSchedule"
+                        android:layout_below="@+id/eventCategory"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/eventDescription"
+                        android:layout_below="@+id/eventSchedule"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/eventOccupancy"
+                        android:layout_below="@+id/eventDescription"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/Occupancy"/>
+
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/StatusInfo"
+                        android:text="@string/joinActivity_satus"
+                        android:layout_below="@+id/eventOccupancy"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/joinActivity"
+                            android:text="@string/joinActivity_button"
+                            android:onClick="joinActivity"
+                            android:visibility="invisible"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/leaveActivity"
+                            android:text="@string/leaveActivity_button"
+                            android:onClick="leaveActivity"
+                            android:visibility="invisible"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
+
+                    </RelativeLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/leaveActivity"
+                        android:id="@+id/rankLayout"
+                        android:visibility="invisible">
+
+
+                        <RatingBar
+                            android:layout_marginStart="@dimen/fab_margin"
+                            android:layout_marginLeft="@dimen/fab_margin"
+                            android:layout_width="wrap_content"
+                            android:stepSize="1"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rankWidget" />
+
+                        <Button
+                            android:layout_marginRight="@dimen/fab_margin"
+                            android:layout_marginEnd="@dimen/fab_margin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rateButton"
+                            android:text="@string/rateButton"
+                            android:onClick="rateButtonPressed" />
+
+                    </LinearLayout>
+
+                    <HorizontalScrollView
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/imageGalleryHeight"
+                        android:layout_above="@+id/joinActivity"
+                        android:layout_below="@id/eventOccupancy">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:id="@+id/imagesLayout">
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:id="@+id/relativeLayout">
+
+                    <fragment
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true" />
 
                 </RelativeLayout>
 
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/leaveActivity"
-                    android:id="@+id/rankLayout"
-                    android:visibility="invisible">
-
-
-                    <RatingBar
-                        android:layout_marginStart="@dimen/fab_margin"
-                        android:layout_marginLeft="@dimen/fab_margin"
-                        android:layout_width="wrap_content"
-                        android:stepSize="1"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rankWidget" />
-
-                    <Button
-                        android:layout_marginRight="@dimen/fab_margin"
-                        android:layout_marginEnd="@dimen/fab_margin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rateButton"
-                        android:text="@string/rateButton"
-                        android:onClick="rateButtonPressed" />
-
-                </LinearLayout>
-
-                <HorizontalScrollView
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/imageGalleryHeight"
-                    android:layout_above="@+id/joinActivity"
-                    android:layout_below="@id/eventOccupancy">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_height="match_parent"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/imagesLayout">
-
-                    </LinearLayout>
-
-                </HorizontalScrollView>
-
-
             </LinearLayout>
 
+        </ScrollView>
+    </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:id="@+id/relativeLayout">
-
-                <fragment
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    android:id="@+id/map"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true" />
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-
-    </ScrollView>
-
-
-</LinearLayout>
+</RelativeLayout>
 
 
