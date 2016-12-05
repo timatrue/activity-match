@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import org.junit.Test;
@@ -75,7 +76,13 @@ public class DataProviderTest {
             121.0213,
             "Sports");
 
+    //private final Map<String, Object> activityMap = new HashMap<>();
 
+
+    /**
+     * Test the function public String pushActivity(DeboxActivity da) of the dataProvider
+     *
+     */
     @Test
     public void testDataProvider(){
         DataProvider dp = new DataProvider();
@@ -83,10 +90,6 @@ public class DataProviderTest {
 
     }
 
-    /**
-     * Test the function public String pushActivity(DeboxActivity da) of the dataProvider
-     *
-     */
     @Test
     public void testPushActivity() {
 
@@ -373,7 +376,6 @@ public class DataProviderTest {
 
 
         when(database.getReference("activities")).thenReturn(myRef);
-
 
         final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(deboxActivityTest);
 

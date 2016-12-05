@@ -241,8 +241,6 @@ public class DataProvider {
 
     }*/
 
-
-
     public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
@@ -528,47 +526,58 @@ public class DataProvider {
             }
         },uid);
 
-
     }
 
-
-    public String pushActivity(DeboxActivity da){
-
+    public String pushActivity(final DeboxActivity da){
 
         String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        HashMap<String, Object> result = new HashMap<>();
-
-        double location [] = da.getLocation();
-
-        result.put("organizer",da.getOrganizer());
-        result.put("title",da.getTitle());
-        result.put("description",da.getDescription());
-
-
-        long tmStart = da.getTimeStart().getTimeInMillis();
-        long tmEnd = da.getTimeEnd().getTimeInMillis();
-        result.put("timeStart",tmStart);
-        result.put("timeEnd",tmEnd);
-
-
-        result.put("latitude",location[0]);
-        result.put("longitude",location[1]);
-        result.put("category",da.getCategory());
-
-        result.put("nbOfParticipants",da.getNbOfParticipants());
-        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
-
-        result.put("images",da.getImageList());
-
+        HashMap<String, Object> result = createActivityMap(da);
         childUpdates.put("activities/"+key, result);
-
         mDatabase.updateChildren(childUpdates);
 
         copyIdOfCreatedEvent(key);
         return key;
     }
+
+    private HashMap<String,Object> createActivityMap(DeboxActivity da) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        double location [] = da.getLocation();
+        result.put("organizer",da.getOrganizer());
+        result.put("title",da.getTitle());
+        result.put("description",da.getDescription());
+        long tmStart = da.getTimeStart().getTimeInMillis();
+        long tmEnd = da.getTimeEnd().getTimeInMillis();
+        result.put("timeStart",tmStart);
+        result.put("timeEnd",tmEnd);
+        result.put("latitude",location[0]);
+        result.put("longitude",location[1]);
+        result.put("category",da.getCategory());
+        result.put("nbOfParticipants",da.getNbOfParticipants());
+        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
+        result.put("images",da.getImageList());
+
+        return result;
+    }
+
+    public String updateActivity(DeboxActivity da) {
+        String key = da.getId();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        HashMap<String, Object> result = createActivityMap(da);
+        childUpdates.put("activities/"+key, result);
+        mDatabase.updateChildren(childUpdates);
+
+        return key;
+    }
+
+    public void deleteActivity(DeboxActivity da) {
+        String key = da.getId();
+        mDatabase.child("activities").child(key).removeValue();
+    }
+
     private void copyIdOfCreatedEvent(String activityId){
 
         String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
@@ -945,5 +954,5 @@ public class DataProvider {
     public interface DataProviderListenerUserEvents {
         void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
     }
-    
+
 }

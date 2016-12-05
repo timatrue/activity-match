@@ -56,6 +56,8 @@ public class WelcomeActivity extends AppCompatActivity
     //radius of Earth in km
     final static double EARTH_RADIUS = 6371;
 
+    private boolean TEST_MODE = false;
+
     final static public String WELCOME_ACTIVITY_TEST_KEY = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST_KEY";
     final static public String WELCOME_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_NO_TEST";
     final static public String WELCOME_ACTIVITY_TEST = "ch.epfl.sweng.project.CreateActivity.WELCOME_ACTIVITY_TEST";
@@ -72,8 +74,7 @@ public class WelcomeActivity extends AppCompatActivity
         maxDistanceMap.put("All", 21000);
     }
 
-    Button displayActivities;
-    LinearLayout activityPreviewsLayout;
+    public LinearLayout activityPreviewsLayout;
 
     FilterFragment dialogFragment;
 
@@ -96,7 +97,8 @@ public class WelcomeActivity extends AppCompatActivity
     private final static int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 1;
     Location mLastLocation;
     LocationRequest mLocationRequest;
-    boolean permission_granted;
+    boolean permission_granted = false;
+    boolean permission_already_asked = false;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -138,9 +140,23 @@ public class WelcomeActivity extends AppCompatActivity
                     getAllCategoriesAndLocation();
                     displaySpecifiedActivities();
                     mDataProvider.initUserInDB();
-
+                    TEST_MODE = false;
+                }
+                else {
+                    TEST_MODE = true;
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!TEST_MODE) {
+            (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+            getAllCategoriesAndLocation();
+            displaySpecifiedActivities();
         }
     }
 
@@ -156,13 +172,16 @@ public class WelcomeActivity extends AppCompatActivity
         createLocationRequest();
 
 
-        //The permissions need to be asked to the user at runtime for newer APIs
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-        } else {
-            permission_granted = true;
-            initializeGoogleApiClient();
+        if(!permission_already_asked) {
+            permission_already_asked = true;
+            //The permissions need to be asked to the user at runtime for newer APIs
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+            } else {
+                permission_granted = true;
+                initializeGoogleApiClient();
+            }
         }
     }
 
@@ -170,6 +189,7 @@ public class WelcomeActivity extends AppCompatActivity
         mDataProvider.getAllCategories(new DataProvider.DataProviderListenerCategories() {
             @Override
             public void getCategories(List<DataProvider.CategoryName> items) {
+                categories.clear();
                 for (DataProvider.CategoryName cat : items) {
                     categories.add(cat.getCategory());
                 }
@@ -299,12 +319,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     };
 
-    View.OnClickListener activitiesClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            getActivitiesAndDisplay();
-        }
-    };
 
     public void chooseLocation(View v) {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -361,20 +375,24 @@ public class WelcomeActivity extends AppCompatActivity
                     layoutParams.setMargins(30, 20, 30, 0);
 
                     cleanLinearLayout(activityPreviewsLayout);
-                    if (activitiesList.isEmpty()) {
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                        }
+                        listEmpty = false;
+                    }
+
+                    if (listEmpty) {
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
-
-                    } else {
-                        for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
-                                ap.setOnClickListener(previewClickListener);
-                            }
-                        }
                     }
                     //mDataProvider = new DataProvider();
+
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
                 }
             });
         }
@@ -391,19 +409,24 @@ public class WelcomeActivity extends AppCompatActivity
                     layoutParams.setMargins(30, 20, 30, 0);
 
                     cleanLinearLayout(activityPreviewsLayout);
-                    if (activitiesList.isEmpty()) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
 
-                    } else {
-                        for(DeboxActivity elem: activitiesList) {
-                            if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                                activityPreviewsLayout.addView(ap, layoutParams);
-                                ap.setOnClickListener(previewClickListener);
-                            }
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                            listEmpty = false;
                         }
                     }
+
+                    if (listEmpty) {
+                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                        activityPreviewsLayout.addView(result, layoutParams);
+                    }
+
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
                     //mDataProvider = new DataProvider();
                 }
             }, filterCategory);
@@ -420,26 +443,7 @@ public class WelcomeActivity extends AppCompatActivity
         return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
 
-    public void getActivitiesAndDisplay() {
-        cleanLinearLayout(activityPreviewsLayout);
-        mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
 
-            @Override
-            public void getActivities(List<DeboxActivity> activitiesList) {
-
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(30, 20, 30, 0);
-
-                activityPreviewsLayout.removeAllViews();
-                for(DeboxActivity elem: activitiesList) {
-                    ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                    activityPreviewsLayout.addView(ap, layoutParams);
-                    ap.setOnClickListener(previewClickListener);
-                }
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {
@@ -486,7 +490,7 @@ public class WelcomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void cleanLinearLayout(LinearLayout linearLayout){
+    public void cleanLinearLayout(LinearLayout linearLayout){
         if((linearLayout).getChildCount() > 0)
             (linearLayout).removeAllViews();
     }

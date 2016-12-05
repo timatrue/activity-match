@@ -21,7 +21,7 @@ import static org.mockito.Mockito.doAnswer;
 /**
  * Created by jeremie on 09.11.16.
  */
-
+@LargeTest
 public class MockDataProvider {
 
     @Mock
@@ -55,7 +55,6 @@ public class MockDataProvider {
         return mockDataProvider;
     }
 
-
     public void setUserToMock(User newUser){
         user = newUser;
         initMockUserProfile();
@@ -69,7 +68,7 @@ public class MockDataProvider {
 
     public void setListOfEnrolledActivityToMock(List<String> list){
         listUserActivityEnrolledStored = list;
-        initMockUserIsEnrolledInActivity(); 
+        initMockUserIsEnrolledInActivity();
         initJoinActivity();
 
     }

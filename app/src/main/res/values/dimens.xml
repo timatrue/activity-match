@@ -10,8 +10,8 @@
     <dimen name="activities_padding">36dp</dimen>
 
 
-    <dimen name="create_activity_margin">16dp</dimen>
-    <dimen name="textsize">20sp</dimen>
+    <dimen name="create_activity_margin">10dp</dimen>
+    <dimen name="text_size_input">20sp</dimen>
     <dimen name="imagePreview">60dp</dimen>
 
 </resources>

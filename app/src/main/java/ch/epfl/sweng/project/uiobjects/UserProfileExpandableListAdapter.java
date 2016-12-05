@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.DeboxActivity;
 import ch.epfl.sweng.project.R;
 
 /**
@@ -21,17 +24,24 @@ import ch.epfl.sweng.project.R;
 
 public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity context;
-    private Map<String, List<String>> activityCollections;
-    private List<String> activities;
+    private Map<String, List<DeboxActivity>> activityCollections;
+    private List<String> groups;
+    private String modifiableGroup;
+    private modifyDeleteListener modifyDeleteListener;
 
-    public UserProfileExpandableListAdapter(Activity context, Map<String,List<String>> activityCollections,
-                                            List<String> activities){
+    public UserProfileExpandableListAdapter(Activity context, Map<String,List<DeboxActivity>> activityCollections,
+                                            List<String> groups, String modifiableGroup, modifyDeleteListener modifyDeleteListener){
         this.context = context;
         this.activityCollections = activityCollections;
-        this.activities = activities;
+        this.groups = groups;
+        this.modifiableGroup = modifiableGroup;
+        this.modifyDeleteListener = modifyDeleteListener;
     }
     public Object getChild(int groupPosition, int childPosition){
-        String position = activities.get(groupPosition);
+        String position = groups.get(groupPosition);
+        if(activityCollections.get(position).size() <= childPosition) {
+            return null;
+        }
         return activityCollections.get(position).get(childPosition);
     }
     public long getChildId(int groupPosition, int childPosition) {
@@ -41,25 +51,66 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
     //getChildView stands for explicit group's events
     public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent){
-        final String activity = (String)getChild(groupPosition, childPosition);
+        final DeboxActivity activity = (DeboxActivity)getChild(groupPosition, childPosition);
+
         LayoutInflater inflater = context.getLayoutInflater();
-        //convertView is the ListView Item Cache that is not visible
-        if(convertView == null){
+
+        if(activity == null) {
+            convertView = inflater.inflate(R.layout.activity_user_profile_empty_view, null);
+            return convertView;
+        }
+
+        if(groups.get(groupPosition).equals(modifiableGroup)) {
+
+            convertView = inflater.inflate(R.layout.activity_user_profile_group_child_organized, null);
+
+            TextView item = (TextView) convertView.findViewById(R.id.userProfileActivityChild);
+
+            ImageButton modifyButton = (ImageButton) convertView.findViewById(R.id.modifyButton);
+            ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.deleteButton);
+            modifyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    modifyDeleteListener.onItemModified(groupPosition, childPosition);
+                }
+            });
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    modifyDeleteListener.onItemDeleted(groupPosition, childPosition);
+                }
+            });
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    modifyDeleteListener.onItemClicked(groupPosition, childPosition);
+                }
+            });
+        }
+        else {
             convertView = inflater.inflate(R.layout.activity_user_profile_group_child, null);
         }
+
         TextView item = (TextView) convertView.findViewById(R.id.userProfileActivityChild);
-        item.setText(activity);
+
+        item.setText(activity.getTitle());
         return convertView;
     }
     public int getChildrenCount(int groupPosition){
-        String position = activities.get(groupPosition);
+        String position = groups.get(groupPosition);
+        int size = activityCollections.get(position).size();
+        if(size == 0) {
+            return 1;
+        }
         return activityCollections.get(position).size();
     }
     public Object getGroup(int groupPosition){
-        return activities.get(groupPosition);
+        return groups.get(groupPosition);
     }
     public int getGroupCount(){
-        return activities.size();
+        return groups.size();
     }
     public long getGroupId(int groupPosition) {
         return groupPosition;
@@ -84,5 +135,12 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
     }
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+
+    public interface modifyDeleteListener {
+        public void onItemModified(int groupPosition, int childPosition);
+        public void onItemDeleted(int groupPosition, int childPosition);
+        public void onItemClicked(int groupPosition, int childPosition);
     }
 }

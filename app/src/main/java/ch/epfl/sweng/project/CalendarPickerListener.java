@@ -3,6 +3,8 @@ package ch.epfl.sweng.project;
 
 import android.support.v4.app.DialogFragment;
 
+import java.util.Calendar;
+
 
 /**
  * Created by benoit on 12.10.16.
