@@ -1,9 +1,11 @@
 package ch.epfl.sweng.project;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +28,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.fragments.CreateValidationFragment;
+import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
@@ -55,6 +59,7 @@ public class UserProfile extends AppCompatActivity {
     private UserProfileExpandableListAdapter eventsExpListAdapter;
 
     private DataProvider mDataProvider;
+    private ImageProvider mImageProvider;
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -71,7 +76,8 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
 
-    private DataProvider dpData;
+    Bitmap userImageBitmap;
+
 
     public String interestedEvents;
     public String participatedEvents;
@@ -82,6 +88,9 @@ public class UserProfile extends AppCompatActivity {
     Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
     private Context mContext;
+    ImageView userImage;
+    FragmentManager fm;
+    UserImageFragment imageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +101,6 @@ public class UserProfile extends AppCompatActivity {
         interestedEvents = getResources().getString(R.string.interested_events);
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
-
 
         createGroupList();
 
@@ -105,15 +113,31 @@ public class UserProfile extends AppCompatActivity {
                     displayUserImage();
                     createCollection();
                     setExpListView();
-
                 }
             }
         }
+
+
+        fm = getFragmentManager();
+        userImage = (ImageView) findViewById(R.id.userImage);
+        userImage.setOnClickListener(imageClickListener);
 
         setupUserToolBar();
 
     }
 
+
+    View.OnClickListener imageClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            imageFragment = new UserImageFragment();
+            imageFragment.setDataProvider(mDataProvider);
+            imageFragment.setImageProvider(mImageProvider);
+            imageFragment.setImage(userImageBitmap);
+            imageFragment.show(fm, "Validating your event");
+        }
+    };
 
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -139,7 +163,6 @@ public class UserProfile extends AppCompatActivity {
 
 
     private void displayUserImage() {
-        final ImageView userImage = (ImageView) findViewById(R.id.userImage);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user != null) {
@@ -152,6 +175,7 @@ public class UserProfile extends AppCompatActivity {
                         @Override
                         public void run() {
                             userImage.setImageBitmap(bitmap);
+                            userImageBitmap = bitmap;
                         }
                     });
                 }

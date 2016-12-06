@@ -709,7 +709,11 @@ public class DataProvider {
             ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
-        String photoLink = "";
+        String photoLink = null;
+        if (userMap.containsKey("photo")) {
+            //ratingSum = (int) userMap.get("ratingSum");
+            photoLink = (String) userMap.get("ratingSum");
+        }
 
         return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
     }
