@@ -14,6 +14,15 @@
     <dimen name="text_size_input">20sp</dimen>
     <dimen name="imagePreview">60dp</dimen>
 
+    <!--Display Activity-->
+    <dimen name="eventTitleFontSize">17dp</dimen>
+    <dimen name="eventDescriptionFontSize">16dp</dimen>
     <dimen name="imageGalleryHeight">240dp</dimen>
-
+    <dimen name="mapGoogleHeight">240dp</dimen>
+        <!--mnemonics TRouBLe-->
+    <dimen name="textBlockPadding">3dp</dimen>
+    <dimen name="topMargin">5dp</dimen>
+    <dimen name="rightMargin">5dp</dimen>
+    <dimen name="bottomMargin">5dp</dimen>
+    <dimen name="leftMargin">5dp</dimen>
 </resources>

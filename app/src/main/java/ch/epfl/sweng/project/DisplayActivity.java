@@ -1,19 +1,16 @@
 package ch.epfl.sweng.project;
 
 import android.content.Intent;
-import android.graphics.Point;
-import android.os.AsyncTask;
+import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,13 +25,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ch.epfl.sweng.project.DataProvider.UserStatus;
-
 import static java.text.DateFormat.getDateInstance;
 
 /**
@@ -52,12 +50,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     TextView title;
     TextView category;
     TextView description;
-    TextView schedule;
+    TextView scheduleStarts;
+    TextView scheduleEnds;
+    TextView location;
+    String timeStartFull;
+    String timeEndFull;
+    String commaSpace;
+    Resources res;
 
     LinearLayout imagesLayout;
 
     DeboxActivity activityToDisplay = null;
     GoogleMap map = null;
+    Geocoder geocoder;
+    List<Address> addresses;
+
 
     private DataProvider mDataProvider;
     private String eventId;
@@ -69,7 +76,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
     private LinearLayout ratingLayout;
-    private LinearLayout descriptionBlockLayout;
+    private LinearLayout textBlockLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +86,18 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         Intent intent = getIntent();
         eventId = intent.getStringExtra(DISPLAY_EVENT_ID);
+        geocoder = new Geocoder(this, Locale.getDefault());
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
         rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
+        location = (TextView) findViewById(R.id.location);
         ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
-        descriptionBlockLayout = (LinearLayout) findViewById(R.id.descriptionBlockLayout);
+        textBlockLayout = (LinearLayout) findViewById(R.id.textBlockLayout);
+        res = getResources();
 
 
 
@@ -103,8 +114,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         //
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(30, 20, 30, 20);
-        descriptionBlockLayout.setLayoutParams(layoutParams);
+        layoutParams.setMargins(10, 20, 10, 20);
+        textBlockLayout.setLayoutParams(layoutParams);
 
 
 
@@ -129,8 +140,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     currentActivity = activity;
                     title = (TextView) findViewById(R.id.titleEvent);
                     title.setText(activity.getTitle());
-                    //selectedEvent.getTitle()
-                    //getSupportActionBar().setTitle(activity.getTitle());
+
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
@@ -138,21 +148,28 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     activityToDisplay = activity;
 
                     category = (TextView) findViewById(R.id.eventCategory);
-                    category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
+                    category.setText(activity.getCategory() + " " + getResources().getString(R.string.create_activity_category_text));
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
 
-                    schedule = (TextView) findViewById(R.id.eventSchedule);
+                    scheduleStarts = (TextView) findViewById(R.id.eventScheduleStarts);
+                    scheduleEnds = (TextView) findViewById(R.id.eventScheduleEnds);
                     DateFormat dateFormat = getDateInstance();
                     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+
                     Calendar timeStart = activity.getTimeStart();
                     Calendar timeEnd = activity.getTimeEnd();
-                    String stringSchedule = dateFormat.format(timeStart.getTime()) +
-                            " at " + timeFormat.format(timeStart.getTime()) + " to " +
-                            dateFormat.format(timeEnd.getTime()) +
+                    String stringScheduleStarts = dateFormat.format(timeStart.getTime()) +
+                            " at " + timeFormat.format(timeStart.getTime());
+                    String stringScheduleEnds = dateFormat.format(timeEnd.getTime()) +
                             " at " + timeFormat.format(timeEnd.getTime());
-                    schedule.setText(stringSchedule);
+
+
+                    timeStartFull = String.format(res.getString(R.string.timeStart), stringScheduleStarts);
+                    timeEndFull = String.format(res.getString(R.string.timeEnd), stringScheduleEnds);
+                    scheduleStarts.setText(timeStartFull);
+                    scheduleEnds.setText(timeEndFull);
 
                     // TODO for the moment, not all activities are correct entry for occupancy
                     if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {
@@ -170,19 +187,32 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         map.addMarker(new MarkerOptions()
                                 .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
                                 .title(activity.getTitle()));
+                        try {
+                            addresses  = geocoder.getFromLocation(
+                                    activityToDisplay.getLocation()[0],activityToDisplay.getLocation()[1],1);
+                            if (addresses != null && addresses.size() > 0) {
+                                String address = addresses.get(0).getAddressLine(0);
+                                String city = addresses.get(0).getLocality();
+                                String state = addresses.get(0).getAdminArea();
+                                String country = addresses.get(0).getCountryName();
+                                String postalCode = addresses.get(0).getPostalCode();
+                                String knownName = addresses.get(0).getFeatureName();
+                                commaSpace = res.getString(R.string.commaSpace);
+
+                                location.setText(address + commaSpace + city);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
-                    //
 
-
-
-                    //
                     List<String> imagesList = activity.getImageList();
 
                     if(imagesList != null) {
                         if(imagesList.size() != 0) {
                             new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
-
-
 
                         }
                         else {
@@ -203,12 +233,14 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     switch(status){
                         case ENROLLED:
                             leaveActivityButton.setVisibility(View.VISIBLE);
-                            statusInfoTextView.setText("You are enrolled in this Activity");
+                            //statusInfoTextView.setText("You are enrolled in this Activity");
+                            statusInfoTextView.setVisibility(View.GONE);
 
                             break;
                         case NOT_ENROLLED_NOT_FULL:
                             joinActivityButton.setVisibility(View.VISIBLE);
-                            statusInfoTextView.setText("You can joins this activity");
+                            //statusInfoTextView.setText("You can joins this activity");
+                            statusInfoTextView.setVisibility(View.GONE);
 
                             break;
                         case NOT_ENROLLED_FULL:
@@ -222,10 +254,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             break;
                         case ALREADY_RANKED:
                             statusInfoTextView.setText("You have already rank this activity");
+                            ratingLayout.setVisibility(View.VISIBLE);
 
                             break;
                         case ACTIVITY_PAST:
-                            statusInfoTextView.setText("This activty has past you canot join it");
+                            statusInfoTextView.setText("This activty has past you cannot join it");
 
                             break;
                         default:
@@ -255,7 +288,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
             mDataProvider.joinActivity(currentActivity);
             joinActivityButton.setVisibility(View.INVISIBLE);
-
+            leaveActivityButton.setVisibility(View.VISIBLE);
 
             String toastMsg = getString(R.string.toast_success_join);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
@@ -273,6 +306,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
             mDataProvider.leaveActivity(currentActivity);
             leaveActivityButton.setVisibility(View.INVISIBLE);
+            joinActivityButton.setVisibility(View.VISIBLE);
 
         } else {
 

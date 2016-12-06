@@ -24,11 +24,10 @@
                 android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
+                android:textSize="@dimen/eventTitleFontSize"
                 android:textColor="@color/niceWhiteDebox"
                 android:maxLines="1"
-                android:ellipsize="end"
-                 />
+                android:ellipsize="end" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -43,45 +42,76 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:id="@+id/descriptionBlockLayout"
+                    android:id="@+id/textBlockLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-
-                    <TextView
+                    <RelativeLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/eventCategory"
-                        android:layout_below="@+id/eventTitle"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/location"
+                            android:textSize="@dimen/eventDescriptionFontSize"
+                            android:textColor="@color/normalGreyDebox"
+                            android:padding="@dimen/textBlockPadding" />
+
+                        <TextView
+                            android:id="@+id/separatorLocation"
+                            android:layout_width="match_parent"
+                            android:layout_below="@id/location"
+                            android:background="@color/strokeGreyDebox"
+                            android:layout_height="0.5dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/eventScheduleStarts"
+                            android:layout_below="@id/separatorLocation"
+                            android:padding="@dimen/textBlockPadding" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/eventScheduleStarts"
+                            android:id="@+id/eventScheduleEnds"
+                            android:padding="@dimen/textBlockPadding" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/eventOccupancy"
+                            android:text="@string/Occupancy"
+                            android:textColor="@color/niceRedDebox"
+                            android:layout_below="@id/separatorLocation"
+                            android:layout_alignParentRight="true"
+                            android:padding="@dimen/textBlockPadding"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/eventCategory"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/eventOccupancy"
+                            android:padding="@dimen/textBlockPadding" />
 
 
+
+                    </RelativeLayout>
                     <TextView
+                        android:id="@+id/separatorEventStart"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/eventSchedule"
-                        android:layout_below="@+id/eventCategory"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:background="@color/strokeGreyDebox"
+                        android:layout_height="0.5dp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/eventDescription"
-                        android:layout_below="@+id/eventSchedule"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/eventOccupancy"
-                        android:layout_below="@+id/eventDescription"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:text="@string/Occupancy"/>
-
+                        android:textSize="@dimen/eventDescriptionFontSize"
+                        android:textColor="@color/normalGreyDebox"
+                        android:padding="@dimen/textBlockPadding"/>
 
 
                     <TextView
@@ -89,64 +119,81 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/StatusInfo"
                         android:text="@string/joinActivity_satus"
-                        android:layout_below="@+id/eventOccupancy"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:padding="@dimen/textBlockPadding"/>
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/joinActivity"
-                            android:text="@string/joinActivity_button"
-                            android:onClick="joinActivity"
-                            android:visibility="invisible"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true" />
-
-                        <Button
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/leaveActivity"
-                            android:text="@string/leaveActivity_button"
-                            android:onClick="leaveActivity"
-                            android:visibility="invisible"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true" />
-
-                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/separatorEventEnd"
+                        android:layout_width="match_parent"
+                        android:background="@color/strokeGreyDebox"
+                        android:layout_height="0.5dp" />
 
 
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
+                    <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/leaveActivity"
-                        android:id="@+id/rankLayout"
-                        android:visibility="invisible">
+                        android:id="@+id/joinActivity"
+                        android:text="@string/joinActivity_button"
+                        android:onClick="joinActivity"
+                        android:visibility="invisible"
+                        android:textColor="@color/niceWhiteDebox"
+                        android:background="@color/niceRedDebox"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/textBlockPadding"
+                        android:bottomRightRadius="10dp"
+                        android:bottomLeftRadius="10dp"
+                        android:topLeftRadius="10dp"
+                        android:topRightRadius="10dp" />
 
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/leaveActivity"
+                        android:text="@string/leaveActivity_button"
+                        android:onClick="leaveActivity"
+                        android:visibility="invisible"
+                        android:textColor="@color/niceWhiteDebox"
+                        android:background="@color/niceBlueDebox"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/textBlockPadding"
+                        android:bottomRightRadius="10dp"
+                        android:bottomLeftRadius="10dp"
+                        android:topLeftRadius="10dp"
+                        android:topRightRadius="10dp"/>
 
-                        <RatingBar
-                            android:layout_marginStart="@dimen/fab_margin"
-                            android:layout_marginLeft="@dimen/fab_margin"
-                            android:layout_width="wrap_content"
-                            android:stepSize="1"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/rankWidget" />
+                </RelativeLayout>
 
-                        <Button
-                            android:layout_marginRight="@dimen/fab_margin"
-                            android:layout_marginEnd="@dimen/fab_margin"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/rateButton"
-                            android:text="@string/rateButton"
-                            android:onClick="rateButtonPressed" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/leaveActivity"
+                    android:id="@+id/rankLayout"
+                    android:visibility="invisible">
 
-                    </LinearLayout>
+                    <RatingBar
+                        android:layout_marginStart="@dimen/fab_margin"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_width="wrap_content"
+                        android:stepSize="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rankWidget" />
+
+                    <Button
+                        android:layout_marginRight="@dimen/fab_margin"
+                        android:layout_marginEnd="@dimen/fab_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rateButton"
+                        android:text="@string/rateButton"
+                        android:onClick="rateButtonPressed" />
+
+                </LinearLayout>
 
                     <HorizontalScrollView
                         android:layout_weight="1"
@@ -166,12 +213,9 @@
                     </HorizontalScrollView>
 
 
-                </LinearLayout>
-
-
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
+                    android:layout_height="@dimen/mapGoogleHeight"
                     android:id="@+id/relativeLayout">
 
                     <fragment
@@ -187,6 +231,7 @@
 
 
             </LinearLayout>
+
 
         </ScrollView>
     </LinearLayout>
