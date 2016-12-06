@@ -55,8 +55,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/location"
-                            android:textSize="@dimen/eventDescriptionFontSize"
-                            android:textColor="@color/normalGreyDebox"
+                            android:textSize="@dimen/jumpToMapFontSize"
+                            android:textColor="@color/niceBlueDebox"
                             android:padding="@dimen/textBlockPadding" />
 
                         <TextView
@@ -79,24 +79,26 @@
                             android:id="@+id/eventScheduleEnds"
                             android:padding="@dimen/textBlockPadding" />
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/eventOccupancy"
-                            android:text="@string/Occupancy"
-                            android:textColor="@color/niceRedDebox"
                             android:layout_below="@id/separatorLocation"
                             android:layout_alignParentRight="true"
-                            android:padding="@dimen/textBlockPadding"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/eventCategory"
-                            android:layout_alignParentRight="true"
-                            android:layout_below="@id/eventOccupancy"
-                            android:padding="@dimen/textBlockPadding" />
+                            android:orientation="vertical">
 
-
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/eventOccupancy"
+                                android:text="@string/Occupancy"
+                                android:textColor="@color/niceRedDebox"
+                                android:padding="@dimen/textBlockPadding"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/eventCategory"
+                                android:padding="@dimen/textBlockPadding" />
+                        </LinearLayout>
 
                     </RelativeLayout>
                     <TextView
@@ -126,7 +128,6 @@
                         android:layout_width="match_parent"
                         android:background="@color/strokeGreyDebox"
                         android:layout_height="0.5dp" />
-
 
                 </LinearLayout>
                 <RelativeLayout
@@ -168,11 +169,15 @@
                         android:topRightRadius="10dp"/>
 
                 </RelativeLayout>
+                <TextView
+                    android:id="@+id/separatorTest"
+                    android:layout_width="match_parent"
+                    android:background="@color/blueDarkDebox"
+                    android:layout_height="1dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/leaveActivity"
                     android:id="@+id/rankLayout"
                     android:visibility="invisible">
 
@@ -182,6 +187,7 @@
                         android:layout_width="wrap_content"
                         android:stepSize="1"
                         android:layout_height="wrap_content"
+                        android:visibility="invisible"
                         android:id="@+id/rankWidget" />
 
                     <Button
@@ -191,16 +197,15 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/rateButton"
                         android:text="@string/rateButton"
+                        android:visibility="invisible"
                         android:onClick="rateButtonPressed" />
 
                 </LinearLayout>
 
+
                     <HorizontalScrollView
-                        android:layout_weight="1"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/imageGalleryHeight"
-                        android:layout_above="@+id/joinActivity"
-                        android:layout_below="@id/eventOccupancy">
+                        android:layout_height="@dimen/imageGalleryHeight">
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -216,7 +221,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/mapGoogleHeight"
-                    android:id="@+id/relativeLayout">
+                    android:id="@+id/googleMapLayout">
 
                     <fragment
                         android:name="com.google.android.gms.maps.MapFragment"
@@ -228,7 +233,6 @@
                         android:layout_alignParentTop="true" />
 
                 </RelativeLayout>
-
 
             </LinearLayout>
 

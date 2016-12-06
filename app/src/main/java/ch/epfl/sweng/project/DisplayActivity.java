@@ -7,11 +7,14 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +68,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     Geocoder geocoder;
     List<Address> addresses;
 
-
     private DataProvider mDataProvider;
     private String eventId;
     private DeboxActivity currentActivity;
@@ -99,27 +101,19 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         textBlockLayout = (LinearLayout) findViewById(R.id.textBlockLayout);
         res = getResources();
 
-
-
         String test = intent.getStringExtra(DISPLAY_ACTIVITY_TEST_KEY);
         if(test.equals(DISPLAY_ACTIVITY_NO_TEST)) {
             mDataProvider = new DataProvider();
             mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             initDisplay(false);
 
-
         }
         setupUserToolBar();
 
-        //
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 20, 10, 20);
         textBlockLayout.setLayoutParams(layoutParams);
-
-
-
-        //
 
     }
 
@@ -127,7 +121,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         mDataProvider = testDataProvider;
         mFirebaseUser = testFirebaseUser;
     }
-
 
     public void initDisplay(boolean test) {
 
@@ -140,7 +133,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     currentActivity = activity;
                     title = (TextView) findViewById(R.id.titleEvent);
                     title.setText(activity.getTitle());
-
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
@@ -164,7 +156,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             " at " + timeFormat.format(timeStart.getTime());
                     String stringScheduleEnds = dateFormat.format(timeEnd.getTime()) +
                             " at " + timeFormat.format(timeEnd.getTime());
-
 
                     timeStartFull = String.format(res.getString(R.string.timeStart), stringScheduleStarts);
                     timeEndFull = String.format(res.getString(R.string.timeEnd), stringScheduleEnds);
@@ -199,7 +190,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                                 String knownName = addresses.get(0).getFeatureName();
                                 commaSpace = res.getString(R.string.commaSpace);
 
-                                location.setText(address + commaSpace + city);
+                                SpannableString content = new SpannableString(address + commaSpace + city);
+                                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                                location.setText(content);
+                                // /location.setText(address + commaSpace + city);
+                                location.setOnClickListener(jumpToMapListener);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -224,7 +219,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     }
                 }
             }, eventId);
-
 
             mDataProvider.getCurrentUserStatus(eventId, new DataProvider.DataProviderListenerUserState() {
                 @Override
@@ -278,7 +272,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
-
     /**
      * Method call by button joinActivity. Fill a new relation between user and current
      * activity in database.
@@ -314,9 +307,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
         }
 
-
     }
-
     public void rateButtonPressed(View v){
 
         if(currentActivity!= null){
@@ -334,12 +325,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         map = googleMap;
-
 
         if (activityToDisplay != null) {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
@@ -357,4 +346,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
     }
+    View.OnClickListener jumpToMapListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            View targetView = findViewById(R.id.googleMapLayout);
+            targetView.getParent().requestChildFocus(targetView,targetView);
+        }
+    };
 }

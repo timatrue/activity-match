@@ -17,6 +17,7 @@
     <!--Display Activity-->
     <dimen name="eventTitleFontSize">17dp</dimen>
     <dimen name="eventDescriptionFontSize">16dp</dimen>
+    <dimen name="jumpToMapFontSize">18dp</dimen>
     <dimen name="imageGalleryHeight">240dp</dimen>
     <dimen name="mapGoogleHeight">240dp</dimen>
         <!--mnemonics TRouBLe-->
