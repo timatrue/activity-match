@@ -24,6 +24,7 @@ public class SquareImageView extends ImageView {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
     }
 
     @Override

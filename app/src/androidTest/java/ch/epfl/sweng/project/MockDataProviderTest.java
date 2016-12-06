@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.support.test.filters.LargeTest;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by jeremie on 13.11.16.
  */
-
+@LargeTest
 public class MockDataProviderTest {
 
 

@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+import android.support.test.filters.LargeTest;
+
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -7,17 +9,13 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 
-/**
- * Created by jeremie on 09.11.16.
- */
-
+@LargeTest
 public class MockDataProvider {
 
     @Mock
@@ -30,6 +28,7 @@ public class MockDataProvider {
     private String email;
     private List<String> listUserActivityOrganizedStored;
     private List<String> listUserActivityEnrolledStored;
+    private List<String> listUserRankedEvents;
     private int ratingNb;
     private int ratingSum;
     private String photoLink;
@@ -53,6 +52,7 @@ public class MockDataProvider {
         email = "def_email";
         listUserActivityOrganizedStored = new ArrayList<>();
         listUserActivityEnrolledStored = new ArrayList<>();
+        listUserRankedEvents = new ArrayList<>();
         ratingNb = 10;
         ratingSum = 44;
         photoLink = "def_photoLink";
@@ -235,6 +235,7 @@ public class MockDataProvider {
                         email,
                         listUserActivityOrganizedStored,
                         listUserActivityEnrolledStored,
+                        listUserRankedEvents,
                         ratingNb,
                         ratingSum,
                         photoLink));

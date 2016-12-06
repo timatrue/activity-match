@@ -112,7 +112,7 @@ public class DisplayActivityTest {
                 dateFormat.format(dA1.getTimeEnd().getTime()) +
                 " at " + timeFormat.format(dA1.getTimeEnd().getTime());
 
-        assertThat(activity.title.getText().toString(), is(dA1.getTitle()));
+        assertThat(activity.getSupportActionBar().getTitle().toString(), is(dA1.getTitle()));
         assertThat(activity.category.getText().toString(), is(categoryText));
         assertThat(activity.description.getText().toString(), is(dA1.getDescription()));
         assertThat(activity.schedule.getText().toString(), is(scheduleText));

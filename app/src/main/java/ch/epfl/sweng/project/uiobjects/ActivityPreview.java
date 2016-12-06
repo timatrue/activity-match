@@ -2,6 +2,7 @@ package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
 
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -48,7 +49,6 @@ public class ActivityPreview extends LinearLayout {
     private List<String> imagesList;
     private ImageView imageView;
     private String eventId;
-    LinearLayout imagesLayout;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,44 +84,66 @@ public class ActivityPreview extends LinearLayout {
         dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
         dateEvent.setText(eventTime);
 
-        int nbParticipants = event.getNbOfParticipants();
+        final int nbParticipants = event.getNbOfParticipants();
+        final int nbMaxParticipants = event.getNbMaxOfParticipants();
+        sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
+
         if(nbParticipants >= 0) {
-            sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
-            sizeEvent.setText("Participants: " +  nbParticipants);
+            if(nbMaxParticipants >= 0) {
+                sizeEvent.setText(context.getResources().getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants));
+            } else {
+                sizeEvent.setText(context.getResources().getString(R.string.occupancy, nbParticipants));
+            }
+        } else {
+            sizeEvent.setText(R.string.invalid_occupancy);
         }
 
         imagesList = event.getImageList();
         imageView = (ImageView) childLayout.findViewById(R.id.activityImage);
-        TextView imageTextImage = (TextView) childLayout.findViewById(R.id.activityTextImage);
         eventId = event.getId();
 
         if(imagesList != null){
             if(imagesList.size() > 0) {
                 String image = imagesList.get(0);
-                new ImageProvider().previewImage(context, eventId, childLayout, image);
+                new ImageProvider().previewImage(context, eventId, imageView, image);
             }
 
         } else {
-            /*
-            imageTextImage.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
             String letter = event.getTitle().substring(0,1);
-            imageTextImage.setText(letter);
-            imageTextImage.setTextSize(getResources().getDimension(R.dimen.textsize));*/
-
-            String letter = event.getTitle().substring(0,1);
-            Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(100);
-            paint.setTextAlign(Paint.Align.CENTER);
-            int xPos = (canvas.getWidth()/2);
-            int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
-            canvas.drawText(letter, xPos, yPos, paint);
-
-            imageView.setImageBitmap(bitmap);
+            displayMaterialLetter(letter, imageView, context);
         }
+    }
+
+    private void displayMaterialLetter(String letter, ImageView imageView, Context context) {
+        letter =  letter.toUpperCase();
+        Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(getMatColor("400", context));
+        canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, canvas.getWidth()/2, paint);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(80);
+        paint.setTextAlign(Paint.Align.CENTER);
+        int xPos = (canvas.getWidth()/2);
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2)) ;
+        canvas.drawText(letter, xPos, yPos, paint);
+
+        imageView.setImageBitmap(bitmap);
+    }
+
+    private int getMatColor(String typeColor, Context context)
+    {
+        int returnColor = Color.BLACK;
+        int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
+
+        if (arrayId != 0)
+        {
+            TypedArray colors = getResources().obtainTypedArray(arrayId);
+            int index = (int) (Math.random() * colors.length());
+            returnColor = colors.getColor(index, Color.BLACK);
+            colors.recycle();
+        }
+        return returnColor;
     }
 
 }

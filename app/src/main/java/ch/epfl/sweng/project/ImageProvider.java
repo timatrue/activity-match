@@ -1,17 +1,16 @@
 package ch.epfl.sweng.project;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.text.Layout;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,12 +21,8 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.List;
 
-import ch.epfl.sweng.project.uiobjects.SquareImageView;
-
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
  * Created by nathan on 06.11.16.
@@ -64,16 +59,19 @@ public class ImageProvider {
 
     }
 
-    public void previewImage(Context context,  String folder,  View childLayout, String imageName){
+    public void previewImage(final Context context,  String folder, final ImageView imageView, String imageName){
 
         StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
-        SquareImageView imageView = (SquareImageView) childLayout.findViewById(R.id.activityImage);
 
-        Glide.with(context)
-                .using(new FirebaseImageLoader())
-                .load(storageReference)
-                .centerCrop()
-                .into(imageView);
+        Glide.with(context).using(new FirebaseImageLoader()).load(storageReference).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                imageView.setImageDrawable(circularBitmapDrawable);
+            }
+        });
 
     }
 
@@ -100,7 +98,7 @@ public class ImageProvider {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
+            public void onFailure(Exception exception) {
                 listener.uploadFailed();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -112,9 +110,9 @@ public class ImageProvider {
     }
 
     public interface uploadListener {
-        public void uploadFailed();
-        public void uploadSuccessful(Uri uploadedFileUri);
-        public void uploadProgress(Uri fileUri, long bytesTransferred, long totalBytesCount);
+        void uploadFailed();
+        void uploadSuccessful(Uri uploadedFileUri);
+        void uploadProgress(Uri fileUri, long bytesTransferred, long totalBytesCount);
     }
 
 }

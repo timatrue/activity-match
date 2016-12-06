@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
@@ -10,8 +11,11 @@ import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import android.text.Layout;
+import android.view.View;
 import android.widget.DatePicker;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -28,7 +32,6 @@ import java.util.List;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static java.text.DateFormat.getDateInstance;
 import static org.junit.Assert.assertEquals;
 
@@ -84,6 +87,12 @@ public class WelcomeActivityTest {
         Calendar newCalendar = (Calendar) calendar.clone();
         newCalendar.add(Calendar.DATE, nDays);
         return newCalendar;
+    }
+
+    private boolean isNotFilteredOut(DeboxActivity dA, WelcomeActivity activity){
+        return dA.getTimeStart().before(activity.filterEndCalendar) && dA.getTimeEnd().after(activity.filterStartCalendar)
+                && activity.distanceFromCenter(dA) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)
+                && (dA.getCategory().equals(activity.filterCategory) || activity.filterCategory.equals("All"));
     }
 
     //Returns a list of designed DeboxActivity for testing
@@ -146,11 +155,23 @@ public class WelcomeActivityTest {
                 5,
                 "Culture");
 
+        final DeboxActivity dA6 = new DeboxActivity(
+                "id6",
+                "Benoit",
+                "da6",
+                "Doing a nice walk",
+                addDays(currentCalendar, -5),
+                addDays(currentCalendar, -2),
+                46.777245,
+                5,
+                "Sports");
+
         activityList.add(dA1);
         activityList.add(dA2);
         activityList.add(dA3);
         activityList.add(dA4);
         activityList.add(dA5);
+        activityList.add(dA6);
 
         return activityList;
     }
@@ -270,42 +291,6 @@ public class WelcomeActivityTest {
         },"noid");
     }
 
-    //UI thread test because we need to access UI elements (Textviews, etc...)
-    @UiThreadTest
-    @Test
-    public void DisplayActivitiesProperly() throws Exception {
-
-        final WelcomeActivity activity = welcomeActivityRule.getActivity();
-
-        initializeMockProvider(activity);
-
-        //Press on the "Display Events" button, the test will be obsolete. No need to keep it
-        //activity.displayActivities.performClick();
-        activity.getActivitiesAndDisplay();
-
-        //Check that the five events are displayed
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(deboxActivityList.size()));
-
-        //Check that they are ActivityPreview
-        for(int i=0; i<activityCount; i++) {
-            assertTrue(activity.activityPreviewsLayout.getChildAt(i) instanceof ActivityPreview);
-        }
-
-        //Check that they have the same ID has the test DeboxActivity passed by the Mock
-        for(int i=0; i<activityCount; i++) {
-            assertTrue(((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getEventId().equals(deboxActivityList.get(i).getId()));
-        }
-
-        //Check that the title and short description of the ActivityPreviews corresponds to our two test DeboxActivities
-        for(int i=0; i<activityCount; i++) {
-            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
-            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.previewEvent)).getText().toString(), is(deboxActivityList.get(i).getShortDescription()));
-            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(deboxActivityList.get(i).getTimeStart().getTime())));
-            assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(i)).getChildAt(0).findViewById(R.id.sizeEvent)).getText().toString(), is("Participants: " + deboxActivityList.get(i).getNbOfParticipants()));
-        }
-    }
-
     @Test
     public void distanceFromCenterIsCalculatedProperly() throws Exception {
 
@@ -327,6 +312,47 @@ public class WelcomeActivityTest {
         assertThat(WelcomeActivity.maxDistanceMap.get("10 km"), is(10));
         assertThat(WelcomeActivity.maxDistanceMap.get("All"), is(21000));
         assertTrue(WelcomeActivity.maxDistanceMap.get("") == null);
+    }
+
+    //UI thread test because we need to access UI elements (Textviews, etc...)
+    @UiThreadTest
+    @Test
+    public void DisplayActivitiesProperly() throws Exception {
+
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        initializeMockProvider(activity);
+
+        activity.displaySpecifiedActivities();
+
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCount = previewLayout.getChildCount();
+        //Nb of DeboxActivities that are inside the default time lapse (in the next week)
+        final int nbDA = 4;
+        //Check that the five events are displayed
+        assertThat(activityCount, is(nbDA));
+
+        //Check that they are ActivityPreview
+        for(int i=0; i<activityCount; i++) {
+            assertTrue(previewLayout.getChildAt(i) instanceof ActivityPreview);
+        }
+
+        //Check that the text displayed correspond to the right activities
+        int displayedActivityCount = 0;
+        for(int i=0; i<deboxActivityList.size(); i++) {
+            DeboxActivity dA = deboxActivityList.get(i);
+            if (isNotFilteredOut(dA, activity)) {
+                ActivityPreview aP = (ActivityPreview) previewLayout.getChildAt(displayedActivityCount);
+                View view = aP.getChildAt(0);
+                assertThat(aP.getEventId(), is(dA.getId()));
+                assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
+                assertThat(((TextView) view.findViewById(R.id.previewEvent)).getText().toString(), is(dA.getShortDescription()));
+                assertThat(((TextView) view.findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(dA.getTimeStart().getTime())));
+                assertThat(((TextView) view.findViewById(R.id.sizeEvent)).getText().toString(), is(activity.getString(R.string.occupancy, dA.getNbOfParticipants())));
+                displayedActivityCount += 1;
+            }
+        }
+        assertThat(displayedActivityCount, is(activityCount));
     }
 
     @UiThreadTest
@@ -351,18 +377,26 @@ public class WelcomeActivityTest {
         //Call the method that filters and displays the activities
         activity.displaySpecifiedActivities();
 
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCount = previewLayout.getChildCount();
+        /* Nb of DeboxActivities that are inside the default time lapse (in the next week) and closer
+        than 50km */
+        final int nbDA = 4;
         //Checks that the number of filtered events is correct
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(4));
+        assertThat(activityCount, is(nbDA));
 
         //Checks that the DeboxActivities titles correspond to the ones that should have been selected
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
-            if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+            DeboxActivity dA = deboxActivityList.get(i);
+            if(isNotFilteredOut(dA, activity)) {
+                ActivityPreview aP = (ActivityPreview) previewLayout.getChildAt(displayedActivityCount);
+                View view = aP.getChildAt(0);
+                assertThat(((TextView)view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
                 displayedActivityCount += 1;
             }
         }
+        assertThat(displayedActivityCount, is(activityCount));
     }
 
     @UiThreadTest
@@ -387,18 +421,26 @@ public class WelcomeActivityTest {
         //Calls the method that filters and displays the activities
         activity.displaySpecifiedActivities();
 
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCount = previewLayout.getChildCount();
+         /* Nb of DeboxActivities that are inside the default time lapse (in the next week) and closer
+        than 5km */
+        final int nbDA = 1;
         //Checks that the number of filtered events is correct
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(1));
+        assertThat(activityCount, is(nbDA));
 
         //Checks that the DeboxActivities titles correspond to the ones that should have been selected
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
-            if(activity.distanceFromCenter(deboxActivityList.get(i)) <= WelcomeActivity.maxDistanceMap.get(activity.maxDistanceString)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+            DeboxActivity dA = deboxActivityList.get(i);
+            if(isNotFilteredOut(dA, activity)) {
+                ActivityPreview aP = (ActivityPreview) previewLayout.getChildAt(displayedActivityCount);
+                View view = aP.getChildAt(0);
+                assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
                 displayedActivityCount += 1;
             }
         }
+        assertThat(displayedActivityCount, is(activityCount));
     }
 
     @UiThreadTest
@@ -425,18 +467,28 @@ public class WelcomeActivityTest {
         //Calls the method that filters and displays the activities
         activity.displaySpecifiedActivities();
 
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCount = previewLayout.getChildCount();
+
+         /* Nb of DeboxActivities that are inside the default time lapse (in the next week) and with have
+        the category Culture */
+        final int nbDA = 3;
+
         //Checks that the number of filtered events is correct
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(3));
+        assertThat(activityCount, is(nbDA));
 
         //Checks that the DeboxActivities titles correspond to the ones that should have been selected
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++){
-            if(deboxActivityList.get(i).getCategory().equals(filterCategory)) {
-                assertThat(((TextView)((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+            DeboxActivity dA = deboxActivityList.get(i);
+            if(isNotFilteredOut(dA, activity)) {
+                ActivityPreview aP = (ActivityPreview) previewLayout.getChildAt(displayedActivityCount);
+                View view = aP.getChildAt(0);
+                assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
                 displayedActivityCount += 1;
             }
         }
+        assertThat(displayedActivityCount, is(activityCount));
     }
 
     @UiThreadTest
@@ -461,18 +513,61 @@ public class WelcomeActivityTest {
         //Calls the method that filters and displays the activities
         activity.displaySpecifiedActivities();
 
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCount = previewLayout.getChildCount();
+
+         /* Nb of DeboxActivities that are at least partially inside the time lapse from now+3days to now+6days */
+        final int nbDA = 4;
+
         //Checks that the number of filtered events is correct
-        final int activityCount = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCount, is(4));
+        assertThat(activityCount, is(nbDA));
 
         //Checks that the DeboxActivities titles correspond to the ones that should have been selected
         int displayedActivityCount = 0;
         for(int i=0; i<deboxActivityList.size(); i++) {
-            if (deboxActivityList.get(i).getTimeStart().before(activity.filterEndCalendar) && deboxActivityList.get(i).getTimeEnd().after(activity.filterStartCalendar)) {
-                assertThat(((TextView) ((ActivityPreview) activity.activityPreviewsLayout.getChildAt(displayedActivityCount)).getChildAt(0).findViewById(R.id.titleEvent)).getText().toString(), is(deboxActivityList.get(i).getTitle()));
+            DeboxActivity dA = deboxActivityList.get(i);
+            if (isNotFilteredOut(dA, activity)) {
+                ActivityPreview aP = (ActivityPreview) previewLayout.getChildAt(displayedActivityCount);
+                View view = aP.getChildAt(0);
+                assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
                 displayedActivityCount += 1;
             }
         }
+        assertThat(displayedActivityCount, is(activityCount));
+    }
+
+    @UiThreadTest
+    @Test
+    public void emptyActivityListTest() throws Exception {
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        final List<DeboxActivity> emptyActivityList = new ArrayList<>();
+        mocDataProvider.setListOfActivitiesToMock(emptyActivityList);
+        mocDataProvider.setListOfCategoryToMock(categoryList);
+        activity.setDataProvider(dp);
+        activity.getAllCategories();
+
+        activity.filterCategory = "All";
+
+        //Calls the method that filters and displays the activities
+        activity.displaySpecifiedActivities();
+
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCountAll = previewLayout.getChildCount();
+        assertThat(activityCountAll, is(1));
+
+        assertTrue(previewLayout.getChildAt(0) instanceof NoResultsPreview);
+
+        activity.filterCategory = "Culture";
+
+        activity.displaySpecifiedActivities();
+
+        final int activityCountCulture = previewLayout.getChildCount();
+        assertThat(activityCountCulture, is(1));
+
+        assertTrue(previewLayout.getChildAt(0) instanceof NoResultsPreview);
     }
 
     @Test
@@ -635,38 +730,5 @@ public class WelcomeActivityTest {
         assertThat(activity.filterEndCalendar.get(Calendar.DAY_OF_MONTH), is(endDay));
         assertThat(activity.filterEndCalendar.get(Calendar.HOUR_OF_DAY), is(endHour));
         assertThat(activity.filterEndCalendar.get(Calendar.MINUTE), is(endMinute));
-    }
-
-    @UiThreadTest
-    @Test
-    public void emptyActivityListTest() throws Exception {
-        final WelcomeActivity activity = welcomeActivityRule.getActivity();
-
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        final List<DeboxActivity> emptyActivityList = new ArrayList<>();
-        mocDataProvider.setListOfActivitiesToMock(emptyActivityList);
-        mocDataProvider.setListOfCategoryToMock(categoryList);
-        activity.setDataProvider(dp);
-        activity.getAllCategories();
-
-        activity.filterCategory = "All";
-
-        //Calls the method that filters and displays the activities
-        activity.displaySpecifiedActivities();
-
-        final int activityCountAll = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCountAll, is(1));
-
-        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof NoResultsPreview);
-
-        activity.filterCategory = "Culture";
-
-        activity.displaySpecifiedActivities();
-
-        final int activityCountCulture = activity.activityPreviewsLayout.getChildCount();
-        assertThat(activityCountCulture, is(1));
-
-        assertTrue(activity.activityPreviewsLayout.getChildAt(0) instanceof NoResultsPreview);
     }
 }

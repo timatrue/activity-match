@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
-import android.util.Log;
-import android.view.View;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +17,7 @@ import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 
 /**
@@ -27,8 +26,7 @@ import java.util.Objects;
 
 public class DataProvider {
 
-    private static ArrayList<DeboxActivity> deboxActivityList;
-    private static ArrayList<CategoryName> deboxCategoriesList;
+
 
     private DatabaseReference mDatabase;
     private FirebaseUser user ;
@@ -36,7 +34,7 @@ public class DataProvider {
 
     public DataProvider() {
 
-        deboxActivityList = new ArrayList<>();
+        //deboxActivityList = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -45,7 +43,7 @@ public class DataProvider {
     // use for moc test
     public DataProvider(DatabaseReference mockDatabaseReference, FirebaseDatabase mockFireDataBase, FirebaseUser mockUser) {
 
-        deboxActivityList = new ArrayList<>();
+        //deboxActivityList = new ArrayList<>();
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
         user = mockUser;
@@ -68,15 +66,13 @@ public class DataProvider {
     }
 
     public enum UserStatus{
-        ENROLLED,
-        NOT_ENROLLED_NOT_FULL,
-        NOT_ENROLLED_FULL,
-        MUST_BE_RANKED,
-        ALREADY_RANKED,
-        ACTIVITY_PAST,;
+        ENROLLED,                   // check
+        NOT_ENROLLED_NOT_FULL,      // check
+        NOT_ENROLLED_FULL,          // check
+        MUST_BE_RANKED,             // check
+        ALREADY_RANKED,             // check
+        ACTIVITY_PAST,;             // check
     }
-
-
     /*
                                      +----------+
                                      |Enrolled ?|
@@ -103,7 +99,86 @@ public class DataProvider {
  */
 
 
-    public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
+    public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
+
+        userProfile( new DataProviderListenerUserInfo() {
+            @Override
+            public void getUserInfo(User currentUser) {
+
+                if(userIsEnrolledInActivity(currentActivity,currentUser)) {
+
+                    if(activityIsPast(currentActivity)){
+
+                        listener.getUserState(UserStatus.MUST_BE_RANKED);
+
+                    } else {
+
+                        listener.getUserState(UserStatus.ENROLLED);
+                    }
+
+                } else {
+
+                    if(activityIsPast(currentActivity)){
+
+                        if(userHasRankedActivity(currentActivity,currentUser)){
+
+                            listener.getUserState(UserStatus.ALREADY_RANKED);
+
+                        } else {
+
+                            listener.getUserState(UserStatus.ACTIVITY_PAST);
+                        }
+
+
+                    } else {
+
+                        if(placeLeftInActivity(currentActivity)){
+
+                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
+
+                        } else {
+
+                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){
+
+        return user.getInterestedEventIds().contains(dba.getId());
+    }
+
+    private boolean activityIsPast(DeboxActivity dba){
+
+        return dba.getTimeEnd().before(Calendar.getInstance());
+    }
+
+    private boolean userHasRankedActivity(DeboxActivity dba, User user){
+
+        return user.getRankedEventIds().contains(dba.getId());
+    }
+
+    private boolean placeLeftInActivity(DeboxActivity dba){
+
+        if(dba.getNbMaxOfParticipants() <=0){
+            return true;
+        } else {
+            if(dba.getNbMaxOfParticipants() > dba.getNbOfParticipants()){
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+
+    // Old version, deprecated, will be remove soon
+
+    /*public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
 
 
         userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
@@ -164,9 +239,9 @@ public class DataProvider {
             }
         }, uid);
 
-    }
+    }*/
 
-    private void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
+    public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
@@ -187,7 +262,9 @@ public class DataProvider {
 
     }
 
+    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
 
+/*
     private void getIfAlreadyRanked(final String uid, final DataProviderListenerAlreadyRanked listener){
 
         String userUid = user.getUid();
@@ -223,8 +300,10 @@ public class DataProvider {
 
 
 
-    }
+    }*/
 
+    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
+    /*
     private void getIfActivityIsPast(final String uid, final DataProviderListenerIsPast listener){
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
@@ -241,7 +320,7 @@ public class DataProvider {
             }
         },uid);
 
-    }
+    }*/
 
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
@@ -311,8 +390,10 @@ public class DataProvider {
         });
     }
 
+    // TODO Remove this method... Very bad idea to fetch all database and proceed it in application !!!!!
+
     public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -368,9 +449,8 @@ public class DataProvider {
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-                        //decreasesNbOfUserInActivity(dba);
                     } else {
-                        //TODO Something wrong happends ...
+                        //TODO Something wrong happens ...
                     }
                 }
             }
@@ -408,7 +488,8 @@ public class DataProvider {
                 // icii
 
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                // To be check if it's work like this...
+                //FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference getUserProfile = database.getReference("users/" + idOrganiser);
 
 
@@ -441,77 +522,62 @@ public class DataProvider {
 
                     }
                 });
-/*
-
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
-
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                listener.getUserInfo(getDeboxUser(userUid, userMap));
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-
- */
-
-
-
-
-
 
             }
         },uid);
 
-
     }
 
-
-    public String pushActivity(DeboxActivity da){
-
+    public String pushActivity(final DeboxActivity da){
 
         String key = mDatabase.child("activities").push().getKey();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        HashMap<String, Object> result = new HashMap<>();
-
-        double location [] = da.getLocation();
-
-        result.put("organizer",da.getOrganizer());
-        result.put("title",da.getTitle());
-        result.put("description",da.getDescription());
-
-
-        long tmStart = da.getTimeStart().getTimeInMillis();
-        long tmEnd = da.getTimeEnd().getTimeInMillis();
-        result.put("timeStart",tmStart);
-        result.put("timeEnd",tmEnd);
-
-
-        result.put("latitude",location[0]);
-        result.put("longitude",location[1]);
-        result.put("category",da.getCategory());
-
-        result.put("nbOfParticipants",da.getNbOfParticipants());
-        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
-
-        result.put("images",da.getImageList());
-
+        HashMap<String, Object> result = createActivityMap(da);
         childUpdates.put("activities/"+key, result);
-
         mDatabase.updateChildren(childUpdates);
 
         copyIdOfCreatedEvent(key);
         return key;
     }
+
+    private HashMap<String,Object> createActivityMap(DeboxActivity da) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        double location [] = da.getLocation();
+        result.put("organizer",da.getOrganizer());
+        result.put("title",da.getTitle());
+        result.put("description",da.getDescription());
+        long tmStart = da.getTimeStart().getTimeInMillis();
+        long tmEnd = da.getTimeEnd().getTimeInMillis();
+        result.put("timeStart",tmStart);
+        result.put("timeEnd",tmEnd);
+        result.put("latitude",location[0]);
+        result.put("longitude",location[1]);
+        result.put("category",da.getCategory());
+        result.put("nbOfParticipants",da.getNbOfParticipants());
+        result.put("nbMaxOfParticipants",da.getNbMaxOfParticipants());
+        result.put("images",da.getImageList());
+
+        return result;
+    }
+
+    public String updateActivity(DeboxActivity da) {
+        String key = da.getId();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        HashMap<String, Object> result = createActivityMap(da);
+        childUpdates.put("activities/"+key, result);
+        mDatabase.updateChildren(childUpdates);
+
+        return key;
+    }
+
+    public void deleteActivity(DeboxActivity da) {
+        String key = da.getId();
+        mDatabase.child("activities").child(key).removeValue();
+    }
+
     private void copyIdOfCreatedEvent(String activityId){
 
         String organisedEventsKey = mDatabase.child("users").child(user.getUid()).child("organised").push().getKey();
@@ -588,7 +654,7 @@ public class DataProvider {
 
     public void initUserInDB(){
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        //user = FirebaseAuth.getInstance().getCurrentUser();
 
         HashMap<String, Object> enrolled = new HashMap<>();
 
@@ -621,6 +687,15 @@ public class DataProvider {
             }
         }
 
+        List<String> rankedEvents = new ArrayList<>();
+        if (userMap.containsKey("ranked")) {
+            Map<String, Map<String, Object>> ranked = (Map<String, Map<String, Object>>) userMap.get("ranked");
+            for (Map<String, Object> innerMap : ranked.values()) {
+                String activityID = (String) innerMap.get("activity ID:");
+                rankedEvents.add(activityID);
+            }
+        }
+
         Integer ratingNb = -1;
         if (userMap.containsKey("ratingNb")) {
             //ratingNb = (int) userMap.get("ratingNb");
@@ -636,17 +711,19 @@ public class DataProvider {
 
         String photoLink = "";
 
-        return new User(uid, username, email, organizedEvents, interestedEvents, ratingNb, ratingSum, photoLink);
+        return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final String userUid = user.getUid();
-        //do try catch;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference getUserProfile = database.getReference("users/" + userUid);
 
-        getUserProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
@@ -721,6 +798,7 @@ public class DataProvider {
         enrolled.put("enrolled/" + enrolledKey, enrolledChild);
 
 
+        // TODO remove
         incrementNbOfUserInActivity(dba);
 
         // update the database
@@ -833,7 +911,7 @@ public class DataProvider {
     //DB Callbacks interfaces
 
 
-    private interface DataProviderListenerPlaceFreeInActivity{
+    public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
     }
 
@@ -876,5 +954,5 @@ public class DataProvider {
     public interface DataProviderListenerUserEvents {
         void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
     }
-    
+
 }

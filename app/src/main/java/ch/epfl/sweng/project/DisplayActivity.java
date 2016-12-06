@@ -103,16 +103,58 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                 @Override
                 public void getActivity(DeboxActivity activity) {
 
+                    mDataProvider.getCurrentUserStatusSimplified(activity, new DataProvider.DataProviderListenerUserState() {
+                        @Override
+                        public void getUserState(UserStatus status) {
+
+                            Log.e("Simplified status:",status.toString());
+
+                            switch(status){
+                                case ENROLLED:
+                                    leaveActivityButton.setVisibility(View.VISIBLE);
+                                    statusInfoTextView.setText("You are enrolled in this Activity");
+
+                                    break;
+                                case NOT_ENROLLED_NOT_FULL:
+                                    joinActivityButton.setVisibility(View.VISIBLE);
+                                    statusInfoTextView.setText("You can joins this activity");
+
+                                    break;
+                                case NOT_ENROLLED_FULL:
+                                    statusInfoTextView.setText("This activity is full sorry for you ");
+
+                                    break;
+                                case MUST_BE_RANKED:
+                                    ratingLayout.setVisibility(View.VISIBLE);
+                                    statusInfoTextView.setText("Please Rank this activity");
+
+                                    break;
+                                case ALREADY_RANKED:
+                                    statusInfoTextView.setText("You have already rank this activity");
+
+                                    break;
+                                case ACTIVITY_PAST:
+                                    statusInfoTextView.setText("This activty has past you canot join it");
+
+                                    break;
+                                default:
+
+                                    break;
+
+                            }
+
+                        }
+                    });
+
                     currentActivity = activity;
-                    title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
+                  /*  title = (TextView) findViewById(R.id.eventTitle);
+                    title.setText(activity.getTitle()); //selectedEvent.getTitle() */
+                    getSupportActionBar().setTitle(activity.getTitle());
 
                     description = (TextView) findViewById(R.id.eventDescription);
                     description.setText(activity.getDescription());
 
                     activityToDisplay = activity;
-                    title = (TextView) findViewById(R.id.eventTitle);
-                    title.setText(activity.getTitle()); //selectedEvent.getTitle()
 
                     category = (TextView) findViewById(R.id.eventCategory);
                     category.setText(getResources().getString(R.string.create_activity_category_text) + " " + activity.getCategory());
@@ -154,13 +196,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     List<String> imagesList = activity.getImageList();
                     if(imagesList != null) {
-                        new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+                        if(imagesList.size() != 0) {
+                            new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
+                        }
+                        else {
+                            ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                        }
+                    }
+                    else {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
                     }
                 }
             }, eventId);
 
 
-            mDataProvider.getCurrentUserStatus(eventId, new DataProvider.DataProviderListenerUserState() {
+           /* mDataProvider.getCurrentUserStatus(eventId, new DataProvider.DataProviderListenerUserState() {
                 @Override
                 public void getUserState(UserStatus status) {
 
@@ -198,9 +248,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     }
 
-                    Log.e("Status  : ",status.toString());
+                    Log.e("Old status :",status.toString());
                 }
-            });
+            });*/
 
 
             MapFragment mapFragment = (MapFragment) getFragmentManager()

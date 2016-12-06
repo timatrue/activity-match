@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
+import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
@@ -26,12 +27,14 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.CursorMatchers.withRowString;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -57,7 +60,7 @@ public class CreateActivityTest {
     private final List<DataProvider.CategoryName> categoryList = createCategoryList();
 
     //Returns the calendar that is 'nDays' days later than the input calendar
-    private Calendar addDays(Calendar calendar, int nDays) {
+    public static Calendar addDays(Calendar calendar, int nDays) {
         Calendar newCalendar = (Calendar) calendar.clone();
         newCalendar.add(Calendar.DATE, nDays);
         return newCalendar;
@@ -136,8 +139,10 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityTitleEditText)).perform(ViewActions.scrollTo()).perform(typeText(testTitle), closeSoftKeyboard());
 
-        onView(withId(R.id.createActivityCategoryDropDown)).perform(ViewActions.scrollTo()).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is(testCategory))).perform(click());
+        onView(withId(R.id.proSpinner)).perform(ViewActions.scrollTo()).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(testCategory)))
+                .inRoot(RootMatchers.withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .perform(click());
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -253,7 +258,22 @@ public class CreateActivityTest {
         activity.activityLatitude = 1;
         activity.activityLongitude = 1;
 
+        activity.activityCategory = "Culture";
+
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.add(Calendar.DATE, -2);
+        final int endYear = endCalendar.get(Calendar.YEAR);
+        final int endMonth = endCalendar.get(Calendar.MONTH);
+        final int endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+
+        onView(withId(R.id.createActivityEndDate)).perform(ViewActions.scrollTo()).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(endYear, endMonth, endDay));
+
+        onView(withId(android.R.id.button1)).perform(click());
+
 
         final String validation = activity.validateActivity();
         final DeboxActivity da = activity.createActivityMethod(validation);
@@ -283,6 +303,7 @@ public class CreateActivityTest {
         activity.activityLongitude = 1;
         activity.activityStartCalendar = addDays(currentCalendar, 3);
         activity.activityEndCalendar = addDays(currentCalendar, 2);
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
@@ -326,6 +347,8 @@ public class CreateActivityTest {
         activity.activityLongitude = 0.3;
         activity.activityStartCalendar = startCalendar;
         activity.activityEndCalendar = endCalendar;
+
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 

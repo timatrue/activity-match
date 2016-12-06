@@ -43,12 +43,13 @@ public class UserProfileTest {
 
     private List<String> organizedEvents = Arrays.asList("id2", "id3");
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
+    private List<String> rankedEvents = Arrays.asList("id2");
 
     private User testUser = new User("id", "Bob", "email", organizedEvents,
-            interestedEvents, 4, 8, "slls");
+            interestedEvents, rankedEvents, 4, 8, "slls");
 
     //The list of DeboxActivity designed for testing
-    private final List<DeboxActivity> deboxActivityList = createDeboxActivityList();
+    private List<DeboxActivity> deboxActivityList;
 
     //Returns the calendar that is 'nDays' days later than the input calendar
     private Calendar addDays(Calendar calendar, int nDays) {
@@ -57,65 +58,65 @@ public class UserProfileTest {
         return newCalendar;
     }
 
+    final DeboxActivity dA1 = new DeboxActivity(
+            "id1",
+            "Benoit",
+            "da1",
+            "Doing a nice walk",
+            addDays(currentCalendar, -5),
+            addDays(currentCalendar, -4),
+            46.777245,
+            6.642266,
+            "Sports");
+
+    final DeboxActivity dA2 = new DeboxActivity(
+            "id2",
+            "Bob",
+            "da2",
+            "Doing a nice walk",
+            addDays(currentCalendar, 2),
+            addDays(currentCalendar, 4),
+            46.777245,
+            6.642266,
+            "Culture");
+
+    final DeboxActivity dA3 = new DeboxActivity(
+            "id3",
+            "Bob",
+            "da3",
+            "Doing a nice walk",
+            addDays(currentCalendar, 5),
+            addDays(currentCalendar, 7),
+            46.777245,
+            6.642266,
+            "Sport");
+
+    final DeboxActivity dA4 = new DeboxActivity(
+            "id4",
+            "Benoit",
+            "da4",
+            "Doing a nice walk",
+            addDays(currentCalendar, 4),
+            addDays(currentCalendar, 5),
+            46.777245,
+            6.642266,
+            "Culture");
+
+    final DeboxActivity dA5 = new DeboxActivity(
+            "id5",
+            "Benoit",
+            "da5",
+            "Doing a nice walk",
+            addDays(currentCalendar, 2),
+            addDays(currentCalendar, 7),
+            46.777245,
+            5,
+            "Culture");
+
     //Returns a list of designed DeboxActivity for testing
     private List<DeboxActivity> createDeboxActivityList() {
 
         final List<DeboxActivity> activityList = new ArrayList<>();
-
-        final DeboxActivity dA1 = new DeboxActivity(
-                "id1",
-                "Benoit",
-                "da1",
-                "Doing a nice walk",
-                addDays(currentCalendar, -5),
-                addDays(currentCalendar, -4),
-                46.777245,
-                6.642266,
-                "Sports");
-
-        final DeboxActivity dA2 = new DeboxActivity(
-                "id2",
-                "Bob",
-                "da2",
-                "Doing a nice walk",
-                addDays(currentCalendar, 2),
-                addDays(currentCalendar, 4),
-                46.777245,
-                6.642266,
-                "Culture");
-
-        final DeboxActivity dA3 = new DeboxActivity(
-                "id3",
-                "Bob",
-                "da3",
-                "Doing a nice walk",
-                addDays(currentCalendar, 5),
-                addDays(currentCalendar, 7),
-                46.777245,
-                6.642266,
-                "Sport");
-
-        final DeboxActivity dA4 = new DeboxActivity(
-                "id4",
-                "Benoit",
-                "da4",
-                "Doing a nice walk",
-                addDays(currentCalendar, 4),
-                addDays(currentCalendar, 5),
-                46.777245,
-                6.642266,
-                "Culture");
-
-        final DeboxActivity dA5 = new DeboxActivity(
-                "id5",
-                "Benoit",
-                "da5",
-                "Doing a nice walk",
-                addDays(currentCalendar, 2),
-                addDays(currentCalendar, 7),
-                46.777245,
-                5,
-                "Culture");
 
         activityList.add(dA1);
         activityList.add(dA2);
@@ -129,6 +130,7 @@ public class UserProfileTest {
     private void initializeMockProvider(final UserProfile activity) {
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
+        deboxActivityList = createDeboxActivityList();
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setUserToMock(testUser);
         activity.setDataProvider(dp);
@@ -148,98 +150,20 @@ public class UserProfileTest {
 
         assertThat((String) activity.nameTextView.getText(), is(testUser.getUsername()));
 
-        List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
+        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(2));
-        assertTrue(orgEvents.contains("da2"));
-        assertTrue(orgEvents.contains("da3"));
+        assertTrue(orgEvents.contains(dA2));
+        assertTrue(orgEvents.contains(dA3));
 
-        List<String> intEvents = activity.activityCollection.get(activity.interestedEvents);
+        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
         assertThat(intEvents.size(), is(2));
-        assertTrue(intEvents.contains("da4"));
-        assertTrue(intEvents.contains("da5"));
+        assertTrue(intEvents.contains(dA4));
+        assertTrue(intEvents.contains(dA5));
 
-        List<String> parEvents = activity.activityCollection.get(activity.participatedEvents);
+        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
         assertThat(parEvents.size(), is(1));
-        assertTrue(parEvents.contains("da1"));
+        assertTrue(parEvents.contains(dA1));
 
-        /*ViewInteraction textView = onView(
-                allOf(withId(R.id.userProfileActivityChild), withText("da2"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.userProfileActivityList),
-                                        1),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("da2")));
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.userProfileActivityChild), withText("Festival Balelec"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.userProfileActivityList),
-                                        3),
-                                0),
-                        isDisplayed()));
-        textView2.check(matches(withText("Festival Balelec")));
-
-        ViewInteraction relativeLayout = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.userProfileActivityList),
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1)),
-                        5),
-                        isDisplayed()));
-        relativeLayout.check(matches(isDisplayed()));
-
-        ViewInteraction relativeLayout2 = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.userProfileActivityList),
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1)),
-                        6),
-                        isDisplayed()));
-        relativeLayout2.check(matches(isDisplayed()));
-
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.userProfileActivityChild), withText("Hockey"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.userProfileActivityList),
-                                        6),
-                                0),
-                        isDisplayed()));
-        textView3.check(matches(withText("Hockey")));
-
-        ViewInteraction relativeLayout3 = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.userProfileActivityList),
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class),
-                                        1)),
-                        4),
-                        isDisplayed()));
-        relativeLayout3.check(matches(isDisplayed()));
-    }
-
-    private static Matcher<View> childAtPosition(
-    final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };*/
     }
 
 
@@ -250,7 +174,7 @@ public class UserProfileTest {
         final UserProfile activity = userProfileRule.getActivity();
 
         final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
-                new ArrayList<String>(), 4, 8, "slls");
+                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls");
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
@@ -261,41 +185,13 @@ public class UserProfileTest {
         activity.createCollection();
         activity.setExpListView();
 
+        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
+        assertThat(orgEvents.size(), is(0));
 
-        assertThat((String) activity.nameTextView.getText(), is("Bob"));
+        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
+        assertThat(intEvents.size(), is(0));
 
-        List<String> orgEvents = activity.activityCollection.get(activity.organizedEvents);
-        assertThat(orgEvents.size(), is(1));
-        assertTrue(orgEvents.contains("No Events"));
-
-        List<String> intEvents = activity.activityCollection.get(activity.interestedEvents);
-        assertThat(intEvents.size(), is(1));
-        assertTrue(intEvents.contains("No Events"));
-
-        List<String> parEvents = activity.activityCollection.get(activity.participatedEvents);
-        assertThat(parEvents.size(), is(1));
-        assertTrue(parEvents.contains("No Events"));
+        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
+        assertThat(parEvents.size(), is(0));
     }
-
-    @UiThreadTest
-    @Test
-    public void whenNullUsernameUsesEmailInstead() {
-
-        final UserProfile activity = userProfileRule.getActivity();
-
-        final User newUser = new User("id", null, "email", organizedEvents,
-                interestedEvents, 4, 8, "slls");
-
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-        mocDataProvider.setUserToMock(newUser);
-        activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<>();
-        activity.createCollection();
-        activity.setExpListView();
-
-        assertThat((String) activity.nameTextView.getText(), is("email"));
-    }
-
 }

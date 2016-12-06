@@ -54,6 +54,13 @@
         </activity>
         <activity android:name=".CreateActivity"
             android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/create_activity_title_bar"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".ModifyActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/create_activity_title_bar"
             android:screenOrientation="portrait">
         </activity>

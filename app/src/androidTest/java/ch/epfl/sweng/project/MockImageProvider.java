@@ -2,14 +2,25 @@ package ch.epfl.sweng.project;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
@@ -81,16 +92,21 @@ public class MockImageProvider {
                 Object[] args = invocation.getArguments();
                 Context context = (Context) args[0];
                 String folder = (String) args[1];
-                View childLayout = (View) args[2];
+                ImageView imageView = (ImageView) args[2];
                 String imageName = (String) args[2];
 
-                SquareImageView imageView = (SquareImageView) childLayout.findViewById(R.id.activityImage);
+                Bitmap resource = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_icon);
+
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                imageView.setImageDrawable(circularBitmapDrawable);
 
                 imageView.setImageDrawable(previewImage);
 
                 return null;
             }
-        }).when(mockImageProvider).previewImage(any(Context.class), any(String.class), any(LinearLayout.class), any(String.class));
+        }).when(mockImageProvider).previewImage(any(Context.class), any(String.class), any(ImageView.class), any(String.class));
     }
 
     public void initUploadImage() {
@@ -102,8 +118,20 @@ public class MockImageProvider {
                 String folder = (String) args[1];
                 final ImageProvider.uploadListener listener = (ImageProvider.uploadListener) args[2];
 
-                listener.uploadProgress(imageUri, 10, 10);
-                listener.uploadSuccessful(imageUri);
+                int time = (int) (Math.random() * 10000);
+
+                final Handler handler = new Handler();
+                Runnable updateRunnable;
+
+                updateRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.uploadProgress(imageUri, 10, 10);
+                        listener.uploadSuccessful(imageUri);
+                    }
+                };
+
+                handler.postDelayed(updateRunnable, time);
 
                 return null;
             }
