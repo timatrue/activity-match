@@ -178,7 +178,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     final int nbMaxParticipants = activity.getNbMaxOfParticipants();
 
                     if(nbParticipants >= 0) {
-                        if(nbMaxParticipants >= 0) {
+                        if(nbMaxParticipants > 0) {
                             occupancyTextView.setText(getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants));
                         } else {
                             occupancyTextView.setText(getString(R.string.occupancy, nbParticipants));

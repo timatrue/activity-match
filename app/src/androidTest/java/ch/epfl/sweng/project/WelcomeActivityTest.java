@@ -120,7 +120,9 @@ public class WelcomeActivityTest {
                 addDays(currentCalendar, 4),
                 46.777245,
                 6.642266,
-                "Culture");
+                "Culture",
+                0,
+                10);
 
         final DeboxActivity dA3 = new DeboxActivity(
                 "id3",
@@ -131,7 +133,9 @@ public class WelcomeActivityTest {
                 addDays(currentCalendar, 7),
                 46.777245,
                 6.642266,
-                "Sport");
+                "Sport",
+                10,
+                5);
 
         final DeboxActivity dA4 = new DeboxActivity(
                 "id4",
@@ -142,7 +146,9 @@ public class WelcomeActivityTest {
                 addDays(currentCalendar, 5),
                 46.777245,
                 6.642266,
-                "Culture");
+                "Culture",
+                -1,
+                10);
 
         final DeboxActivity dA5 = new DeboxActivity(
                 "id5",
@@ -153,7 +159,9 @@ public class WelcomeActivityTest {
                 addDays(currentCalendar, 7),
                 46.777245,
                 5,
-                "Culture");
+                "Culture",
+                5,
+                0);
 
         final DeboxActivity dA6 = new DeboxActivity(
                 "id6",
@@ -348,7 +356,20 @@ public class WelcomeActivityTest {
                 assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
                 assertThat(((TextView) view.findViewById(R.id.previewEvent)).getText().toString(), is(dA.getShortDescription()));
                 assertThat(((TextView) view.findViewById(R.id.dateEvent)).getText().toString(), is(getDateInstance().format(dA.getTimeStart().getTime())));
-                assertThat(((TextView) view.findViewById(R.id.sizeEvent)).getText().toString(), is(activity.getString(R.string.occupancy, dA.getNbOfParticipants())));
+
+                final int nbParticipants = dA.getNbOfParticipants();
+                final int nbMaxParticipants = dA.getNbMaxOfParticipants();
+                String participants;
+                if(nbParticipants >= 0) {
+                    if(nbMaxParticipants > 0) {
+                        participants = activity.getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants);
+                    } else {
+                        participants = activity.getString(R.string.occupancy, nbParticipants);
+                    }
+                } else {
+                    participants = activity.getString(R.string.invalid_occupancy);
+                }
+                assertThat(((TextView) view.findViewById(R.id.sizeEvent)).getText().toString(), is(participants));
                 displayedActivityCount += 1;
             }
         }

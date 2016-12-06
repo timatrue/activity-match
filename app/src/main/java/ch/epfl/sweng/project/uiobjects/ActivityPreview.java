@@ -89,7 +89,7 @@ public class ActivityPreview extends LinearLayout {
         sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
 
         if(nbParticipants >= 0) {
-            if(nbMaxParticipants >= 0) {
+            if(nbMaxParticipants > 0) {
                 sizeEvent.setText(context.getResources().getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants));
             } else {
                 sizeEvent.setText(context.getResources().getString(R.string.occupancy, nbParticipants));
