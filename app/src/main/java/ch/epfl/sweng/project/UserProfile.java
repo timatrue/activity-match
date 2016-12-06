@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -110,7 +112,6 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    displayUserImage();
                     createCollection();
                     setExpListView();
                 }
@@ -130,11 +131,11 @@ public class UserProfile extends AppCompatActivity {
     View.OnClickListener imageClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             imageFragment = new UserImageFragment();
+            imageFragment.setUser(current_user);
             imageFragment.setDataProvider(mDataProvider);
             imageFragment.setImageProvider(mImageProvider);
-            imageFragment.setImage(userImageBitmap);
+            imageFragment.setImage(((GlideBitmapDrawable)userImage.getDrawable()).getBitmap());
             imageFragment.show(fm, "Validating your event");
         }
     };
@@ -161,26 +162,15 @@ public class UserProfile extends AppCompatActivity {
         }
     }
 
-
-    private void displayUserImage() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(user != null) {
-            final Uri photoUrl = user.getPhotoUrl();
-
-            new Thread(new Runnable() {
-                public void run() {
-                    final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            userImage.setImageBitmap(bitmap);
-                            userImageBitmap = bitmap;
-                        }
-                    });
-                }
-            }).start();
+    public void updateUser(User user, boolean newImage) {
+        current_user = user;
+        if(newImage) {
+            displayUserImage();
         }
+    }
+
+    public void displayUserImage() {
+        mImageProvider.downloadUserImage(this, current_user.getId(), current_user.getPhotoLink(), userImage, null);
     }
 
     private void displayUserRanking() {
@@ -215,6 +205,8 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
+                mImageProvider = new ImageProvider();
+                displayUserImage();
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());

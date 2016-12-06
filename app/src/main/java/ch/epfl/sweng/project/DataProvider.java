@@ -710,9 +710,9 @@ public class DataProvider {
         }
 
         String photoLink = null;
-        if (userMap.containsKey("photo")) {
+        if (userMap.containsKey("image")) {
             //ratingSum = (int) userMap.get("ratingSum");
-            photoLink = (String) userMap.get("ratingSum");
+            photoLink = (String) userMap.get("image");
         }
 
         return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
@@ -739,6 +739,20 @@ public class DataProvider {
         });
 
     }
+
+    public void changeUserImage(final String imageName){
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.child("image").setValue(imageName);
+
+    }
+
 
 
     /**

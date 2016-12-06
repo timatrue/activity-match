@@ -137,6 +137,7 @@
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
+    <string name="pick_image_intent_text">text</string>
 
 
 </resources>
