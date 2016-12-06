@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -27,80 +29,113 @@
             android:id="@+id/titleEvent"
             android:textColor="@color/niceWhiteDebox"
             android:ellipsize="end"
-            android:maxLines="1"
-             />
+            android:maxLines="1" />
 
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <!--
-                <TextView
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/textBlockLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventTitle"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-                 -->
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventCategory"
-                    android:layout_below="@+id/eventTitle"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/location"
+                            android:textSize="@dimen/jumpToMapFontSize"
+                            android:textColor="@color/niceBlueDebox"
+                            android:padding="@dimen/textBlockPadding" />
+
+                        <TextView
+                            android:id="@+id/separatorLocation"
+                            android:layout_width="match_parent"
+                            android:layout_below="@id/location"
+                            android:background="@color/strokeGreyDebox"
+                            android:layout_height="0.5dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/eventScheduleStarts"
+                            android:layout_below="@id/separatorLocation"
+                            android:padding="@dimen/textBlockPadding" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/eventScheduleStarts"
+                            android:id="@+id/eventScheduleEnds"
+                            android:padding="@dimen/textBlockPadding" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/separatorLocation"
+                            android:layout_alignParentRight="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/eventOccupancy"
+                                android:text="@string/Occupancy"
+                                android:textColor="@color/niceRedDebox"
+                                android:padding="@dimen/textBlockPadding"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/eventCategory"
+                                android:padding="@dimen/textBlockPadding" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/separatorEventStart"
+                        android:layout_width="match_parent"
+                        android:background="@color/strokeGreyDebox"
+                        android:layout_height="0.5dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/eventDescription"
+                        android:textSize="@dimen/eventDescriptionFontSize"
+                        android:textColor="@color/normalGreyDebox"
+                        android:padding="@dimen/textBlockPadding"/>
 
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventSchedule"
-                    android:layout_below="@+id/eventCategory"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/StatusInfo"
+                        android:text="@string/joinActivity_satus"
+                        android:padding="@dimen/textBlockPadding"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventDescription"
-                    android:layout_below="@+id/eventSchedule"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    <TextView
+                        android:id="@+id/separatorEventEnd"
+                        android:layout_width="match_parent"
+                        android:background="@color/strokeGreyDebox"
+                        android:layout_height="0.5dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/eventOccupancy"
-                    android:layout_below="@+id/eventDescription"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/Occupancy"/>
-
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/StatusInfo"
-                    android:text="@string/joinActivity_satus"
-                    android:layout_below="@+id/eventOccupancy"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
-
+                </LinearLayout>
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <Button
@@ -110,8 +145,15 @@
                         android:text="@string/joinActivity_button"
                         android:onClick="joinActivity"
                         android:visibility="invisible"
+                        android:textColor="@color/niceWhiteDebox"
+                        android:background="@color/niceRedDebox"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/textBlockPadding"
+                        android:bottomRightRadius="10dp"
+                        android:bottomLeftRadius="10dp"
+                        android:topLeftRadius="10dp"
+                        android:topRightRadius="10dp" />
 
                     <Button
                         android:layout_width="match_parent"
@@ -120,20 +162,23 @@
                         android:text="@string/leaveActivity_button"
                         android:onClick="leaveActivity"
                         android:visibility="invisible"
+                        android:textColor="@color/niceWhiteDebox"
+                        android:background="@color/niceBlueDebox"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/textBlockPadding"
+                        android:bottomRightRadius="10dp"
+                        android:bottomLeftRadius="10dp"
+                        android:topLeftRadius="10dp"
+                        android:topRightRadius="10dp"/>
 
                 </RelativeLayout>
-
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/leaveActivity"
                     android:id="@+id/rankLayout"
                     android:visibility="invisible">
-
 
                     <RatingBar
                         android:layout_marginStart="@dimen/fab_margin"
@@ -141,6 +186,7 @@
                         android:layout_width="wrap_content"
                         android:stepSize="1"
                         android:layout_height="wrap_content"
+                        android:visibility="invisible"
                         android:id="@+id/rankWidget" />
 
                     <Button
@@ -150,52 +196,51 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/rateButton"
                         android:text="@string/rateButton"
+                        android:visibility="invisible"
                         android:onClick="rateButtonPressed" />
 
                 </LinearLayout>
 
-                <HorizontalScrollView
-                    android:layout_weight="1"
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/imageGalleryHeight">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:id="@+id/imagesLayout">
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/imageGalleryHeight"
-                    android:layout_above="@+id/joinActivity"
-                    android:layout_below="@id/eventOccupancy">
+                    android:layout_height="@dimen/mapGoogleHeight"
+                    android:id="@+id/googleMapLayout">
 
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <fragment
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/imagesLayout">
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true" />
 
-                    </LinearLayout>
-
-                </HorizontalScrollView>
-
+                </RelativeLayout>
 
             </LinearLayout>
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:id="@+id/relativeLayout">
-
-                <fragment
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    android:id="@+id/map"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true" />
-
-            </RelativeLayout>
-
-
-        </LinearLayout>
-
     </ScrollView>
     </LinearLayout>
+
+
+
 
 
 </RelativeLayout>
