@@ -47,29 +47,26 @@ public class ImageProvider {
 
 
     public void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
-        ///
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
-        int dp = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
+        int screenHeignt = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
 
         for(String imageName: imagesList)  {
             // Reference to an image file in Firebase Storage
             StorageReference storageReference = storageRef.child("images/" + folder + "/" + imageName);
 
             ImageView imageView = new ImageView(context);
-            //imageView.setAdjustViewBounds(true);
-
+            imageView.setBackgroundResource(R.drawable.rectangle);
             imageLayout.addView(imageView);
 
             // Load the image using Glide
             Glide.with(context)
                     .using(new FirebaseImageLoader())
                     .load(storageReference)
-                    .override(screenWidth,dp)
+                    .override(screenWidth,screenHeignt)
                     .centerCrop()
                     .into(imageView);
         }
-
     }
 
     public void previewImage(final Context context,  String folder, final ImageView imageView, String imageName){
