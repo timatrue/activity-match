@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,11 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -21,15 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,16 +72,13 @@ public class UserProfile extends AppCompatActivity {
     public String organizedEvents;
 
     List<String> groupList;
-    List<DeboxActivity> childList;
     Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
-    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
-        mContext = getApplicationContext();
 
         interestedEvents = getResources().getString(R.string.interested_events);
         participatedEvents = getResources().getString(R.string.participated_events);
@@ -145,17 +136,20 @@ public class UserProfile extends AppCompatActivity {
         if(user != null) {
             final Uri photoUrl = user.getPhotoUrl();
 
-            new Thread(new Runnable() {
-                public void run() {
-                    final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            userImage.setImageBitmap(bitmap);
-                        }
-                    });
-                }
-            }).start();
+            if(photoUrl != null){
+                new Thread(new Runnable() {
+                    public void run() {
+                        final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                userImage.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                }).start();
+            }
+
         }
     }
 
@@ -227,7 +221,7 @@ public class UserProfile extends AppCompatActivity {
                     userName = user.getEmail();
                 }
                 if(userName != null) {
-                    nameTextView.setText(user.getUsername());
+                    nameTextView.setText(userName);
                 }
 
                 if(expListView != null) {
@@ -275,11 +269,8 @@ public class UserProfile extends AppCompatActivity {
                 if(selected != null) {
                     Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                             .show();
-
-                    if (selected != null) {
-                        String eventId = selected.getId();
-                        launchDisplayActivity(eventId);
-                    }
+                    String eventId = selected.getId();
+                    launchDisplayActivity(eventId);
                 }
                 return true;
             }
@@ -293,11 +284,8 @@ public class UserProfile extends AppCompatActivity {
             final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
             Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                     .show();
-
-            if (selected != null) {
-                String eventId = selected.getId();
-                launchModifyActivity(eventId);
-            }
+            String eventId = selected.getId();
+            launchModifyActivity(eventId);
         }
 
         @Override
@@ -344,5 +332,4 @@ public class UserProfile extends AppCompatActivity {
         intent.putExtra(ModifyActivity.MODIFY_ACTIVITY_EVENT_ID, eventId);
         startActivity(intent);
     }
-
 }

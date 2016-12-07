@@ -75,6 +75,9 @@
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
+    <string name="occupancy">Participants : %1$d</string>
+    <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
+    <string name="invalid_occupancy">Invalid information about participants</string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>

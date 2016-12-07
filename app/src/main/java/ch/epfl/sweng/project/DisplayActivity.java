@@ -174,14 +174,17 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     schedule.setText(stringSchedule);
 
                     // TODO for the moment, not all activities are correct entry for occupancy
-                    if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {
-                        if (activity.getNbMaxOfParticipants() >= 0) {
-                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants() + " / " + activity.getNbMaxOfParticipants());
+                    final int nbParticipants = activity.getNbOfParticipants();
+                    final int nbMaxParticipants = activity.getNbMaxOfParticipants();
+
+                    if(nbParticipants >= 0) {
+                        if(nbMaxParticipants > 0) {
+                            occupancyTextView.setText(getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants));
                         } else {
-                            occupancyTextView.setText("Occupancy : " + activity.getNbOfParticipants());
+                            occupancyTextView.setText(getString(R.string.occupancy, nbParticipants));
                         }
                     } else {
-                        occupancyTextView.setText("Invalid information about occupancy");
+                        occupancyTextView.setText(R.string.invalid_occupancy);
                     }
 
                     if (map != null) {
@@ -255,7 +258,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
     }
-
 
     /**
      * Method call by button joinActivity. Fill a new relation between user and current
