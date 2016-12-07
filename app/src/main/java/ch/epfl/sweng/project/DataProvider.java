@@ -740,6 +740,21 @@ public class DataProvider {
 
     }
 
+    public void publicUserProfile(final String userUid, final DataProviderListenerUserInfo listener){
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
     public void changeUserImage(final String imageName){
         // Don't take userReference like this, it's break all test...
         // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -60,8 +60,8 @@ public class UserProfile extends AppCompatActivity {
 
     private UserProfileExpandableListAdapter eventsExpListAdapter;
 
-    private DataProvider mDataProvider;
-    private ImageProvider mImageProvider;
+    protected DataProvider mDataProvider;
+    protected ImageProvider mImageProvider;
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -112,6 +112,7 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
+                    setImageProvider(new ImageProvider());
                     createCollection();
                     setExpListView();
                 }
@@ -126,7 +127,6 @@ public class UserProfile extends AppCompatActivity {
         setupUserToolBar();
 
     }
-
 
     View.OnClickListener imageClickListener = new View.OnClickListener() {
         @Override
@@ -143,6 +143,10 @@ public class UserProfile extends AppCompatActivity {
 
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
+    }
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        mImageProvider = imageProvider;
     }
 
     public Bitmap getBitmapFromURL(String src) {
@@ -173,7 +177,7 @@ public class UserProfile extends AppCompatActivity {
         mImageProvider.downloadUserImage(this, current_user.getId(), current_user.getPhotoLink(), userImage, null);
     }
 
-    private void displayUserRanking() {
+    protected void displayUserRanking() {
         userRank = (RatingBar) findViewById(R.id.userRank);
         if(userRank == null) {
             return;
@@ -189,7 +193,6 @@ public class UserProfile extends AppCompatActivity {
         userRank.setVisibility(View.VISIBLE);
     }
 
-
     public void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
@@ -197,15 +200,12 @@ public class UserProfile extends AppCompatActivity {
         groupList.add(interestedEvents);
     }
 
-
     public void createCollection() {
 
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
-
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
-                mImageProvider = new ImageProvider();
                 displayUserImage();
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
