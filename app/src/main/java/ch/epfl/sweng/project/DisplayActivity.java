@@ -252,7 +252,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent;
-                                    if (organizer.equals(user.getUid())) {
+                                    if (organizerId.equals(user.getUid())) {
                                         intent = new Intent(getApplicationContext(), UserProfile.class);
                                     }
                                     else {

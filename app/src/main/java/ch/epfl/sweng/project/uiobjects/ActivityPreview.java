@@ -119,7 +119,7 @@ public class ActivityPreview extends LinearLayout {
         Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(getMatColor("400", context));
+        paint.setColor(getMatColor("400", context, letter.charAt(0)));
         canvas.drawCircle(canvas.getWidth()/2, canvas.getHeight()/2, canvas.getWidth()/2, paint);
         paint.setColor(Color.WHITE);
         paint.setTextSize(80);
@@ -131,7 +131,7 @@ public class ActivityPreview extends LinearLayout {
         imageView.setImageBitmap(bitmap);
     }
 
-    private int getMatColor(String typeColor, Context context)
+    private int getMatColor(String typeColor, Context context, char letter)
     {
         int returnColor = Color.BLACK;
         int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
@@ -139,7 +139,7 @@ public class ActivityPreview extends LinearLayout {
         if (arrayId != 0)
         {
             TypedArray colors = getResources().obtainTypedArray(arrayId);
-            int index = (int) (Math.random() * colors.length());
+            int index = ((int) (letter-'A')) % colors.length();
             returnColor = colors.getColor(index, Color.BLACK);
             colors.recycle();
         }
