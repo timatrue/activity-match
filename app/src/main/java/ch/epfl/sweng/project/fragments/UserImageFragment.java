@@ -50,7 +50,7 @@ public class UserImageFragment extends DialogFragment {
     private ImageProvider mImageProvider;
     private DataProvider mDataProvider;
 
-    private LinearLayout rootView;
+    protected LinearLayout rootView;
 
     Button okButton;
     Button editButton;
@@ -72,7 +72,6 @@ public class UserImageFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
 
         rootView = (LinearLayout) inflater.inflate(R.layout.user_profile_image, container, false);
 

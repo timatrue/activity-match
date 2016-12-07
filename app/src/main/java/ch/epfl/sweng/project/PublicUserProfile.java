@@ -49,7 +49,7 @@ public class PublicUserProfile extends UserProfile {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         userId = intent.getStringExtra(PUBLIC_USER_PROFILE_UID_KEY);
-        /*
+
         imageClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +60,7 @@ public class PublicUserProfile extends UserProfile {
                 publicImageFragment.setImage(((GlideBitmapDrawable)userImage.getDrawable()).getBitmap());
                 publicImageFragment.show(fm, "Validating your event");
             }
-        };*/
+        };
 
         super.onCreate(savedInstanceState);
     }

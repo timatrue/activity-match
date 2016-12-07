@@ -25,14 +25,10 @@ import ch.epfl.sweng.project.UserProfile;
 
 public class PublicUserImageFragment extends UserImageFragment {
 
-    private LinearLayout rootView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-        rootView = (LinearLayout) inflater.inflate(R.layout.user_profile_image, container, false);
-        rootView.removeView(rootView.findViewById(R.id.userImageEdit));
+        rootView = (LinearLayout) super.onCreateView(inflater, container, savedInstanceState);
+        ((LinearLayout)rootView.findViewById(R.id.userProfileButtonsLayout)).removeView(rootView.findViewById(R.id.userImageEdit));
         return rootView;
     }
 }

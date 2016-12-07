@@ -229,30 +229,43 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     scheduleEnds.setText(timeEndFull);
 
                     userSignture = (TextView) findViewById(R.id.userSignture);
-                    final String organizer = activity.getOrganizer();
+                    final String organizerId = activity.getOrganizer();
 
-                    mDataProvider.publicUserProfile(organizer, new DataProvider.DataProviderListenerUserInfo() {
+                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    //Get the public user profile of the organizer
+                    mDataProvider.publicUserProfile(organizerId, new DataProvider.DataProviderListenerUserInfo() {
                         @Override
-                        public void getUserInfo(User user) {
-                            userName = user.getUsername();
+                        public void getUserInfo(final User organizer) {
+                            userName = organizer.getUsername();
                             publishedByString = res.getString(R.string.user_signature);
-                            userSigntureFull = new SpannableStringBuilder(publishedByString+userName);
+                            userSigntureFull = new SpannableStringBuilder(publishedByString + userName);
                             colorSpan = new ForegroundColorSpan(res.getColor(R.color.niceBlueDebox));
 
-                            userSigntureFull.setSpan(new UnderlineSpan(), publishedByString.length()-1, userSigntureFull.length(), 0);
-                            userSigntureFull.setSpan(colorSpan, publishedByString.length()-1, userSigntureFull.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            userSigntureFull.setSpan(new UnderlineSpan(), publishedByString.length() - 1, userSigntureFull.length(), 0);
+                            userSigntureFull.setSpan(colorSpan, publishedByString.length() - 1, userSigntureFull.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
                             userSignture.setText(userSigntureFull);
+
+                            //Launch organizer Public user profile activity when click on the organizer name
+                            //Launch private user profile if the user is the organizer
                             userSignture.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent(getApplicationContext(), PublicUserProfile.class);
+                                    Intent intent;
+                                    if (organizer.equals(user.getUid())) {
+                                        intent = new Intent(getApplicationContext(), UserProfile.class);
+                                    }
+                                    else {
+                                        intent = new Intent(getApplicationContext(), PublicUserProfile.class);
+                                        intent.putExtra(PublicUserProfile.PUBLIC_USER_PROFILE_UID_KEY, organizerId);
+                                    }
                                     intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
-                                    intent.putExtra(PublicUserProfile.PUBLIC_USER_PROFILE_UID_KEY, organizer);
                                     startActivity(intent);
                                 }
                             });
                         }
                     });
+
 
 
                     // TODO for the moment, not all activities are correct entry for occupancy
