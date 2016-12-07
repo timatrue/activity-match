@@ -2,7 +2,6 @@ package ch.epfl.sweng.project;
 
 import android.support.test.filters.LargeTest;
 
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -10,28 +9,29 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 
-/**
- * Created by jeremie on 09.11.16.
- */
 @LargeTest
 public class MockDataProvider {
 
     @Mock
     DataProvider mockDataProvider;
 
-    private List<DeboxActivity> listDeboxActivityStored;
     private List<DataProvider.CategoryName> listCategoryStored;
-    private List<String> listUserActivityEnrolledStored;
+    private List<DeboxActivity> listDeboxActivityStored;
     private String userID;
-    private User user;
+    private String username;
+    private String email;
+    private List<String> listUserActivityOrganizedStored;
+    private List<String> listUserActivityEnrolledStored;
+    private List<String> listUserRankedEvents;
+    private int ratingNb;
+    private int ratingSum;
+    private String photoLink;
 
     public DataProvider getMockDataProvider(){
 
@@ -45,18 +45,30 @@ public class MockDataProvider {
         initJoinActivity();
         initMockUserProfile();
         initMockGetSpecifiedActivities();
-        listDeboxActivityStored = new ArrayList<>();
         listCategoryStored = new ArrayList<>();
+        listDeboxActivityStored = new ArrayList<>();
+        userID = "def_id";
+        username = "def_username";
+        email = "def_email";
+        listUserActivityOrganizedStored = new ArrayList<>();
         listUserActivityEnrolledStored = new ArrayList<>();
-        userID="default";
-        user = new User("def_id", "def_username", "def_email", new ArrayList<String>(), new ArrayList<String>(),
-                new ArrayList<String>(),10, 5, "def_photoLink");
+        listUserRankedEvents = new ArrayList<>();
+        ratingNb = 10;
+        ratingSum = 44;
+        photoLink = "def_photoLink";
 
         return mockDataProvider;
     }
 
     public void setUserToMock(User newUser){
-        user = newUser;
+        userID = newUser.getId();
+        username = newUser.getUsername();
+        email = newUser.getEmail();
+        listUserActivityOrganizedStored = newUser.getOrganizedEventIds();
+        listUserActivityEnrolledStored = newUser.getInterestedEventIds();
+        ratingNb = newUser.getRatingNb();
+        ratingSum = newUser.getRatingSum();
+        photoLink = newUser.getPhotoLink();
         initMockUserProfile();
     }
 
@@ -217,7 +229,16 @@ public class MockDataProvider {
                 Object[] args = invocation.getArguments();
                 DataProvider.DataProviderListenerUserInfo listener = (DataProvider.DataProviderListenerUserInfo) args[0];
 
-                listener.getUserInfo(user);
+                listener.getUserInfo(new User(
+                        userID,
+                        username,
+                        email,
+                        listUserActivityOrganizedStored,
+                        listUserActivityEnrolledStored,
+                        listUserRankedEvents,
+                        ratingNb,
+                        ratingSum,
+                        photoLink));
                 return null;
             }
         }).when(mockDataProvider).userProfile(any(DataProvider.DataProviderListenerUserInfo.class));

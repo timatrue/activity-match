@@ -84,10 +84,18 @@ public class ActivityPreview extends LinearLayout {
         dateEvent = (TextView) childLayout.findViewById(R.id.dateEvent);
         dateEvent.setText(eventTime);
 
-        int nbParticipants = event.getNbOfParticipants();
+        final int nbParticipants = event.getNbOfParticipants();
+        final int nbMaxParticipants = event.getNbMaxOfParticipants();
+        sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
+
         if(nbParticipants >= 0) {
-            sizeEvent = (TextView) childLayout.findViewById(R.id.sizeEvent);
-            sizeEvent.setText("Participants: " +  nbParticipants);
+            if(nbMaxParticipants > 0) {
+                sizeEvent.setText(context.getResources().getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants));
+            } else {
+                sizeEvent.setText(context.getResources().getString(R.string.occupancy, nbParticipants));
+            }
+        } else {
+            sizeEvent.setText(R.string.invalid_occupancy);
         }
 
         imagesList = event.getImageList();
