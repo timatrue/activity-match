@@ -580,7 +580,7 @@ public class DataProviderTest {
                 assertEquals(user.getRatingNb(),ratingNb);
                 assertEquals(user.getRatingSum(),ratingSum);
                 assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
-                assertEquals(user.getPhotoLink(),"");
+                assertEquals(user.getPhotoLink(),null);
                 assertEquals(user.getEmail(),fakeEmail);
                 assertEquals(user.getUsername(),fakeName);
 
