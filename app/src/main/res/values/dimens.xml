@@ -20,8 +20,10 @@
     <dimen name="jumpToMapFontSize">18dp</dimen>
     <dimen name="imageGalleryHeight">240dp</dimen>
     <dimen name="mapGoogleHeight">240dp</dimen>
-        <!--mnemonics TRouBLe-->
-    <dimen name="textBlockPadding">3dp</dimen>
+
+        <!--mnemonics TRouBLe Top Right Bottom Left-->
+    <dimen name="textBlockPadding">5dp</dimen>
+    <dimen name="descBlockPadding">7dp</dimen>
     <dimen name="topMargin">5dp</dimen>
     <dimen name="rightMargin">5dp</dimen>
     <dimen name="bottomMargin">5dp</dimen>

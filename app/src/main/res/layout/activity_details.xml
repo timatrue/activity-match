@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -105,11 +103,6 @@
                         </LinearLayout>
 
                     </RelativeLayout>
-                    <TextView
-                        android:id="@+id/separatorEventStart"
-                        android:layout_width="match_parent"
-                        android:background="@color/strokeGreyDebox"
-                        android:layout_height="0.5dp" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -117,6 +110,16 @@
                         android:id="@+id/eventDescription"
                         android:textSize="@dimen/eventDescriptionFontSize"
                         android:textColor="@color/normalGreyDebox"
+                        android:background="@drawable/rectangle_rounded"
+                        android:padding="@dimen/descBlockPadding"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/userSignture"
+                        android:textSize="@dimen/eventTitleFontSize"
+                        android:textColor="@color/darkGreyDebox"
+                        android:text=""
                         android:padding="@dimen/textBlockPadding"/>
 
 
@@ -127,11 +130,6 @@
                         android:text="@string/joinActivity_satus"
                         android:padding="@dimen/textBlockPadding"/>
 
-                    <TextView
-                        android:id="@+id/separatorEventEnd"
-                        android:layout_width="match_parent"
-                        android:background="@color/strokeGreyDebox"
-                        android:layout_height="0.5dp" />
 
                 </LinearLayout>
                 <RelativeLayout

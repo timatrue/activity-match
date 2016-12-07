@@ -31,7 +31,7 @@ public class DataProvider {
     private static ArrayList<CategoryName> deboxCategoriesList;
 
     private DatabaseReference mDatabase;
-    private FirebaseUser user ;
+    private FirebaseUser user;
     private FirebaseDatabase database;
 
     public DataProvider() {
@@ -646,7 +646,6 @@ public class DataProvider {
 
     }
 
-
     /**
      * Check if the current user is already enrolled in the uid activity.
      * Send response through the listener
@@ -864,5 +863,6 @@ public class DataProvider {
     public interface DataProviderListenerUserEvents {
         void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
     }
+
     
 }

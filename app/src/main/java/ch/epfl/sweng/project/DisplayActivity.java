@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.util.DisplayMetrics;
-
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
 import android.util.Log;
@@ -18,7 +21,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +61,12 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     TextView description;
     TextView scheduleStarts;
     TextView scheduleEnds;
-    TextView location;
+    TextView eventLocation;
+    TextView userSignture;
+    SpannableStringBuilder userSigntureFull;
+    String publishedByString;
+    String userName;
+    ForegroundColorSpan colorSpan;
     String timeStartFull;
     String timeEndFull;
     String commaSpace;
@@ -99,7 +106,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
-        location = (TextView) findViewById(R.id.location);
+        eventLocation = (TextView) findViewById(R.id.location);
         ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
@@ -143,7 +150,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     title = (TextView) findViewById(R.id.titleEvent);
                     title.setText(activity.getTitle());
 
-
                     title = (TextView) findViewById(R.id.titleEvent);
                     title.setText(activity.getTitle());
 
@@ -176,6 +182,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     scheduleStarts.setText(timeStartFull);
                     scheduleEnds.setText(timeEndFull);
 
+                    userSignture = (TextView) findViewById(R.id.userSignture);
+                    String organizer = activity.getOrganizer();
+
+                    userName = "John Snow";
+                    publishedByString = res.getString(R.string.user_signature);
+                    userSigntureFull = new SpannableStringBuilder(publishedByString+userName);
+                    colorSpan = new ForegroundColorSpan(res.getColor(R.color.niceBlueDebox));
+
+                    userSigntureFull.setSpan(new UnderlineSpan(), publishedByString.length()-1, userSigntureFull.length(), 0);
+                    userSigntureFull.setSpan(colorSpan, publishedByString.length()-1, userSigntureFull.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    userSignture.setText(userSigntureFull);
+
+
+
+
                     // TODO for the moment, not all activities are correct entry for occupancy
                     if(!(activity.getNbMaxOfParticipants()==-1 && activity.getNbOfParticipants() == -1)) {
                         if (activity.getNbMaxOfParticipants() >= 0) {
@@ -206,14 +227,12 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                                 SpannableString content = new SpannableString(address + commaSpace + city);
                                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                                location.setText(content);
-                                // /location.setText(address + commaSpace + city);
-                                location.setOnClickListener(jumpToMapListener);
+                                eventLocation.setText(content);
+                                eventLocation.setOnClickListener(jumpToMapListener);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
 
                     }
 
@@ -243,42 +262,33 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             leaveActivityButton.setVisibility(View.VISIBLE);
                             //statusInfoTextView.setText("You are enrolled in this Activity");
                             statusInfoTextView.setVisibility(View.GONE);
-
                             break;
                         case NOT_ENROLLED_NOT_FULL:
                             joinActivityButton.setVisibility(View.VISIBLE);
                             //statusInfoTextView.setText("You can joins this activity");
                             statusInfoTextView.setVisibility(View.GONE);
-
                             break;
                         case NOT_ENROLLED_FULL:
                             statusInfoTextView.setText("This activity is full sorry for you ");
-
                             break;
                         case MUST_BE_RANKED:
                             ratingLayout.setVisibility(View.VISIBLE);
                             statusInfoTextView.setText("Please Rank this activity");
-
                             break;
                         case ALREADY_RANKED:
                             statusInfoTextView.setText("You have already rank this activity");
                             ratingLayout.setVisibility(View.VISIBLE);
-
                             break;
                         case ACTIVITY_PAST:
                             statusInfoTextView.setText("This activty has past you cannot join it");
-
                             break;
                         default:
-
                             break;
-
                     }
 
                     Log.e("Status  : ",status.toString());
                 }
             });
-
 
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);

@@ -79,6 +79,7 @@
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
+    <string name="user_signature">Published by\u0020@</string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>
