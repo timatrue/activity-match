@@ -58,7 +58,7 @@ public class UserProfile extends AppCompatActivity {
 
     private RatingBar userRank;
 
-    private UserProfileExpandableListAdapter eventsExpListAdapter;
+    protected UserProfileExpandableListAdapter eventsExpListAdapter;
 
     protected DataProvider mDataProvider;
     protected ImageProvider mImageProvider;
@@ -135,7 +135,12 @@ public class UserProfile extends AppCompatActivity {
             imageFragment.setUser(current_user);
             imageFragment.setDataProvider(mDataProvider);
             imageFragment.setImageProvider(mImageProvider);
-            imageFragment.setImage(((GlideBitmapDrawable)userImage.getDrawable()).getBitmap());
+            if(userImage.getDrawable() instanceof GlideBitmapDrawable) {
+                imageFragment.setImage(((GlideBitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
+            else {
+                imageFragment.setImage(((BitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
             imageFragment.show(fm, "Validating your event");
         }
     };
@@ -278,11 +283,15 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
+    public void setAdapter() {
+        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
+        expListView.setAdapter(eventsExpListAdapter);
+    }
+
     public void setExpListView() {
 
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
-        expListView.setAdapter(eventsExpListAdapter);
+        setAdapter();
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent,

@@ -49,21 +49,36 @@ public class PublicUserProfile extends UserProfile {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         userId = intent.getStringExtra(PUBLIC_USER_PROFILE_UID_KEY);
+        /*
+        imageClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PublicUserImageFragment publicImageFragment = new PublicUserImageFragment();
+                publicImageFragment.setUser(current_user);
+                publicImageFragment.setDataProvider(mDataProvider);
+                publicImageFragment.setImageProvider(mImageProvider);
+                publicImageFragment.setImage(((GlideBitmapDrawable)userImage.getDrawable()).getBitmap());
+                publicImageFragment.show(fm, "Validating your event");
+            }
+        };*/
 
         super.onCreate(savedInstanceState);
     }
 
-    View.OnClickListener imageClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            PublicUserImageFragment publicImageFragment = new PublicUserImageFragment();
-            publicImageFragment.setUser(current_user);
-            publicImageFragment.setDataProvider(mDataProvider);
-            publicImageFragment.setImageProvider(mImageProvider);
-            publicImageFragment.setImage(((GlideBitmapDrawable)userImage.getDrawable()).getBitmap());
-            publicImageFragment.show(fm, "Validating your event");
-        }
-    };
+
+
+    @Override
+    public void createGroupList() {
+        groupList = new ArrayList<>();
+        groupList.add(organizedEvents);
+    }
+
+    @Override
+    public void setAdapter() {
+        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, null, null);
+        expListView.setAdapter(eventsExpListAdapter);
+    }
+
 
     @Override
     public void createCollection() {
@@ -82,20 +97,6 @@ public class PublicUserProfile extends UserProfile {
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
-                        String [] emptyEventList = { "No Events" };
-
-                        for (DeboxActivity event : intList) {
-                            if (event.getTimeEnd().after(Calendar.getInstance())) {
-                                intTitles.add(event.getTitle());
-                                intEvents.add(event);
-                            } else {
-                                partTitles.add(event.getTitle());
-                                partEvents.add(event);
-                            }
-                        }
-                        activityCollection.put(interestedEvents, intEvents);
-                        activityCollection.put(participatedEvents, partEvents);
-
                         for (DeboxActivity event : orgList) {
                             orgTitles.add(event.getTitle());
                             orgEvents.add(event);

@@ -29,7 +29,7 @@ public class DataProvider {
 
 
     private DatabaseReference mDatabase;
-    private FirebaseUser user ;
+    private FirebaseUser user;
     private FirebaseDatabase database;
 
     public DataProvider() {
@@ -767,7 +767,6 @@ public class DataProvider {
         myRef.child("image").setValue(imageName);
 
     }
-
 
 
     /**

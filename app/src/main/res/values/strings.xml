@@ -7,7 +7,11 @@
     <string name="share_text">Hi! Whatsup? Do you want to check out what kind of activities are available nearby you? Take a look at ActivityMatch! http://activitymatch.azurewebsites.net</string>
     <string name="web_client_id">431266647672-cjab4sklue3hi342jko98a3bvcii8mnc.apps.googleusercontent.com</string>
     <string name="commaSpace">,\u0020</string>
+    <string name="beginParagraph">   </string>
     <string name="emptyString">""</string>
+    <string name="timeStart">Starts: %1$s</string>
+    <string name="timeEnd">Ends: %1$s</string>
+
 
 
     <!-- Welcome Activity navigation Drawer strings -->
@@ -41,14 +45,14 @@
     <string name="create_activity_name_textView">Name</string>
     <string name="create_activity_description_textView">Description</string>
 
-    <string name="create_activity_starting_time_textView">Starts at</string>
-    <string name="create_activity_ending_time_textView">Ends at\u0020\u0020</string>
+    <string name="create_activity_starting_time_textView">Starts </string>
+    <string name="create_activity_ending_time_textView">Ends </string>
     <string name="create_activity_create_activity_button">Create event</string>
     <string name="modifyButtonText">Modify activity</string>
     <string name="create_activity_unknown_error_message">Unknown error</string>
 
     <string name="create_activity_set_location">Choose location</string>
-    <string name="create_activity_category_text">Category: </string>
+    <string name="create_activity_category_text">Event</string>
     <string name="create_activity_upload_image">Upload Image</string>
     <string name="create_activity_header">Event\'s Organiser</string>
 
@@ -80,6 +84,7 @@
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
+    <string name="user_signature">Published by\u0020@</string>
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>
