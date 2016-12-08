@@ -42,7 +42,21 @@ public class RatingFragment extends DialogFragment {
         rateComment.setHint(R.string.event_rating_comment_hint);
 
         rateEventButton = (Button) rootView.findViewById(R.id.rateEventButton);
+        rateEventButton.setOnClickListener(rateButtonListener);
 
         return rootView;
     }
+
+    View.OnClickListener rateButtonListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            DisplayActivity da = ((DisplayActivity) getActivity());
+            //da.displaySpecifiedActivities();
+            //da.cleanLinearLayout(wa.activityPreviewsLayout);
+            //getActivity().findViewById(R.id.loadingProgressBar).setVisibility(View.VISIBLE);
+
+            dismiss();
+        }
+    };
 }
