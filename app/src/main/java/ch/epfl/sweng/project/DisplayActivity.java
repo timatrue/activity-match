@@ -11,12 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -42,8 +39,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.epfl.sweng.project.DataProvider.UserStatus;
-import ch.epfl.sweng.project.fragments.PublicUserImageFragment;
-import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+
 
 import static java.text.DateFormat.getDateInstance;
 
@@ -88,11 +84,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private User currentUser = null;
     private Button joinActivityButton;
     private Button leaveActivityButton;
+    private Button rateButton;
     private RatingBar rankWidgetRatingBar;
     private TextView statusInfoTextView;
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
-    private LinearLayout ratingLayout;
     private LinearLayout textBlockLayout;
 
 
@@ -107,11 +103,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
+        rateButton = (Button) findViewById(R.id.rateButton);
         rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
         eventLocation = (TextView) findViewById(R.id.location);
-        ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
         setupUserToolBar();
@@ -163,7 +159,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     break;
                 case MUST_BE_RANKED:
-                    ratingLayout.setVisibility(View.VISIBLE);
+                    rateButton.setVisibility(View.VISIBLE);
+                    joinActivityButton.setVisibility(View.INVISIBLE);
+                    leaveActivityButton.setVisibility(View.INVISIBLE);
                     statusInfoTextView.setText(R.string.must_be_rank);
 
                     break;
@@ -772,7 +770,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         if(currentActivity!= null){
 
-            ratingLayout.setVisibility(View.INVISIBLE);
+            rateButton.setVisibility(View.INVISIBLE);
             int rank = Math.round(rankWidgetRatingBar.getRating());
             mDataProvider.rankUser(currentActivity.getId(),rank);
 
