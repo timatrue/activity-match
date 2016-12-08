@@ -218,8 +218,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         @Override
         public boolean isValid(CharSequence userInput){
          //Log.v("Test", "Checking if valid: "+ userInput);
-            Collections.sort(stringList);
-            if( Collections.binarySearch(stringList, userInput.toString()) > 0 ){
+            if(stringList.contains(userInput.toString())) {
                 return true;
             }
             return false;

@@ -75,15 +75,29 @@
 
 
 
+    <!-- User Image Fragment -->
+    <string name="user_image_ok">OK</string>
+    <string name="user_image_edit">Edit</string>
+
+
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
 
+    <string name="user_signature">Published by\u0020@</string>
     <string name="occupancy">Participants : %1$d</string>
     <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
     <string name="invalid_occupancy">Invalid information about participants</string>
-    <string name="user_signature">Published by\u0020@</string>
+    <string name="already_enrolled">You have already join this Event</string>
+    <string name="no_enrolled_free_place">You can join this event</string>
+    <string name="no_enrolled_full">Sorry this event is full</string>
+    <string name="must_be_rank">Please rank this event</string>
+    <string name="already_rank">You have already ranked this event</string>
+    <string name="activity_past">This event has past you cannot joint it!</string>
+    <string name="you_are_organizer">This event is organised by yourself. You are automatically counted in participants</string>
+
+
     
     <!-- Login -->
     <string name="sign_out">Sign out</string>
@@ -146,6 +160,7 @@
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
+    <string name="pick_image_intent_text">text</string>
 
 
 </resources>

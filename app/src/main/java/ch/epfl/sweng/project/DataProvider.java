@@ -2,6 +2,8 @@ package ch.epfl.sweng.project;
 
 
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -71,80 +73,107 @@ public class DataProvider {
         NOT_ENROLLED_FULL,          // check
         MUST_BE_RANKED,             // check
         ALREADY_RANKED,             // check
-        ACTIVITY_PAST,;             // check
+        ACTIVITY_PAST,
+        ORGANIZER,;             // check
     }
-    /*
-                                     +----------+
-                                     |Enrolled ?|
-                                     +--+----+--+
-                                yes     |    |     no
-                     +------------------+    +------------------+
-                     |                           +-----------+  |
-                 +---+--+                                    +--+---+
-                 |Past ?|                                    |Past ?|
-                 +-+--+-+                                    +-+--+-+
-             yes   |  |    no                           yes    |  |      no
-          +--------+  +---------+                +-------------+  +-----------------+
-          |                     |                |                                  |
-          +                     +            +---+----+                         +---+--------+
-    :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
-                                             +-+----+-+                         +-+--------+-+
-                                           yes |    | no                     yes  |        |   no
-                                        +------+    +---+                   +-----+        +------+
-                                        +               +                   +                     +
-                                 :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
-
-
-
- */
-
 
     public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
 
         userProfile( new DataProviderListenerUserInfo() {
             @Override
             public void getUserInfo(User currentUser) {
-
-                if(userIsEnrolledInActivity(currentActivity,currentUser)) {
-
-                    if(activityIsPast(currentActivity)){
-
-                        listener.getUserState(UserStatus.MUST_BE_RANKED);
-
-                    } else {
-
-                        listener.getUserState(UserStatus.ENROLLED);
-                    }
-
-                } else {
-
-                    if(activityIsPast(currentActivity)){
-
-                        if(userHasRankedActivity(currentActivity,currentUser)){
-
-                            listener.getUserState(UserStatus.ALREADY_RANKED);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.ACTIVITY_PAST);
-                        }
-
-
-                    } else {
-
-                        if(placeLeftInActivity(currentActivity)){
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
-                        }
-                    }
-                }
+                listener.getUserState(getUserStatusInActivity(currentActivity,currentUser));
             }
         });
 
+    }
+
+
+   /*
+
+                       +-----------+
+                       |Organizer ?|
+                       +--+------+-+
+                          |      |
+                       +--+      +-------+
+                       |                 |
+                       +            +----+-----+
+                   :Organizer       |Enrolled ?|
+                                    +--+----+--+
+                               yes     |    |     no
+                    +------------------+    +------------------+
+                    |                                          |
+                +---+--+                                    +--+---+
+                |Past ?|                                    |Past ?|
+                +-+--+-+                                    +-+--+-+
+            yes   |  |    no                           yes    |  |      no
+         +--------+  +---------+                +-------------+  +-----------------+
+         |                     |                |                                  |
+         +                     +            +---+----+                         +---+--------+
+   :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
+                                            +-+----+-+                         +-+--------+-+
+                                          yes |    | no                     yes  |        |   no
+                                       +------+    +---+                   +-----+        +------+
+                                       +               +                   +                     +
+                                :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
+
+ */
+
+
+    public UserStatus getUserStatusInActivity(final DeboxActivity currentActivity, final User currentUser){
+
+        if(userIsTheOrganizer(currentActivity,currentUser)){
+            return UserStatus.ORGANIZER;
+
+        } else {
+
+            if(userIsEnrolledInActivity(currentActivity,currentUser)) {
+
+                if(activityIsPast(currentActivity)){
+
+                    return UserStatus.MUST_BE_RANKED;
+
+                } else {
+
+                    return UserStatus.ENROLLED;
+                }
+
+            } else {
+
+                if(activityIsPast(currentActivity)){
+
+                    if(userHasRankedActivity(currentActivity,currentUser)){
+
+                        return UserStatus.ALREADY_RANKED;
+
+                    } else {
+
+                        return UserStatus.ACTIVITY_PAST;
+                    }
+
+
+                } else {
+
+                    if(placeLeftInActivity(currentActivity)){
+
+                        return UserStatus.NOT_ENROLLED_NOT_FULL;
+
+                    } else {
+
+                        return UserStatus.NOT_ENROLLED_FULL;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean userIsTheOrganizer(DeboxActivity dba, User user){
+        if(dba.getOrganizer().equals(user.getId())){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){
@@ -261,6 +290,8 @@ public class DataProvider {
         },uid);
 
     }
+
+
 
     // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
 
@@ -652,6 +683,36 @@ public class DataProvider {
         return null;
     }
 
+    public Void getActivityAndListenerOnChange(final DataProviderListenerActivity listener, final String uid) {
+
+        DatabaseReference myRef = database.getReference("activities/" + uid);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });*/
+
+        return null;
+
+    }
+
     public void initUserInDB(){
 
         //user = FirebaseAuth.getInstance().getCurrentUser();
@@ -709,7 +770,11 @@ public class DataProvider {
             ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
-        String photoLink = "";
+        String photoLink = null;
+        if (userMap.containsKey("image")) {
+            //ratingSum = (int) userMap.get("ratingSum");
+            photoLink = (String) userMap.get("image");
+        }
 
         return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
     }
@@ -735,6 +800,56 @@ public class DataProvider {
         });
 
     }
+
+    public void getUserProfileAndListenerOnChange(final DataProviderListenerUserInfo listener){
+
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
+
+    public void publicUserProfile(final String userUid, final DataProviderListenerUserInfo listener){
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public void changeUserImage(final String imageName){
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.child("image").setValue(imageName);
+
+    }
+
 
     /**
      * Check if the current user is already enrolled in the uid activity.
