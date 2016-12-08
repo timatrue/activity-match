@@ -147,6 +147,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     protected void ratingFragment(){
         FragmentManager fm = getFragmentManager();
         dialogFragment = new RatingFragment();
+        dialogFragment.eventId = currentActivity.getId();
         dialogFragment.show(fm, "rating");
     }
 

@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import ch.epfl.sweng.project.DataProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.DisplayActivity;
 /**
@@ -23,6 +24,9 @@ public class RatingFragment extends DialogFragment {
     TextView rateCommentTextBox;
     EditText rateComment;
     Button rateEventButton;
+    public String eventId;
+
+    DataProvider mDataProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +46,7 @@ public class RatingFragment extends DialogFragment {
         rateComment.setHint(R.string.event_rating_comment_hint);
 
         rateEventButton = (Button) rootView.findViewById(R.id.rateEventButton);
-        
+        rateEventButton.setText(R.string.event_rating_button);
         rateEventButton.setOnClickListener(rateButtonListener);
 
         return rootView;
@@ -57,6 +61,12 @@ public class RatingFragment extends DialogFragment {
             //da.cleanLinearLayout(wa.activityPreviewsLayout);
             //getActivity().findViewById(R.id.loadingProgressBar).setVisibility(View.VISIBLE);
 
+            //get the text, get the rate + get the potential picture
+            String comment = rateComment.getText().toString();
+            int rating = Math.round(rateEvent.getRating());
+            mDataProvider = new DataProvider();
+            //mDataProvider.rankUser(eventId, rating);
+            //write to the DB
             dismiss();
         }
     };
