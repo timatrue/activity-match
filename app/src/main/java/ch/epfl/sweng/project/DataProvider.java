@@ -530,17 +530,15 @@ public class DataProvider {
                         Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
                         User deboxOrganiser = getDeboxUser(idOrganiser, userMap);
 
-
-
-                        // get unique key for enroll the activity
+                        //write the comments field to the organizer in DB
                         String comments = mDatabase.child("users").child(idOrganiser).child("comments").push().getKey();
                         HashMap<String, Object> commentsChild = new HashMap<>();
+                        commentsChild.put("eventId", uid);
+                        commentsChild.put("rating", rank);
                         commentsChild.put("comment",comment);
                         HashMap<String, Object> commentsMap = new HashMap<>();
                         commentsMap.put("comments/" + comments, commentsChild);
                         mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
-
-
 
 
                         int ratingSum = deboxOrganiser.getRatingSum();
