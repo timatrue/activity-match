@@ -1152,9 +1152,33 @@ public class DataProviderTest {
                 start6 ,end6 ,10.1,10.1,"Sports");
 
 
+        // build to getStatus ORGANIZER
+        Calendar start7 = Calendar.getInstance();
+        start7.add(Calendar.HOUR,-2);
+        Calendar end7 = Calendar.getInstance();
+        end7.add(Calendar.HOUR,-2);
+
+        final String id7 = "id7";
+        final String userID ="userID";
+        DeboxActivity dbaOrganizer = new DeboxActivity(id7,userID,"dummyTitle","dummyDescription",
+                start7 ,end7 ,10.1,10.1,"Sports");
+
+
+        // build to getStatus NOT_ENROLLED_NOT_FULL
+        Calendar start8 = Calendar.getInstance();
+        start8.add(Calendar.HOUR,2);
+        Calendar end8 = Calendar.getInstance();
+        end8.add(Calendar.HOUR,2);
+
+        final String id8 = "id8";
+        DeboxActivity dbaNoEnrolledNoFull2 = new DeboxActivity(id8,"dummyOrganiser","dummyTitle","dummyDescription",
+                start8 ,end8 ,10.1,10.1,"Sports",8,10);
+
+
+
         final Map<String, Object> userMap = new HashMap<>();
 
-        final String userID ="userID";
+
         userMap.put("default_user_name","fakeUserName");
         userMap.put("enrolled",enrolledMap);
         userMap.put("organised",organisedMap);
@@ -1219,6 +1243,23 @@ public class DataProviderTest {
                 assertEquals(status, DataProvider.UserStatus.ACTIVITY_PAST);
             }
         });
+
+        dp.getCurrentUserStatusSimplified(dbaOrganizer, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.ORGANIZER);
+            }
+        });
+
+        dp.getCurrentUserStatusSimplified(dbaNoEnrolledNoFull2, new DataProvider.DataProviderListenerUserState() {
+            @Override
+            public void getUserState(DataProvider.UserStatus status) {
+                assertEquals(status, DataProvider.UserStatus.NOT_ENROLLED_NOT_FULL);
+            }
+        });
+
+
+
 
 
     }

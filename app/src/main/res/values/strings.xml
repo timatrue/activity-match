@@ -88,6 +88,14 @@
     <string name="occupancy">Participants : %1$d</string>
     <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
     <string name="invalid_occupancy">Invalid information about participants</string>
+    <string name="already_enrolled">You have already join this Event</string>
+    <string name="no_enrolled_free_place">You can join this event</string>
+    <string name="no_enrolled_full">Sorry this event is full</string>
+    <string name="must_be_rank">Please rank this event</string>
+    <string name="already_rank">You have already ranked this event</string>
+    <string name="activity_past">This event has past you cannot joint it!</string>
+    <string name="you_are_organizer">This event is organised by yourself. You are automatically counted in participants</string>
+
 
     
     <!-- Login -->

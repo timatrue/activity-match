@@ -2,6 +2,8 @@ package ch.epfl.sweng.project;
 
 
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -71,80 +73,107 @@ public class DataProvider {
         NOT_ENROLLED_FULL,          // check
         MUST_BE_RANKED,             // check
         ALREADY_RANKED,             // check
-        ACTIVITY_PAST,;             // check
+        ACTIVITY_PAST,
+        ORGANIZER,;             // check
     }
-    /*
-                                     +----------+
-                                     |Enrolled ?|
-                                     +--+----+--+
-                                yes     |    |     no
-                     +------------------+    +------------------+
-                     |                           +-----------+  |
-                 +---+--+                                    +--+---+
-                 |Past ?|                                    |Past ?|
-                 +-+--+-+                                    +-+--+-+
-             yes   |  |    no                           yes    |  |      no
-          +--------+  +---------+                +-------------+  +-----------------+
-          |                     |                |                                  |
-          +                     +            +---+----+                         +---+--------+
-    :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
-                                             +-+----+-+                         +-+--------+-+
-                                           yes |    | no                     yes  |        |   no
-                                        +------+    +---+                   +-----+        +------+
-                                        +               +                   +                     +
-                                 :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
-
-
-
- */
-
 
     public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
 
         userProfile( new DataProviderListenerUserInfo() {
             @Override
             public void getUserInfo(User currentUser) {
-
-                if(userIsEnrolledInActivity(currentActivity,currentUser)) {
-
-                    if(activityIsPast(currentActivity)){
-
-                        listener.getUserState(UserStatus.MUST_BE_RANKED);
-
-                    } else {
-
-                        listener.getUserState(UserStatus.ENROLLED);
-                    }
-
-                } else {
-
-                    if(activityIsPast(currentActivity)){
-
-                        if(userHasRankedActivity(currentActivity,currentUser)){
-
-                            listener.getUserState(UserStatus.ALREADY_RANKED);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.ACTIVITY_PAST);
-                        }
-
-
-                    } else {
-
-                        if(placeLeftInActivity(currentActivity)){
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
-                        }
-                    }
-                }
+                listener.getUserState(getUserStatusInActivity(currentActivity,currentUser));
             }
         });
 
+    }
+
+
+   /*
+
+                       +-----------+
+                       |Organizer ?|
+                       +--+------+-+
+                          |      |
+                       +--+      +-------+
+                       |                 |
+                       +            +----+-----+
+                   :Organizer       |Enrolled ?|
+                                    +--+----+--+
+                               yes     |    |     no
+                    +------------------+    +------------------+
+                    |                                          |
+                +---+--+                                    +--+---+
+                |Past ?|                                    |Past ?|
+                +-+--+-+                                    +-+--+-+
+            yes   |  |    no                           yes    |  |      no
+         +--------+  +---------+                +-------------+  +-----------------+
+         |                     |                |                                  |
+         +                     +            +---+----+                         +---+--------+
+   :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
+                                            +-+----+-+                         +-+--------+-+
+                                          yes |    | no                     yes  |        |   no
+                                       +------+    +---+                   +-----+        +------+
+                                       +               +                   +                     +
+                                :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
+
+ */
+
+
+    public UserStatus getUserStatusInActivity(final DeboxActivity currentActivity, final User currentUser){
+
+        if(userIsTheOrganizer(currentActivity,currentUser)){
+            return UserStatus.ORGANIZER;
+
+        } else {
+
+            if(userIsEnrolledInActivity(currentActivity,currentUser)) {
+
+                if(activityIsPast(currentActivity)){
+
+                    return UserStatus.MUST_BE_RANKED;
+
+                } else {
+
+                    return UserStatus.ENROLLED;
+                }
+
+            } else {
+
+                if(activityIsPast(currentActivity)){
+
+                    if(userHasRankedActivity(currentActivity,currentUser)){
+
+                        return UserStatus.ALREADY_RANKED;
+
+                    } else {
+
+                        return UserStatus.ACTIVITY_PAST;
+                    }
+
+
+                } else {
+
+                    if(placeLeftInActivity(currentActivity)){
+
+                        return UserStatus.NOT_ENROLLED_NOT_FULL;
+
+                    } else {
+
+                        return UserStatus.NOT_ENROLLED_FULL;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean userIsTheOrganizer(DeboxActivity dba, User user){
+        if(dba.getOrganizer().equals(user.getId())){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){

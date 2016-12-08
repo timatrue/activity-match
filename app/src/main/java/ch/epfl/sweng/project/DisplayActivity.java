@@ -157,32 +157,35 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                             switch(status){
                                 case ENROLLED:
                                     leaveActivityButton.setVisibility(View.VISIBLE);
-                                    statusInfoTextView.setText("You are enrolled in this Activity");
+                                    statusInfoTextView.setText(R.string.already_enrolled);
 
                                     break;
                                 case NOT_ENROLLED_NOT_FULL:
                                     joinActivityButton.setVisibility(View.VISIBLE);
-                                    statusInfoTextView.setText("You can joins this activity");
+                                    statusInfoTextView.setText(R.string.no_enrolled_free_place);
+
 
                                     break;
                                 case NOT_ENROLLED_FULL:
-                                    statusInfoTextView.setText("This activity is full sorry for you ");
+                                    statusInfoTextView.setText(R.string.no_enrolled_full);
 
                                     break;
                                 case MUST_BE_RANKED:
                                     ratingLayout.setVisibility(View.VISIBLE);
-                                    statusInfoTextView.setText("Please Rank this activity");
+                                    statusInfoTextView.setText(R.string.must_be_rank);
 
                                     break;
                                 case ALREADY_RANKED:
-                                    statusInfoTextView.setText("You have already rank this activity");
+                                    statusInfoTextView.setText(R.string.already_rank);
 
                                     break;
                                 case ACTIVITY_PAST:
-                                    statusInfoTextView.setText("This activty has past you canot join it");
+
+                                    statusInfoTextView.setText(R.string.activity_past);
 
                                     break;
                                 default:
+                                    statusInfoTextView.setText(R.string.you_are_organizer);
 
                                     break;
 
