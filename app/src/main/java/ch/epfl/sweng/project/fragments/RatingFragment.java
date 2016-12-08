@@ -42,6 +42,7 @@ public class RatingFragment extends DialogFragment {
         rateComment.setHint(R.string.event_rating_comment_hint);
 
         rateEventButton = (Button) rootView.findViewById(R.id.rateEventButton);
+        
         rateEventButton.setOnClickListener(rateButtonListener);
 
         return rootView;

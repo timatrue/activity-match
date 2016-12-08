@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Address;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.epfl.sweng.project.DataProvider.UserStatus;
+import ch.epfl.sweng.project.fragments.RatingFragment;
 
 
 import static java.text.DateFormat.getDateInstance;
@@ -70,6 +72,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     String timeEndFull;
     String commaSpace;
     Resources res;
+
+    RatingFragment dialogFragment;
 
     LinearLayout imagesLayout;
 
@@ -104,6 +108,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
         rateButton = (Button) findViewById(R.id.rateButton);
+        rateButton.setOnClickListener(rateEventListener);
         rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
@@ -130,6 +135,19 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         layoutParams.setMargins(10, 20, 10, 20);
         textBlockLayout.setLayoutParams(layoutParams);
 
+    }
+
+    View.OnClickListener rateEventListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ratingFragment();
+        }
+    };
+
+    protected void ratingFragment(){
+        FragmentManager fm = getFragmentManager();
+        dialogFragment = new RatingFragment();
+        dialogFragment.show(fm, "rating");
     }
 
     public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
