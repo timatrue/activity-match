@@ -786,22 +786,23 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
     }
-    public void rateButtonPressed(View v){
-
-        if(currentActivity!= null){
-
-            rateButton.setVisibility(View.INVISIBLE);
-            int rank = Math.round(rankWidgetRatingBar.getRating());
-            mDataProvider.rankUser(currentActivity.getId(),rank);
-
-        } else {
-
-            // TODO change message error
-            String toastMsg = getString(R.string.toas_fail_join);
-            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-        }
-
-    }
+//
+//    public void rateButtonPressed(View v){
+//
+//        if(currentActivity!= null){
+//
+//            rateButton.setVisibility(View.INVISIBLE);
+//            int rank = Math.round(rankWidgetRatingBar.getRating());
+//            mDataProvider.rankUser(currentActivity.getId(),rank);
+//
+//        } else {
+//
+//            // TODO change message error
+//            String toastMsg = getString(R.string.toas_fail_join);
+//            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+//        }
+//
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

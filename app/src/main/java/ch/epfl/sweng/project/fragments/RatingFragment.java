@@ -9,10 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import ch.epfl.sweng.project.DataProvider;
 import ch.epfl.sweng.project.R;
@@ -30,13 +27,11 @@ public class RatingFragment extends DialogFragment {
 
     DataProvider mDataProvider;
 
-    LinearLayout ratingLayout;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.rating_layout, container, true);
-        getDialog().setTitle(R.string.event_rating_title); //TODO: change the title, maybe event title
+        getDialog().setTitle(R.string.event_rating_title);
 
 
 
@@ -53,14 +48,6 @@ public class RatingFragment extends DialogFragment {
         LayerDrawable stars = (LayerDrawable) rateEvent.getProgressDrawable();
         stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.strokeGreyDebox), PorterDuff.Mode.SRC_ATOP);
 
-        //ratingLayout = (LinearLayout) getView().findViewById(R.id.ratingLayout);
-        //LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-        //        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //layoutParams.setMargins(10, 20, 10, 20);
-        //ratingLayout.setLayoutParams(layoutParams);
-
-
-
         return rootView;
     }
 
@@ -69,15 +56,10 @@ public class RatingFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             DisplayActivity da = ((DisplayActivity) getActivity());
-            //da.displaySpecifiedActivities();
-            //da.cleanLinearLayout(wa.activityPreviewsLayout);
-            //getActivity().findViewById(R.id.loadingProgressBar).setVisibility(View.VISIBLE);
-
-            //get the text, get the rate + get the potential picture
             String comment = rateComment.getText().toString();
             int rating = Math.round(rateEvent.getRating());
             mDataProvider = new DataProvider();
-            //mDataProvider.rankUser(eventId, rating);
+            mDataProvider.rankUser(eventId, rating, comment);
             //write to the DB
             dismiss();
         }
