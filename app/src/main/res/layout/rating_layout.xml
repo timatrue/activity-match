@@ -22,11 +22,13 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:ems="10"
+            android:maxLength="200"
             android:id="@+id/rateCommentInputBox" />
 
         <Button
+            android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rateEventButton" />

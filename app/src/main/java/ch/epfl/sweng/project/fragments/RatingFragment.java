@@ -56,11 +56,15 @@ public class RatingFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             DisplayActivity da = ((DisplayActivity) getActivity());
+
             String comment = rateComment.getText().toString();
             int rating = Math.round(rateEvent.getRating());
             mDataProvider = new DataProvider();
             mDataProvider.rankUser(eventId, rating, comment);
-            //write to the DB
+
+            da.findViewById(R.id.rateButton).setClickable(false);
+            da.findViewById(R.id.rateButton).setBackgroundColor(getResources().getColor(R.color.strokeGreyDebox));
+
             dismiss();
         }
     };
