@@ -23,9 +23,7 @@ import ch.epfl.sweng.project.DisplayActivity;
 
 public class RatingFragment extends DialogFragment {
 
-    TextView rateEventTextBox;
     RatingBar rateEvent;
-    TextView rateCommentTextBox;
     EditText rateComment;
     Button rateEventButton;
     public String eventId;
@@ -37,15 +35,12 @@ public class RatingFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.rating_layout, container, false);
+        View rootView = inflater.inflate(R.layout.rating_layout, container, true);
         getDialog().setTitle(R.string.event_rating_title); //TODO: change the title, maybe event title
 
 
 
         rateEvent = (RatingBar) rootView.findViewById(R.id.rateEventWidget);
-
-        rateCommentTextBox = (TextView) rootView.findViewById(R.id.rateCommentTextBox);
-        rateCommentTextBox.setText(R.string.event_rating_comment_title);
 
         rateComment = (EditText) rootView.findViewById(R.id.rateCommentInputBox);
         rateComment.setHint(R.string.event_rating_comment_hint);

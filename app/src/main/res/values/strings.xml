@@ -136,8 +136,6 @@
 
     <!-- Fragment Rating -->
     <string name="event_rating_title">Rate the event!</string>
-    <string name="event_rating_box_title">Please rate the event:</string>
-    <string name="event_rating_comment_title">Do you want to leave a comment?</string>
     <string name="event_rating_comment_hint">Write your comment here..</string>
     <string name="event_rating_button">Rate it!</string>
 
