@@ -291,6 +291,8 @@ public class DataProvider {
 
     }
 
+
+
     // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
 
 /*
@@ -681,6 +683,36 @@ public class DataProvider {
         return null;
     }
 
+    public Void getActivityAndListenerOnChange(final DataProviderListenerActivity listener, final String uid) {
+
+        DatabaseReference myRef = database.getReference("activities/" + uid);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });*/
+
+        return null;
+
+    }
+
     public void initUserInDB(){
 
         //user = FirebaseAuth.getInstance().getCurrentUser();
@@ -757,6 +789,27 @@ public class DataProvider {
         DatabaseReference myRef = database.getReference("users/" + userUid);
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
+
+    public void getUserProfileAndListenerOnChange(final DataProviderListenerUserInfo listener){
+
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
