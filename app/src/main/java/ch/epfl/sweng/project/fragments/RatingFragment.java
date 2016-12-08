@@ -1,13 +1,17 @@
 package ch.epfl.sweng.project.fragments;
 
 import android.app.DialogFragment;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.DataProvider;
@@ -28,14 +32,15 @@ public class RatingFragment extends DialogFragment {
 
     DataProvider mDataProvider;
 
+    LinearLayout ratingLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.rating_layout, container, false);
         getDialog().setTitle(R.string.event_rating_title); //TODO: change the title, maybe event title
 
-        rateEventTextBox = (TextView) rootView.findViewById(R.id.rateEventTextBox);
-        rateEventTextBox.setText(R.string.event_rating_box_title);
+
 
         rateEvent = (RatingBar) rootView.findViewById(R.id.rateEventWidget);
 
@@ -48,6 +53,18 @@ public class RatingFragment extends DialogFragment {
         rateEventButton = (Button) rootView.findViewById(R.id.rateEventButton);
         rateEventButton.setText(R.string.event_rating_button);
         rateEventButton.setOnClickListener(rateButtonListener);
+
+
+        LayerDrawable stars = (LayerDrawable) rateEvent.getProgressDrawable();
+        stars.getDrawable(0).setColorFilter(getResources().getColor(R.color.strokeGreyDebox), PorterDuff.Mode.SRC_ATOP);
+
+        //ratingLayout = (LinearLayout) getView().findViewById(R.id.ratingLayout);
+        //LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+        //        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        //layoutParams.setMargins(10, 20, 10, 20);
+        //ratingLayout.setLayoutParams(layoutParams);
+
+
 
         return rootView;
     }
