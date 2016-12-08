@@ -2,6 +2,8 @@ package ch.epfl.sweng.project;
 
 
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -66,85 +68,112 @@ public class DataProvider {
     }
 
     public enum UserStatus{
-        ENROLLED,                   // check
-        NOT_ENROLLED_NOT_FULL,      // check
-        NOT_ENROLLED_FULL,          // check
-        MUST_BE_RANKED,             // check
-        ALREADY_RANKED,             // check
-        ACTIVITY_PAST,;             // check
+        ENROLLED,
+        NOT_ENROLLED_NOT_FULL,
+        NOT_ENROLLED_FULL,
+        MUST_BE_RANKED,
+        ALREADY_RANKED,
+        ACTIVITY_PAST,
+        ORGANIZER,;
     }
-    /*
-                                     +----------+
-                                     |Enrolled ?|
-                                     +--+----+--+
-                                yes     |    |     no
-                     +------------------+    +------------------+
-                     |                           +-----------+  |
-                 +---+--+                                    +--+---+
-                 |Past ?|                                    |Past ?|
-                 +-+--+-+                                    +-+--+-+
-             yes   |  |    no                           yes    |  |      no
-          +--------+  +---------+                +-------------+  +-----------------+
-          |                     |                |                                  |
-          +                     +            +---+----+                         +---+--------+
-    :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
-                                             +-+----+-+                         +-+--------+-+
-                                           yes |    | no                     yes  |        |   no
-                                        +------+    +---+                   +-----+        +------+
-                                        +               +                   +                     +
-                                 :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
-
-
-
- */
-
 
     public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
 
         userProfile( new DataProviderListenerUserInfo() {
             @Override
             public void getUserInfo(User currentUser) {
-
-                if(userIsEnrolledInActivity(currentActivity,currentUser)) {
-
-                    if(activityIsPast(currentActivity)){
-
-                        listener.getUserState(UserStatus.MUST_BE_RANKED);
-
-                    } else {
-
-                        listener.getUserState(UserStatus.ENROLLED);
-                    }
-
-                } else {
-
-                    if(activityIsPast(currentActivity)){
-
-                        if(userHasRankedActivity(currentActivity,currentUser)){
-
-                            listener.getUserState(UserStatus.ALREADY_RANKED);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.ACTIVITY_PAST);
-                        }
-
-
-                    } else {
-
-                        if(placeLeftInActivity(currentActivity)){
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
-
-                        } else {
-
-                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
-                        }
-                    }
-                }
+                listener.getUserState(getUserStatusInActivity(currentActivity,currentUser));
             }
         });
 
+    }
+
+
+/*
+
+                       +-----------+
+                       |Organizer ?|
+                       +--+------+-+
+                          |      |
+                       +--+      +-------+
+                       |                 |
+                       +            +----+-----+
+                   :Organizer       |Enrolled ?|
+                                    +--+----+--+
+                               yes     |    |     no
+                    +------------------+    +------------------+
+                    |                                          |
+                +---+--+                                    +--+---+
+                |Past ?|                                    |Past ?|
+                +-+--+-+                                    +-+--+-+
+            yes   |  |    no                           yes    |  |      no
+         +--------+  +---------+                +-------------+  +-----------------+
+         |                     |                |                                  |
+         +                     +            +---+----+                         +---+--------+
+   :MustBeRanked           :Enrolled        |Ranked ?|                         |Place left ?|
+                                            +-+----+-+                         +-+--------+-+
+                                          yes |    | no                     yes  |        |   no
+                                       +------+    +---+                   +-----+        +------+
+                                       +               +                   +                     +
+                                :AlreadyRanked   :ActivityPast    :NotEnrolledPlaceLeft   :NotEnrolledFull
+
+ */
+
+
+    public UserStatus getUserStatusInActivity(final DeboxActivity currentActivity, final User currentUser){
+
+        if(userIsTheOrganizer(currentActivity,currentUser)){
+            return UserStatus.ORGANIZER;
+
+        } else {
+
+            if(userIsEnrolledInActivity(currentActivity,currentUser)) {
+
+                if(activityIsPast(currentActivity)){
+
+                    return UserStatus.MUST_BE_RANKED;
+
+                } else {
+
+                    return UserStatus.ENROLLED;
+                }
+
+            } else {
+
+                if(activityIsPast(currentActivity)){
+
+                    if(userHasRankedActivity(currentActivity,currentUser)){
+
+                        return UserStatus.ALREADY_RANKED;
+
+                    } else {
+
+                        return UserStatus.ACTIVITY_PAST;
+                    }
+
+
+                } else {
+
+                    if(placeLeftInActivity(currentActivity)){
+
+                        return UserStatus.NOT_ENROLLED_NOT_FULL;
+
+                    } else {
+
+                        return UserStatus.NOT_ENROLLED_FULL;
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean userIsTheOrganizer(DeboxActivity dba, User user){
+        if(dba.getOrganizer().equals(user.getId())){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){
@@ -170,76 +199,9 @@ public class DataProvider {
             if(dba.getNbMaxOfParticipants() > dba.getNbOfParticipants()){
                 return true;
             }
-
         }
         return false;
     }
-
-
-    // Old version, deprecated, will be remove soon
-
-    /*public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
-
-
-        userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
-            @Override
-            public void getIfEnrolled(boolean isAlreadyEnrolled) {
-
-                if (isAlreadyEnrolled) {
-
-                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
-                        @Override
-                        public void getIfActivityIsPast(boolean result) {
-                            if(result){
-                                listener.getUserState(UserStatus.MUST_BE_RANKED);
-
-                            } else {
-                                listener.getUserState(UserStatus.ENROLLED);
-                            }
-                        }
-                    });
-
-                } else {
-
-                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
-                        @Override
-                        public void getIfActivityIsPast(boolean result) {
-                            if(result){
-
-                                getIfAlreadyRanked(uid,new DataProviderListenerAlreadyRanked(){
-                                    @Override
-                                    public void getIfRanked(boolean result) {
-                                        if(result){
-                                            listener.getUserState(UserStatus.ALREADY_RANKED);
-
-                                        } else {
-                                            listener.getUserState(UserStatus.ACTIVITY_PAST);
-                                        }
-
-                                    }
-                                });
-
-                            } else {
-
-                                getIfPlaceLeftInActivity(uid, new DataProviderListenerPlaceFreeInActivity() {
-                                    @Override
-                                    public void getIfFreePlace(boolean result) {
-                                        if(result){
-                                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
-                                        } else {
-                                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
-                                        }
-                                    }
-                                });
-
-                            }
-                        }
-                    });
-                }
-            }
-        }, uid);
-
-    }*/
 
     public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
@@ -263,7 +225,6 @@ public class DataProvider {
     }
 
     // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
-
 /*
     private void getIfAlreadyRanked(final String uid, final DataProviderListenerAlreadyRanked listener){
 
@@ -392,7 +353,8 @@ public class DataProvider {
 
     // TODO Remove this method... Very bad idea to fetch all database and proceed it in application !!!!!
 
-    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds,
+                                       final List<String> rankedEventsIds) {
         //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -402,6 +364,7 @@ public class DataProvider {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<DeboxActivity> intList = new ArrayList<>();
                 ArrayList<DeboxActivity> orgList = new ArrayList<>();
+                ArrayList<DeboxActivity> rankedList = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     if (intEventIds.contains(child.getKey())) {
                         intList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
@@ -409,8 +372,11 @@ public class DataProvider {
                     if (orgEventsIds.contains(child.getKey())) {
                         orgList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
                     }
+                    if (rankedEventsIds.contains(child.getKey())) {
+                        rankedList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
                 }
-                listener.getUserActivities(intList, orgList);
+                listener.getUserActivities(intList, orgList, rankedList);
             }
 
             @Override
@@ -952,7 +918,7 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerUserEvents {
-        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
+        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList);
     }
 
 }

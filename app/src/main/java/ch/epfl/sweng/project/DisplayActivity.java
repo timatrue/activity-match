@@ -138,6 +138,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                                     break;
                                 default:
+                                    statusInfoTextView.setText("YOU ARE THE ORGANIZER");
 
                                     break;
 
@@ -186,6 +187,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     } else {
                         occupancyTextView.setText(R.string.invalid_occupancy);
                     }
+
 
                     if (map != null) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
@@ -258,6 +260,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
     }
+
 
     /**
      * Method call by button joinActivity. Fill a new relation between user and current

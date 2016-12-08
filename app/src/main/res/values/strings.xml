@@ -73,7 +73,7 @@
 
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
-    <string name="Occupancy">Occupancy : </string>
+    <!--  <string name="Occupancy">Occupancy : </string> -->
     <string name="organizer_button">Check out organizer\'s profile</string>
     <string name="occupancy">Participants : %1$d</string>
     <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
@@ -82,6 +82,10 @@
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
+
+
+
+
 
 
     <!-- Join activity -->
@@ -129,9 +133,11 @@
         <item>Interested</item>
     </string-array>
 
-    <string name="organised_events">Organised Events</string>
+    <string name="to_rank_events">Events to rank</string>
+    <string name="past_organised_events">Past organized Events</string>
+    <string name="organised_events">Upcoming organized Events</string>
     <string name="participated_events">Participated Events</string>
-    <string name="interested_events">Interested Events</string>
+    <string name="interested_events">Upcoming Events</string>
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
