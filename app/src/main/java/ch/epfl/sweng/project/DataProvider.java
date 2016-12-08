@@ -29,7 +29,7 @@ public class DataProvider {
 
 
     private DatabaseReference mDatabase;
-    private FirebaseUser user ;
+    private FirebaseUser user;
     private FirebaseDatabase database;
 
     public DataProvider() {
@@ -735,7 +735,6 @@ public class DataProvider {
         });
 
     }
-
 
     /**
      * Check if the current user is already enrolled in the uid activity.
