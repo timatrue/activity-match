@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_height="wrap_content"
-            android:textColor="@color/niceRedDebox" />
+            android:textColor="@color/lightGreyDebox" />
         <TextView
             android:id="@+id/titleEvent"
             android:paddingLeft="5dp"

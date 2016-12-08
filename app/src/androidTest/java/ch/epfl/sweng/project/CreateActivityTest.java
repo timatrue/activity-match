@@ -3,6 +3,7 @@ package ch.epfl.sweng.project;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.matcher.RootMatchers;
@@ -27,7 +28,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.CursorMatchers.withRowString;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -69,7 +69,7 @@ public class CreateActivityTest {
     //Returns the list of possible categories for the spinner
     private List<DataProvider.CategoryName> createCategoryList() {
         List<DataProvider.CategoryName> listCategory = new ArrayList<>();
-        String[] categoryList = {"Sports", "Culture"};
+        String[] categoryList = {"Culture", "Sports"};
         String categoryId = "defaultId";
         for (String category : categoryList) {
             listCategory.add(new DataProvider.CategoryName(categoryId, category));
@@ -101,6 +101,8 @@ public class CreateActivityTest {
         final String testDescription = "test description";
         final double testLatitude = 0.3;
         final double testLongitude = 1;
+        final String testNbMaxParticipantsString = "10";
+        final int testNbMaxParticipants = 10;
 
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.add(Calendar.DATE, 2);
@@ -143,6 +145,7 @@ public class CreateActivityTest {
         onData(allOf(is(instanceOf(String.class)), is(testCategory)))
                 .inRoot(RootMatchers.withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .perform(click());
+        onView(withId(R.id.proSpinner)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.createActivityDescriptionEditText)).perform(ViewActions.scrollTo()).perform(typeText(testDescription), closeSoftKeyboard());
 
@@ -170,11 +173,14 @@ public class CreateActivityTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.createActivityEndTime)).perform(ViewActions.scrollTo()).check(matches(withText(endTime)));
 
+        onView(withId(R.id.createActivityMaxNbParticipantsEditText)).perform(ViewActions.scrollTo()).perform(typeText(testNbMaxParticipantsString), closeSoftKeyboard());
+
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
         assertThat(activity.activityTitle, is(testTitle));
         assertThat(activity.activityDescription, is(testDescription));
         assertThat(activity.activityOrganizer, is(testOrganizer));
+        assertThat(activity.activityCategory, is(testCategory));
         assertThat(activity.activityStartCalendar.get(Calendar.YEAR), is(startYear));
         assertThat(activity.activityStartCalendar.get(Calendar.MONTH), is(startMonth));
         assertThat(activity.activityStartCalendar.get(Calendar.DAY_OF_MONTH), is(startDay));
@@ -187,6 +193,52 @@ public class CreateActivityTest {
         assertThat(activity.activityEndCalendar.get(Calendar.MINUTE), is(endMinute));
         assertThat(activity.activityLatitude, is(testLatitude));
         assertThat(activity.activityLongitude, is(testLongitude));
+        assertThat(activity.activityMaxNbParticipants, is(testNbMaxParticipants));
+    }
+
+    @Test
+    public void getMaxNbParticipantsTest() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+
+        assertThat(activity.getNbMaxParticipants("50"), is(50));
+        assertThat(activity.getNbMaxParticipants(""), is(0));
+        assertThat(activity.getNbMaxParticipants("0"), is(0));
+        assertThat(activity.getNbMaxParticipants("1000"), is(-1));
+        assertThat(activity.getNbMaxParticipants("-10"), is(-1));
+        assertThat(activity.getNbMaxParticipants("dix"), is(-1));
+        assertThat(activity.getNbMaxParticipants("8/2"), is(-1));
+    }
+
+    @Test
+    public void wrongInputMaxNbParticipants() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+        activity.activityCategory = "Culture";
+        activity.activityMaxNbParticipants = -1;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_invalid_max_nb_participants(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_invalid_max_nb_participants(context))));
     }
 
     @Test
@@ -200,6 +252,7 @@ public class CreateActivityTest {
         activity.activityDescription = "test description";
         activity.activityLatitude = 1;
         activity.activityLongitude = 1;
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
@@ -218,6 +271,35 @@ public class CreateActivityTest {
     }
 
     @Test
+    public void missingCategory() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_missing_category_error(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_category_error(context))));
+    }
+
+    @Test
     public void missingDescription() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
@@ -228,6 +310,7 @@ public class CreateActivityTest {
         activity.activityTitle = "test_title";
         activity.activityLatitude = 1;
         activity.activityLongitude = 1;
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
@@ -257,7 +340,6 @@ public class CreateActivityTest {
         activity.activityDescription = "test description";
         activity.activityLatitude = 1;
         activity.activityLongitude = 1;
-
         activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
@@ -347,7 +429,6 @@ public class CreateActivityTest {
         activity.activityLongitude = 0.3;
         activity.activityStartCalendar = startCalendar;
         activity.activityEndCalendar = endCalendar;
-
         activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
@@ -379,6 +460,7 @@ public class CreateActivityTest {
         activity.activityDescription = "test description";
         activity.activityStartCalendar = addDays(currentCalendar, 1);
         activity.activityEndCalendar = addDays(currentCalendar, 2);
+        activity.activityCategory = "Culture";
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 

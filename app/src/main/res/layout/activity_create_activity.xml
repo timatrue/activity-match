@@ -25,7 +25,7 @@
             android:text="@string/create_activity_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:textSize="@dimen/create_activity_input_text_size"
             android:textColor="@color/niceWhiteDebox"
             android:layout_centerVertical="true" />
 
@@ -34,9 +34,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_margin="@dimen/create_activity_left_right_margin">
 
         <LinearLayout
             android:orientation="vertical"
@@ -45,7 +43,6 @@
 
             <TextView
                 android:text="@string/create_activity_title"
-                android:layout_margin="@dimen/create_activity_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -53,37 +50,32 @@
                 android:id="@+id/createActivityTitle" />
 
             <EditText
-                android:layout_margin="@dimen/create_activity_margin"
-
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapSentences"
+                android:inputType="text"
+                android:textColor="@color/lightGreyDebox"
                 android:hint="@string/create_activity_name_hint"
-                android:textSize="@dimen/text_size_input"
-                android:paddingLeft="10dp"
+                android:textSize="@dimen/create_activity_input_text_size"
                 android:ems="10"
-                android:background="#EEE"
+                android:background="@drawable/create_activity_edit_text"
                 android:id="@+id/createActivityTitleEditText" />
 
             <LinearLayout
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginStart="@dimen/create_activity_margin"
-                android:layout_marginEnd="@dimen/create_activity_margin"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
                     android:id="@+id/proSpinner"
-                    android:layout_margin="@dimen/create_activity_margin"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:ems="15"
                     android:drawableRight="@mipmap/ic_search_icon"
-                    android:paddingLeft="10dp"
-                    android:textSize="@dimen/text_size_input"
+                    android:textSize="@dimen/create_activity_input_text_size"
                     android:layout_gravity="center"
-                    android:background="@drawable/input_stroke"
+                    android:background="@drawable/create_activity_edit_text"
                     android:dropDownVerticalOffset="5dp"
                     android:dropDownWidth="wrap_content"
                     android:hint="@string/select_category_hint" />
@@ -93,32 +85,30 @@
 
 
             <EditText
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginStart="@dimen/create_activity_margin"
-                android:layout_marginEnd="@dimen/create_activity_margin"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:layout_width="match_parent"
                 android:layout_height="102dp"
-                android:layout_below="@+id/createActivityDescriptionTextView"
-                android:inputType="textCapSentences"
+                android:inputType="text"
+                android:textColor="@color/lightGreyDebox"
                 android:lines="6"
-                android:paddingLeft="10dp"
                 android:maxLines="20"
+                android:textSize="@dimen/create_activity_input_text_size"
                 android:hint="@string/create_activity_description_hint"
                 android:ems="10"
-                android:background="#EEE"
+                android:background="@drawable/create_activity_edit_text"
                 android:id="@+id/createActivityDescriptionEditText" />
 
 
             <LinearLayout
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginLeft="@dimen/create_activity_margin"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="@string/create_activity_starting_time_textView"
-                    android:layout_weight="0.5"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
+                    android:layout_weight="0.6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -126,7 +116,8 @@
 
                 <TextView
                     android:text="@string/test_text"
-                    android:layout_weight="0.5"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
+                    android:layout_weight="0.8"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -135,6 +126,7 @@
 
                 <TextView
                     android:text="@string/test_text"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:layout_weight="0.5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -145,32 +137,32 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginStart="@dimen/create_activity_margin"
-                android:layout_marginEnd="@dimen/create_activity_margin"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text= "@string/create_activity_ending_time_textView"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.6"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:id="@+id/createActivityEndingTimeTextView" />
 
                 <TextView
                     android:text="@string/test_text"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.8"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:onClick="showEndDatePickerDialog"
                     android:id="@+id/createActivityEndDate" />
 
                 <TextView
                     android:text="@string/test_text"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -182,74 +174,70 @@
 
 
             <LinearLayout
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin">
 
                 <Button
-                    android:layout_marginTop="@dimen/create_activity_margin"
-                    android:layout_marginStart="@dimen/create_activity_margin"
-                    android:layout_marginEnd="@dimen/create_activity_margin"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:text="@string/create_activity_set_location"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:textColor="@color/niceWhiteDebox"
                     android:background="@color/niceBlueDebox"
                     android:id="@+id/createActivityLocation"
                     android:onClick="chooseLocation" />
 
                 <Button
-                    android:layout_marginTop="@dimen/create_activity_margin"
-                    android:layout_marginStart="@dimen/create_activity_margin"
-                    android:layout_marginEnd="@dimen/create_activity_margin"
+                    android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                     android:text="@string/create_activity_upload_image"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/niceWhiteDebox"
                     android:background="@color/niceBlueDebox"
                     android:layout_weight="0.5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:id="@+id/createActivityUploadImage"
                     android:onClick="pickImage" />
 
             </LinearLayout>
 
-
-            <HorizontalScrollView
+            <EditText
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:padding="@dimen/fab_margin"
-                    android:id="@+id/imagesLayout">
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:id="@+id/createActivityMaxNbParticipantsEditText"
+                android:inputType="text"
+                android:background="@drawable/create_activity_edit_text"
+                android:textSize="@dimen/create_activity_input_text_size"
+                android:textColor="@color/lightGreyDebox"
+                android:hint="@string/create_activity_maximum_number_of_participants"/>
 
             <TextView
                 android:text=""
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginStart="@dimen/create_activity_margin"
-                android:layout_marginEnd="@dimen/create_activity_margin"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/createActivityError" />
 
             <Button
-                android:layout_marginTop="@dimen/create_activity_margin"
-                android:layout_marginStart="@dimen/create_activity_margin"
-                android:layout_marginEnd="@dimen/create_activity_margin"
+                android:layout_marginTop="@dimen/create_activity_top_bottom_margin"
                 android:text="@string/create_activity_create_activity_button"
-                android:layout_width="match_parent"
+                android:paddingLeft="@dimen/create_activity_left_right_margin"
+                android:paddingRight="@dimen/create_activity_left_right_margin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:onClick="createActivity"
                 android:id="@+id/createActivityValidateButton"
                 android:textColor="@color/niceWhiteDebox"
-                android:background="@color/niceRedDebox" />
-
+                android:background="@color/niceBlueDebox" />
 
         </LinearLayout>
 

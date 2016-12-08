@@ -33,7 +33,7 @@
 
     <!-- Create Activity -->
     <string name="create_activity_title_bar">Event organizer</string>
-    <string name="create_activity_title">Organize your exciting event</string>
+    <string name="create_activity_title">Organize your event</string>
     <string name="create_activity_name_hint">The title of your event</string>
     <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Give details about yours event</string>
@@ -45,18 +45,20 @@
     <string name="create_activity_ending_time_textView">Ends at\u0020\u0020</string>
     <string name="create_activity_create_activity_button">Create event</string>
     <string name="modifyButtonText">Modify activity</string>
-    <string name="create_activity_unknown_error_message">Unknown error</string>
+    <string name="create_activity_maximum_number_of_participants">Maximum number of participants (optional)</string>
 
     <string name="create_activity_set_location">Choose location</string>
     <string name="create_activity_category_text">Category: </string>
     <string name="create_activity_upload_image">Upload Image</string>
-    <string name="create_activity_header">Event\'s Organiser</string>
+    <string name="create_activity_header">Event\'s Organizer</string>
 
     <string name="create_activity_invalid_category">Invalid category</string>
     <string name="create_activity_date_error_message">Invalid dates and/or time</string>
     <string name="create_activity_location_error_message">Please select a location</string>
     <string name="create_activity_category_error_message">Please select a category</string>
     <string name="create_activity_missing_field_error_message">Missing required field informations</string>
+    <string name="create_activity_invalid_max_number_participants">The maximum number of participants is invalid. Please select a number smaller than a thousand or leave the field empty if you don\'t want to have a maximum.</string>
+    <string name="create_activity_unknown_error_message">Unknown error</string>
 
     <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>
     <string name="modify_activity_set_location">Change location</string>
@@ -75,8 +77,8 @@
     <string name="display_activity_title_bar">Activity details</string>
     <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
-    <string name="occupancy">Participants : %1$d</string>
-    <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
+    <string name="occupancy">Participants: %1$d</string>
+    <string name="occupancy_with_max">Participants: %1$d/%2$d</string>
     <string name="invalid_occupancy">Invalid information about participants</string>
     
     <!-- Login -->

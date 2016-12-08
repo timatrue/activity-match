@@ -19,10 +19,13 @@ public class ConfirmationCodesTest {
 
         Context context = InstrumentationRegistry.getTargetContext();
 
-        assertThat(ConfirmationCodes.get_success(context), is(context.getResources().getString(R.string.create_activity_confirmation_message)));
-        assertThat(ConfirmationCodes.get_missing_field_error(context), is(context.getResources().getString(R.string.create_activity_missing_field_error_message)));
-        assertThat(ConfirmationCodes.get_date_error(context), is(context.getResources().getString(R.string.create_activity_date_error_message)));
-        assertThat(ConfirmationCodes.get_missing_location_error(context), is(context.getResources().getString(R.string.create_activity_location_error_message)));
-        assertThat(ConfirmationCodes.get_unknown_error(context), is(context.getResources().getString(R.string.create_activity_unknown_error_message)));
+        for (int i = 0; i <= 1; i++) {
+            assertThat(ConfirmationCodes.get_success(context), is(context.getResources().getString(R.string.create_activity_confirmation_message)));
+            assertThat(ConfirmationCodes.get_missing_field_error(context), is(context.getResources().getString(R.string.create_activity_missing_field_error_message)));
+            assertThat(ConfirmationCodes.get_date_error(context), is(context.getResources().getString(R.string.create_activity_date_error_message)));
+            assertThat(ConfirmationCodes.get_missing_location_error(context), is(context.getResources().getString(R.string.create_activity_location_error_message)));
+            assertThat(ConfirmationCodes.get_unknown_error(context), is(context.getResources().getString(R.string.create_activity_unknown_error_message)));
+            assertThat(ConfirmationCodes.get_invalid_max_nb_participants(context), is(context.getResources().getString(R.string.create_activity_invalid_max_number_participants)));
+        }
     }
 }

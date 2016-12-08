@@ -89,6 +89,7 @@ public class WelcomeActivity extends AppCompatActivity
     // private DatabaseReference mDatabase;
     private DataProvider mDataProvider;
     final public List<String> categories = new ArrayList<>();
+    public List<String> categoriesWithAll;
     private final static int PLACE_PICKER_REQUEST = 1;
     public double centerLatitude = 0;
     public double centerLongitude = 0;
@@ -193,6 +194,9 @@ public class WelcomeActivity extends AppCompatActivity
                 for (DataProvider.CategoryName cat : items) {
                     categories.add(cat.getCategory());
                 }
+                categoriesWithAll = new ArrayList<>();
+                categoriesWithAll.add("All");
+                categoriesWithAll.addAll(categories);
             }
         });
     }
@@ -294,6 +298,7 @@ public class WelcomeActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
         dialogFragment = new FilterFragment ();
         dialogFragment.categoryList = categories;
+        dialogFragment.categoryListWithAll = categoriesWithAll;
         dialogFragment.show(fm, "filterFragment");
     }
 
