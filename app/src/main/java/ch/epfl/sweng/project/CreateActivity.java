@@ -94,6 +94,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     double activityLatitude = 0;
     double activityLongitude = 0;
     String activityCategory = null;
+    int activityMaxNbParticipants = 0;
     private int minuteDivisor;
     private int minuteDelayStartTime;
     private int minuteDelayEndTime;
@@ -311,12 +312,16 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     /* Action of the activity creation confirmation button */
     public void createActivity(View v) {
 
-        EditText TitleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
-        activityTitle = TitleEditText.getText().toString();
+        EditText titleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
+        activityTitle = titleEditText.getText().toString();
 
-        EditText DescriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
-        activityDescription = DescriptionEditText.getText().toString();
+        EditText descriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
+        activityDescription = descriptionEditText.getText().toString();
 
+        EditText maxNbParticipantsEditText = (EditText) findViewById(R.id.createActivityMaxNbParticipantsEditText);
+        String activityMaxNbParticipantsString = maxNbParticipantsEditText.getText().toString();
+
+        activityMaxNbParticipants = getNbMaxParticipants(activityMaxNbParticipantsString);
 
         String validation = validateActivity();
 
@@ -353,25 +358,39 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
     }
 
+    public int getNbMaxParticipants(String inputEditTextContent) {
+        if(inputEditTextContent.length() <= 3 && inputEditTextContent.matches("^\\d+$")){
+            return Integer.parseInt(inputEditTextContent);
+        }
+        else if(inputEditTextContent.equals("")){
+            return 0;
+        }
+        else {
+            return -1;
+        }
+    }
+
     /* Checks the parameters entered by the user an returns a String with the corresponding error
     or success */
     public String validateActivity() {
-        if (!activityTitle.equals("") && !activityDescription.equals("")) {
-
-            if (activityLongitude == 0 || activityLatitude == 0) {
-                return ConfirmationCodes.get_missing_location_error(this);
-            }
-            if (activityCategory == null) {
-                return ConfirmationCodes.get_missing_category_error(this);
-            }
-            if (activityEndCalendar.after(activityStartCalendar)
-                    && activityEndCalendar.after(Calendar.getInstance())) {
-                return ConfirmationCodes.get_success(this);
-            } else {
-                return ConfirmationCodes.get_date_error(this);
-            }
-        } else {
+        if (activityTitle.equals("") || activityDescription.equals("")) {
             return ConfirmationCodes.get_missing_field_error(this);
+        }
+        else if (activityCategory == null) {
+            return ConfirmationCodes.get_missing_category_error(this);
+        }
+        else if (activityLongitude == 0 || activityLatitude == 0) {
+            return ConfirmationCodes.get_missing_location_error(this);
+        }
+        else if (activityEndCalendar.before(activityStartCalendar)
+                || activityEndCalendar.before(Calendar.getInstance())) {
+            return ConfirmationCodes.get_date_error(this);
+        }
+        else if (activityMaxNbParticipants < 0) {
+            return ConfirmationCodes.get_invalid_max_nb_participants(this);
+        }
+        else {
+            return ConfirmationCodes.get_success(this);
         }
     }
 
@@ -388,6 +407,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 activityStartCalendar = Calendar.getInstance();
             }
 
+            //The organizer is counted in the number of participants
+            int initialNumberParticipants = 1;
             newDeboxActivity = new DeboxActivity(
                     activityId,
                     activityOrganizer,
@@ -397,7 +418,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                     activityEndCalendar,
                     activityLatitude,
                     activityLongitude,
-                    activityCategory
+                    activityCategory,
+                    initialNumberParticipants,
+                    activityMaxNbParticipants
                     );
         }
         return newDeboxActivity;
@@ -420,6 +443,14 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         }
 
         else if(error.equals(ConfirmationCodes.get_missing_location_error(this))) {
+            confirmation.setText(error);
+        }
+
+        else if(error.equals(ConfirmationCodes.get_missing_category_error(this))) {
+            confirmation.setText(error);
+        }
+
+        else if(error.equals(ConfirmationCodes.get_invalid_max_nb_participants(this))) {
             confirmation.setText(error);
         }
 

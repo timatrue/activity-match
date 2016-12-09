@@ -116,7 +116,7 @@ public final class DeboxActivityTest {
         assertThat(dA1.getId(), is (dA3.getId()));
         assertThat(dA2.getImageList().isEmpty(), is(true));
         assertThat(dA3.getNbOfParticipants(), is(0));
-        assertThat(dA3.getNbMaxOfParticipants(), is(-1));
+        assertThat(dA3.getNbMaxOfParticipants(), is(0));
 
         //checks the methods
         assertThat(dA1.getId(), is(testDaId));
