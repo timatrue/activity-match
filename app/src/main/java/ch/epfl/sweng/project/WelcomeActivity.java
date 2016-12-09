@@ -80,7 +80,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     public LinearLayout activityPreviewsLayout;
 
-    FilterFragment dialogFragment = null;
+    FilterFragment dialogFragment;
 
     DatePickerFragment startDateFragment;
     DatePickerFragment endDateFragment;
@@ -116,9 +116,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         Button addActivityButton = (Button) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
-
-        /*Button filterButton = (Button) findViewById(R.id.filterActivity);
-        filterButton.setOnClickListener(filterEventsListener);*/
 
         Button searchButton = (Button) findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(searchListener);
@@ -404,7 +401,6 @@ public class WelcomeActivity extends AppCompatActivity
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
                     }
-                    //mDataProvider = new DataProvider();
                 }
             });
 
@@ -447,6 +443,7 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
+    //Makes the filterfragment clickable, needs to be done after the welcomeactivity has finished loading
     private void setFilterListener(){
         View.OnClickListener filterEventsListener = new View.OnClickListener() {
             @Override
@@ -467,8 +464,6 @@ public class WelcomeActivity extends AppCompatActivity
         double correction = Math.cos((centerLatitudeRad + latitudeElemRad)/2);
         return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
-
-
 
     @Override
     public void onBackPressed() {

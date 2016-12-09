@@ -139,7 +139,6 @@ public class FilterFragment extends DialogFragment {
         }
     }
 
-
     @Override
     public void onDismiss(DialogInterface dialog) {
         fragmentIsDisplayed = false;
