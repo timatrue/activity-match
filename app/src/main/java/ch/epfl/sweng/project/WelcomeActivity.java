@@ -80,7 +80,7 @@ public class WelcomeActivity extends AppCompatActivity
 
     public LinearLayout activityPreviewsLayout;
 
-    FilterFragment dialogFragment;
+    FilterFragment dialogFragment = null;
 
     DatePickerFragment startDateFragment;
     DatePickerFragment endDateFragment;
@@ -117,8 +117,8 @@ public class WelcomeActivity extends AppCompatActivity
         Button addActivityButton = (Button) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
 
-        Button filterButton = (Button) findViewById(R.id.filterActivity);
-        filterButton.setOnClickListener(filterEventsListener);
+        /*Button filterButton = (Button) findViewById(R.id.filterActivity);
+        filterButton.setOnClickListener(filterEventsListener);*/
 
         Button searchButton = (Button) findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(searchListener);
@@ -133,9 +133,6 @@ public class WelcomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
-
- //       displayActivities = (Button) findViewById(R.id.displayActivities);
- //       displayActivities.setOnClickListener(activitiesClickListener);
 
         filterStartCalendar = Calendar.getInstance();
         filterEndCalendar = Calendar.getInstance();
@@ -153,6 +150,8 @@ public class WelcomeActivity extends AppCompatActivity
                     TEST_MODE = false;
                 }
                 else {
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                    setFilterListener();
                     TEST_MODE = true;
                 }
             }
@@ -304,13 +303,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
-    View.OnClickListener filterEventsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            CategoryFragment();
-        }
-    };
-
     protected void CategoryFragment(){
         FragmentManager fm = getFragmentManager();
         dialogFragment = new FilterFragment ();
@@ -413,10 +405,11 @@ public class WelcomeActivity extends AppCompatActivity
                         activityPreviewsLayout.addView(result, layoutParams);
                     }
                     //mDataProvider = new DataProvider();
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
                 }
             });
+
+            (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+            setFilterListener();
         }
 
         else {
@@ -448,10 +441,21 @@ public class WelcomeActivity extends AppCompatActivity
                     }
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    //mDataProvider = new DataProvider();
+                    setFilterListener();
                 }
             }, filterCategory);
         }
+    }
+
+    private void setFilterListener(){
+        View.OnClickListener filterEventsListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    CategoryFragment();
+            }
+        };
+        Button filterButton = (Button) findViewById(R.id.filterActivity);
+        filterButton.setOnClickListener(filterEventsListener);
     }
 
     //Computes distance in km from lagitudes and longitudes with the equirectangular approximation
