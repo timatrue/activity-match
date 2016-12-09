@@ -92,7 +92,14 @@ public class User {
     }
 
     public String getPhotoLink() {
+        if(photoLink == null) {
+            return null;
+        }
         return new String(photoLink);
+    }
+
+    public void setPhotoLink(String newPhotoLink) {
+        photoLink = new String(newPhotoLink);
     }
 
     public User copy() {

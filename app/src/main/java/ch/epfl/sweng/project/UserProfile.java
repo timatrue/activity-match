@@ -1,15 +1,21 @@
 package ch.epfl.sweng.project;
 
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -18,14 +24,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.fragments.CreateValidationFragment;
+import ch.epfl.sweng.project.fragments.UserImageFragment;
+import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
+import android.util.Log;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,9 +58,10 @@ public class UserProfile extends AppCompatActivity {
 
     private RatingBar userRank;
 
-    private UserProfileExpandableListAdapter eventsExpListAdapter;
+    protected UserProfileExpandableListAdapter eventsExpListAdapter;
 
-    private DataProvider mDataProvider;
+    protected DataProvider mDataProvider;
+    protected ImageProvider mImageProvider;
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -65,25 +78,31 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
 
-    private DataProvider dpData;
+    Bitmap userImageBitmap;
+
 
     public String interestedEvents;
     public String participatedEvents;
     public String organizedEvents;
 
     List<String> groupList;
+    List<DeboxActivity> childList;
     Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
+    private Context mContext;
+    ImageView userImage;
+    FragmentManager fm;
+    UserImageFragment imageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        mContext = getApplicationContext();
 
         interestedEvents = getResources().getString(R.string.interested_events);
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
-
 
         createGroupList();
 
@@ -93,22 +112,46 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    displayUserImage();
+                    setImageProvider(new ImageProvider());
                     createCollection();
                     setExpListView();
-
                 }
             }
         }
+
+
+        fm = getFragmentManager();
+        userImage = (ImageView) findViewById(R.id.userImage);
+        userImage.setOnClickListener(imageClickListener);
 
         setupUserToolBar();
 
     }
 
+    View.OnClickListener imageClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            imageFragment = new UserImageFragment();
+            imageFragment.setUser(current_user);
+            imageFragment.setDataProvider(mDataProvider);
+            imageFragment.setImageProvider(mImageProvider);
+            if(userImage.getDrawable() instanceof GlideBitmapDrawable) {
+                imageFragment.setImage(((GlideBitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
+            else {
+                imageFragment.setImage(((BitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
+            imageFragment.show(fm, "Validating your event");
+        }
+    };
 
 
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
+    }
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        mImageProvider = imageProvider;
     }
 
     public Bitmap getBitmapFromURL(String src) {
@@ -128,32 +171,18 @@ public class UserProfile extends AppCompatActivity {
         }
     }
 
-
-    private void displayUserImage() {
-        final ImageView userImage = (ImageView) findViewById(R.id.userImage);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(user != null) {
-            final Uri photoUrl = user.getPhotoUrl();
-
-            if(photoUrl != null){
-                new Thread(new Runnable() {
-                    public void run() {
-                        final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userImage.setImageBitmap(bitmap);
-                            }
-                        });
-                    }
-                }).start();
-            }
-
+    public void updateUser(User user, boolean newImage) {
+        current_user = user;
+        if(newImage) {
+            displayUserImage();
         }
     }
 
-    private void displayUserRanking() {
+    public void displayUserImage() {
+        mImageProvider.downloadUserImage(this, current_user.getId(), current_user.getPhotoLink(), userImage, null);
+    }
+
+    protected void displayUserRanking() {
         userRank = (RatingBar) findViewById(R.id.userRank);
         if(userRank == null) {
             return;
@@ -169,7 +198,6 @@ public class UserProfile extends AppCompatActivity {
         userRank.setVisibility(View.VISIBLE);
     }
 
-
     public void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(organizedEvents);
@@ -177,14 +205,13 @@ public class UserProfile extends AppCompatActivity {
         groupList.add(interestedEvents);
     }
 
-
     public void createCollection() {
 
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
-
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
+                displayUserImage();
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
@@ -221,7 +248,7 @@ public class UserProfile extends AppCompatActivity {
                     userName = user.getEmail();
                 }
                 if(userName != null) {
-                    nameTextView.setText(userName);
+                    nameTextView.setText(user.getUsername());
                 }
 
                 if(expListView != null) {
@@ -256,11 +283,15 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
+    public void setAdapter() {
+        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
+        expListView.setAdapter(eventsExpListAdapter);
+    }
+
     public void setExpListView() {
 
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
-        expListView.setAdapter(eventsExpListAdapter);
+        setAdapter();
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent,
@@ -269,8 +300,11 @@ public class UserProfile extends AppCompatActivity {
                 if(selected != null) {
                     Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                             .show();
-                    String eventId = selected.getId();
-                    launchDisplayActivity(eventId);
+
+                    if (selected != null) {
+                        String eventId = selected.getId();
+                        launchDisplayActivity(eventId);
+                    }
                 }
                 return true;
             }
@@ -284,8 +318,11 @@ public class UserProfile extends AppCompatActivity {
             final DeboxActivity selected = (DeboxActivity) eventsExpListAdapter.getChild(groupPosition, childPosition);
             Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                     .show();
-            String eventId = selected.getId();
-            launchModifyActivity(eventId);
+
+            if (selected != null) {
+                String eventId = selected.getId();
+                launchModifyActivity(eventId);
+            }
         }
 
         @Override
@@ -332,4 +369,5 @@ public class UserProfile extends AppCompatActivity {
         intent.putExtra(ModifyActivity.MODIFY_ACTIVITY_EVENT_ID, eventId);
         startActivity(intent);
     }
+
 }
