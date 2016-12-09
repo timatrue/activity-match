@@ -85,6 +85,23 @@ public class MockImageProvider {
         }).when(mockImageProvider).downloadImage(any(Context.class), any(String.class), any(LinearLayout.class), any(List.class));
     }
 
+    public void initdownloadUserImage(final Drawable drawable) {
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                Context context = (Context) args[0];
+                ImageView imageView = (ImageView) args[3];
+
+                imageView = new ImageView(context);
+                imageView.setImageDrawable(drawable);
+
+                return null;
+            }
+        }).when(mockImageProvider).downloadUserImage(any(Context.class), any(String.class), any(String.class), any(ImageView.class), any(ImageProvider.downloadListener.class));
+    }
+
+
+
     public void initpreviewImage(final Drawable previewImage){
 
         doAnswer(new Answer<Void>() {

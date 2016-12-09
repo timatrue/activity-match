@@ -72,6 +72,10 @@ public class DisplayActivityTest {
 
         final DisplayActivity activity = displayActivityRule.getActivity();
 
+        final List<String> imageList = new ArrayList<>();
+        imageList.add("image1");
+        imageList.add("image2");
+
         final DeboxActivity dA1 = new DeboxActivity(
                 "id1",
                 "Benoit",
@@ -82,6 +86,7 @@ public class DisplayActivityTest {
                 46.777245,
                 6.642266,
                 "Sports",
+                imageList,
                 10,
                 20);
 
@@ -100,22 +105,27 @@ public class DisplayActivityTest {
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
-        activity.setTestDBObjects(dp, testFirebaseUser);
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser, ip);
 
         activity.initDisplay(true);
 
-        String categoryText = activity.getResources().getString(R.string.create_activity_category_text) + " " + dA1.getCategory();
+        String categoryText = activity.getString(R.string.create_activity_category_text, dA1.getCategory());
         DateFormat dateFormat = getDateInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String scheduleText = dateFormat.format(dA1.getTimeStart().getTime()) +
-                " at " + timeFormat.format(dA1.getTimeStart().getTime()) + " to " +
-                dateFormat.format(dA1.getTimeEnd().getTime()) +
+        String stringScheduleStarts = dateFormat.format(dA1.getTimeStart().getTime()) +
+                " at " + timeFormat.format(dA1.getTimeStart().getTime());
+        String stringScheduleEnds = dateFormat.format(dA1.getTimeEnd().getTime()) +
                 " at " + timeFormat.format(dA1.getTimeEnd().getTime());
+        String scheduleStartsText = activity.getString(R.string.timeStart, stringScheduleStarts);
+        String scheduleEndsText = activity.getString(R.string.timeEnd, stringScheduleEnds);
 
-        assertThat(activity.getSupportActionBar().getTitle().toString(), is(dA1.getTitle()));
+        assertThat(activity.title.getText().toString(), is(dA1.getTitle()));
         assertThat(activity.category.getText().toString(), is(categoryText));
         assertThat(activity.description.getText().toString(), is(dA1.getDescription()));
-        assertThat(activity.schedule.getText().toString(), is(scheduleText));
+        assertThat(activity.scheduleStarts.getText().toString(), is(scheduleStartsText));
+        assertThat(activity.scheduleEnds.getText().toString(), is(scheduleEndsText));
 
         final String dA1OccupancyText;
         final int nbParticipants = dA1.getNbOfParticipants();
@@ -123,6 +133,8 @@ public class DisplayActivityTest {
 
         dA1OccupancyText = activity.getString(R.string.occupancy_with_max, nbParticipants, nbMaxParticipants);
         assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
+
+        assertThat(activity.imagesLayout.getChildCount(), is(imageList.size()));
     }
 
     @UiThreadTest
@@ -159,7 +171,9 @@ public class DisplayActivityTest {
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
-        activity.setTestDBObjects(dp, testFirebaseUser);
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser, ip);
 
         activity.initDisplay(true);
 
@@ -204,7 +218,9 @@ public class DisplayActivityTest {
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
-        activity.setTestDBObjects(dp, testFirebaseUser);
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser, ip);
 
         activity.initDisplay(true);
 
