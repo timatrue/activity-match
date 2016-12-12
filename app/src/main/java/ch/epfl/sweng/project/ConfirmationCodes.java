@@ -40,10 +40,18 @@ public final class ConfirmationCodes extends AppCompatActivity {
 
     private static String missing_category;
     public static String get_missing_category_error(Context context) {
-        if (unknown_error == null) {
-            unknown_error = context.getResources().getString(R.string.create_activity_category_error_message);
+        if (missing_category == null) {
+            missing_category = context.getResources().getString(R.string.create_activity_category_error_message);
         }
-        return unknown_error;
+        return missing_category;
+    }
+
+    private static String invalid_max_nb_participants;
+    public static String get_invalid_max_nb_participants(Context context) {
+        if (invalid_max_nb_participants == null) {
+            invalid_max_nb_participants = context.getResources().getString(R.string.create_activity_invalid_max_number_participants);
+        }
+        return invalid_max_nb_participants;
     }
 
     private static String unknown_error;

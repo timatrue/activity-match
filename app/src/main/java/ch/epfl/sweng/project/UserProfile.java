@@ -1,9 +1,14 @@
 package ch.epfl.sweng.project;
 
+
+
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,12 +31,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.epfl.sweng.project.fragments.CreateValidationFragment;
+import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import android.util.Log;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -52,9 +60,10 @@ public class UserProfile extends AppCompatActivity {
 
     private RatingBar userRank;
 
-    private UserProfileExpandableListAdapter eventsExpListAdapter;
+    protected UserProfileExpandableListAdapter eventsExpListAdapter;
 
-    private DataProvider mDataProvider;
+    protected DataProvider mDataProvider;
+    protected ImageProvider mImageProvider;
     private FirebaseUser user ;
 
     TextView nameTextView;
@@ -77,7 +86,8 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
     ArrayList<DeboxActivity> toRankPartEvents = new ArrayList<>();
 
-    private DataProvider dpData;
+    Bitmap userImageBitmap;
+
 
     public String interestedEvents;
     public String participatedEvents;
@@ -92,6 +102,11 @@ public class UserProfile extends AppCompatActivity {
     ExpandableListView expListView;
     private Context mContext;
 
+    ImageView userImage;
+    FragmentManager fm;
+    UserImageFragment imageFragment;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +119,6 @@ public class UserProfile extends AppCompatActivity {
         pastOrganizedEvents = getResources().getString(R.string.past_organised_events);
         toRankEvents = getResources().getString(R.string.to_rank_events);
 
-
         createGroupList();
 
         Bundle bundle = getIntent().getExtras();
@@ -113,22 +127,46 @@ public class UserProfile extends AppCompatActivity {
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
-                    displayUserImage();
+                    setImageProvider(new ImageProvider());
                     createCollection();
                     setExpListView();
-
                 }
             }
         }
+
+
+        fm = getFragmentManager();
+        userImage = (ImageView) findViewById(R.id.userImage);
+        userImage.setOnClickListener(imageClickListener);
 
         setupUserToolBar();
 
     }
 
+    View.OnClickListener imageClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            imageFragment = new UserImageFragment();
+            imageFragment.setUser(current_user);
+            imageFragment.setDataProvider(mDataProvider);
+            imageFragment.setImageProvider(mImageProvider);
+            if(userImage.getDrawable() instanceof GlideBitmapDrawable) {
+                imageFragment.setImage(((GlideBitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
+            else {
+                imageFragment.setImage(((BitmapDrawable) userImage.getDrawable()).getBitmap());
+            }
+            imageFragment.show(fm, "Validating your event");
+        }
+    };
 
 
     public void setDataProvider(DataProvider dataProvider) {
         mDataProvider = dataProvider;
+    }
+
+    public void setImageProvider(ImageProvider imageProvider) {
+        mImageProvider = imageProvider;
     }
 
     public Bitmap getBitmapFromURL(String src) {
@@ -148,29 +186,19 @@ public class UserProfile extends AppCompatActivity {
         }
     }
 
+    public void updateUser(User user, boolean newImage) {
+        current_user = user;
+        if(newImage) {
+            displayUserImage();
 
-    private void displayUserImage() {
-        final ImageView userImage = (ImageView) findViewById(R.id.userImage);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(user != null) {
-            final Uri photoUrl = user.getPhotoUrl();
-
-            new Thread(new Runnable() {
-                public void run() {
-                    final Bitmap bitmap = getBitmapFromURL(photoUrl.toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            userImage.setImageBitmap(bitmap);
-                        }
-                    });
-                }
-            }).start();
         }
     }
 
-    private void displayUserRanking() {
+    public void displayUserImage() {
+        mImageProvider.downloadUserImage(this, current_user.getId(), current_user.getPhotoLink(), userImage, null);
+    }
+
+    protected void displayUserRanking() {
         userRank = (RatingBar) findViewById(R.id.userRank);
         if(userRank == null) {
             return;
@@ -186,7 +214,6 @@ public class UserProfile extends AppCompatActivity {
         userRank.setVisibility(View.VISIBLE);
     }
 
-
     public void createGroupList() {
         groupList = new ArrayList<>();
         groupList.add(pastOrganizedEvents);
@@ -197,14 +224,13 @@ public class UserProfile extends AppCompatActivity {
 
     }
 
-
     public void createCollection() {
 
         mDataProvider.userProfile(new DataProvider.DataProviderListenerUserInfo(){
-
             @Override
             public void getUserInfo(User user) {
                 current_user = user.copy();
+                displayUserImage();
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
@@ -297,11 +323,15 @@ public class UserProfile extends AppCompatActivity {
         });
     }
 
+    public void setAdapter() {
+        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
+        expListView.setAdapter(eventsExpListAdapter);
+    }
+
     public void setExpListView() {
 
         expListView = (ExpandableListView) findViewById(R.id.userProfileActivityList);
-        eventsExpListAdapter = new UserProfileExpandableListAdapter(this, activityCollection, groupList, organizedEvents, eventsModifyDeleteListener);
-        expListView.setAdapter(eventsExpListAdapter);
+        setAdapter();
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent,

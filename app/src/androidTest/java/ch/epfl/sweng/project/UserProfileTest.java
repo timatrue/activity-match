@@ -128,6 +128,10 @@ public class UserProfileTest {
     }
 
     private void initializeMockProvider(final UserProfile activity) {
+        MockImageProvider mockImageProvider = new MockImageProvider();
+        ImageProvider ip = mockImageProvider.getMockImageProvider();
+        activity.setImageProvider(ip);
+
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
         deboxActivityList = createDeboxActivityList();
@@ -137,8 +141,44 @@ public class UserProfileTest {
         activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
         activity.createCollection();
         activity.setExpListView();
+
+        final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls");
+        mocDataProvider.setUserToMock(newUser);
     }
 
+    @UiThreadTest
+    @Test
+    public void EmptyEventLists() {
+
+        final UserProfile activity = userProfileRule.getActivity();
+
+        MockImageProvider mockImageProvider = new MockImageProvider();
+        ImageProvider ip = mockImageProvider.getMockImageProvider();
+        activity.setImageProvider(ip);
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        deboxActivityList = createDeboxActivityList();
+        activity.setDataProvider(dp);
+        activity.activityCollection = new LinkedHashMap<>();
+        activity.createCollection();
+        activity.setExpListView();
+
+        final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
+                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls");
+        mocDataProvider.setUserToMock(newUser);
+
+
+        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
+        assertThat(orgEvents.size(), is(0));
+
+        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
+        assertThat(intEvents.size(), is(0));
+
+        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
+        assertThat(parEvents.size(), is(0));
+    }
 
     @UiThreadTest
     @Test
@@ -170,27 +210,4 @@ public class UserProfileTest {
 
     }
 
-
-    @UiThreadTest
-    @Test
-    public void EmptyEventLists() {
-
-        final UserProfile activity = userProfileRule.getActivity();
-        MockDataProvider mocDataProvider = new MockDataProvider();
-        DataProvider dp = mocDataProvider.getMockDataProvider();
-        mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
-        activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
-        activity.createCollection();
-        activity.setExpListView();
-
-        List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
-        assertThat(orgEvents.size(), is(0));
-
-        List<DeboxActivity> intEvents = activity.activityCollection.get(activity.interestedEvents);
-        assertThat(intEvents.size(), is(0));
-
-        List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
-        assertThat(parEvents.size(), is(0));
-    }
 }

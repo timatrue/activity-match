@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_height="wrap_content"
-            android:textColor="@color/niceRedDebox" />
+            android:textColor="@color/lightGreyDebox" />
         <TextView
             android:id="@+id/titleEvent"
             android:paddingLeft="5dp"
@@ -72,7 +72,7 @@
             android:id="@+id/separatorEvent"
             android:layout_width="match_parent"
             android:layout_below="@id/previewEvent"
-            android:background="@color/lightGreyDebox"
+            android:background="@color/strokeGreyDebox"
             android:layout_height="0.5dp" />
 
 

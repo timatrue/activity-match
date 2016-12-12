@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -106,6 +107,10 @@ public class MockDataProvider {
     }
 
     private void initMocGetActivityFromUid(){
+
+        when(mockDataProvider.getUserStatusInActivity(any(DeboxActivity.class),any(User.class))).thenReturn(DataProvider.UserStatus.NOT_ENROLLED_NOT_FULL);
+        //when(myRef.child("ratingNb")).thenReturn(myRefRatingNb);
+
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
@@ -124,6 +129,25 @@ public class MockDataProvider {
                 return null;
             }
         }).when(mockDataProvider).getActivityFromUid(any(DataProvider.DataProviderListenerActivity.class), anyString());
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerActivity listener = (DataProvider.DataProviderListenerActivity) args[0];
+
+                DeboxActivity foundDbA = null;
+
+                for (DeboxActivity deb : listDeboxActivityStored){
+
+                    if(deb.getId().equals(args[1])){
+                        foundDbA =  deb;
+                    }
+                }
+
+                listener.getActivity(foundDbA);
+                return null;
+            }
+        }).when(mockDataProvider).getActivityAndListenerOnChange(any(DataProvider.DataProviderListenerActivity.class), anyString());
     }
 
     private void initMocPushActivity(){
@@ -221,6 +245,37 @@ public class MockDataProvider {
                 return null;
             }
         }).when(mockDataProvider).userProfile(any(DataProvider.DataProviderListenerUserInfo.class));
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerUserInfo listener = (DataProvider.DataProviderListenerUserInfo) args[0];
+
+                listener.getUserInfo(user);
+                return null;
+            }
+        }).when(mockDataProvider).getUserProfileAndListenerOnChange(any(DataProvider.DataProviderListenerUserInfo.class));
+
+
+        /*doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                DataProvider.DataProviderListenerUserInfo listener = (DataProvider.DataProviderListenerUserInfo) args[0];
+
+                listener.getUserInfo(new User(
+                        userID,
+                        username,
+                        email,
+                        listUserActivityOrganizedStored,
+                        listUserActivityEnrolledStored,
+                        listUserRankedEvents,
+                        ratingNb,
+                        ratingSum,
+                        photoLink));
+                return null;
+            }
+        }).when(mockDataProvider).getUserProfileAndListenerOnChange(any(DataProvider.DataProviderListenerUserInfo.class));*/
     }
 
     private void initMockGetSpecifiedActivities(){

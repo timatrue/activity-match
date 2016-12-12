@@ -161,6 +161,46 @@ public class DataProviderTest {
         }, uuidTest);
     }
 
+    /**
+     * Test the function :  public Void GetActivityAndListenerOnChange(final DataProviderListenerActivity
+     * listener, final String uid) of the dataProvider. GetActivityAndListenerOnChange return the activity
+     * with the uid.
+     */
+    @Test
+    public void testGetActivityAndListenerOnChange(){
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        //Create Map from deboxactivities
+        final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
+
+        //Override getValue() to always return the Map for the test
+        when(ds.getValue()).thenReturn(activityMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds);
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        //Test DataProvider getActivityFromUid method, check that it calls the listener and gives
+        //it a proper DeboxActivity, corresponding to the Map values
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+        dp.getActivityAndListenerOnChange(new DataProvider.DataProviderListenerActivity() {
+            @Override
+            public void getActivity(DeboxActivity activity) {
+                assertTrue(toolsActivitiesEquals(activity,deboxActivityTest));
+            }
+
+        }, uuidTest);
+    }
+
+
+
 
     /**
      * Test the function : public void userEnrolledInActivity(final DataProviderListenerEnrolled listener
@@ -581,7 +621,105 @@ public class DataProviderTest {
                 assertEquals(user.getRatingNb(),ratingNb);
                 assertEquals(user.getRatingSum(),ratingSum);
                 assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
-                assertEquals(user.getPhotoLink(),"");
+                assertEquals(user.getPhotoLink(),null);
+                assertEquals(user.getEmail(),fakeEmail);
+                assertEquals(user.getUsername(),fakeName);
+
+            }
+        });
+
+    }
+
+
+    /**
+     * Test the function : public void getUserProfileAndListenerOnChange(final DataProviderListenerUserInfo listener)
+     * getUserProfileAndListenerOnChange return the userProfile of the current user.
+     *
+     */
+    @Test
+    public void testGetUserProfileAndListenerOnChange(){
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+
+        final String fakeUserID1 = "fakeUserID1";
+        final String fakeName = "fakeUserName";
+        final String fakeEmail = "fakeemail@gmail.com";
+        final String uuidTest1 = "uuid-test-111";
+        final String uuidTest2 = "uuid-test-222";
+        final String uuidTest3 = "uuid-test-333";
+        final int ratingNb = 3;
+        final int ratingSum = 14;
+
+        when(mUser.getUid()).thenReturn(fakeUserID1);
+        when(database.getReference(any(String.class))).thenReturn(myRef);
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:",uuidTest1);
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",uuidTest2);
+
+        enrolledMap.put("enrolledID1",enrolledMap1);
+        enrolledMap.put("enrolledID2",enrolledMap2);
+
+
+        final Map<String, Object> organisedMap1 = new HashMap<>();
+        organisedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> organisedMap = new HashMap<>();
+        organisedMap.put("organisedID1",organisedMap1);
+
+
+        final Map<String, Object> rankedMap1 = new HashMap<>();
+        rankedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> rankedMap = new HashMap<>();
+        rankedMap.put("rankedID1",rankedMap1);
+
+
+        final Map<String, Object> userMap = new HashMap<>();
+
+        userMap.put("default_user_name",fakeName);
+        userMap.put("enrolled",enrolledMap);
+        userMap.put("organised",organisedMap);
+        userMap.put("ranked",rankedMap);
+        userMap.put("ratingNb",ratingNb);
+        userMap.put("ratingSum",ratingSum);
+        userMap.put("user_email",fakeEmail);
+
+        when(ds1.getValue()).thenReturn(userMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.getUserProfileAndListenerOnChange(new DataProvider.DataProviderListenerUserInfo() {
+            @Override
+            public void getUserInfo(User user) {
+                List<String> checkInterested = new ArrayList<>();
+                checkInterested.add(uuidTest1);
+                checkInterested.add(uuidTest2);
+                assertEquals(user.getInterestedEventIds(),checkInterested);
+
+                List<String> checkOrganizedList = new ArrayList<>();
+                checkOrganizedList.add(uuidTest3);
+                assertEquals(user.getOrganizedEventIds(),checkOrganizedList);
+
+                List<String> checkRankedList = new ArrayList<>();
+                checkRankedList.add(uuidTest3);
+                assertEquals(user.getRankedEventIds(),checkRankedList);
+
+                assertEquals(user.getRatingNb(),ratingNb);
+                assertEquals(user.getRatingSum(),ratingSum);
+                assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
+                assertEquals(user.getPhotoLink(),null);
                 assertEquals(user.getEmail(),fakeEmail);
                 assertEquals(user.getUsername(),fakeName);
 
@@ -1275,6 +1413,7 @@ public class DataProviderTest {
 
 
 
+
     }
 
     /**
@@ -1347,6 +1486,7 @@ public class DataProviderTest {
 
         DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
         dp.deleteActivity(dba);
+
 
 
     }

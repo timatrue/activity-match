@@ -52,7 +52,7 @@ public class DeboxActivity {
         this.category = new String(category);
         this.imagesList = new ArrayList<>();
         this.nbOfParticipants = 0;
-        this.nbMaxOfParticipants = -1;
+        this.nbMaxOfParticipants = 0;
 
     }
 

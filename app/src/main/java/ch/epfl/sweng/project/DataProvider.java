@@ -31,7 +31,7 @@ public class DataProvider {
 
 
     private DatabaseReference mDatabase;
-    private FirebaseUser user ;
+    private FirebaseUser user;
     private FirebaseDatabase database;
 
     public DataProvider() {
@@ -75,6 +75,7 @@ public class DataProvider {
         ALREADY_RANKED,
         ACTIVITY_PAST,
         ORGANIZER,;
+
     }
 
     public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
@@ -87,6 +88,7 @@ public class DataProvider {
         });
 
     }
+
 
 
 /*
@@ -224,64 +226,6 @@ public class DataProvider {
 
     }
 
-    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
-/*
-    private void getIfAlreadyRanked(final String uid, final DataProviderListenerAlreadyRanked listener){
-
-        String userUid = user.getUid();
-        DatabaseReference myRef = database.getReference("users/" + userUid + "/ranked");
-
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
-
-                Boolean alreadyEnrolled = false;
-
-                if (listEnrolled != null) {
-
-                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
-
-                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
-
-                        if (activityID.equals(uid)) {
-                            alreadyEnrolled = true;
-                        }
-                    }
-                }
-                listener.getIfRanked(alreadyEnrolled);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-    }*/
-
-    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
-    /*
-    private void getIfActivityIsPast(final String uid, final DataProviderListenerIsPast listener){
-        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
-
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-                Calendar currentCalendar = Calendar.getInstance();
-                if(activity.getTimeEnd().before(currentCalendar)){
-                    listener.getIfActivityIsPast(true);
-                } else {
-                    listener.getIfActivityIsPast(false);
-
-                }
-            }
-        },uid);
-
-    }*/
 
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
@@ -451,8 +395,6 @@ public class DataProvider {
 
                 final String idOrganiser = activity.getOrganizer();
 
-                // icii
-
 
                 // To be check if it's work like this...
                 //FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -618,6 +560,26 @@ public class DataProvider {
         return null;
     }
 
+    public Void getActivityAndListenerOnChange(final DataProviderListenerActivity listener, final String uid) {
+
+        DatabaseReference myRef = database.getReference("activities/" + uid);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getActivity(getDeboxActivity(uid, activityMap));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return null;
+
+    }
+
     public void initUserInDB(){
 
         //user = FirebaseAuth.getInstance().getCurrentUser();
@@ -675,7 +637,11 @@ public class DataProvider {
             ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
-        String photoLink = "";
+        String photoLink = null;
+        if (userMap.containsKey("image")) {
+            //ratingSum = (int) userMap.get("ratingSum");
+            photoLink = (String) userMap.get("image");
+        }
 
         return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
     }
@@ -699,6 +665,55 @@ public class DataProvider {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+
+    }
+
+    public void getUserProfileAndListenerOnChange(final DataProviderListenerUserInfo listener){
+
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+    }
+
+    public void publicUserProfile(final String userUid, final DataProviderListenerUserInfo listener){
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                listener.getUserInfo(getDeboxUser(userUid, userMap));
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public void changeUserImage(final String imageName){
+        // Don't take userReference like this, it's break all test...
+        // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String userUid = user.getUid();
+
+        // Don't take FirebaseDatabase like this, it's break all test...
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users/" + userUid);
+
+        myRef.child("image").setValue(imageName);
 
     }
 
