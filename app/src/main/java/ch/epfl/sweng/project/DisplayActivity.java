@@ -94,6 +94,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private FirebaseUser mFirebaseUser;
     private LinearLayout ratingLayout;
     private LinearLayout textBlockLayout;
+    private ImageProvider mImageProvider;
 
 
     @Override
@@ -136,9 +137,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
     }
 
-    public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
+    public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser, ImageProvider testImageProvider) {
         mDataProvider = testDataProvider;
         mFirebaseUser = testFirebaseUser;
+        mImageProvider = testImageProvider;
     }
 
     public void refreshDisplay(boolean test, User user, DeboxActivity activity){
@@ -195,7 +197,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             activityToDisplay = activity;
 
             category = (TextView) findViewById(R.id.eventCategory);
-            category.setText(activity.getCategory() + " " + getResources().getString(R.string.create_activity_category_text));
+            category.setText(getResources().getString(R.string.create_activity_category_text, activity.getCategory()));
 
             description = (TextView) findViewById(R.id.eventDescription);
             description.setText(activity.getDescription());
@@ -299,21 +301,25 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
             }
 
+            // TODO remove the if(!test) clauses and figure out why imagelayout parent removal doesn't work in tests
             List<String> imagesList = activity.getImageList();
-
-            if(!test)
 
             if(imagesList != null) {
                 if(imagesList.size() != 0) {
+                    imagesLayout.removeAllViews();
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
 
                 }
                 else {
-                    ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    if(!test) {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    }
                 }
             } else {
                 if(imagesLayout.getParent().getParent() != null)
-                    ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    if(!test) {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    }
             }
 
 

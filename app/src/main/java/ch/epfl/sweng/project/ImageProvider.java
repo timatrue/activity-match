@@ -41,24 +41,27 @@ import java.util.List;
 public class ImageProvider {
 
 
-    FirebaseStorage storage = FirebaseStorage.getInstance();
+    FirebaseStorage storage=FirebaseStorage.getInstance();
     // Create a storage reference from our app
     StorageReference storageRef;
 
     public ImageProvider(){
+        storage = FirebaseStorage.getInstance();
         // Create a storage reference from our app
         storageRef = storage.getReferenceFromUrl("gs://activitymatch-a370d.appspot.com");
     }
 
+    public ImageProvider(FirebaseStorage mockStorage, StorageReference mockStorageRef) {
+        storage = mockStorage;
+        storageRef = mockStorageRef;
+    }
 
     public void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
 
+
         int screenHeight = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
-
-        int screenHeignt = context.getResources().getDimensionPixelSize(R.dimen.imageGalleryHeight);
-
 
         for(String imageName: imagesList)  {
             // Reference to an image file in Firebase Storage
@@ -74,8 +77,6 @@ public class ImageProvider {
                     .load(storageReference)
 
                     .override(screenWidth,screenHeight)
-
-                    .override(screenWidth,screenHeignt)
 
                     .centerCrop()
                     .into(imageView);

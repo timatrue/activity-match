@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.action.ViewActions;
@@ -175,6 +176,8 @@ public class CreateActivityTest {
 
         onView(withId(R.id.createActivityMaxNbParticipantsEditText)).perform(ViewActions.scrollTo()).perform(typeText(testNbMaxParticipantsString), closeSoftKeyboard());
 
+
+
         onView(withId(R.id.createActivityValidateButton)).perform(ViewActions.scrollTo()).perform(click());
 
         assertThat(activity.activityTitle, is(testTitle));
@@ -194,6 +197,7 @@ public class CreateActivityTest {
         assertThat(activity.activityLatitude, is(testLatitude));
         assertThat(activity.activityLongitude, is(testLongitude));
         assertThat(activity.activityMaxNbParticipants, is(testNbMaxParticipants));
+        assertThat(activity.imagesNameList.size(), is(0));
     }
 
     @Test
@@ -326,6 +330,38 @@ public class CreateActivityTest {
         assertThat(validation, is(ConfirmationCodes.get_missing_field_error(context)));
         assertTrue(da == null);
         onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_missing_field_error(context))));
+    }
+
+    @Test
+    public void emptyImageListTest() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 1;
+        activity.activityCategory = "Culture";
+        final ArrayList<Uri> testImagesUriList = new ArrayList<>();
+        activity.setImageList(testImagesUriList);
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_success(context)));
+        assertTrue(da != null);
+        assertThat(da.getImageList().isEmpty(), is(true));
     }
 
     @Test
@@ -492,6 +528,7 @@ public class CreateActivityTest {
         final double testLatitude = 0.3;
         final double testLongitude = 1;
         final String testOrganizer = "BobID";
+        final int testMaxNbParticipants = 10;
 
         final Calendar startCalendar = addDays(currentCalendar, 1);
         final int startYear = startCalendar.get(Calendar.YEAR);
@@ -515,6 +552,12 @@ public class CreateActivityTest {
         activity.activityStartCalendar = startCalendar;
         activity.activityEndCalendar = endCalendar;
         activity.activityOrganizer = testOrganizer;
+        activity.activityMaxNbParticipants = testMaxNbParticipants;
+
+        final ArrayList<Uri> testImagesUriList = new ArrayList<>();
+        testImagesUriList.add(Uri.parse("image1"));
+        testImagesUriList.add(Uri.parse("image2"));
+        activity.setImageList(testImagesUriList);
 
         onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
 
@@ -545,5 +588,9 @@ public class CreateActivityTest {
         assertThat(da.getOrganizer(), is(testOrganizer));
         assertThat(da.getLocation()[0], is(testLatitude));
         assertThat(da.getLocation()[1], is(testLongitude));
+        assertThat(da.getImageList().contains("image1"), is(true));
+        assertThat(da.getImageList().contains("image2"), is(true));
+        assertThat(da.getNbMaxOfParticipants(), is(testMaxNbParticipants));
+        assertThat(da.getNbOfParticipants(), is(1));
     }
 }

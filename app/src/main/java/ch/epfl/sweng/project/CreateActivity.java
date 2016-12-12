@@ -336,19 +336,8 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 validationFragment.setDataProvider(mDataProvider);
                 validationFragment.setImageProvider(mImageProvider);
                 validationFragment.show(fm, "Validating your event");
-                //Add all images name in the debox activity
-
-                for (Uri uri : imagesUriList) {
-                    imagesNameList.add(uri.getLastPathSegment());
-                }
-
-                for (String name : imagesNameList) {
-                    newDeboxActivity.addImage(name);
-                }
-
 
                 validationFragment.setImagesUriList(imagesUriList);
-
 
                 validationFragment.uploadActivity(newDeboxActivity, creation);
             }
@@ -407,6 +396,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 activityStartCalendar = Calendar.getInstance();
             }
 
+            //Add all images name in the debox activity
+            for (Uri uri : imagesUriList) {
+                imagesNameList.add(uri.getLastPathSegment());
+            }
+
             //The organizer is counted in the number of participants
             int initialNumberParticipants = 1;
             newDeboxActivity = new DeboxActivity(
@@ -419,6 +413,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                     activityLatitude,
                     activityLongitude,
                     activityCategory,
+                    imagesNameList,
                     initialNumberParticipants,
                     activityMaxNbParticipants
                     );

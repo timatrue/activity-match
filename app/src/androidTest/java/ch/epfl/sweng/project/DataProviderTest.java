@@ -135,8 +135,6 @@ public class DataProviderTest {
         myRef = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
-
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
 
@@ -172,8 +170,6 @@ public class DataProviderTest {
         database = Mockito.mock(FirebaseDatabase.class);
         myRef = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
-
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
