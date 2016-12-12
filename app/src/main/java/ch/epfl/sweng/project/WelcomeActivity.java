@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,8 +20,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -106,6 +110,7 @@ public class WelcomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -114,6 +119,10 @@ public class WelcomeActivity extends AppCompatActivity
 
         Button filterButton = (Button) findViewById(R.id.filterActivity);
         filterButton.setOnClickListener(filterEventsListener);
+
+        Button searchButton = (Button) findViewById(R.id.buttonSearch);
+        searchButton.setOnClickListener(searchListener);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -148,6 +157,14 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -387,8 +404,8 @@ public class WelcomeActivity extends AppCompatActivity
                             ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
                             activityPreviewsLayout.addView(ap, layoutParams);
                             ap.setOnClickListener(previewClickListener);
+                            listEmpty = false;
                         }
-                        listEmpty = false;
                     }
 
                     if (listEmpty) {
@@ -402,9 +419,8 @@ public class WelcomeActivity extends AppCompatActivity
             });
         }
 
-        else  {
+        else {
             mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
 
                 @Override
                 public void getCategory(List<DeboxActivity> activitiesList) {
@@ -534,6 +550,46 @@ public class WelcomeActivity extends AppCompatActivity
         }
         dialogFragment.updateTimeTextViews();
     }
+
+    View.OnClickListener searchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            hideSoftKeyboard();
+            final String searchText = ((TextView) findViewById(R.id.search)).getText().toString().toLowerCase();
+
+            (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+            mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+                @Override
+                public void getActivities(List<DeboxActivity> activitiesList) {
+
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(30, 20, 30, 0);
+
+                    cleanLinearLayout(activityPreviewsLayout);
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(elem.getTitle().toLowerCase().contains(searchText) && elem.getTimeEnd().after(Calendar.getInstance())) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                            listEmpty = false;
+                        }
+                    }
+
+                    if (listEmpty) {
+                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                        activityPreviewsLayout.addView(result, layoutParams);
+                    }
+                    //mDataProvider = new DataProvider();
+
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                }
+            });
+        }
+    };
 
     public String makeDateString(Calendar calendar) {
         DateFormat dateFormat = getDateInstance();
