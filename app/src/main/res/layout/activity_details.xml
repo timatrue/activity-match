@@ -92,7 +92,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/eventOccupancy"
-                                android:text="@string/Occupancy"
+                                android:text="@string/occupancy"
                                 android:textColor="@color/niceRedDebox"
                                 android:padding="@dimen/textBlockPadding"/>
                             <TextView
@@ -112,6 +112,7 @@
                         android:textColor="@color/normalGreyDebox"
                         android:background="@drawable/rectangle_rounded"
                         android:padding="@dimen/descBlockPadding"/>
+
 
                     <TextView
                         android:layout_width="match_parent"
@@ -242,5 +243,3 @@
 
 
 </RelativeLayout>
-
-

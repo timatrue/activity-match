@@ -237,7 +237,8 @@
                 android:onClick="createActivity"
                 android:id="@+id/createActivityValidateButton"
                 android:textColor="@color/niceWhiteDebox"
-                android:background="@color/niceBlueDebox" />
+                android:background="@color/green" />
+
 
         </LinearLayout>
 

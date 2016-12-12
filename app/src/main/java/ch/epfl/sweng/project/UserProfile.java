@@ -1,5 +1,7 @@
 package ch.epfl.sweng.project;
 
+
+
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -69,30 +71,41 @@ public class UserProfile extends AppCompatActivity {
 
     List<String> interestedIds = new ArrayList<>();
     List<String> organizedIds = new ArrayList<>();
+    List<String> rankedIds = new ArrayList<>();
 
     ArrayList<String> intTitles = new ArrayList<>();
     ArrayList<String> orgTitles = new ArrayList<>();
+    ArrayList<String> pastOrgTitles = new ArrayList<>();
     ArrayList<String> partTitles = new ArrayList<>();
+    ArrayList<String> toRankpastTitles = new ArrayList<>();
+
 
     ArrayList<DeboxActivity> intEvents = new ArrayList<>();
     ArrayList<DeboxActivity> orgEvents = new ArrayList<>();
+    ArrayList<DeboxActivity> pastOrgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
+    ArrayList<DeboxActivity> toRankPartEvents = new ArrayList<>();
 
     Bitmap userImageBitmap;
 
 
     public String interestedEvents;
     public String participatedEvents;
+    public String toRankEvents;
     public String organizedEvents;
+    public String pastOrganizedEvents;
+
 
     List<String> groupList;
     List<DeboxActivity> childList;
     Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
     private Context mContext;
+
     ImageView userImage;
     FragmentManager fm;
     UserImageFragment imageFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +116,8 @@ public class UserProfile extends AppCompatActivity {
         interestedEvents = getResources().getString(R.string.interested_events);
         participatedEvents = getResources().getString(R.string.participated_events);
         organizedEvents = getResources().getString(R.string.organised_events);
+        pastOrganizedEvents = getResources().getString(R.string.past_organised_events);
+        toRankEvents = getResources().getString(R.string.to_rank_events);
 
         createGroupList();
 
@@ -175,6 +190,7 @@ public class UserProfile extends AppCompatActivity {
         current_user = user;
         if(newImage) {
             displayUserImage();
+
         }
     }
 
@@ -200,9 +216,12 @@ public class UserProfile extends AppCompatActivity {
 
     public void createGroupList() {
         groupList = new ArrayList<>();
+        groupList.add(pastOrganizedEvents);
         groupList.add(organizedEvents);
         groupList.add(participatedEvents);
+        groupList.add(toRankEvents);
         groupList.add(interestedEvents);
+
     }
 
     public void createCollection() {
@@ -215,33 +234,54 @@ public class UserProfile extends AppCompatActivity {
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
+                rankedIds = new ArrayList<String>(user.getRankedEventIds());
 
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
-                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList) {
                         String [] emptyEventList = { "No Events" };
+
 
                         for (DeboxActivity event : intList) {
                             if (event.getTimeEnd().after(Calendar.getInstance())) {
                                 intTitles.add(event.getTitle());
                                 intEvents.add(event);
                             } else {
-                                partTitles.add(event.getTitle());
-                                partEvents.add(event);
+
+                                toRankpastTitles.add(event.getTitle());
+                                toRankPartEvents.add(event);
+
                             }
                         }
+
                         activityCollection.put(interestedEvents, intEvents);
+                        activityCollection.put(toRankEvents, toRankPartEvents);
+
+                        for (DeboxActivity event : rankedList){
+                            partTitles.add(event.getTitle());
+                            partEvents.add(event);
+
+                        }
+
                         activityCollection.put(participatedEvents, partEvents);
 
                         for (DeboxActivity event : orgList) {
-                            orgTitles.add(event.getTitle());
-                            orgEvents.add(event);
+                            if (event.getTimeEnd().after(Calendar.getInstance())) {
+                                orgTitles.add(event.getTitle());
+                                orgEvents.add(event);
+                            } else {
+                                pastOrgTitles.add(event.getTitle());
+                                pastOrgEvents.add(event);
+                            }
+
+
                         }
                         activityCollection.put(organizedEvents, orgEvents);
+                        activityCollection.put(pastOrganizedEvents, pastOrgEvents);
 
                     }
-                }, interestedIds, organizedIds);
+                }, interestedIds, organizedIds, rankedIds);
                 nameTextView = (TextView) findViewById(R.id.userName);
                 String userName =  user.getUsername();
                 if(userName == null) {

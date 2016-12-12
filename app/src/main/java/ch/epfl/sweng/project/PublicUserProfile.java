@@ -92,11 +92,12 @@ public class PublicUserProfile extends UserProfile {
                 displayUserRanking();
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
+                rankedIds = new ArrayList<String>(user.getOrganizedEventIds());
 
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
-                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+                    public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList) {
                         for (DeboxActivity event : orgList) {
                             orgTitles.add(event.getTitle());
                             orgEvents.add(event);
@@ -104,7 +105,7 @@ public class PublicUserProfile extends UserProfile {
                         activityCollection.put(organizedEvents, orgEvents);
 
                     }
-                }, interestedIds, organizedIds);
+                }, interestedIds, organizedIds, rankedIds);
                 nameTextView = (TextView) findViewById(R.id.userName);
                 String userName =  user.getUsername();
                 if(userName == null) {

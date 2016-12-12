@@ -68,13 +68,14 @@ public class DataProvider {
     }
 
     public enum UserStatus{
-        ENROLLED,                   // check
-        NOT_ENROLLED_NOT_FULL,      // check
-        NOT_ENROLLED_FULL,          // check
-        MUST_BE_RANKED,             // check
-        ALREADY_RANKED,             // check
+        ENROLLED,
+        NOT_ENROLLED_NOT_FULL,
+        NOT_ENROLLED_FULL,
+        MUST_BE_RANKED,
+        ALREADY_RANKED,
         ACTIVITY_PAST,
-        ORGANIZER,;             // check
+        ORGANIZER,;
+
     }
 
     public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
@@ -89,7 +90,8 @@ public class DataProvider {
     }
 
 
-   /*
+
+/*
 
                        +-----------+
                        |Organizer ?|
@@ -199,76 +201,9 @@ public class DataProvider {
             if(dba.getNbMaxOfParticipants() > dba.getNbOfParticipants()){
                 return true;
             }
-
         }
         return false;
     }
-
-
-    // Old version, deprecated, will be remove soon
-
-    /*public void getCurrentUserStatus(final String uid,final DataProviderListenerUserState listener){
-
-
-        userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
-            @Override
-            public void getIfEnrolled(boolean isAlreadyEnrolled) {
-
-                if (isAlreadyEnrolled) {
-
-                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
-                        @Override
-                        public void getIfActivityIsPast(boolean result) {
-                            if(result){
-                                listener.getUserState(UserStatus.MUST_BE_RANKED);
-
-                            } else {
-                                listener.getUserState(UserStatus.ENROLLED);
-                            }
-                        }
-                    });
-
-                } else {
-
-                    getIfActivityIsPast(uid, new DataProviderListenerIsPast() {
-                        @Override
-                        public void getIfActivityIsPast(boolean result) {
-                            if(result){
-
-                                getIfAlreadyRanked(uid,new DataProviderListenerAlreadyRanked(){
-                                    @Override
-                                    public void getIfRanked(boolean result) {
-                                        if(result){
-                                            listener.getUserState(UserStatus.ALREADY_RANKED);
-
-                                        } else {
-                                            listener.getUserState(UserStatus.ACTIVITY_PAST);
-                                        }
-
-                                    }
-                                });
-
-                            } else {
-
-                                getIfPlaceLeftInActivity(uid, new DataProviderListenerPlaceFreeInActivity() {
-                                    @Override
-                                    public void getIfFreePlace(boolean result) {
-                                        if(result){
-                                            listener.getUserState(UserStatus.NOT_ENROLLED_NOT_FULL);
-                                        } else {
-                                            listener.getUserState(UserStatus.NOT_ENROLLED_FULL);
-                                        }
-                                    }
-                                });
-
-                            }
-                        }
-                    });
-                }
-            }
-        }, uid);
-
-    }*/
 
     public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
@@ -291,67 +226,6 @@ public class DataProvider {
 
     }
 
-
-
-    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
-
-/*
-    private void getIfAlreadyRanked(final String uid, final DataProviderListenerAlreadyRanked listener){
-
-        String userUid = user.getUid();
-        DatabaseReference myRef = database.getReference("users/" + userUid + "/ranked");
-
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> listEnrolled = (Map<String, Object>) dataSnapshot.getValue();
-
-                Boolean alreadyEnrolled = false;
-
-                if (listEnrolled != null) {
-
-                    for (Map.Entry<String, Object> enrolledEntry : listEnrolled.entrySet()) {
-
-                        String activityID = (String) ((Map<String, Object>) enrolledEntry.getValue()).get("activity ID:");
-
-                        if (activityID.equals(uid)) {
-                            alreadyEnrolled = true;
-                        }
-                    }
-                }
-                listener.getIfRanked(alreadyEnrolled);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-    }*/
-
-    // Unused now (before was use in old version of getCurrentUserStatus keep for backup)
-    /*
-    private void getIfActivityIsPast(final String uid, final DataProviderListenerIsPast listener){
-        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
-
-            @Override
-            public void getActivity(DeboxActivity activity) {
-
-                Calendar currentCalendar = Calendar.getInstance();
-                if(activity.getTimeEnd().before(currentCalendar)){
-                    listener.getIfActivityIsPast(true);
-                } else {
-                    listener.getIfActivityIsPast(false);
-
-                }
-            }
-        },uid);
-
-    }*/
 
 
     public void getAllCategories(final DataProviderListenerCategories listener) {
@@ -423,7 +297,8 @@ public class DataProvider {
 
     // TODO Remove this method... Very bad idea to fetch all database and proceed it in application !!!!!
 
-    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds) {
+    public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds,
+                                       final List<String> rankedEventsIds) {
         //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("activities");
 
@@ -433,6 +308,7 @@ public class DataProvider {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<DeboxActivity> intList = new ArrayList<>();
                 ArrayList<DeboxActivity> orgList = new ArrayList<>();
+                ArrayList<DeboxActivity> rankedList = new ArrayList<>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
                     if (intEventIds.contains(child.getKey())) {
                         intList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
@@ -440,8 +316,11 @@ public class DataProvider {
                     if (orgEventsIds.contains(child.getKey())) {
                         orgList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
                     }
+                    if (rankedEventsIds.contains(child.getKey())) {
+                        rankedList.add(getDeboxActivity(child.getKey(), (Map<String, Object>) child.getValue()));
+                    }
                 }
-                listener.getUserActivities(intList, orgList);
+                listener.getUserActivities(intList, orgList, rankedList);
             }
 
             @Override
@@ -515,8 +394,6 @@ public class DataProvider {
             public void getActivity(DeboxActivity activity) {
 
                 final String idOrganiser = activity.getOrganizer();
-
-                // icii
 
 
                 // To be check if it's work like this...
@@ -698,16 +575,6 @@ public class DataProvider {
 
             }
         });
-        /*myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-                listener.getActivity(getDeboxActivity(uid, activityMap));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });*/
 
         return null;
 
@@ -1066,7 +933,7 @@ public class DataProvider {
     }
 
     public interface DataProviderListenerUserEvents {
-        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList);
+        void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList);
     }
 
 }

@@ -580,7 +580,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                                     break;
                                 default:
+
                                     statusInfoTextView.setText(R.string.you_are_organizer);
+
 
                                     break;
 
@@ -680,6 +682,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         occupancyTextView.setText(R.string.invalid_occupancy);
                     }
 
+
                     if (map != null) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
                         map.addMarker(new MarkerOptions()
@@ -731,6 +734,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
     }
+
 
     /**
      * Method call by button joinActivity. Fill a new relation between user and current

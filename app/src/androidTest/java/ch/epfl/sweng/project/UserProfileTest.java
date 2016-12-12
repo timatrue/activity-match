@@ -45,7 +45,7 @@ public class UserProfileTest {
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
     private List<String> rankedEvents = Arrays.asList("id2");
 
-    private User testUser = new User("id", "Bob", "email", organizedEvents,
+    private User testUser = new User("Bob", "username", "email", organizedEvents,
             interestedEvents, rankedEvents, 4, 8, "slls");
 
     //The list of DeboxActivity designed for testing
@@ -138,7 +138,7 @@ public class UserProfileTest {
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setUserToMock(testUser);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<>();
+        activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
         activity.createCollection();
         activity.setExpListView();
 
@@ -188,7 +188,7 @@ public class UserProfileTest {
         initializeMockProvider(activity);
 
 
-        assertThat((String) activity.nameTextView.getText(), is(testUser.getUsername()));
+       // assertThat((String) activity.emailTextView.getText(), is(testUser.getEmail()));
 
         List<DeboxActivity> orgEvents = activity.activityCollection.get(activity.organizedEvents);
         assertThat(orgEvents.size(), is(2));
@@ -202,12 +202,12 @@ public class UserProfileTest {
 
         List<DeboxActivity> parEvents = activity.activityCollection.get(activity.participatedEvents);
         assertThat(parEvents.size(), is(1));
-        assertTrue(parEvents.contains(dA1));
+        assertTrue(parEvents.contains(dA2));
+
+        List<DeboxActivity> toRankEvents = activity.activityCollection.get(activity.toRankEvents);
+        assertThat(toRankEvents.size(),is(1));
+        assertTrue(toRankEvents.contains(dA1));
 
     }
-
-
-
-
 
 }
