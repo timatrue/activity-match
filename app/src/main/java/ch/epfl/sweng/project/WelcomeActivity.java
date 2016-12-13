@@ -401,11 +401,11 @@ public class WelcomeActivity extends AppCompatActivity
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
                     }
+
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                    setFilterListener();
                 }
             });
-
-            (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-            setFilterListener();
         }
 
         else {
