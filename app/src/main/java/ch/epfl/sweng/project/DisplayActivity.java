@@ -89,7 +89,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private Button joinActivityButton;
     private Button leaveActivityButton;
     private Button rateButton;
-    private RatingBar rankWidgetRatingBar;
     private TextView statusInfoTextView;
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
@@ -110,7 +109,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
         rateButton = (Button) findViewById(R.id.rateButton);
         rateButton.setOnClickListener(rateEventListener);
-        rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
         eventLocation = (TextView) findViewById(R.id.location);
@@ -796,23 +794,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
     }
-//
-//    public void rateButtonPressed(View v){
-//
-//        if(currentActivity!= null){
-//
-//            rateButton.setVisibility(View.INVISIBLE);
-//            int rank = Math.round(rankWidgetRatingBar.getRating());
-//            mDataProvider.rankUser(currentActivity.getId(),rank);
-//
-//        } else {
-//
-//            // TODO change message error
-//            String toastMsg = getString(R.string.toas_fail_join);
-//            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-//        }
-//
-//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
