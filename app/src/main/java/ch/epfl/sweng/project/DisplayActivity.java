@@ -94,6 +94,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
     private LinearLayout textBlockLayout;
+    private ImageProvider mImageProvider;
 
 
     @Override
@@ -136,7 +137,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         textBlockLayout.setLayoutParams(layoutParams);
 
     }
-
+    
     View.OnClickListener rateEventListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -151,9 +152,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         dialogFragment.show(fm, "rating");
     }
 
-    public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser) {
+    public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser, ImageProvider testImageProvider) {
         mDataProvider = testDataProvider;
         mFirebaseUser = testFirebaseUser;
+        mImageProvider = testImageProvider;
     }
 
     public void refreshDisplay(boolean test, User user, DeboxActivity activity){
@@ -212,7 +214,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             activityToDisplay = activity;
 
             category = (TextView) findViewById(R.id.eventCategory);
-            category.setText(activity.getCategory() + " " + getResources().getString(R.string.create_activity_category_text));
+            category.setText(getResources().getString(R.string.create_activity_category_text, activity.getCategory()));
 
             description = (TextView) findViewById(R.id.eventDescription);
             description.setText(activity.getDescription());
@@ -316,21 +318,25 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
             }
 
+            // TODO remove the if(!test) clauses and figure out why imagelayout parent removal doesn't work in tests
             List<String> imagesList = activity.getImageList();
-
-            if(!test)
 
             if(imagesList != null) {
                 if(imagesList.size() != 0) {
+                    imagesLayout.removeAllViews();
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesList);
 
                 }
                 else {
-                    ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    if(!test) {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    }
                 }
             } else {
                 if(imagesLayout.getParent().getParent() != null)
-                    ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    if(!test) {
+                        ((LinearLayout) imagesLayout.getParent().getParent()).removeView((View) imagesLayout.getParent());
+                    }
             }
 
 
@@ -597,7 +603,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                                     break;
                                 default:
+
                                     statusInfoTextView.setText(R.string.you_are_organizer);
+
 
                                     break;
 
@@ -697,6 +705,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         occupancyTextView.setText(R.string.invalid_occupancy);
                     }
 
+
                     if (map != null) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
                         map.addMarker(new MarkerOptions()
@@ -749,6 +758,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             mapFragment.getMapAsync(this);
         }
     }
+
 
     /**
      * Method call by button joinActivity. Fill a new relation between user and current

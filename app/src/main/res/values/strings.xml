@@ -37,7 +37,7 @@
 
     <!-- Create Activity -->
     <string name="create_activity_title_bar">Event organizer</string>
-    <string name="create_activity_title">Organize your exciting event</string>
+    <string name="create_activity_title">Organize your event</string>
     <string name="create_activity_name_hint">The title of your event</string>
     <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Give details about yours event</string>
@@ -49,18 +49,20 @@
     <string name="create_activity_ending_time_textView">Ends </string>
     <string name="create_activity_create_activity_button">Create event</string>
     <string name="modifyButtonText">Modify activity</string>
-    <string name="create_activity_unknown_error_message">Unknown error</string>
+    <string name="create_activity_maximum_number_of_participants">Maximum number of participants (optional)</string>
 
     <string name="create_activity_set_location">Choose location</string>
-    <string name="create_activity_category_text">Event</string>
+    <string name="create_activity_category_text">%1$s Event</string>
     <string name="create_activity_upload_image">Upload Image</string>
-    <string name="create_activity_header">Event\'s Organiser</string>
+    <string name="create_activity_header">Event\'s Organizer</string>
 
     <string name="create_activity_invalid_category">Invalid category</string>
     <string name="create_activity_date_error_message">Invalid dates and/or time</string>
     <string name="create_activity_location_error_message">Please select a location</string>
     <string name="create_activity_category_error_message">Please select a category</string>
     <string name="create_activity_missing_field_error_message">Missing required field informations</string>
+    <string name="create_activity_invalid_max_number_participants">The maximum number of participants is invalid. Please select a number smaller than a thousand or leave the field empty if you don\'t want to have a maximum.</string>
+    <string name="create_activity_unknown_error_message">Unknown error</string>
 
     <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>
     <string name="modify_activity_set_location">Change location</string>
@@ -82,12 +84,11 @@
 
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
-    <string name="Occupancy">Occupancy : </string>
     <string name="organizer_button">Check out organizer\'s profile</string>
 
     <string name="user_signature">Published by\u0020@</string>
-    <string name="occupancy">Participants : %1$d</string>
-    <string name="occupancy_with_max">Participants : %1$d / %2$d</string>
+    <string name="occupancy">Participants: %1$d</string>
+    <string name="occupancy_with_max">Participants: %1$d/%2$d</string>
     <string name="invalid_occupancy">Invalid information about participants</string>
     <string name="already_enrolled">You have already join this Event</string>
     <string name="no_enrolled_free_place">You can join this event</string>
@@ -102,6 +103,10 @@
     <!-- Login -->
     <string name="sign_out">Sign out</string>
     <string name="unlogged_user">unlogged_user</string>
+
+
+
+
 
 
     <!-- Join activity -->
@@ -152,9 +157,11 @@
         <item>Interested</item>
     </string-array>
 
-    <string name="organised_events">Organised Events</string>
+    <string name="to_rank_events">Events to rank</string>
+    <string name="past_organised_events">Past organized Events</string>
+    <string name="organised_events">Upcoming organized Events</string>
     <string name="participated_events">Participated Events</string>
-    <string name="interested_events">Interested Events</string>
+    <string name="interested_events">Upcoming Events</string>
     <string name="no_events">No Events</string>
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>

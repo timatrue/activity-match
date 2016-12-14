@@ -25,6 +25,7 @@ import static com.google.android.gms.internal.zzs.TAG;
 public class FilterFragment extends DialogFragment {
     Button validate;
     public List<String> categoryList;
+    public List<String> categoryListWithAll;
     Spinner dropdownMaxDistance;
     Spinner dropDownCategories;
 
@@ -33,12 +34,8 @@ public class FilterFragment extends DialogFragment {
     TextView startTimeTextView;
     TextView endTimeTextView;
 
-    List<String> categoryListWithAll = new ArrayList<>();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        categoryListWithAll.add("All");
-        categoryListWithAll.addAll(categoryList);
 
         View rootView = inflater.inflate(R.layout.filter_layout, container, false);
         getDialog().setTitle(R.string.event_filter_title);

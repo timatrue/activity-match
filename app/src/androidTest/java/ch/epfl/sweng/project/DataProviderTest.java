@@ -135,8 +135,6 @@ public class DataProviderTest {
         myRef = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
-
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
 
@@ -172,8 +170,6 @@ public class DataProviderTest {
         database = Mockito.mock(FirebaseDatabase.class);
         myRef = Mockito.mock(DatabaseReference.class);
         mUser = Mockito.mock(FirebaseUser.class);
-
-        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
 
         //Create Map from deboxactivities
         final Map<String, Object> activityMap = toolsBuildMapFromDebox(deboxActivityTest);
@@ -434,6 +430,7 @@ public class DataProviderTest {
 
         //Overrride getChildren to always return interable of DataSnapshot
         when(ds.getChildren()).thenReturn(iterable);
+
 
         //Override addListenerForSingleValueEvent method for test to always return our value
         toolsBuildAnswerForListener(myRef,ds);
@@ -1008,11 +1005,14 @@ public class DataProviderTest {
         orgEventsIds.add(idArray[1]);
         orgEventsIds.add(idArray[5]);
 
+        final List<String> rankedEventsIds = new ArrayList<>();
+        rankedEventsIds.add(idArray[9]);
+
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
         dp.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents() {
             @Override
-            public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList) {
+            public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankList) {
 
                 assertEquals(intList.size(),intEventIds.size());
                 Iterator<DeboxActivity> iterableIntList = intList.iterator();
@@ -1030,8 +1030,17 @@ public class DataProviderTest {
                     assertEquals(iterableOrgList.next().getId(),iterableOrgEventsIds.next());
                 }
 
+                assertEquals(rankList.size(),rankedEventsIds.size());
+                Iterator<DeboxActivity> iterableRankList = rankList.iterator();
+                Iterator<String> iterableRankEventsIds= rankedEventsIds.iterator();
+
+                while(iterableRankList.hasNext() && iterableRankEventsIds.hasNext()){
+                    assertEquals(iterableRankList.next().getId(),iterableRankEventsIds.next());
+                }
+
+
             }
-        },intEventIds,orgEventsIds);
+        },intEventIds,orgEventsIds,rankedEventsIds);
     }
 
 
@@ -1409,10 +1418,86 @@ public class DataProviderTest {
 
 
 
+
     }
 
     /**
-     * This fonction compare to activities to check if they are equalls.
+     *  Test the function : public String updateActivity(DeboxActivity da)
+     *  the function updateActivity update an activity on the dataBase and keep his original
+     *  key
+     */
+    @Test
+    public void testUpdateActivity(){
+
+        // build to getStatus ENROLLED
+        Calendar start1 = Calendar.getInstance();
+        start1.add(Calendar.HOUR,2);
+        Calendar end1 = Calendar.getInstance();
+        end1.add(Calendar.HOUR,2);
+
+        final String id1 = "id1";
+        final DeboxActivity dba = new DeboxActivity(id1,"dummyOrganiser","dummyTitle","dummyDescription",
+                start1 ,end1 ,10.1,10.1,"Sports");
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap<String, Object> activityMap = (HashMap<String, Object>) objectBuild.get("activities/"+id1);
+
+                assertEquals(activityMap.get("category"),dba.getCategory());
+                assertEquals(activityMap.get("description"),dba.getDescription());
+                assertEquals(activityMap.get("latitude"),dba.getLocation()[0]);
+                assertEquals(activityMap.get("longitude"),dba.getLocation()[1]);
+                assertEquals(activityMap.get("organizer"),dba.getOrganizer());
+                assertEquals(activityMap.get("title"),dba.getTitle());
+
+                return null;
+
+            }
+        }).when(mDataBaseRef).updateChildren(anyMap());
+
+
+        DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
+
+        dp.updateActivity(dba);
+    }
+
+    /**
+     *  Test the function : public void deleteActivity(DeboxActivity da)
+     *  the function deleteActivity remove an activity of the dataBase
+     */
+    @Test
+    public void testDeleteActivity(){
+
+        final String id1 = "id1";
+        final DeboxActivity dba = new DeboxActivity(id1,"dummyOrganiser","dummyTitle","dummyDescription",
+                Calendar.getInstance() ,Calendar.getInstance() ,10.1,10.1,"Sports");
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        when(mDataBaseRef.child("activities")).thenReturn(mDataBaseRef);
+        when(mDataBaseRef.child(id1)).thenReturn(mDataBaseRef);
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+
+                assertEquals(true,true);
+                return null;
+
+            }
+        }).when(mDataBaseRef).removeValue();
+
+        DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
+        dp.deleteActivity(dba);
+
+
+
+    }
+
+    /**
+     * This function compare to activities to check if they are equalls.
      * @param dba1 first activity
      * @param dba2 second activity
      * @return return true if they are equals otherwise return false

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="0.3dp"
+        android:color="@color/lightGreyDebox" />
+    <solid
+        android:startColor="@color/niceWhiteDebox" />
+    <padding
+        android:top="@dimen/create_activity_padding"
+        android:bottom="@dimen/create_activity_padding"
+        android:left="@dimen/create_activity_padding"
+        android:right="@dimen/create_activity_padding" />
+</shape>
