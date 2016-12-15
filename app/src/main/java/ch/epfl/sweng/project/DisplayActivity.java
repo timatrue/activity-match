@@ -749,7 +749,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     public void joinActivity(View v) {
         if(currentActivity!= null){
 
-            mDataProvider.joinActivity(currentActivity);
+            //mDataProvider.joinActivity(currentActivity);
+
+
+            mDataProvider.tryJoinActivity(currentActivity, new DataProvider.DataProviderListenerResultOfJoinActivity() {
+                @Override
+                public void getResultJoinActivity(boolean result) {
+                    if(result){
+                        Log.e("RESULT TRY to JOIN","true");
+                    } else {
+                        Log.e("RESULT TRY to JOIN","false");
+                    }
+                }
+            });
+
+
             joinActivityButton.setVisibility(View.INVISIBLE);
             //leaveActivityButton.setVisibility(View.VISIBLE);
 

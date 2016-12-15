@@ -10,7 +10,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -787,6 +789,120 @@ public class DataProvider {
 
     }
 
+
+    /**
+     *
+     *
+     *
+     */
+
+    public void tryJoinActivity(DeboxActivity dba, final DataProviderListenerResultOfJoinActivity listener){
+
+        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
+            @Override
+            public void getActivity(final DeboxActivity activity) {
+
+
+                if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
+
+                    //can try to join
+
+                    DatabaseReference numberReference = mDatabase.child("activities").child(activity.getId());
+
+                    numberReference.runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+
+                            Map<String, Object> activityMap = (Map<String, Object>) mutableData.getValue();
+
+
+                            if (activityMap == null) {
+                                return Transaction.success(mutableData);
+                            }
+
+                            DeboxActivity mutableActivity = getDeboxActivity(activity.getId(),activityMap);
+
+
+                            int nbOfUser = mutableActivity.getNbOfParticipants();
+
+                            if(nbOfUser<0){
+                                nbOfUser=0;
+                            }
+                            nbOfUser=nbOfUser+1;
+
+                            DeboxActivity updatedActivity = new DeboxActivity(mutableActivity.getId(),mutableActivity.getOrganizer(),mutableActivity.getTitle(),mutableActivity.getDescription(),
+                                    mutableActivity.getTimeStart(),mutableActivity.getTimeEnd(),mutableActivity.getLocation()[0],mutableActivity.getLocation()[1],
+                                    mutableActivity.getCategory(),nbOfUser,mutableActivity.getNbMaxOfParticipants());
+
+
+                            HashMap<String, Object> result = createActivityMap(updatedActivity);
+
+                            mutableData.setValue(result);
+
+                            return Transaction.success(mutableData);
+
+
+
+
+
+                            //return null;
+                        }
+
+                        @Override
+                        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                            if(b){
+                                Log.e("TRY-JOIN","databaseError: status b : true ");
+
+                                //ici ajouter join dans la liste
+
+
+
+
+                            } else {
+                                Log.e("TRY-JOIN","databaseError: status b : false");
+                            }
+
+
+                            listener.getResultJoinActivity(b);
+
+                        }
+                    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                } else {
+                    // cannot join activity full
+                    //f(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() >= activity.getNbOfParticipants())) {
+
+                    Log.e("FULL ? ","activity.getNbMaxOfParticipants()"+activity.getNbMaxOfParticipants()+" - - activity.getNbMaxOfParticipants()  "+activity.getNbMaxOfParticipants()+
+                            "activity.getNbOfParticipants() "+activity.getNbOfParticipants());
+                    listener.getResultJoinActivity(false);
+
+                }
+
+            }
+        },dba.getId());
+
+    }
+
     /**
      * Remove the enrollment of the user in the activity dba.
      *
@@ -891,6 +1007,9 @@ public class DataProvider {
 
     //DB Callbacks interfaces
 
+    public interface DataProviderListenerResultOfJoinActivity{
+        void getResultJoinActivity(boolean result);
+    }
 
     public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
