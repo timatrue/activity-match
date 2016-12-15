@@ -135,7 +135,8 @@
         <item>20 km</item>
         <item>50 km</item>
     </string-array>
-
+    <string name="gps_is_disabled">GPS is disabled</string>
+    <string name="filter_enable_gps">Enable GPS</string>
     <string name="close">Close</string>
 
 
@@ -162,6 +163,7 @@
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
+    <string name="search">Search</string>
 
 
 </resources>
