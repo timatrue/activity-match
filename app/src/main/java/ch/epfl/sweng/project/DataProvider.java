@@ -805,75 +805,36 @@ public class DataProvider {
 
                 if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
 
-                    //can try to join
-
-                    DatabaseReference numberReference = mDatabase.child("activities").child(activity.getId());
-
-                    numberReference.runTransaction(new Transaction.Handler() {
+                    DatabaseReference participantsRef = mDatabase.child("activities/"+activity.getId()+"/nbOfParticipants");
+                    participantsRef.runTransaction(new Transaction.Handler() {
                         @Override
                         public Transaction.Result doTransaction(MutableData mutableData) {
+                            Integer nbOfParticipants = mutableData.getValue(Integer.class);
+                            Log.e("bn : ",nbOfParticipants.toString());
 
-                            Map<String, Object> activityMap = (Map<String, Object>) mutableData.getValue();
-
-
-                            if (activityMap == null) {
+                            if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
+                                mutableData.setValue(nbOfParticipants+1);
                                 return Transaction.success(mutableData);
+                            } else {
+                                return Transaction.abort();
                             }
-
-                            DeboxActivity mutableActivity = getDeboxActivity(activity.getId(),activityMap);
-
-
-                            int nbOfUser = mutableActivity.getNbOfParticipants();
-
-                            if(nbOfUser<0){
-                                nbOfUser=0;
-                            }
-                            nbOfUser=nbOfUser+1;
-
-                            DeboxActivity updatedActivity = new DeboxActivity(mutableActivity.getId(),mutableActivity.getOrganizer(),mutableActivity.getTitle(),mutableActivity.getDescription(),
-                                    mutableActivity.getTimeStart(),mutableActivity.getTimeEnd(),mutableActivity.getLocation()[0],mutableActivity.getLocation()[1],
-                                    mutableActivity.getCategory(),nbOfUser,mutableActivity.getNbMaxOfParticipants());
-
-
-                            HashMap<String, Object> result = createActivityMap(updatedActivity);
-
-                            mutableData.setValue(result);
-
-                            return Transaction.success(mutableData);
-
+                            //return null;
                         }
 
                         @Override
                         public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                            if(b) {
 
-                            if(b){
-                                Log.e("TRY-JOIN","databaseError: status b : true ");
-
-                                HashMap<String, Object> enrolledChild = new HashMap<>();
-                                enrolledChild.put("activity ID:",activity.getId());
-
-
-                                String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
-                                HashMap<String, Object> enrolled = new HashMap<>();
-
-                                enrolled.put("enrolled/" + enrolledKey, enrolledChild);
-                                // update the database
-                                mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
-
-
-
+                                //TODO ADD ACTIVITY ID ON ENROLLED LIST OF USER
+                                Log.d("TRY-JOIN", "databaseError: status b : true ");
                             } else {
-                                Log.e("TRY-JOIN","databaseError: status b : false");
+                                Log.d("TRY-JOIN", "databaseError: status b : false");
                             }
 
 
-                            listener.getResultJoinActivity(b);
-
                         }
                     });
-
                 } else {
-                    // cannot join activity full
                     listener.getResultJoinActivity(false);
                 }
 
