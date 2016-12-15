@@ -841,11 +841,6 @@ public class DataProvider {
 
                             return Transaction.success(mutableData);
 
-
-
-
-
-                            //return null;
                         }
 
                         @Override
@@ -854,8 +849,16 @@ public class DataProvider {
                             if(b){
                                 Log.e("TRY-JOIN","databaseError: status b : true ");
 
-                                //ici ajouter join dans la liste
+                                HashMap<String, Object> enrolledChild = new HashMap<>();
+                                enrolledChild.put("activity ID:",activity.getId());
 
+
+                                String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+                                HashMap<String, Object> enrolled = new HashMap<>();
+
+                                enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+                                // update the database
+                                mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
 
 
@@ -869,33 +872,9 @@ public class DataProvider {
                         }
                     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 } else {
                     // cannot join activity full
-                    //f(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() >= activity.getNbOfParticipants())) {
-
-                    Log.e("FULL ? ","activity.getNbMaxOfParticipants()"+activity.getNbMaxOfParticipants()+" - - activity.getNbMaxOfParticipants()  "+activity.getNbMaxOfParticipants()+
-                            "activity.getNbOfParticipants() "+activity.getNbOfParticipants());
                     listener.getResultJoinActivity(false);
-
                 }
 
             }
