@@ -821,7 +821,8 @@ public class DataProvider {
             public void getActivity(final DeboxActivity activity) {
 
                 // check if place left
-                if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
+                //if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
+                if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() <= activity.getNbOfParticipants())) {
 
                     DatabaseReference participantsRef = mDatabase.child("activities/"+activity.getId()+"/nbOfParticipants");
 

@@ -768,6 +768,114 @@ public class DataProviderTest {
 
     }
 
+
+    /**
+     * This function test the joinActivity if no place are available
+     */
+    @Test
+    public void testAtomicJoinFullActivity() {
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        DataSnapshot dsActivityFull = Mockito.mock(DataSnapshot.class);
+
+        final int nbOfParticipants = 20;
+        final int nbMaxParticipants = 20;
+
+        final DeboxActivity testActivityFull = new DeboxActivity(uuidTest, "test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        //Create Map from testActivityFull
+        final Map<String, Object> activityFullMap = toolsBuildMapFromDebox(testActivityFull);
+
+        //Override getValue() to always return the Map for the test
+        when(dsActivityFull.getValue()).thenReturn(activityFullMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef, dsActivityFull);
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        DataProvider dp = new DataProvider(myRef, database, mUser);
+
+        dp.atomicJoinActivity(testActivityFull, new DataProvider.DataProviderListenerResultOfJoinActivity() {
+            @Override
+            public void getResultJoinActivity(boolean result) {
+
+                // if no place available result of joinActivity must be false
+                assertEquals(result,false);
+
+            }
+        });
+    }
+
+
+    /**
+     * This function test the joinActivity but not the atomic function (handler cannot be tested
+     * with mock, they must be test with integration test
+     */
+    @Test
+    public void testAtomicJoinNoFullActivity(){
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        DataSnapshot dsActivityFull = Mockito.mock(DataSnapshot.class);
+
+        final int nbOfParticipants = 20;
+        final int nbMaxParticipants = 20;
+
+        final DeboxActivity testActivityFull = new DeboxActivity(uuidTest, "test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        //Create Map from testActivityFull
+        final Map<String, Object> activityFullMap = toolsBuildMapFromDebox(testActivityFull);
+
+        //Override getValue() to always return the Map for the test
+        when(dsActivityFull.getValue()).thenReturn(activityFullMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef, dsActivityFull);
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        DataProvider dp = new DataProvider(myRef, database, mUser);
+
+        dp.atomicJoinActivity(testActivityFull, new DataProvider.DataProviderListenerResultOfJoinActivity() {
+            @Override
+            public void getResultJoinActivity(boolean result) {
+
+                // if no place available result of joinActivity must be false
+                assertEquals(result,false);
+
+            }
+        });
+
+    }
+
+
+
     /**
      * This function test the functions public void joinActivity(DeboxActivity dba) and
      * private void incrementNbOfUserInActivity(DeboxActivity dba). incrementNbOfUserInActivity is
