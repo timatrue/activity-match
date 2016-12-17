@@ -170,34 +170,24 @@
                         android:topLeftRadius="10dp"
                         android:topRightRadius="10dp"/>
 
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rankLayout"
-                    android:visibility="invisible">
-
-                    <RatingBar
-                        android:layout_marginStart="@dimen/fab_margin"
-                        android:layout_marginLeft="@dimen/fab_margin"
-                        android:layout_width="wrap_content"
-                        android:stepSize="1"
-                        android:layout_height="wrap_content"
-                        android:visibility="invisible"
-                        android:id="@+id/rankWidget" />
-
                     <Button
-                        android:layout_marginRight="@dimen/fab_margin"
-                        android:layout_marginEnd="@dimen/fab_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/rateButton"
                         android:text="@string/rateButton"
+                        android:onClick="leaveActivity"
                         android:visibility="invisible"
-                        android:onClick="rateButtonPressed" />
+                        android:textColor="@color/niceWhiteDebox"
+                        android:background="@color/niceBlueDebox"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:padding="@dimen/textBlockPadding"
+                        android:bottomRightRadius="10dp"
+                        android:bottomLeftRadius="10dp"
+                        android:topLeftRadius="10dp"
+                        android:topRightRadius="10dp"/>
 
-                </LinearLayout>
+                </RelativeLayout>
 
 
                     <HorizontalScrollView

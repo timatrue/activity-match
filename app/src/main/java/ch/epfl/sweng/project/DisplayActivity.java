@@ -1,5 +1,7 @@
+
 package ch.epfl.sweng.project;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Address;
@@ -11,12 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -42,8 +41,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.epfl.sweng.project.DataProvider.UserStatus;
-import ch.epfl.sweng.project.fragments.PublicUserImageFragment;
-import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.fragments.RatingFragment;
+
 
 import static java.text.DateFormat.getDateInstance;
 
@@ -75,6 +74,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     String commaSpace;
     Resources res;
 
+    RatingFragment dialogFragment;
+
     LinearLayout imagesLayout;
 
     DeboxActivity activityToDisplay = null;
@@ -88,11 +89,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private User currentUser = null;
     private Button joinActivityButton;
     private Button leaveActivityButton;
-    private RatingBar rankWidgetRatingBar;
+    private Button rateButton;
     private TextView statusInfoTextView;
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
-    private LinearLayout ratingLayout;
     private LinearLayout textBlockLayout;
     private ImageProvider mImageProvider;
 
@@ -108,11 +108,11 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         joinActivityButton = (Button) findViewById(R.id.joinActivity);
         leaveActivityButton = (Button) findViewById(R.id.leaveActivity);
-        rankWidgetRatingBar = (RatingBar) findViewById(R.id.rankWidget);
+        rateButton = (Button) findViewById(R.id.rateButton);
+        rateButton.setOnClickListener(rateEventListener);
         statusInfoTextView = (TextView) findViewById(R.id.StatusInfo);
         occupancyTextView = (TextView) findViewById(R.id.eventOccupancy);
         eventLocation = (TextView) findViewById(R.id.location);
-        ratingLayout = (LinearLayout) findViewById(R.id.rankLayout);
         imagesLayout = (LinearLayout) findViewById(R.id.imagesLayout);
 
         setupUserToolBar();
@@ -135,6 +135,20 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         layoutParams.setMargins(10, 20, 10, 20);
         textBlockLayout.setLayoutParams(layoutParams);
 
+    }
+    
+    View.OnClickListener rateEventListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ratingFragment();
+        }
+    };
+
+    protected void ratingFragment(){
+        FragmentManager fm = getFragmentManager();
+        dialogFragment = new RatingFragment();
+        dialogFragment.eventId = currentActivity.getId();
+        dialogFragment.show(fm, "rating");
     }
 
     public void setTestDBObjects(DataProvider testDataProvider, FirebaseUser testFirebaseUser, ImageProvider testImageProvider) {
@@ -165,7 +179,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
                     break;
                 case MUST_BE_RANKED:
-                    ratingLayout.setVisibility(View.VISIBLE);
+                    rateButton.setVisibility(View.VISIBLE);
+                    joinActivityButton.setVisibility(View.INVISIBLE);
+                    leaveActivityButton.setVisibility(View.INVISIBLE);
                     statusInfoTextView.setText(R.string.must_be_rank);
 
                     break;
@@ -355,7 +371,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                 refreshDisplay(test, currentUser, currentActivity);
             }
 
-
             MapFragment mapFragment = (MapFragment) getFragmentManager()
                     .findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
@@ -409,22 +424,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
     }
-    public void rateButtonPressed(View v){
 
-        if(currentActivity!= null){
-
-            ratingLayout.setVisibility(View.INVISIBLE);
-            int rank = Math.round(rankWidgetRatingBar.getRating());
-            mDataProvider.rankUser(currentActivity.getId(),rank);
-
-        } else {
-
-            // TODO change message error
-            String toastMsg = getString(R.string.toast_fail_join);
-            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
-        }
-
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

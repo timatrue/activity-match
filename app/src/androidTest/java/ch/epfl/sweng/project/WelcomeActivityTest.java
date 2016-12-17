@@ -623,7 +623,8 @@ public class WelcomeActivityTest {
         final String endDate = activity.makeDateString(endCalendar);
         final String endTime = activity.makeTimeString(endCalendar);
 
-        onView(allOf(withId(R.id.filterActivity), withText("Filter the events"), withParent(withId(R.id.include)), isDisplayed())).perform(click());
+
+        onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo(), click());
         onData(allOf(is(instanceOf(String.class)), is(testMaxDistanceString))).inRoot(isPlatformPopup()).perform(click());
@@ -710,7 +711,7 @@ public class WelcomeActivityTest {
         final String endTime = activity.makeTimeString(endCalendar);
 
 
-        onView(allOf(withId(R.id.filterActivity), withText("Filter the events"), withParent(withId(R.id.include)), isDisplayed())).perform(click());
+        onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 
         //Sets the parameters instead of clicking them to gain time
         activity.filterCategory = testCategory;
@@ -720,11 +721,11 @@ public class WelcomeActivityTest {
 
         onView(withId(R.id.filterAddLocation)).perform(pressBack());
 
-        onView(allOf(withId(R.id.filterActivity), withText("Filter the events"), withParent(withId(R.id.include)), isDisplayed())).perform(click());
+        onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 
-        onView(allOf(withId(R.id.validate), withText("Validate"))).perform(scrollTo(), click());
+        onView(allOf(withId(R.id.validate))).perform(scrollTo(), click());
 
-        onView(allOf(withId(R.id.filterActivity), withText("Filter the events"), withParent(withId(R.id.include)), isDisplayed())).perform(click());
+        onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 
         onView(withId(R.id.filterMaxDistanceDropDown)).perform(scrollTo()).check(matches(withSpinnerText(testMaxDistanceString)));
         onView(withId(R.id.filterCategoriesDropDown)).perform(scrollTo()).check(matches(withSpinnerText(testCategory)));
