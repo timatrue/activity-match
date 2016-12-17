@@ -160,6 +160,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         if(mFirebaseUser!=null || test) {
 
             UserStatus status = mDataProvider.getUserStatusInActivity(activity,user);
+            if(test == true) status = DataProvider.UserStatus.NOT_ENROLLED_NOT_FULL;
 
             switch(status){
                 case ENROLLED:

@@ -24,12 +24,15 @@ import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.text.DateFormat.getDateInstance;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -128,6 +131,10 @@ public class DisplayActivityTest {
         assertThat(activity.scheduleEnds.getText().toString(), is(scheduleEndsText));
         assertThat(activity.activityToDisplay.getLocation()[1], is(dA1.getLocation()[1]));
         assertThat(activity.activityToDisplay.getLocation()[0], is(dA1.getLocation()[0]));
+        //assertThat(activity.map, is(not(nullValue())));
+        assertThat(activity.eventLocation, is(not(nullValue())));
+
+
 
         final String dA1OccupancyText;
         final int nbParticipants = dA1.getNbOfParticipants();
@@ -230,9 +237,62 @@ public class DisplayActivityTest {
 
         dA1OccupancyText = activity.getString(R.string.invalid_occupancy);
         assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
-    }
 
-    /*@UiThreadTest
+    }
+    /*
+    @UiThreadTest
+    @Test
+    public void DisplayActivityUI() throws Exception {
+
+        List<String> organizedEvents = Arrays.asList("id2", "id3");
+        List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
+        List<String> rankedEvents = Arrays.asList("id2");
+
+        User testUser = new User("Bob", "username", "email", organizedEvents,
+                interestedEvents, rankedEvents, 4, 8, "slls");
+
+        final DisplayActivity activity = displayActivityRule.getActivity();
+
+        final List<String> imageList = new ArrayList<>();
+        imageList.add("image1");
+        imageList.add("image2");
+
+        final DeboxActivity dA1 = new DeboxActivity(
+                "id1",
+                "Benoit",
+                "da1",
+                "Doing a nice walk",
+                addDays(currentCalendar, 13),
+                addDays(currentCalendar, 14),
+                46.777245,
+                6.642266,
+                "Sports",
+                imageList,
+                10,
+                20);
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+        mocDataProvider.addActivityToMock(dA1);
+        mocDataProvider.setUserToMock(testUser);
+
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser, ip);
+
+
+
+        activity.initDisplay(false);
+
+
+        onView(withId(R.id.location)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.userSignture)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.scrollLayoutDisplayActivity)).perform(scrollTo());
+
+
+    }*/
+
+    @UiThreadTest
     @Test
     public void joinTest() throws Exception {
 
@@ -264,19 +324,23 @@ public class DisplayActivityTest {
 
         List<String> organizedEvents = Arrays.asList("id2", "id3");
         List<String> interestedEvents = Arrays.asList("id4", "id5");
+        List<String> rankedEvents = Arrays.asList("id2");
 
-        final User testUser = new User("id", "Bob", "email", organizedEvents,
-                interestedEvents, 4, 8, "slls");
+
+
+        User testUser = new User("Bob", "username", "email", organizedEvents,
+                interestedEvents, rankedEvents, 4, 8, "slls");
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
         mocDataProvider.setUserToMock(testUser);
-        activity.setTestDBObjects(dp, testFirebaseUser);
-
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser,ip);
         activity.initDisplay(true);
 
         onView(withId(R.id.joinActivity)).check(matches(isDisplayed())).perform(click());
-    }*/
+    }
 }
