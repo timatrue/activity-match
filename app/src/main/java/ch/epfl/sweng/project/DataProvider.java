@@ -945,36 +945,6 @@ public class DataProvider {
         });
     }
 
-    @Deprecated
-    private void decreasesNbOfUserInActivity(DeboxActivity dba){
-
-        final String uid = dba.getId();
-
-        DatabaseReference myRef = database.getReference("activities/" + dba.getId());
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-
-                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
-
-                nbOfUser -= 1;
-
-                if(nbOfUser<0){
-                    nbOfUser=0;
-                }
-
-                HashMap<String, Object> childToUpDate = new HashMap<>();
-                childToUpDate.put("nbOfParticipants",nbOfUser);
-                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-    }
-
     /**
      * Decrement the number of participant by one (if number reach negative value set it to 0)
      *
@@ -1024,16 +994,6 @@ public class DataProvider {
 
     public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
-    }
-
-    @Deprecated
-    private interface DataProviderListenerAlreadyRanked{
-        void getIfRanked(boolean result);
-    }
-
-    @Deprecated
-    private interface DataProviderListenerIsPast{
-        void getIfActivityIsPast(boolean result);
     }
 
     public interface DataProviderListenerEnrolled {
