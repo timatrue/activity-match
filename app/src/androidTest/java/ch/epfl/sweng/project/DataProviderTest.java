@@ -730,6 +730,103 @@ public class DataProviderTest {
     }
 
     /**
+     * Test the function : public void publicUserProfile(final String userUid, final DataProviderListenerUserInfo listener)
+     * return the userProfile of userUid user asked.
+     */
+    @Test
+    public void testPublicUserProfile() {
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+
+        final String fakeUserID1 = "fakeUserID1";
+        final String fakeName = "fakeUserName";
+        final String fakeEmail = "fakeemail@gmail.com";
+        final String uuidTest1 = "uuid-test-111";
+        final String uuidTest2 = "uuid-test-222";
+        final String uuidTest3 = "uuid-test-333";
+        final int ratingNb = 3;
+        final int ratingSum = 14;
+
+
+        when(database.getReference("users/"+fakeUserID1)).thenReturn(myRef);
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:",uuidTest1);
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",uuidTest2);
+
+        enrolledMap.put("enrolledID1",enrolledMap1);
+        enrolledMap.put("enrolledID2",enrolledMap2);
+
+
+        final Map<String, Object> organisedMap1 = new HashMap<>();
+        organisedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> organisedMap = new HashMap<>();
+        organisedMap.put("organisedID1",organisedMap1);
+
+
+        final Map<String, Object> rankedMap1 = new HashMap<>();
+        rankedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> rankedMap = new HashMap<>();
+        rankedMap.put("rankedID1",rankedMap1);
+
+
+        final Map<String, Object> userMap = new HashMap<>();
+
+        userMap.put("default_user_name",fakeName);
+        userMap.put("enrolled",enrolledMap);
+        userMap.put("organised",organisedMap);
+        userMap.put("ranked",rankedMap);
+        userMap.put("ratingNb",ratingNb);
+        userMap.put("ratingSum",ratingSum);
+        userMap.put("user_email",fakeEmail);
+
+        when(ds1.getValue()).thenReturn(userMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.publicUserProfile(fakeUserID1,new DataProvider.DataProviderListenerUserInfo() {
+            @Override
+            public void getUserInfo(User user) {
+                List<String> checkInterested = new ArrayList<>();
+                checkInterested.add(uuidTest1);
+                checkInterested.add(uuidTest2);
+                assertEquals(user.getInterestedEventIds(),checkInterested);
+
+                List<String> checkOrganizedList = new ArrayList<>();
+                checkOrganizedList.add(uuidTest3);
+                assertEquals(user.getOrganizedEventIds(),checkOrganizedList);
+
+                List<String> checkRankedList = new ArrayList<>();
+                checkRankedList.add(uuidTest3);
+                assertEquals(user.getRankedEventIds(),checkRankedList);
+
+                assertEquals(user.getRatingNb(),ratingNb);
+                assertEquals(user.getRatingSum(),ratingSum);
+                assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
+                assertEquals(user.getPhotoLink(),null);
+                assertEquals(user.getEmail(),fakeEmail);
+                assertEquals(user.getUsername(),fakeName);
+
+            }
+        });
+
+
+    }
+
+
+    /**
      * Test the function : public void initUserInDB(). initUserInDB is use to be sure that an user
      * profile corresponding to the current user is present in the database. If there is no userProfile
      * in the dataBase, the profile is automatically created.
