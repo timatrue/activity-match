@@ -126,6 +126,8 @@ public class DisplayActivityTest {
         assertThat(activity.description.getText().toString(), is(dA1.getDescription()));
         assertThat(activity.scheduleStarts.getText().toString(), is(scheduleStartsText));
         assertThat(activity.scheduleEnds.getText().toString(), is(scheduleEndsText));
+        assertThat(activity.activityToDisplay.getLocation()[1], is(dA1.getLocation()[1]));
+        assertThat(activity.activityToDisplay.getLocation()[0], is(dA1.getLocation()[0]));
 
         final String dA1OccupancyText;
         final int nbParticipants = dA1.getNbOfParticipants();
