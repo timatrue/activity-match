@@ -752,13 +752,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             //mDataProvider.joinActivity(currentActivity);
 
 
+
+
             mDataProvider.tryJoinActivity(currentActivity, new DataProvider.DataProviderListenerResultOfJoinActivity() {
                 @Override
                 public void getResultJoinActivity(boolean result) {
                     if(result){
-                        Log.e("RESULT TRY to JOIN","true");
+                        String toastMsg = getString(R.string.toast_success_join);
+                        Log.e("showTast",toastMsg);
+                        showToast(toastMsg);
+                        //Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
                     } else {
-                        Log.e("RESULT TRY to JOIN","false");
+                        String toastMsg = getString(R.string.toast_fail_join_full);
+                        Log.e("showTast",toastMsg);
+                        showToast(toastMsg);
+
                     }
                 }
             });
@@ -767,15 +775,21 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             joinActivityButton.setVisibility(View.INVISIBLE);
             //leaveActivityButton.setVisibility(View.VISIBLE);
 
-            String toastMsg = getString(R.string.toast_success_join);
-            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+
+
 
         } else {
 
-            String toastMsg = getString(R.string.toas_fail_join);
+            String toastMsg = getString(R.string.toast_fail_join);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
         }
+    }
+
+    public void showToast(String message){
+        //String toastMsg = getString(R.string.toast_success_join);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
     }
 
     public void leaveActivity(View v){
@@ -787,7 +801,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         } else {
 
-            String toastMsg = getString(R.string.toas_fail_join);
+            String toastMsg = getString(R.string.toast_fail_join_full);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
         }
 
@@ -803,7 +817,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
         } else {
 
             // TODO change message error
-            String toastMsg = getString(R.string.toas_fail_join);
+            String toastMsg = getString(R.string.toast_fail_join);
             Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
         }
 

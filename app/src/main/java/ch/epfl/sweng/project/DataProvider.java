@@ -826,10 +826,12 @@ public class DataProvider {
                             if(b) {
 
                                 //TODO ADD ACTIVITY ID ON ENROLLED LIST OF USER
-                                Log.d("TRY-JOIN", "databaseError: status b : true ");
+                                Log.d("TRY-JOIN", "true");
+
                             } else {
-                                Log.d("TRY-JOIN", "databaseError: status b : false");
+                                Log.d("TRY-JOIN", "false");
                             }
+                            listener.getResultJoinActivity(b);
 
 
                         }
