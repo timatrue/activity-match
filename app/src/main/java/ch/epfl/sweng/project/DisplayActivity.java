@@ -81,6 +81,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     GoogleMap map = null;
     Geocoder geocoder;
     List<Address> addresses;
+    public double longitude;
+    public double latitude;
 
     private DataProvider mDataProvider;
     private String eventId;
@@ -274,9 +276,12 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
             }
 
             if (map != null) {
+                latitude = activityToDisplay.getLocation()[0];
+                longitude = activityToDisplay.getLocation()[1];
+
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]), 15));
                 map.addMarker(new MarkerOptions()
-                        .position(new LatLng(activityToDisplay.getLocation()[0], activityToDisplay.getLocation()[1]))
+                        .position(new LatLng(latitude,longitude ))
                         .title(activity.getTitle()));
                 try {
                     addresses  = geocoder.getFromLocation(
@@ -289,6 +294,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         String postalCode = addresses.get(0).getPostalCode();
                         String knownName = addresses.get(0).getFeatureName();
                         commaSpace = res.getString(R.string.commaSpace);
+
 
                         SpannableString content = new SpannableString(address + commaSpace + city);
                         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);

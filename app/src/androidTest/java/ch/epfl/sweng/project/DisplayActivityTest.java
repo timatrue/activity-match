@@ -8,6 +8,10 @@ import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Rule;
@@ -103,6 +107,7 @@ public class DisplayActivityTest {
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
+
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
         MockImageProvider mocImageProvider = new MockImageProvider();
@@ -126,6 +131,10 @@ public class DisplayActivityTest {
         assertThat(activity.description.getText().toString(), is(dA1.getDescription()));
         assertThat(activity.scheduleStarts.getText().toString(), is(scheduleStartsText));
         assertThat(activity.scheduleEnds.getText().toString(), is(scheduleEndsText));
+        assertThat(activity.activityToDisplay.getLocation()[1], is(dA1.getLocation()[1]));
+        assertThat(activity.activityToDisplay.getLocation()[0], is(dA1.getLocation()[0]));
+
+
 
         final String dA1OccupancyText;
         final int nbParticipants = dA1.getNbOfParticipants();
@@ -229,6 +238,60 @@ public class DisplayActivityTest {
         dA1OccupancyText = activity.getString(R.string.invalid_occupancy);
         assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
     }
+
+    /*@UiThreadTest
+    @Test
+    public void DisplayActivityUI() throws Exception {
+
+        final DisplayActivity activity = displayActivityRule.getActivity();
+
+        final List<String> imageList = new ArrayList<>();
+        imageList.add("image1");
+        imageList.add("image2");
+
+        final DeboxActivity dA1 = new DeboxActivity(
+                "id1",
+                "Benoit",
+                "da1",
+                "Doing a nice walk",
+                addDays(currentCalendar, 13),
+                addDays(currentCalendar, 14),
+                46.777245,
+                6.642266,
+                "Sports",
+                imageList,
+                10,
+                20);
+
+        final DeboxActivity dA2 = new DeboxActivity(
+                "id2",
+                "Benoit",
+                "da2",
+                "Doing a nice walk",
+                addDays(currentCalendar, 2),
+                addDays(currentCalendar, 4),
+                46.777245,
+                6.642266,
+                "Culture");
+
+        MockDataProvider mocDataProvider = new MockDataProvider();
+        DataProvider dp = mocDataProvider.getMockDataProvider();
+
+        mocDataProvider.addActivityToMock(dA1);
+        mocDataProvider.addActivityToMock(dA2);
+        MockImageProvider mocImageProvider = new MockImageProvider();
+        ImageProvider ip = mocImageProvider.getMockImageProvider();
+        activity.setTestDBObjects(dp, testFirebaseUser, ip);
+
+        activity.initDisplay(true);
+        //final RelativeLayout previewLayout = activity.eventLocation.;
+        assertThat(activity.longitude, is(dA1.getLocation()[0]));
+        //assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
+
+        //assertThat(((TextView) view.findViewById(R.id.titleEvent)).getText().toString(), is(dA.getTitle()));
+
+
+    } */
 
     /*@UiThreadTest
     @Test
