@@ -768,7 +768,7 @@ public class DataProvider {
      *
      * @param dba
      */
-
+    @Deprecated
     public void joinActivity(DeboxActivity dba){
 
         HashMap<String, Object> enrolledChild = new HashMap<>();
@@ -791,55 +791,73 @@ public class DataProvider {
 
 
     /**
+     * Try to atomically join the dba Activity. The incrementation of the number of user in application is done
+     * atomically. The result (success or fail) is send back by the listener DataProviderListenerResultOfJoinActivity.
+     * With this solution if multiple user want join an activity simultaneously one activity with one place left,
+     * only one user can join it. (other user receive a message).
      *
-     *
-     *
+     * @param dba       : deboxActivity to join
+     * @param listener  : listener to send result of join
      */
+    public void atomicJoinActivity(DeboxActivity dba, final DataProviderListenerResultOfJoinActivity listener){
 
-    public void tryJoinActivity(DeboxActivity dba, final DataProviderListenerResultOfJoinActivity listener){
-
+        // Fetch activity to check if occupancy has change (the goal is to avoid an atomic operation
+        // not necessary)
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
             @Override
             public void getActivity(final DeboxActivity activity) {
 
-
+                // check if place left
                 if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
 
                     DatabaseReference participantsRef = mDatabase.child("activities/"+activity.getId()+"/nbOfParticipants");
+
+                    // doTransaction on nbOfParticipants (transaction ~ atomic operation)
+                    // transaction is call again and again until the value don't change between the
+                    // fetch of the value and the update
                     participantsRef.runTransaction(new Transaction.Handler() {
                         @Override
                         public Transaction.Result doTransaction(MutableData mutableData) {
                             Integer nbOfParticipants = mutableData.getValue(Integer.class);
                             Log.e("bn : ",nbOfParticipants.toString());
 
+                            // check if there is still a place or not
                             if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
                                 mutableData.setValue(nbOfParticipants+1);
                                 return Transaction.success(mutableData);
                             } else {
+                                // if there is not place, abort transaction
                                 return Transaction.abort();
                             }
-                            //return null;
                         }
 
+                        // call when transaction is completed or aborted
                         @Override
                         public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                            // b is boolean that contain if transaction has been commited or aborted
                             if(b) {
 
-                                //TODO ADD ACTIVITY ID ON ENROLLED LIST OF USER
-                                Log.d("TRY-JOIN", "true");
+                                // if transaction has been committed we add entry on user enrolled list
+                                HashMap<String, Object> enrolledChild = new HashMap<>();
+                                enrolledChild.put("activity ID:",activity.getId());
 
-                            } else {
-                                Log.d("TRY-JOIN", "false");
+                                // get unique key for enroll the activity
+                                String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+                                HashMap<String, Object> enrolled = new HashMap<>();
+
+                                enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+
+                                // update the database
+                                mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
                             }
+                            // return result to listener
                             listener.getResultJoinActivity(b);
-
 
                         }
                     });
                 } else {
                     listener.getResultJoinActivity(false);
                 }
-
             }
         },dba.getId());
 
@@ -884,13 +902,11 @@ public class DataProvider {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
-
     }
 
+    @Deprecated
     private void incrementNbOfUserInActivity(DeboxActivity dba){
 
         final String uid = dba.getId();
