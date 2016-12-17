@@ -641,20 +641,17 @@ public class DataProvider {
 
         Integer ratingNb = -1;
         if (userMap.containsKey("ratingNb")) {
-            //ratingNb = (int) userMap.get("ratingNb");
             ratingNb = Integer.valueOf(userMap.get("ratingNb").toString());
 
         }
 
         Integer ratingSum = 0;
         if (userMap.containsKey("ratingSum")) {
-            //ratingSum = (int) userMap.get("ratingSum");
             ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
         String photoLink = null;
         if (userMap.containsKey("image")) {
-            //ratingSum = (int) userMap.get("ratingSum");
             photoLink = (String) userMap.get("image");
         }
 
