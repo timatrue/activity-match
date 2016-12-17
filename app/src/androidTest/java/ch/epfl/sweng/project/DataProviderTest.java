@@ -18,7 +18,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -855,13 +857,14 @@ public class DataProviderTest {
      * decreasesNbOfUserInActivity(DeboxActivity dba). decreasesNbOfUserInActivity is
      * a private method of dataProvider, so it is test by calling the method leaveActivity.
      */
-    /*@Test
+    @Test
     public void testLeaveActivityAndDecreasesNbOfUserInActivity(){
 
         database = Mockito.mock(FirebaseDatabase.class);
         mUser = Mockito.mock(FirebaseUser.class);
 
         myRef = Mockito.mock(DatabaseReference.class);
+        DatabaseReference partRef = Mockito.mock(DatabaseReference.class);
 
         final int nbOfParticipants = 10;
         final int nbMaxParticipants= 20;
@@ -908,14 +911,13 @@ public class DataProviderTest {
         when(myRef.child(fakeEnrolledKey)).thenReturn(myRef);
 
 
-
-        doAnswer(new Answer<Void>() {
+        /*doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 assertEquals(true,true);
 
                 return null;
             }
-        }).when(myRef).removeValue();
+        }).when(myRef).removeValue();*/
 
         DatabaseReference myRefDec = Mockito.mock(DatabaseReference.class);
 
@@ -925,34 +927,45 @@ public class DataProviderTest {
         //Create Map for deboxActivity
         final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(dbaTest);
 
-
         //Override getValue() to always return the Map for the test
         when(ds2.getValue()).thenReturn(activityMap1);
-
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
         toolsBuildAnswerForListener(myRefDec,ds2);
 
         when(myRef.child("activities")).thenReturn(myRef);
         when(myRef.child(dbaTest.getId())).thenReturn(myRef);
+        when(myRef.child("activities/"+dbaTest.getId()+"/nbOfParticipants")).thenReturn(partRef);
 
+        final MutableData mockMutableData = Mockito.mock(MutableData.class);
+        when(mockMutableData.getValue(Integer.class)).thenReturn(nbOfParticipants);
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-
-                assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants-1);
-
+                Transaction.Handler listener = (Transaction.Handler) args[0];
+                listener.doTransaction(mockMutableData);
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(partRef).runTransaction(any(Transaction.Handler.class));
 
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+
+                int participantUpdated = (int) args[0];
+                assertEquals(participantUpdated,nbOfParticipants-1);
+                return null;
+            }
+        }).when(mockMutableData).setValue(anyInt());
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.leaveActivity(dbaTest);
 
-    }*/
+        verify(mockMutableData, atLeastOnce()).setValue(anyInt());
+        verify(myRef,atLeastOnce()).removeValue();
+
+    }
 
     /**
      *  This function test ublic void getSpecifiedActivities(final DataProviderListenerUserEvents

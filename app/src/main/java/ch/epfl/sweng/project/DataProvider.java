@@ -35,6 +35,7 @@ public class DataProvider {
     private DatabaseReference mDatabase;
     private FirebaseUser user;
     private FirebaseDatabase database;
+    private Boolean localTestMode;
 
     public DataProvider() {
 
@@ -51,6 +52,7 @@ public class DataProvider {
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
         user = mockUser;
+        localTestMode = true;
     }
 
 
@@ -991,10 +993,12 @@ public class DataProvider {
                 Integer nbOfParticipants = mutableData.getValue(Integer.class);
                 if(nbOfParticipants>0){
                     mutableData.setValue(nbOfParticipants-1);
-                } else {
-                    mutableData.setValue(0);
                 }
-                return Transaction.success(mutableData);
+                if(!localTestMode) {
+                    return Transaction.success(mutableData);
+                } else {
+                    return null;
+                }
             }
 
             // call when transaction is completed or aborted
