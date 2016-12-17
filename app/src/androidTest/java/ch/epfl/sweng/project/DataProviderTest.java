@@ -855,7 +855,7 @@ public class DataProviderTest {
      * decreasesNbOfUserInActivity(DeboxActivity dba). decreasesNbOfUserInActivity is
      * a private method of dataProvider, so it is test by calling the method leaveActivity.
      */
-    @Test
+    /*@Test
     public void testLeaveActivityAndDecreasesNbOfUserInActivity(){
 
         database = Mockito.mock(FirebaseDatabase.class);
@@ -952,7 +952,7 @@ public class DataProviderTest {
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.leaveActivity(dbaTest);
 
-    }
+    }*/
 
     /**
      *  This function test ublic void getSpecifiedActivities(final DataProviderListenerUserEvents

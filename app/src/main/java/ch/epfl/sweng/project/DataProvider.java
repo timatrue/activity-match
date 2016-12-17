@@ -819,7 +819,6 @@ public class DataProvider {
                         @Override
                         public Transaction.Result doTransaction(MutableData mutableData) {
                             Integer nbOfParticipants = mutableData.getValue(Integer.class);
-                            Log.e("bn : ",nbOfParticipants.toString());
 
                             // check if there is still a place or not
                             if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
@@ -889,13 +888,12 @@ public class DataProvider {
 
                         if (activityID.equals(uid)) {
                             idOfEntryToRemove = enrolledEntry.getKey();
-
                         }
                     }
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-                        decreasesNbOfUserInActivity(dba);
+                        atomicDecreasesParticipant(dba);
                     }
                 }
             }
@@ -934,6 +932,7 @@ public class DataProvider {
         });
     }
 
+    @Deprecated
     private void decreasesNbOfUserInActivity(DeboxActivity dba){
 
         final String uid = dba.getId();
@@ -963,6 +962,45 @@ public class DataProvider {
         });
     }
 
+    /**
+     * Decrement the number of participant by one (if number reach negative value set it to 0)
+     *
+     * @param dba       : deboxActivity to decrement
+     */
+    public void atomicDecreasesParticipant(DeboxActivity dba){
+
+        DatabaseReference participantsRef = mDatabase.child("activities/"+dba.getId()+"/nbOfParticipants");
+
+        // doTransaction on nbOfParticipants (transaction ~ atomic operation)
+        // transaction is call again and again until the value don't change between the
+        // fetch of the value and the update
+        participantsRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer nbOfParticipants = mutableData.getValue(Integer.class);
+                if(nbOfParticipants>0){
+                    mutableData.setValue(nbOfParticipants-1);
+                } else {
+                    mutableData.setValue(0);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            // call when transaction is completed or aborted
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                // b is boolean that contain if transaction has been committed or aborted
+                if(b) {
+
+                } else {
+                    //TODO implement error : impossible to update nbOfParticipant Activity deleted ?
+                }
+            }
+        });
+    }
+
+
+
     //DB Callbacks interfaces
 
     public interface DataProviderListenerResultOfJoinActivity{
@@ -973,10 +1011,12 @@ public class DataProvider {
         void getIfFreePlace(boolean result);
     }
 
+    @Deprecated
     private interface DataProviderListenerAlreadyRanked{
         void getIfRanked(boolean result);
     }
 
+    @Deprecated
     private interface DataProviderListenerIsPast{
         void getIfActivityIsPast(boolean result);
     }
