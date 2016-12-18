@@ -85,6 +85,7 @@
     <!-- Display Activity -->
     <string name="display_activity_title_bar">Activity details</string>
     <string name="organizer_button">Check out organizer\'s profile</string>
+
     <string name="user_signature">Published by\u0020@</string>
     <string name="occupancy">Participants: %1$d</string>
     <string name="occupancy_with_max">Participants: %1$d/%2$d</string>
@@ -113,7 +114,8 @@
     <string name="leaveActivity_button">Leave this activity</string>
     <string name="joinActivity_satus">Current Stat is loading  ... </string>
     <string name="toast_success_join">You have successfully joined this activity</string>
-    <string name="toas_fail_join">Something wrong with network.. Try again in few seconds </string>
+    <string name="toast_fail_join_full">You don\'t joint this activity</string>
+    <string name="toast_fail_join">Something wrong with network.. Try again in few seconds </string>
     <string name="rateButton">Rate me NOW !</string>
 
     <!-- Fragment Filter -->
@@ -138,7 +140,10 @@
 
     <string name="close">Close</string>
 
-
+    <!-- Fragment Rating -->
+    <string name="event_rating_title">Rate the event!</string>
+    <string name="event_rating_comment_hint">Write your comment here..</string>
+    <string name="event_rating_button">Rate it!</string>
 
 
     <!-- For test/development -->

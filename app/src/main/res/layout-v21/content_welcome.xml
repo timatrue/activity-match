@@ -27,24 +27,16 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableRight="@android:drawable/ic_menu_search"
             android:layout_weight="1"
             android:inputType="textCapWords"
+            android:imeOptions="actionDone"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:text=""
             android:ems="10"
             android:id="@+id/search" />
 
-        <Button
-            android:text="Search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonSearch"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@android:color/holo_blue_light"
-            android:layout_alignBaseline="@+id/search"
-            android:layout_alignBottom="@+id/search"
-            android:layout_alignRight="@+id/addActivity"
-            android:layout_alignEnd="@+id/addActivity" />
+
     </LinearLayout>
 
     <ScrollView

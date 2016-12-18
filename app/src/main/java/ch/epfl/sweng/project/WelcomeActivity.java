@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,8 +23,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,11 +121,42 @@ public class WelcomeActivity extends AppCompatActivity
         Button addActivityButton = (Button) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
 
-        Button filterButton = (Button) findViewById(R.id.filterActivity);
-        filterButton.setOnClickListener(filterEventsListener);
+        //Button searchButton = (Button) findViewById(R.id.buttonSearch);
+        //searchButton.setOnClickListener(searchListener);
 
-        Button searchButton = (Button) findViewById(R.id.buttonSearch);
-        searchButton.setOnClickListener(searchListener);
+        final EditText searchEditText = ((EditText) findViewById(R.id.search));
+        searchEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        search();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ( (actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN ))){
+                    search();
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        });
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -133,9 +168,6 @@ public class WelcomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         activityPreviewsLayout = (LinearLayout) findViewById(R.id.activityPreviewsLayout);
-
- //       displayActivities = (Button) findViewById(R.id.displayActivities);
- //       displayActivities.setOnClickListener(activitiesClickListener);
 
         filterStartCalendar = Calendar.getInstance();
         filterEndCalendar = Calendar.getInstance();
@@ -153,10 +185,49 @@ public class WelcomeActivity extends AppCompatActivity
                     TEST_MODE = false;
                 }
                 else {
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                    setFilterListener();
                     TEST_MODE = true;
                 }
             }
         }
+    }
+
+    public void search() {
+        hideSoftKeyboard();
+        final String searchText = ((TextView) findViewById(R.id.search)).getText().toString().toLowerCase();
+
+        (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+        mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+            @Override
+            public void getActivities(List<DeboxActivity> activitiesList) {
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 30, 0);
+
+                cleanLinearLayout(activityPreviewsLayout);
+
+                boolean listEmpty = true;
+                for(DeboxActivity elem: activitiesList) {
+                    if(elem.getTitle().toLowerCase().contains(searchText) && elem.getTimeEnd().after(Calendar.getInstance())) {
+                        ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                        activityPreviewsLayout.addView(ap, layoutParams);
+                        ap.setOnClickListener(previewClickListener);
+                        listEmpty = false;
+                    }
+                }
+
+                if (listEmpty) {
+                    NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                    activityPreviewsLayout.addView(result, layoutParams);
+                }
+                //mDataProvider = new DataProvider();
+
+                (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+            }
+        });
     }
 
     public void hideSoftKeyboard() {
@@ -304,13 +375,6 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
-    View.OnClickListener filterEventsListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            CategoryFragment();
-        }
-    };
-
     protected void CategoryFragment(){
         FragmentManager fm = getFragmentManager();
         dialogFragment = new FilterFragment ();
@@ -412,9 +476,9 @@ public class WelcomeActivity extends AppCompatActivity
                         NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                         activityPreviewsLayout.addView(result, layoutParams);
                     }
-                    //mDataProvider = new DataProvider();
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                    setFilterListener();
                 }
             });
         }
@@ -448,10 +512,22 @@ public class WelcomeActivity extends AppCompatActivity
                     }
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    //mDataProvider = new DataProvider();
+                    setFilterListener();
                 }
             }, filterCategory);
         }
+    }
+
+    //Makes the filterfragment clickable, needs to be done after the welcomeactivity has finished loading
+    private void setFilterListener(){
+        View.OnClickListener filterEventsListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    CategoryFragment();
+            }
+        };
+        Button filterButton = (Button) findViewById(R.id.filterActivity);
+        filterButton.setOnClickListener(filterEventsListener);
     }
 
     //Computes distance in km from lagitudes and longitudes with the equirectangular approximation
@@ -463,8 +539,6 @@ public class WelcomeActivity extends AppCompatActivity
         double correction = Math.cos((centerLatitudeRad + latitudeElemRad)/2);
         return EARTH_RADIUS * Math.sqrt(Math.pow(latitudeDiff,2) + Math.pow(longitudeDiff * correction, 2));
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -551,45 +625,6 @@ public class WelcomeActivity extends AppCompatActivity
         dialogFragment.updateTimeTextViews();
     }
 
-    View.OnClickListener searchListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            hideSoftKeyboard();
-            final String searchText = ((TextView) findViewById(R.id.search)).getText().toString().toLowerCase();
-
-            (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
-            mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
-
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-
-                    boolean listEmpty = true;
-                    for(DeboxActivity elem: activitiesList) {
-                        if(elem.getTitle().toLowerCase().contains(searchText) && elem.getTimeEnd().after(Calendar.getInstance())) {
-                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                            activityPreviewsLayout.addView(ap, layoutParams);
-                            ap.setOnClickListener(previewClickListener);
-                            listEmpty = false;
-                        }
-                    }
-
-                    if (listEmpty) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-                    }
-                    //mDataProvider = new DataProvider();
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                }
-            });
-        }
-    };
 
     public String makeDateString(Calendar calendar) {
         DateFormat dateFormat = getDateInstance();
