@@ -846,8 +846,12 @@ public class DataProvider {
                             Integer nbOfParticipants = mutableData.getValue(Integer.class);
                             if(nbOfParticipants != null){
 
-                                // check if there is still a place or not
-                                if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
+                                if(activity.getNbMaxOfParticipants() <= 0) {
+                                    mutableData.setValue(nbOfParticipants+1);
+                                    return Transaction.success(mutableData);
+                                }
+
+                                if(nbOfParticipants<activity.getNbMaxOfParticipants()){
                                     mutableData.setValue(nbOfParticipants+1);
                                     return Transaction.success(mutableData);
                                 } else {
@@ -883,6 +887,7 @@ public class DataProvider {
                         }
                     });
                 } else {
+                    Log.e("atomicJoin","already-full-before-try");
                     listener.getResultJoinActivity(false);
                 }
             }
@@ -971,7 +976,7 @@ public class DataProvider {
 
        DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
 
-        numberRankReference.runTransaction(new Transaction.Handler() {
+       numberRankReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer numberRank = mutableData.getValue(Integer.class);
