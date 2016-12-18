@@ -34,6 +34,7 @@ import java.util.Map;
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
 import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.CommentsView;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import android.util.Log;
@@ -105,6 +106,8 @@ public class UserProfile extends AppCompatActivity {
     ImageView userImage;
     FragmentManager fm;
     UserImageFragment imageFragment;
+
+
 
 
     @Override
@@ -408,6 +411,15 @@ public class UserProfile extends AppCompatActivity {
         intent.putExtra(ModifyActivity.CREATE_ACTIVITY_TEST_KEY, ModifyActivity.CREATE_ACTIVITY_NO_TEST);
         intent.putExtra(ModifyActivity.MODIFY_ACTIVITY_EVENT_ID, eventId);
         startActivity(intent);
+    }
+
+    private void addUsersComments( List<Map <String,String>> userComments) {
+
+        for(Map<String,String> elem : userComments){
+
+            CommentsView comment = new CommentsView(getApplicationContext(), elem);
+        }
+
     }
 
 }
