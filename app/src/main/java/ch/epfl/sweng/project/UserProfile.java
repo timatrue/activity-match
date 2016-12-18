@@ -100,6 +100,7 @@ public class UserProfile extends AppCompatActivity {
     List<String> groupList;
     List<DeboxActivity> childList;
     Map<String, List<DeboxActivity>> activityCollection;
+    List<Map <String,Object>> userComments;
     ExpandableListView expListView;
     private Context mContext;
 
@@ -143,6 +144,7 @@ public class UserProfile extends AppCompatActivity {
         userImage.setOnClickListener(imageClickListener);
 
         setupUserToolBar();
+
 
     }
 
@@ -413,9 +415,9 @@ public class UserProfile extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addUsersComments( List<Map <String,String>> userComments) {
+    private void addUsersComments( List<Map <String,Object>> userComments) {
 
-        for(Map<String,String> elem : userComments){
+        for(Map<String,Object> elem : userComments){
 
             CommentsView comment = new CommentsView(getApplicationContext(), elem);
         }

@@ -291,7 +291,7 @@ public class DisplayActivityTest {
 
 
     }*/
-
+    /*
     @UiThreadTest
     @Test
     public void joinTest() throws Exception {
@@ -343,4 +343,5 @@ public class DisplayActivityTest {
 
         onView(withId(R.id.joinActivity)).check(matches(isDisplayed())).perform(click());
     }
+    */
 }
