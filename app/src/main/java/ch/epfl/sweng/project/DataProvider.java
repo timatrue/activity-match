@@ -844,15 +844,18 @@ public class DataProvider {
                         @Override
                         public Transaction.Result doTransaction(MutableData mutableData) {
                             Integer nbOfParticipants = mutableData.getValue(Integer.class);
+                            if(nbOfParticipants != null){
 
-                            // check if there is still a place or not
-                            if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
-                                mutableData.setValue(nbOfParticipants+1);
-                                return Transaction.success(mutableData);
-                            } else {
-                                // if there is not place, abort transaction
-                                return Transaction.abort();
+                                // check if there is still a place or not
+                                if(activity.getNbMaxOfParticipants()>0 && nbOfParticipants<activity.getNbMaxOfParticipants()){
+                                    mutableData.setValue(nbOfParticipants+1);
+                                    return Transaction.success(mutableData);
+                                } else {
+                                    // if there is not place, abort transaction
+                                    return Transaction.abort();
+                                }
                             }
+                            return null;
                         }
 
                         // call when transaction is completed or aborted
@@ -1039,14 +1042,17 @@ public class DataProvider {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer nbOfParticipants = mutableData.getValue(Integer.class);
-                if(nbOfParticipants>0){
-                    mutableData.setValue(nbOfParticipants-1);
+                if(nbOfParticipants!=null) {
+                    if (nbOfParticipants > 0) {
+                        mutableData.setValue(nbOfParticipants - 1);
+                    }
+                    if (!localTestMode) {
+                        return Transaction.success(mutableData);
+                    } else {
+                        return null;
+                    }
                 }
-                if(!localTestMode) {
-                    return Transaction.success(mutableData);
-                } else {
-                    return null;
-                }
+                return null;
             }
 
             // call when transaction is completed or aborted
