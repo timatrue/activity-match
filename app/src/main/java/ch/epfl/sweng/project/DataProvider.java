@@ -420,34 +420,16 @@ public class DataProvider {
 
                         //write the comments field to the organizer in DB
                         //String comments = mDatabase.child("users").child(idOrganiser).child("comments").push().getKey();
-                        String comments = mDatabase.child("users"+idOrganiser+"comments").push().getKey();
+                        String comments = mDatabase.child("users/"+idOrganiser+"/comments").push().getKey();
                         HashMap<String, Object> commentsChild = new HashMap<>();
                         commentsChild.put("eventId", uid);
                         commentsChild.put("rating", rank);
                         commentsChild.put("comment",comment);
                         HashMap<String, Object> commentsMap = new HashMap<>();
                         commentsMap.put("comments/" + comments, commentsChild);
-                        mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
-
-
-
-
-
-                        //atomicAddRankToOrganiser(idOrganiser,rank);
-
-                        /*int ratingSum = deboxOrganiser.getRatingSum();
-                        int ratingNb = deboxOrganiser.getRatingNb();
-
-                        if(ratingNb==-1){
-                            ratingNb = 1;
-                        } else {
-                            ratingNb += 1;
-                        }
-
-                        ratingSum += rank;
-
-                        mDatabase.child("users").child(idOrganiser).child("ratingNb").setValue(ratingNb);
-                        mDatabase.child("users").child(idOrganiser).child("ratingSum").setValue(ratingSum);*/
+                        //mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
+                        mDatabase.child("users/"+idOrganiser).updateChildren(commentsMap);
+                        
                     }
 
 

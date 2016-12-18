@@ -1263,7 +1263,7 @@ public class DataProviderTest {
         final String mocActivityIDToRank = "mocActivityIDToRank";
         final String mocOtherActivityID = "mocOtherActivityID";
         final String mocUserIDToRank = "mocUserIDToRank";
-        final String mocRatingComment = "mocRatingComment"; //mine
+        final String commentKey = "commentKey";
 
         when(mUser.getUid()).thenReturn(mocUserID);
         when(database.getReference("users/" + mocUserID + "/enrolled")).thenReturn(myRef);
@@ -1291,6 +1291,7 @@ public class DataProviderTest {
         when(myRef.child(mocUserID)).thenReturn(myRef);
         when(myRef.child("enrolled")).thenReturn(myRef);
         when(myRef.child(mocEnrolledKey2)).thenReturn(myRef);
+
 
 
         doAnswer(new Answer<Void>() {
@@ -1340,6 +1341,10 @@ public class DataProviderTest {
                 nbOfParticipants,
                 nbMaxParticipants);
 
+        final int rank = 4;
+        final String comment = "comment";
+
+
         DatabaseReference myRefGetActivity = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("activities/" + mocActivityIDToRank)).thenReturn(myRefGetActivity);
@@ -1356,18 +1361,36 @@ public class DataProviderTest {
 
 
         DatabaseReference myRefUserToRank = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefRatingNb = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefRatingSum = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefComments = Mockito.mock(DatabaseReference.class); //mine
+        DatabaseReference myRefComments = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("users/"+mocUserIDToRank)).thenReturn(myRefUserToRank);
+
+        when(myRef.child("users/"+mocUserIDToRank+"/comments")).thenReturn(myRefComments);
+        when(myRefComments.push()).thenReturn(myRefComments);
+        when(myRefComments.getKey()).thenReturn(commentKey);
+        when(myRef.child("users/"+mocUserIDToRank)).thenReturn(myRefComments);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+
+                assertEquals(commentsMap.get("eventId"),dbaTest.getId());
+                assertEquals(commentsMap.get("comment"),comment);
+                assertEquals(commentsMap.get("rating"),rank);
+
+                return null;
+            }
+        }).when(myRefComments).updateChildren(anyMap());
 
 
         //build user to rank
         final Map<String, Object> userToRankMap= new HashMap<>();
         final Map<String, Object> enrolledMapEmpty= new HashMap<>();
         final Map<String, Object> organisedMapEmpty= new HashMap<>();
-        final Map<String, Object> commentsMapEmpty = new HashMap<>(); //mine
+        final Map<String, Object> commentsMapEmpty = new HashMap<>();
 
         userToRankMap.put("default_user_name","userToBeRanked");
         userToRankMap.put("enrolled",enrolledMapEmpty);
@@ -1383,38 +1406,16 @@ public class DataProviderTest {
         //Override addListenerForSingleValueEvent method for test to always return our Map
         toolsBuildAnswerForListener(myRefUserToRank,ds3);
 
-
-        when(myRef.child("ratingNb")).thenReturn(myRefRatingNb);
-        when(myRef.child("ratingSum")).thenReturn(myRefRatingSum);
-        when(myRef.child("comments")).thenReturn(myRefComments); //mine
-
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                int ratingNB = (int) args [0];
-                assertEquals(ratingNB,1);
-                return null;
-            }
-        }).when(myRefRatingNb).setValue(Matchers.anyObject());
-
-
-        final int rank = 4;
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                int ratingNB = (int) args [0];
-                assertEquals(ratingNB,rank);
-                return null;
-            }
-        }).when(myRefRatingSum).setValue(Matchers.anyObject());
+        when(myRef.child("comments")).thenReturn(myRefComments);
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
-        final String comment = "comment";//mine
+        dp.rankUser(dbaTest.getId(),rank, comment);
 
-        dp.rankUser(dbaTest.getId(),rank, comment); //mine
+
+        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(anyMap());
+        Mockito.verify(myRef,atLeastOnce()).updateChildren(anyMap());
+
 
     }
 
