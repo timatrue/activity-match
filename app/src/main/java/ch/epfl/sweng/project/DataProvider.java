@@ -43,6 +43,7 @@ public class DataProvider {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        localTestMode = false;
     }
 
     // use for moc test
@@ -333,11 +334,12 @@ public class DataProvider {
         });
     }
 
+
+
     public void rankUser(final String uid, final int rank, final String comment){
 
 
         // Remove Activity Uid of User:enrolled
-
 
         String userUid = user.getUid();
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
@@ -399,6 +401,8 @@ public class DataProvider {
 
                 final String idOrganiser = activity.getOrganizer();
 
+                atomicAddRankToOrganiser(idOrganiser,rank);
+                // TODO here implement incrementation with atomic set !!!! ---->>>
 
                 // To be check if it's work like this...
                 //FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -412,7 +416,8 @@ public class DataProvider {
                         User deboxOrganiser = getDeboxUser(idOrganiser, userMap);
 
                         //write the comments field to the organizer in DB
-                        String comments = mDatabase.child("users").child(idOrganiser).child("comments").push().getKey();
+                        //String comments = mDatabase.child("users").child(idOrganiser).child("comments").push().getKey();
+                        String comments = mDatabase.child("users"+idOrganiser+"comments").push().getKey();
                         HashMap<String, Object> commentsChild = new HashMap<>();
                         commentsChild.put("eventId", uid);
                         commentsChild.put("rating", rank);
@@ -422,7 +427,12 @@ public class DataProvider {
                         mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
 
 
-                        int ratingSum = deboxOrganiser.getRatingSum();
+
+
+
+                        //atomicAddRankToOrganiser(idOrganiser,rank);
+
+                        /*int ratingSum = deboxOrganiser.getRatingSum();
                         int ratingNb = deboxOrganiser.getRatingNb();
 
                         if(ratingNb==-1){
@@ -434,7 +444,7 @@ public class DataProvider {
                         ratingSum += rank;
 
                         mDatabase.child("users").child(idOrganiser).child("ratingNb").setValue(ratingNb);
-                        mDatabase.child("users").child(idOrganiser).child("ratingSum").setValue(ratingSum);
+                        mDatabase.child("users").child(idOrganiser).child("ratingSum").setValue(ratingSum);*/
                     }
 
 
@@ -450,6 +460,7 @@ public class DataProvider {
         },uid);
 
     }
+
 
     public String pushActivity(final DeboxActivity da){
 
@@ -913,6 +924,76 @@ public class DataProvider {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+
+    private void atomicAddRankToOrganiser(final String organizerID, final int rank){
+
+        DatabaseReference rankSumReference = database.getReference("users/"+organizerID+"/ratingSum");
+
+        rankSumReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                //TODO problem solved ?
+                Integer currentRank = mutableData.getValue(Integer.class);
+                if(currentRank != null){
+                    if(currentRank<0){
+                        currentRank = rank;
+                    } else {
+
+                        currentRank = currentRank + rank;
+                    }
+                    mutableData.setValue(currentRank);
+
+                    if(!localTestMode){
+                        return Transaction.success(mutableData);
+                    }
+                }
+                return null;
+
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                //TODO implement case of fail update rank
+
+
+            }
+        });
+
+       /* DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+
+        numberRankReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer numberRank = mutableData.getValue(Integer.class);
+                if(numberRank<0){
+                    numberRank=1;
+                } else {
+                    //numberRank+=1;
+                    numberRank= numberRank+1;
+                }
+                mutableData.setValue(numberRank);
+
+                if(!localTestMode){
+                    return Transaction.success(mutableData);
+
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                //TODO implement case of fail update rank
+
+            }
+        });*/
+
+
     }
 
     @Deprecated

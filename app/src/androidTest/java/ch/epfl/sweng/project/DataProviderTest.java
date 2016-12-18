@@ -1249,7 +1249,7 @@ public class DataProviderTest {
      * the function rankUser attribute a rank of the organiser of the activity with id uid
      *
      */
-    /*
+
     @Test
     public void testRankUser(){
 
@@ -1416,7 +1416,7 @@ public class DataProviderTest {
 
         dp.rankUser(dbaTest.getId(),rank, comment); //mine
 
-    } */
+    }
 
     /**
      * Test the function : public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity,
