@@ -18,7 +18,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -550,6 +552,7 @@ public class DataProviderTest {
         final String uuidTest1 = "uuid-test-111";
         final String uuidTest2 = "uuid-test-222";
         final String uuidTest3 = "uuid-test-333";
+        final String imageLink = "link-Image";
         final int ratingNb = 3;
         final int ratingSum = 14;
 
@@ -589,6 +592,8 @@ public class DataProviderTest {
         userMap.put("ratingNb",ratingNb);
         userMap.put("ratingSum",ratingSum);
         userMap.put("user_email",fakeEmail);
+        userMap.put("image",imageLink);
+
 
         when(ds1.getValue()).thenReturn(userMap);
 
@@ -617,9 +622,9 @@ public class DataProviderTest {
                 assertEquals(user.getRatingNb(),ratingNb);
                 assertEquals(user.getRatingSum(),ratingSum);
                 assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
-                assertEquals(user.getPhotoLink(),null);
                 assertEquals(user.getEmail(),fakeEmail);
                 assertEquals(user.getUsername(),fakeName);
+                assertEquals(user.getPhotoLink(),imageLink);
 
             }
         });
@@ -725,6 +730,103 @@ public class DataProviderTest {
     }
 
     /**
+     * Test the function : public void publicUserProfile(final String userUid, final DataProviderListenerUserInfo listener)
+     * return the userProfile of userUid user asked.
+     */
+    @Test
+    public void testPublicUserProfile() {
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        final DataSnapshot ds1 = Mockito.mock(DataSnapshot.class);
+
+        final String fakeUserID1 = "fakeUserID1";
+        final String fakeName = "fakeUserName";
+        final String fakeEmail = "fakeemail@gmail.com";
+        final String uuidTest1 = "uuid-test-111";
+        final String uuidTest2 = "uuid-test-222";
+        final String uuidTest3 = "uuid-test-333";
+        final int ratingNb = 3;
+        final int ratingSum = 14;
+
+
+        when(database.getReference("users/"+fakeUserID1)).thenReturn(myRef);
+
+        final Map<String, Object> enrolledMap = new HashMap<>();
+        final Map<String, Object> enrolledMap1 = new HashMap<>();
+        enrolledMap1.put("activity ID:",uuidTest1);
+        final Map<String, Object> enrolledMap2 = new HashMap<>();
+        enrolledMap2.put("activity ID:",uuidTest2);
+
+        enrolledMap.put("enrolledID1",enrolledMap1);
+        enrolledMap.put("enrolledID2",enrolledMap2);
+
+
+        final Map<String, Object> organisedMap1 = new HashMap<>();
+        organisedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> organisedMap = new HashMap<>();
+        organisedMap.put("organisedID1",organisedMap1);
+
+
+        final Map<String, Object> rankedMap1 = new HashMap<>();
+        rankedMap1.put("activity ID:",uuidTest3);
+
+        final Map<String, Object> rankedMap = new HashMap<>();
+        rankedMap.put("rankedID1",rankedMap1);
+
+
+        final Map<String, Object> userMap = new HashMap<>();
+
+        userMap.put("default_user_name",fakeName);
+        userMap.put("enrolled",enrolledMap);
+        userMap.put("organised",organisedMap);
+        userMap.put("ranked",rankedMap);
+        userMap.put("ratingNb",ratingNb);
+        userMap.put("ratingSum",ratingSum);
+        userMap.put("user_email",fakeEmail);
+
+        when(ds1.getValue()).thenReturn(userMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef,ds1);
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+
+        dp.publicUserProfile(fakeUserID1,new DataProvider.DataProviderListenerUserInfo() {
+            @Override
+            public void getUserInfo(User user) {
+                List<String> checkInterested = new ArrayList<>();
+                checkInterested.add(uuidTest1);
+                checkInterested.add(uuidTest2);
+                assertEquals(user.getInterestedEventIds(),checkInterested);
+
+                List<String> checkOrganizedList = new ArrayList<>();
+                checkOrganizedList.add(uuidTest3);
+                assertEquals(user.getOrganizedEventIds(),checkOrganizedList);
+
+                List<String> checkRankedList = new ArrayList<>();
+                checkRankedList.add(uuidTest3);
+                assertEquals(user.getRankedEventIds(),checkRankedList);
+
+                assertEquals(user.getRatingNb(),ratingNb);
+                assertEquals(user.getRatingSum(),ratingSum);
+                assertEquals(user.getRating(),((double)ratingSum)/ratingNb,0.0);
+                assertEquals(user.getPhotoLink(),null);
+                assertEquals(user.getEmail(),fakeEmail);
+                assertEquals(user.getUsername(),fakeName);
+
+            }
+        });
+
+
+    }
+
+
+    /**
      * Test the function : public void initUserInDB(). initUserInDB is use to be sure that an user
      * profile corresponding to the current user is present in the database. If there is no userProfile
      * in the dataBase, the profile is automatically created.
@@ -765,6 +867,60 @@ public class DataProviderTest {
         dp.initUserInDB();
 
     }
+
+    /**
+     * This function test the joinActivity if no place are available. (handler cannot be tested
+     * with mock, they must be test with integration test
+     */
+    @Test
+    public void testAtomicJoinFullActivity() {
+
+        mDataBaseRef = Mockito.mock(DatabaseReference.class);
+        database = Mockito.mock(FirebaseDatabase.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+
+        DataSnapshot dsActivityFull = Mockito.mock(DataSnapshot.class);
+
+        final int nbOfParticipants = 20;
+        final int nbMaxParticipants = 20;
+
+        final DeboxActivity testActivityFull = new DeboxActivity(uuidTest, "test", "user-test",
+                "description",
+                Calendar.getInstance(),
+                Calendar.getInstance(),
+                122.01,
+                121.0213,
+                "Sports",
+                nbOfParticipants,
+                nbMaxParticipants);
+
+        //Create Map from testActivityFull
+        final Map<String, Object> activityFullMap = toolsBuildMapFromDebox(testActivityFull);
+
+        //Override getValue() to always return the Map for the test
+        when(dsActivityFull.getValue()).thenReturn(activityFullMap);
+
+        //Override addListenerForSingleValueEvent method for test to always return our Map
+        toolsBuildAnswerForListener(myRef, dsActivityFull);
+
+        //Override getReference method to return the Mock reference
+        when(database.getReference("activities/" + uuidTest)).thenReturn(myRef);
+
+        DataProvider dp = new DataProvider(myRef, database, mUser);
+
+        dp.atomicJoinActivity(testActivityFull, new DataProvider.DataProviderListenerResultOfJoinActivity() {
+            @Override
+            public void getResultJoinActivity(boolean result) {
+
+                // if no place available result of joinActivity must be false
+                assertEquals(result,false);
+
+            }
+        });
+    }
+
+
 
     /**
      * This function test the functions public void joinActivity(DeboxActivity dba) and
@@ -862,6 +1018,7 @@ public class DataProviderTest {
         mUser = Mockito.mock(FirebaseUser.class);
 
         myRef = Mockito.mock(DatabaseReference.class);
+        DatabaseReference partRef = Mockito.mock(DatabaseReference.class);
 
         final int nbOfParticipants = 10;
         final int nbMaxParticipants= 20;
@@ -908,14 +1065,13 @@ public class DataProviderTest {
         when(myRef.child(fakeEnrolledKey)).thenReturn(myRef);
 
 
-
-        doAnswer(new Answer<Void>() {
+        /*doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 assertEquals(true,true);
 
                 return null;
             }
-        }).when(myRef).removeValue();
+        }).when(myRef).removeValue();*/
 
         DatabaseReference myRefDec = Mockito.mock(DatabaseReference.class);
 
@@ -925,32 +1081,43 @@ public class DataProviderTest {
         //Create Map for deboxActivity
         final Map<String, Object> activityMap1 = toolsBuildMapFromDebox(dbaTest);
 
-
         //Override getValue() to always return the Map for the test
         when(ds2.getValue()).thenReturn(activityMap1);
-
 
         //Override addListenerForSingleValueEvent method for test to always return our Map
         toolsBuildAnswerForListener(myRefDec,ds2);
 
         when(myRef.child("activities")).thenReturn(myRef);
         when(myRef.child(dbaTest.getId())).thenReturn(myRef);
+        when(myRef.child("activities/"+dbaTest.getId()+"/nbOfParticipants")).thenReturn(partRef);
 
+        final MutableData mockMutableData = Mockito.mock(MutableData.class);
+        when(mockMutableData.getValue(Integer.class)).thenReturn(nbOfParticipants);
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-
-                assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants-1);
-
+                Transaction.Handler listener = (Transaction.Handler) args[0];
+                listener.doTransaction(mockMutableData);
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(partRef).runTransaction(any(Transaction.Handler.class));
 
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+
+                int participantUpdated = (int) args[0];
+                assertEquals(participantUpdated,nbOfParticipants-1);
+                return null;
+            }
+        }).when(mockMutableData).setValue(anyInt());
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.leaveActivity(dbaTest);
+
+        verify(mockMutableData, atLeastOnce()).setValue(anyInt());
+        verify(myRef,atLeastOnce()).removeValue();
 
     }
 
@@ -1043,13 +1210,46 @@ public class DataProviderTest {
         },intEventIds,orgEventsIds,rankedEventsIds);
     }
 
+    @Test
+    public void testChangeUserImage(){
+
+        database = Mockito.mock(FirebaseDatabase.class);
+        mUser = Mockito.mock(FirebaseUser.class);
+        myRef = Mockito.mock(DatabaseReference.class);
+
+        DatabaseReference refImage = Mockito.mock(DatabaseReference.class);
+
+        final String testUserID = "testUserID";
+
+        when(mUser.getUid()).thenReturn(testUserID);
+        when(database.getReference("users/" + testUserID)).thenReturn(myRef);
+        when(myRef.child("image")).thenReturn(refImage);
+
+        final String newUserImage ="userImageLink";
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                String updatedValue = (String) args[0];
+                assertEquals(updatedValue,newUserImage);
+                return null;
+            }
+        }).when(refImage).setValue(anyString());
+
+
+        DataProvider dp = new DataProvider(myRef,database,mUser);
+        dp.changeUserImage(newUserImage);
+
+        Mockito.verify(refImage,atLeastOnce()).setValue(anyString());
+
+    }
 
     /**
      * Test the function : public void rankUser(final String uid, final int rank)
      * the function rankUser attribute a rank of the organiser of the activity with id uid
      *
      */
-    /*
+
     @Test
     public void testRankUser(){
 
@@ -1063,7 +1263,7 @@ public class DataProviderTest {
         final String mocActivityIDToRank = "mocActivityIDToRank";
         final String mocOtherActivityID = "mocOtherActivityID";
         final String mocUserIDToRank = "mocUserIDToRank";
-        final String mocRatingComment = "mocRatingComment"; //mine
+        final String commentKey = "commentKey";
 
         when(mUser.getUid()).thenReturn(mocUserID);
         when(database.getReference("users/" + mocUserID + "/enrolled")).thenReturn(myRef);
@@ -1091,6 +1291,7 @@ public class DataProviderTest {
         when(myRef.child(mocUserID)).thenReturn(myRef);
         when(myRef.child("enrolled")).thenReturn(myRef);
         when(myRef.child(mocEnrolledKey2)).thenReturn(myRef);
+
 
 
         doAnswer(new Answer<Void>() {
@@ -1140,6 +1341,10 @@ public class DataProviderTest {
                 nbOfParticipants,
                 nbMaxParticipants);
 
+        final int rank = 4;
+        final String comment = "comment";
+
+
         DatabaseReference myRefGetActivity = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("activities/" + mocActivityIDToRank)).thenReturn(myRefGetActivity);
@@ -1156,18 +1361,36 @@ public class DataProviderTest {
 
 
         DatabaseReference myRefUserToRank = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefRatingNb = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefRatingSum = Mockito.mock(DatabaseReference.class);
-        DatabaseReference myRefComments = Mockito.mock(DatabaseReference.class); //mine
+        DatabaseReference myRefComments = Mockito.mock(DatabaseReference.class);
 
         when(database.getReference("users/"+mocUserIDToRank)).thenReturn(myRefUserToRank);
+
+        when(myRef.child("users/"+mocUserIDToRank+"/comments")).thenReturn(myRefComments);
+        when(myRefComments.push()).thenReturn(myRefComments);
+        when(myRefComments.getKey()).thenReturn(commentKey);
+        when(myRef.child("users/"+mocUserIDToRank)).thenReturn(myRefComments);
+
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+
+                assertEquals(commentsMap.get("eventId"),dbaTest.getId());
+                assertEquals(commentsMap.get("comment"),comment);
+                assertEquals(commentsMap.get("rating"),rank);
+
+                return null;
+            }
+        }).when(myRefComments).updateChildren(anyMap());
 
 
         //build user to rank
         final Map<String, Object> userToRankMap= new HashMap<>();
         final Map<String, Object> enrolledMapEmpty= new HashMap<>();
         final Map<String, Object> organisedMapEmpty= new HashMap<>();
-        final Map<String, Object> commentsMapEmpty = new HashMap<>(); //mine
+        final Map<String, Object> commentsMapEmpty = new HashMap<>();
 
         userToRankMap.put("default_user_name","userToBeRanked");
         userToRankMap.put("enrolled",enrolledMapEmpty);
@@ -1183,40 +1406,18 @@ public class DataProviderTest {
         //Override addListenerForSingleValueEvent method for test to always return our Map
         toolsBuildAnswerForListener(myRefUserToRank,ds3);
 
-
-        when(myRef.child("ratingNb")).thenReturn(myRefRatingNb);
-        when(myRef.child("ratingSum")).thenReturn(myRefRatingSum);
-        when(myRef.child("comments")).thenReturn(myRefComments); //mine
-
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                int ratingNB = (int) args [0];
-                assertEquals(ratingNB,1);
-                return null;
-            }
-        }).when(myRefRatingNb).setValue(Matchers.anyObject());
-
-
-        final int rank = 4;
-
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                int ratingNB = (int) args [0];
-                assertEquals(ratingNB,rank);
-                return null;
-            }
-        }).when(myRefRatingSum).setValue(Matchers.anyObject());
+        when(myRef.child("comments")).thenReturn(myRefComments);
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
 
-        final String comment = "comment";//mine
+        dp.rankUser(dbaTest.getId(),rank, comment);
 
-        dp.rankUser(dbaTest.getId(),rank, comment); //mine
 
-    } */
+        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(anyMap());
+        Mockito.verify(myRef,atLeastOnce()).updateChildren(anyMap());
+
+
+    }
 
     /**
      * Test the function : public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity,
