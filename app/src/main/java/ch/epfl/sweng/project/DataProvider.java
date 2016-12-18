@@ -401,8 +401,11 @@ public class DataProvider {
 
                 final String idOrganiser = activity.getOrganizer();
 
-                atomicAddRankToOrganiser(idOrganiser,rank);
                 // TODO here implement incrementation with atomic set !!!! ---->>>
+                if(!localTestMode) {
+                    atomicAddRankToOrganiser(idOrganiser, rank);
+                }
+
 
                 // To be check if it's work like this...
                 //FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -963,26 +966,22 @@ public class DataProvider {
             }
         });
 
-       /* DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+       DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
 
         numberRankReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer numberRank = mutableData.getValue(Integer.class);
-                if(numberRank<0){
-                    numberRank=1;
-                } else {
-                    //numberRank+=1;
-                    numberRank= numberRank+1;
-                }
-                mutableData.setValue(numberRank);
-
-                if(!localTestMode){
+                if(numberRank != null){
+                    if(numberRank<0){
+                        numberRank=1;
+                    } else {
+                        numberRank= numberRank+1;
+                    }
+                    mutableData.setValue(numberRank);
                     return Transaction.success(mutableData);
-
-                } else {
-                    return null;
                 }
+                return null;
             }
 
             @Override
@@ -991,7 +990,7 @@ public class DataProvider {
                 //TODO implement case of fail update rank
 
             }
-        });*/
+        });
 
 
     }
