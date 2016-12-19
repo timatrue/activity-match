@@ -3,6 +3,8 @@ package ch.epfl.sweng.project.fragments;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Color;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -37,6 +39,8 @@ public class FilterFragment extends DialogFragment {
     TextView endDateTextView;
     TextView startTimeTextView;
     TextView endTimeTextView;
+
+    private boolean fragmentIsDisplayed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -163,6 +167,20 @@ public class FilterFragment extends DialogFragment {
             dismiss();
         }
     };
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        if(!fragmentIsDisplayed) {
+            super.show(manager, tag);
+            fragmentIsDisplayed = true;
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        fragmentIsDisplayed = false;
+        super.onDismiss(dialog);
+    }
 
     public void updateDateTextViews() {
         WelcomeActivity wa = (WelcomeActivity)getActivity();

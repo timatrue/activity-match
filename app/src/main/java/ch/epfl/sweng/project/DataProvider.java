@@ -10,7 +10,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class DataProvider {
     private DatabaseReference mDatabase;
     private FirebaseUser user;
     private FirebaseDatabase database;
+    private Boolean localTestMode;
 
     public DataProvider() {
 
@@ -40,6 +43,7 @@ public class DataProvider {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+        localTestMode = false;
     }
 
     // use for moc test
@@ -49,6 +53,7 @@ public class DataProvider {
         mDatabase = mockDatabaseReference;
         database = mockFireDataBase;
         user = mockUser;
+        localTestMode = true;
     }
 
 
@@ -329,11 +334,12 @@ public class DataProvider {
         });
     }
 
-    public void rankUser(final String uid, final int rank){
+
+
+    public void rankUser(final String uid, final int rank, final String comment){
 
 
         // Remove Activity Uid of User:enrolled
-
 
         String userUid = user.getUid();
         DatabaseReference myRef = database.getReference("users/" + userUid + "/enrolled");
@@ -395,6 +401,11 @@ public class DataProvider {
 
                 final String idOrganiser = activity.getOrganizer();
 
+                // TODO here implement incrementation with atomic set !!!! ---->>>
+                if(!localTestMode) {
+                    atomicAddRankToOrganiser(idOrganiser, rank);
+                }
+
 
                 // To be check if it's work like this...
                 //FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -407,19 +418,18 @@ public class DataProvider {
                         Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
                         User deboxOrganiser = getDeboxUser(idOrganiser, userMap);
 
-                        int ratingSum = deboxOrganiser.getRatingSum();
-                        int ratingNb = deboxOrganiser.getRatingNb();
-
-                        if(ratingNb==-1){
-                            ratingNb = 1;
-                        } else {
-                            ratingNb += 1;
-                        }
-
-                        ratingSum += rank;
-
-                        mDatabase.child("users").child(idOrganiser).child("ratingNb").setValue(ratingNb);
-                        mDatabase.child("users").child(idOrganiser).child("ratingSum").setValue(ratingSum);
+                        //write the comments field to the organizer in DB
+                        //String comments = mDatabase.child("users").child(idOrganiser).child("comments").push().getKey();
+                        String comments = mDatabase.child("users/"+idOrganiser+"/comments").push().getKey();
+                        HashMap<String, Object> commentsChild = new HashMap<>();
+                        commentsChild.put("eventId", uid);
+                        commentsChild.put("rating", rank);
+                        commentsChild.put("comment",comment);
+                        HashMap<String, Object> commentsMap = new HashMap<>();
+                        commentsMap.put("comments/" + comments, commentsChild);
+                        //mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
+                        mDatabase.child("users/"+idOrganiser).updateChildren(commentsMap);
+                        
                     }
 
 
@@ -435,6 +445,7 @@ public class DataProvider {
         },uid);
 
     }
+
 
     public String pushActivity(final DeboxActivity da){
 
@@ -626,20 +637,17 @@ public class DataProvider {
 
         Integer ratingNb = -1;
         if (userMap.containsKey("ratingNb")) {
-            //ratingNb = (int) userMap.get("ratingNb");
             ratingNb = Integer.valueOf(userMap.get("ratingNb").toString());
 
         }
 
         Integer ratingSum = 0;
         if (userMap.containsKey("ratingSum")) {
-            //ratingSum = (int) userMap.get("ratingSum");
             ratingSum = Integer.valueOf(userMap.get("ratingSum").toString());
         }
 
         String photoLink = null;
         if (userMap.containsKey("image")) {
-            //ratingSum = (int) userMap.get("ratingSum");
             photoLink = (String) userMap.get("image");
         }
 
@@ -766,7 +774,7 @@ public class DataProvider {
      *
      * @param dba
      */
-
+    @Deprecated
     public void joinActivity(DeboxActivity dba){
 
         HashMap<String, Object> enrolledChild = new HashMap<>();
@@ -784,6 +792,88 @@ public class DataProvider {
 
         // update the database
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
+
+    }
+
+
+    /**
+     * Try to atomically join the dba Activity. The incrementation of the number of user in application is done
+     * atomically. The result (success or fail) is send back by the listener DataProviderListenerResultOfJoinActivity.
+     * With this solution if multiple user want join an activity simultaneously one activity with one place left,
+     * only one user can join it. (other user receive a message).
+     *
+     * @param dba       : deboxActivity to join
+     * @param listener  : listener to send result of join
+     */
+    public void atomicJoinActivity(DeboxActivity dba, final DataProviderListenerResultOfJoinActivity listener){
+
+        // Fetch activity to check if occupancy has change (the goal is to avoid an atomic operation
+        // not necessary)
+        getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
+            @Override
+            public void getActivity(final DeboxActivity activity) {
+
+                // check if place left
+                //if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() < activity.getNbOfParticipants())) {
+                if(!(activity.getNbMaxOfParticipants()>0 && activity.getNbMaxOfParticipants() <= activity.getNbOfParticipants())) {
+
+                    DatabaseReference participantsRef = mDatabase.child("activities/"+activity.getId()+"/nbOfParticipants");
+
+                    // doTransaction on nbOfParticipants (transaction ~ atomic operation)
+                    // transaction is call again and again until the value don't change between the
+                    // fetch of the value and the update
+                    participantsRef.runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+                            Integer nbOfParticipants = mutableData.getValue(Integer.class);
+                            if(nbOfParticipants != null){
+
+                                if(activity.getNbMaxOfParticipants() <= 0) {
+                                    mutableData.setValue(nbOfParticipants+1);
+                                    return Transaction.success(mutableData);
+                                }
+
+                                if(nbOfParticipants<activity.getNbMaxOfParticipants()){
+                                    mutableData.setValue(nbOfParticipants+1);
+                                    return Transaction.success(mutableData);
+                                } else {
+                                    // if there is not place, abort transaction
+                                    return Transaction.abort();
+                                }
+                            }
+                            return null;
+                        }
+
+                        // call when transaction is completed or aborted
+                        @Override
+                        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                            // b is boolean that contain if transaction has been commited or aborted
+                            if(b) {
+
+                                // if transaction has been committed we add entry on user enrolled list
+                                HashMap<String, Object> enrolledChild = new HashMap<>();
+                                enrolledChild.put("activity ID:",activity.getId());
+
+                                // get unique key for enroll the activity
+                                String enrolledKey = mDatabase.child("users").child(user.getUid()).child("enrolled").push().getKey();
+                                HashMap<String, Object> enrolled = new HashMap<>();
+
+                                enrolled.put("enrolled/" + enrolledKey, enrolledChild);
+
+                                // update the database
+                                mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
+                            }
+                            // return result to listener
+                            listener.getResultJoinActivity(b);
+
+                        }
+                    });
+                } else {
+                    Log.e("atomicJoin","already-full-before-try");
+                    listener.getResultJoinActivity(false);
+                }
+            }
+        },dba.getId());
 
     }
 
@@ -813,19 +903,81 @@ public class DataProvider {
 
                         if (activityID.equals(uid)) {
                             idOfEntryToRemove = enrolledEntry.getKey();
-
                         }
                     }
 
                     if(idOfEntryToRemove != null) {
                         mDatabase.child("users").child(user.getUid()).child("enrolled").child(idOfEntryToRemove).removeValue();
-                        decreasesNbOfUserInActivity(dba);
+                        atomicDecreasesParticipant(dba);
                     }
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
+    private void atomicAddRankToOrganiser(final String organizerID, final int rank){
+
+        DatabaseReference rankSumReference = database.getReference("users/"+organizerID+"/ratingSum");
+
+        rankSumReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                //TODO problem solved ?
+                Integer currentRank = mutableData.getValue(Integer.class);
+                if(currentRank != null){
+                    if(currentRank<0){
+                        currentRank = rank;
+                    } else {
+
+                        currentRank = currentRank + rank;
+                    }
+                    mutableData.setValue(currentRank);
+
+                    if(!localTestMode){
+                        return Transaction.success(mutableData);
+                    }
+                }
+                return null;
+
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                //TODO implement case of fail update rank
+
+
+            }
+        });
+
+       DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+
+       numberRankReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer numberRank = mutableData.getValue(Integer.class);
+                if(numberRank != null){
+                    if(numberRank<0){
+                        numberRank=1;
+                    } else {
+                        numberRank= numberRank+1;
+                    }
+                    mutableData.setValue(numberRank);
+                    return Transaction.success(mutableData);
+                }
+                return null;
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                //TODO implement case of fail update rank
 
             }
         });
@@ -833,6 +985,7 @@ public class DataProvider {
 
     }
 
+    @Deprecated
     private void incrementNbOfUserInActivity(DeboxActivity dba){
 
         final String uid = dba.getId();
@@ -860,48 +1013,58 @@ public class DataProvider {
         });
     }
 
-    private void decreasesNbOfUserInActivity(DeboxActivity dba){
+    /**
+     * Decrement the number of participant by one (if number reach negative value set it to 0)
+     *
+     * @param dba       : deboxActivity to decrement
+     */
+    public void atomicDecreasesParticipant(DeboxActivity dba){
 
-        final String uid = dba.getId();
+        DatabaseReference participantsRef = mDatabase.child("activities/"+dba.getId()+"/nbOfParticipants");
 
-        DatabaseReference myRef = database.getReference("activities/" + dba.getId());
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // doTransaction on nbOfParticipants (transaction ~ atomic operation)
+        // transaction is call again and again until the value don't change between the
+        // fetch of the value and the update
+        participantsRef.runTransaction(new Transaction.Handler() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> activityMap = (Map<String, Object>) dataSnapshot.getValue();
-
-                int nbOfUser = getDeboxActivity(uid,activityMap).getNbOfParticipants();
-
-                nbOfUser -= 1;
-
-                if(nbOfUser<0){
-                    nbOfUser=0;
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer nbOfParticipants = mutableData.getValue(Integer.class);
+                if(nbOfParticipants!=null) {
+                    if (nbOfParticipants > 0) {
+                        mutableData.setValue(nbOfParticipants - 1);
+                    }
+                    if (!localTestMode) {
+                        return Transaction.success(mutableData);
+                    } else {
+                        return null;
+                    }
                 }
-
-                HashMap<String, Object> childToUpDate = new HashMap<>();
-                childToUpDate.put("nbOfParticipants",nbOfUser);
-                mDatabase.child("activities").child(uid).updateChildren(childToUpDate);
-
+                return null;
             }
 
+            // call when transaction is completed or aborted
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                // b is boolean that contain if transaction has been committed or aborted
+                if(b) {
+
+                } else {
+                    //TODO implement error : impossible to update nbOfParticipant Activity deleted ?
+                }
+            }
         });
     }
 
+
+
     //DB Callbacks interfaces
 
+    public interface DataProviderListenerResultOfJoinActivity{
+        void getResultJoinActivity(boolean result);
+    }
 
     public interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
-    }
-
-    private interface DataProviderListenerAlreadyRanked{
-        void getIfRanked(boolean result);
-    }
-
-    private interface DataProviderListenerIsPast{
-        void getIfActivityIsPast(boolean result);
     }
 
     public interface DataProviderListenerEnrolled {

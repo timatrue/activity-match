@@ -57,6 +57,8 @@ public class UserProfile extends AppCompatActivity {
     final static public String USER_PROFILE_NO_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_NO_TEST";
     final static public String USER_PROFILE_TEST = "ch.epfl.sweng.project.UserProfile.USER_PROFILE_TEST";
 
+    private String test;
+
 
     private RatingBar userRank;
 
@@ -107,6 +109,37 @@ public class UserProfile extends AppCompatActivity {
     UserImageFragment imageFragment;
 
 
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+
+        activityCollection = new LinkedHashMap<>();
+
+        intEvents = new ArrayList<>();
+        orgEvents = new ArrayList<>();
+        pastOrgEvents = new ArrayList<>();
+        partEvents = new ArrayList<>();
+        toRankPartEvents = new ArrayList<>();
+
+
+
+        if (test != null) {
+            if (test.equals(USER_PROFILE_NO_TEST)) {
+                //setDataProvider(new DataProvider());
+                //setImageProvider(new ImageProvider());
+                createCollection();
+                setExpListView();
+            }
+        }
+
+
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,13 +156,13 @@ public class UserProfile extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String test = bundle.getString(USER_PROFILE_TEST_KEY);
+            test = bundle.getString(USER_PROFILE_TEST_KEY);
             if (test != null) {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     setImageProvider(new ImageProvider());
-                    createCollection();
-                    setExpListView();
+                    //createCollection();
+                    //setExpListView();
                 }
             }
         }

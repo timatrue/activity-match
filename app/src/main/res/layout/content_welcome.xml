@@ -26,8 +26,10 @@
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:drawableRight="@android:drawable/ic_menu_search"
             android:layout_weight="1"
             android:inputType="textCapWords"
+            android:imeOptions="actionDone"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:text=""
             android:ems="10"
@@ -35,15 +37,6 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:id="@+id/search" />
 
-        <Button
-            android:text="@string/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonSearch"
-            android:textColor="@android:color/white"
-            android:background="?attr/colorPrimary"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin" />
     </LinearLayout>
 
     <ScrollView
