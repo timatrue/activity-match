@@ -2,6 +2,7 @@ package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -31,6 +32,8 @@ public class CommentsView extends LinearLayout {
     private TextView ratingComment;
     private TextView contentComment;
     private String eventId;
+    private String eventRate;
+    Resources res;
 
     public String getEventId() {
         return eventId;
@@ -47,7 +50,12 @@ public class CommentsView extends LinearLayout {
     public CommentsView(Context context, Map<String, String> userComments){
         super(context);
         setOrientation(LinearLayout.VERTICAL);
-        setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(5, 5, 5, 5);
+        res = getResources();
+
+
 
         this.userComments = userComments;
 
@@ -55,7 +63,7 @@ public class CommentsView extends LinearLayout {
         View childLayout = inflater.inflate(R.layout.activity_user_profile_comment, (ViewGroup) findViewById(R.id.commentsLayout));
         setComments(userComments, childLayout, context);
 
-        this.addView(childLayout);
+        this.addView(childLayout,layoutParams);
 
     }
 
@@ -64,6 +72,9 @@ public class CommentsView extends LinearLayout {
         String comment = String.valueOf(userComments.get("comment"));
         eventId = String.valueOf(userComments.get("eventId"));
         String rating = String.valueOf(userComments.get("rating"));
+        eventRate = String.format(res.getString(R.string.rate_event_comments),rating);
+
+
 
         idComment = (TextView) childLayout.findViewById(R.id.idComment);
         idCommentText = new SpannableStringBuilder("See related activity");
@@ -73,7 +84,7 @@ public class CommentsView extends LinearLayout {
         idComment.setText(idCommentText);
 
         ratingComment = (TextView) childLayout.findViewById(R.id.ratingComment);
-        ratingComment.setText(rating);
+        ratingComment.setText(eventRate);
 
         contentComment = (TextView) childLayout.findViewById(R.id.contentComment);
         contentComment.setText(comment);

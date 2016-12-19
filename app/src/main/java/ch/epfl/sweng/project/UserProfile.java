@@ -5,6 +5,7 @@ package ch.epfl.sweng.project;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -101,6 +102,8 @@ public class UserProfile extends AppCompatActivity {
     public String pastOrganizedEvents;
     public String commentsField;
 
+    TextView headerComment;
+
 
     List<String> groupList;
     List<DeboxActivity> childList;
@@ -158,8 +161,10 @@ public class UserProfile extends AppCompatActivity {
         toRankEvents = getResources().getString(R.string.to_rank_events);
         commentsField = getResources().getString(R.string.comment_field);
 
+
         createGroupList();
         commentsLayout = (LinearLayout) findViewById(R.id.commentsLayout);
+        headerComment = (TextView) findViewById(R.id.headerComment);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -455,6 +460,9 @@ public class UserProfile extends AppCompatActivity {
 
     public void addUsersComments( List<Map <String,String>> userComments) {
         cleanLinearLayout(commentsLayout);
+
+        if(userComments.size() > 0 ) headerComment.setVisibility(View.VISIBLE);
+
 
         for(Map<String,String> elem : userComments){
             CommentsView comment = new CommentsView(getApplicationContext(), elem);

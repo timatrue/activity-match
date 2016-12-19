@@ -88,28 +88,38 @@
 
     </RelativeLayout>
 
-    <ExpandableListView
-        android:id="@+id/userProfileActivityList"
-        android:layout_below="@id/rankLayout"
-        android:layout_width="match_parent"
-        android:visibility="invisible"
-        android:layout_height="wrap_content">
-    </ExpandableListView>
-
     <ScrollView
         android:id="@+id/commentScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/userProfileActivityList">
-
+        android:layout_below="@+id/rankLayout">
         <LinearLayout
-            android:id="@+id/commentsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/generalMarginCommentsBlock"
+            android:layout_marginRight="@dimen/generalMarginCommentsBlock">
+            <ExpandableListView
+                android:id="@+id/userProfileActivityList"
+                android:layout_width="match_parent"
+                android:visibility="invisible"
+                android:layout_height="wrap_content">
+            </ExpandableListView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/headerComment"
+                android:visibility="invisible"
+                android:text="@string/header_user_comments"
+                android:textColor="@color/normalGreyDebox"
+                android:paddingLeft="@dimen/generalMarginCommentsBlock"/>
+            <LinearLayout
+                android:id="@+id/commentsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>

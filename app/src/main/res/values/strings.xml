@@ -151,7 +151,6 @@
 
     <!-- User Profile -->
 
-
     <string-array name="user_info">
         <item>Organised</item>
         <item>Participated</item>
@@ -167,6 +166,9 @@
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
+    <string name="header_user_comments">Opinion of participants:</string>
+    <string name="rate_event_comments">Rate %1$s out of 5</string>
+
 
 
 </resources>
