@@ -49,17 +49,17 @@ public class CommentsView extends LinearLayout {
 
     private void setComments(Map<String, String> userComments, View childLayout, Context context){
 
-        //String comment = (String) innerMap.get("comment");
-        //String eventId = (String) innerMap.get("eventId");
-        //String rating = (String) innerMap.get("rating");
+        String comment = String.valueOf(userComments.get("comment"));
+        String eventId = String.valueOf(userComments.get("eventId"));
+        String rating = String.valueOf(userComments.get("rating"));
         idComment = (TextView) childLayout.findViewById(R.id.idComment);
-        idComment.setText(userComments.get("eventId"));
+        idComment.setText(eventId);
 
         ratingComment = (TextView) childLayout.findViewById(R.id.ratingComment);
-        ratingComment.setText(userComments.get("rating"));
+        ratingComment.setText(rating);
 
         contentComment = (TextView) childLayout.findViewById(R.id.contentComment);
-        contentComment.setText(userComments.get("comment"));
+        contentComment.setText(comment);
 
     }
 }
