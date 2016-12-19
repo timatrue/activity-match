@@ -138,16 +138,12 @@ public class FilterFragment extends DialogFragment {
         }
     };
 
-    /*public void enableGPS(View v) {
-        Intent startGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        startActivity(startGPS);
-
-    }*/
-
     View.OnClickListener enableGpsListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
+            WelcomeActivity wa = (WelcomeActivity)getActivity();
+            wa.enableGpsRequest = true;
             Intent startGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(startGPS);
 

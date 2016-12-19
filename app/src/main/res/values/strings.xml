@@ -33,6 +33,7 @@
     <string name="display_activities_button">Display All Events</string>
     <string name="filter_button_text">Filter the events</string>
     <string name="create_activity_button_text">Organize yours!</string>
+    <string name="no_internet_connection">No internet connection</string>
 
 
     <!-- Create Activity -->
