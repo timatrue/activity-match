@@ -453,7 +453,7 @@ public class UserProfile extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addUsersComments( List<Map <String,String>> userComments) {
+    public void addUsersComments( List<Map <String,String>> userComments) {
         cleanLinearLayout(commentsLayout);
 
         for(Map<String,String> elem : userComments){
