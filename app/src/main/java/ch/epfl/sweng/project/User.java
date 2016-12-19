@@ -2,6 +2,7 @@ package ch.epfl.sweng.project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by olga on 04.11.16.
@@ -17,6 +18,7 @@ public class User {
     private Integer ratingNb;
     private Integer ratingSum;
     private String photoLink;
+    private List<Map<String, String>> commentField;
 
 
     /**
@@ -31,7 +33,7 @@ public class User {
      * @param   photoLink    the link to get the photo of the user
      */
     public User(String id, String username, String email, List<String>  organizedEvents, List<String>  interestedEvents,
-                List<String> rankedEventIds, Integer ratingNb, Integer ratingSum, String photoLink) {
+                List<String> rankedEventIds, Integer ratingNb, Integer ratingSum, String photoLink, List<Map<String, String>> commentField) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -42,6 +44,7 @@ public class User {
         this.ratingSum = ratingSum;
 //        this.rating = rating;
         this.photoLink = photoLink;
+        this.commentField = commentField;
     }
 
     public String getId() {
@@ -102,8 +105,11 @@ public class User {
         photoLink = new String(newPhotoLink);
     }
 
+    public List<Map<String, String>> getCommentField() {
+        return this.commentField;
+    }
     public User copy() {
         return new User(this.id, this.username, this.email, this.organizedEventIds, this.interestedEventIds, this.rankedEventIds,
-                this.ratingNb, this.ratingSum, this.photoLink);
+                this.ratingNb, this.ratingSum, this.photoLink, this.commentField);
     }
 }

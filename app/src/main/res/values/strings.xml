@@ -154,13 +154,12 @@
 
     <!-- User Profile -->
 
-
     <string-array name="user_info">
         <item>Organised</item>
         <item>Participated</item>
         <item>Interested</item>
     </string-array>
-
+    <string name="comment_field">Comments</string>
     <string name="to_rank_events">Events to rank</string>
     <string name="past_organised_events">Past organized Events</string>
     <string name="organised_events">Upcoming organized Events</string>
@@ -170,6 +169,8 @@
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
+    <string name="header_user_comments">Comments of participants of the past organized events:</string>
+    <string name="rate_event_comments">Rate %1$s out of 5</string>
     <string name="search">Search</string>
 
 

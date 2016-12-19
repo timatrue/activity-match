@@ -8,6 +8,10 @@ import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Rule;
@@ -103,6 +107,7 @@ public class DisplayActivityTest {
 
         MockDataProvider mocDataProvider = new MockDataProvider();
         DataProvider dp = mocDataProvider.getMockDataProvider();
+
         mocDataProvider.addActivityToMock(dA1);
         mocDataProvider.addActivityToMock(dA2);
         MockImageProvider mocImageProvider = new MockImageProvider();
@@ -229,6 +234,7 @@ public class DisplayActivityTest {
         dA1OccupancyText = activity.getString(R.string.invalid_occupancy);
         assertThat(activity.occupancyTextView.getText().toString(), is(dA1OccupancyText));
     }
+
 
     /*@UiThreadTest
     @Test

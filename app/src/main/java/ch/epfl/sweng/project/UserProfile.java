@@ -5,6 +5,7 @@ package ch.epfl.sweng.project;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -34,6 +36,7 @@ import java.util.Map;
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
 import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.CommentsView;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import android.util.Log;
@@ -87,6 +90,7 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> pastOrgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
     ArrayList<DeboxActivity> toRankPartEvents = new ArrayList<>();
+    ArrayList<Map<String, String>> comments = new ArrayList<>();
 
     Bitmap userImageBitmap;
 
@@ -96,6 +100,9 @@ public class UserProfile extends AppCompatActivity {
     public String toRankEvents;
     public String organizedEvents;
     public String pastOrganizedEvents;
+    public String commentsField;
+
+    TextView headerComment;
 
 
     List<String> groupList;
@@ -108,7 +115,7 @@ public class UserProfile extends AppCompatActivity {
     FragmentManager fm;
     UserImageFragment imageFragment;
 
-
+    public LinearLayout commentsLayout;
 
 
     @Override
@@ -123,6 +130,7 @@ public class UserProfile extends AppCompatActivity {
         pastOrgEvents = new ArrayList<>();
         partEvents = new ArrayList<>();
         toRankPartEvents = new ArrayList<>();
+        comments = new ArrayList<>();
 
 
 
@@ -151,8 +159,12 @@ public class UserProfile extends AppCompatActivity {
         organizedEvents = getResources().getString(R.string.organised_events);
         pastOrganizedEvents = getResources().getString(R.string.past_organised_events);
         toRankEvents = getResources().getString(R.string.to_rank_events);
+        commentsField = getResources().getString(R.string.comment_field);
+
 
         createGroupList();
+        commentsLayout = (LinearLayout) findViewById(R.id.commentsLayout);
+        headerComment = (TextView) findViewById(R.id.headerComment);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -268,7 +280,10 @@ public class UserProfile extends AppCompatActivity {
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
                 rankedIds = new ArrayList<String>(user.getRankedEventIds());
+                comments = new ArrayList<Map<String, String>>(user.getCommentField());
 
+                addUsersComments(comments);
+                
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override
@@ -441,6 +456,38 @@ public class UserProfile extends AppCompatActivity {
         intent.putExtra(ModifyActivity.CREATE_ACTIVITY_TEST_KEY, ModifyActivity.CREATE_ACTIVITY_NO_TEST);
         intent.putExtra(ModifyActivity.MODIFY_ACTIVITY_EVENT_ID, eventId);
         startActivity(intent);
+    }
+
+    public void addUsersComments( List<Map <String,String>> userComments) {
+        cleanLinearLayout(commentsLayout);
+
+        if(userComments.size() > 0 ) headerComment.setVisibility(View.VISIBLE);
+
+
+        for(Map<String,String> elem : userComments){
+            CommentsView comment = new CommentsView(getApplicationContext(), elem);
+            comment.setOnClickListener(eventIdCommentsListener);
+            commentsLayout.addView(comment);
+        }
+
+    }
+
+    View.OnClickListener eventIdCommentsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v instanceof CommentsView) {
+                String eventId = ((CommentsView) v).getEventId();
+                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                startActivity(intent);
+            }
+        }
+    };
+
+    public void cleanLinearLayout(LinearLayout linearLayout){
+        if((linearLayout).getChildCount() > 0)
+            (linearLayout).removeAllViews();
     }
 
 }
