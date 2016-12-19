@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -111,7 +112,7 @@ public class UserProfile extends AppCompatActivity {
     FragmentManager fm;
     UserImageFragment imageFragment;
 
-
+    public LinearLayout commentsLayout;
 
 
     @Override
@@ -158,6 +159,7 @@ public class UserProfile extends AppCompatActivity {
         commentsField = getResources().getString(R.string.comment_field);
 
         createGroupList();
+        commentsLayout = (LinearLayout) findViewById(R.id.commentsLayout);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -452,10 +454,32 @@ public class UserProfile extends AppCompatActivity {
     }
 
     private void addUsersComments( List<Map <String,String>> userComments) {
+        cleanLinearLayout(commentsLayout);
 
         for(Map<String,String> elem : userComments){
             CommentsView comment = new CommentsView(getApplicationContext(), elem);
+            comment.setOnClickListener(eventIdCommentsListener);
+            commentsLayout.addView(comment);
         }
 
     }
+
+    View.OnClickListener eventIdCommentsListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v instanceof CommentsView) {
+                String eventId = ((CommentsView) v).getEventId();
+                Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
+                intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
+                intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
+                startActivity(intent);
+            }
+        }
+    };
+
+    public void cleanLinearLayout(LinearLayout linearLayout){
+        if((linearLayout).getChildCount() > 0)
+            (linearLayout).removeAllViews();
+    }
+
 }

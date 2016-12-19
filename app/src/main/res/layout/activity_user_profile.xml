@@ -96,5 +96,20 @@
         android:layout_height="wrap_content">
     </ExpandableListView>
 
+    <ScrollView
+        android:id="@+id/commentScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/userProfileActivityList">
+
+        <LinearLayout
+            android:id="@+id/commentsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+
+    </ScrollView>
 
 </RelativeLayout>
