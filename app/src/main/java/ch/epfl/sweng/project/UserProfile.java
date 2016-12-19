@@ -87,6 +87,7 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> pastOrgEvents = new ArrayList<>();
     ArrayList<DeboxActivity> partEvents = new ArrayList<>();
     ArrayList<DeboxActivity> toRankPartEvents = new ArrayList<>();
+    ArrayList<Map<String, String>> comments = new ArrayList<>();
 
     Bitmap userImageBitmap;
 
@@ -96,6 +97,7 @@ public class UserProfile extends AppCompatActivity {
     public String toRankEvents;
     public String organizedEvents;
     public String pastOrganizedEvents;
+    public String commentsField;
 
 
     List<String> groupList;
@@ -123,6 +125,7 @@ public class UserProfile extends AppCompatActivity {
         pastOrgEvents = new ArrayList<>();
         partEvents = new ArrayList<>();
         toRankPartEvents = new ArrayList<>();
+        comments = new ArrayList<>();
 
 
 
@@ -151,6 +154,7 @@ public class UserProfile extends AppCompatActivity {
         organizedEvents = getResources().getString(R.string.organised_events);
         pastOrganizedEvents = getResources().getString(R.string.past_organised_events);
         toRankEvents = getResources().getString(R.string.to_rank_events);
+        commentsField = getResources().getString(R.string.comment_field);
 
         createGroupList();
 
@@ -268,7 +272,8 @@ public class UserProfile extends AppCompatActivity {
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
                 rankedIds = new ArrayList<String>(user.getRankedEventIds());
-
+                comments = new ArrayList<Map<String, String>>(user.getCommentField());
+                
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
                     @Override

@@ -157,7 +157,7 @@
         <item>Participated</item>
         <item>Interested</item>
     </string-array>
-
+    <string name="comment_field">Comments</string>
     <string name="to_rank_events">Events to rank</string>
     <string name="past_organised_events">Past organized Events</string>
     <string name="organised_events">Upcoming organized Events</string>

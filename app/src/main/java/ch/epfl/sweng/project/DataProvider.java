@@ -608,10 +608,10 @@ public class DataProvider {
         String email = (String) userMap.get("user_email");
         String username = (String) userMap.get("default_user_name");
 
-        List<Object> commentsField = new ArrayList<>();
+        List<Map<String,String>> commentsField = new ArrayList<>();
         if (userMap.containsKey("comments")) {
-            Map<String, Map<String, Object>> comments = (Map<String, Map<String, Object>>) userMap.get("comments");
-            for (Map<String, Object> innerMap : comments.values()) {
+            Map<String, Map<String, String>> comments = (Map<String, Map<String, String>>) userMap.get("comments");
+            for (Map<String, String> innerMap : comments.values()) {
                 //String comment = (String) innerMap.get("comment");
                 //String eventId = (String) innerMap.get("eventId");
                 //String rating = (String) innerMap.get("rating");
