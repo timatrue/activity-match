@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -31,7 +32,7 @@ public class UserTest {
         final int testRatingNb = 10;
         final int testRatingSum = 44;
         final String testPhotoLink = "photo";
-
+        List<Map<String, String>> testComments = new ArrayList<>();
 
         User testUser = new User(
                 testId,
@@ -42,7 +43,8 @@ public class UserTest {
                 testRankedEvents,
                 testRatingNb,
                 testRatingSum,
-                testPhotoLink);
+                testPhotoLink,
+                testComments);
 
         final int newTestratingNb = 0;
 
@@ -55,7 +57,8 @@ public class UserTest {
                 testRankedEvents,
                 newTestratingNb,
                 testRatingSum,
-                testPhotoLink);
+                testPhotoLink,
+                testComments);
 
         assertThat(testUser.getId(), is(testId));
         assertThat(testUser.getUsername(), is(testUsername));

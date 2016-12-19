@@ -15,8 +15,10 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -45,8 +47,18 @@ public class UserProfileTest {
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
     private List<String> rankedEvents = Arrays.asList("id2");
 
+    private Map<String, String> createCommentsMap() {
+        Map<String, String> commentsMap = new Hashtable<>();
+        commentsMap.put("eventId", "id1");
+        commentsMap.put("rating", "5");
+        commentsMap.put("comment", "cool");
+        return commentsMap;
+    }
+    private Map<String, String> commentsMap = createCommentsMap();
+
+    private List<Map<String, String>> comments = Arrays.asList(commentsMap);
     private User testUser = new User("Bob", "username", "email", organizedEvents,
-            interestedEvents, rankedEvents, 4, 8, "slls");
+            interestedEvents, rankedEvents, 4, 8, "slls", comments);
 
     //The list of DeboxActivity designed for testing
     private List<DeboxActivity> deboxActivityList;
@@ -143,7 +155,7 @@ public class UserProfileTest {
         activity.setExpListView();
 
         final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls");
+                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls", new ArrayList<Map<String, String>>());
         mocDataProvider.setUserToMock(newUser);
     }
 
@@ -166,7 +178,7 @@ public class UserProfileTest {
         activity.setExpListView();
 
         final User newUser = new User("id", "Bob", "email", new ArrayList<String>(),
-                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls");
+                new ArrayList<String>(), new ArrayList<String>(), 4, 8, "slls", new ArrayList<Map<String, String>>());
         mocDataProvider.setUserToMock(newUser);
 
 

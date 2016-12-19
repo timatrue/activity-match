@@ -24,7 +24,7 @@
         android:id="@+id/searchLayout">
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawableRight="@android:drawable/ic_menu_search"
             android:layout_weight="1"
@@ -33,6 +33,8 @@
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:text=""
             android:ems="10"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:id="@+id/search" />
 
     </LinearLayout>
@@ -79,7 +81,7 @@
         android:padding="@dimen/fab_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|bottom"
+        android:layout_gravity="start|bottom"
         android:text="@string/filter_button_text"
         android:textColor="@android:color/white"
         android:background="?attr/colorPrimary"
@@ -93,7 +95,7 @@
         android:padding="@dimen/fab_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:text="@string/create_activity_button_text"
         android:textColor="@android:color/white"
         android:background="?attr/colorPrimary"

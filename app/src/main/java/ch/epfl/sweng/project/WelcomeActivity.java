@@ -2,9 +2,12 @@ package ch.epfl.sweng.project;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +53,7 @@ import java.util.List;
 
 import ch.epfl.sweng.project.fragments.FilterFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.NoConnectionPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static com.google.android.gms.internal.zzs.TAG;
@@ -108,6 +112,9 @@ public class WelcomeActivity extends AppCompatActivity
     LocationRequest mLocationRequest;
     boolean permission_granted = false;
     boolean permission_already_asked = false;
+    public boolean enableGpsRequest = false;
+    boolean testIsConnectedInternet = true;
+    public boolean testIsGpsEnabled = true;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -120,44 +127,6 @@ public class WelcomeActivity extends AppCompatActivity
 
         Button addActivityButton = (Button) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
-
-        //Button searchButton = (Button) findViewById(R.id.buttonSearch);
-        //searchButton.setOnClickListener(searchListener);
-
-        final EditText searchEditText = ((EditText) findViewById(R.id.search));
-        searchEditText.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        search();
-
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ( (actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN ))){
-                    search();
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
-        });
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -178,11 +147,16 @@ public class WelcomeActivity extends AppCompatActivity
             String test = bundle.getString(WELCOME_ACTIVITY_TEST_KEY);
             if (test != null) {
                 if (test.equals(WELCOME_ACTIVITY_NO_TEST)) {
-                    setDataProvider(new DataProvider());
-                    getAllCategoriesAndLocation();
-                    displaySpecifiedActivities();
-                    mDataProvider.initUserInDB();
                     TEST_MODE = false;
+                    setDataProvider(new DataProvider());
+                    mDataProvider.initUserInDB();
+                    if(isConnectedInternet()) {
+                        getAllCategoriesAndLocation();
+                        displaySpecifiedActivities();
+                    }
+                    else {
+                        setNoConnectionPreview();
+                    }
                 }
                 else {
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
@@ -191,6 +165,13 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+
+    private boolean isConnectedInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected()) && testIsConnectedInternet;
     }
 
     public void search() {
@@ -223,30 +204,49 @@ public class WelcomeActivity extends AppCompatActivity
                     NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                     activityPreviewsLayout.addView(result, layoutParams);
                 }
-                //mDataProvider = new DataProvider();
 
                 (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
             }
         });
+
     }
 
     public void hideSoftKeyboard() {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) this.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                this.getCurrentFocus().getWindowToken(), 0);
+        if(this.getCurrentFocus() != null) {
+            inputMethodManager.hideSoftInputFromWindow(
+                    this.getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if(!TEST_MODE) {
+        if(!TEST_MODE && isConnectedInternet()) {
             (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
             getAllCategoriesAndLocation();
             displaySpecifiedActivities();
         }
+        else if(!TEST_MODE && !isConnectedInternet()){
+            setNoConnectionPreview();
+        }
+    }
+
+    void setNoConnectionPreview(){
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(30, 20, 30, 0);
+
+        cleanLinearLayout(activityPreviewsLayout);
+
+        (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+
+        NoConnectionPreview result = new NoConnectionPreview(getApplicationContext());
+        activityPreviewsLayout.addView(result, layoutParams);
+        result.setOnClickListener(refreshClickListener);
     }
 
     public void setDataProvider(DataProvider dataProvider) {
@@ -255,23 +255,29 @@ public class WelcomeActivity extends AppCompatActivity
 
 
     public void getAllCategoriesAndLocation() {
-        getAllCategories();
+        if(isConnectedInternet()){
+            setCurrentLocalisation();
+            createLocationRequest();
+            getAllCategories();
 
-        setCurrentLocalisation();
-        createLocationRequest();
 
-
-        if(!permission_already_asked) {
-            permission_already_asked = true;
-            //The permissions need to be asked to the user at runtime for newer APIs
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-            } else {
-                permission_granted = true;
-                initializeGoogleApiClient();
+            if(!permission_already_asked || enableGpsRequest) {
+                permission_already_asked = true;
+                enableGpsRequest = false;
+                //The permissions need to be asked to the user at runtime for newer APIs
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+                } else {
+                    permission_granted = true;
+                    initializeGoogleApiClient();
+                }
             }
         }
+        else {
+            setNoConnectionPreview();
+        }
+
     }
 
     public void getAllCategories() {
@@ -386,12 +392,21 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener previewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(v instanceof ActivityPreview) {
+            if(v instanceof ActivityPreview && isConnectedInternet()) {
                 String eventId = ((ActivityPreview) v).getEventId();
                 Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
                 intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
                 intent.putExtra(DisplayActivity.DISPLAY_EVENT_ID, eventId);
                 startActivity(intent);
+            }
+        }
+    };
+
+    View.OnClickListener refreshClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(v instanceof NoConnectionPreview) {
+                onResume();
             }
         }
     };
@@ -436,85 +451,89 @@ public class WelcomeActivity extends AppCompatActivity
     //Gets the activities that should be displayed given the filters and displays them
     public void displaySpecifiedActivities() {
 
-        final int maxDistance;
-        if(maxDistanceMap.get(maxDistanceString) != null) {
-            maxDistance = maxDistanceMap.get(maxDistanceString);
+        if(isConnectedInternet()) {
+            final int maxDistance;
+            if (maxDistanceMap.get(maxDistanceString) != null) {
+                maxDistance = maxDistanceMap.get(maxDistanceString);
+            } else {
+                maxDistance = 21000;
+                Log.d(TAG, "Invalid maxDistance string detected");
+            }
+
+            Calendar currentTime = Calendar.getInstance();
+            if (filterStartCalendar.before(currentTime)) {
+                filterStartCalendar = currentTime;
+            }
+
+            if (filterCategory.equals("All")) {
+                mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+                    @Override
+                    public void getActivities(List<DeboxActivity> activitiesList) {
+
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(30, 20, 30, 0);
+
+                        cleanLinearLayout(activityPreviewsLayout);
+
+                        boolean listEmpty = true;
+                        for (DeboxActivity elem : activitiesList) {
+                            if (distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+                                ap.setOnClickListener(previewClickListener);
+                                listEmpty = false;
+                            }
+                        }
+
+                        if (listEmpty) {
+                            NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                            activityPreviewsLayout.addView(result, layoutParams);
+                        }
+
+                        (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                        setFilterListener();
+                        setSearchListener();
+                    }
+                });
+            } else {
+                mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+                    @Override
+                    public void getCategory(List<DeboxActivity> activitiesList) {
+
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(30, 20, 30, 0);
+
+                        cleanLinearLayout(activityPreviewsLayout);
+
+
+                        boolean listEmpty = true;
+                        for (DeboxActivity elem : activitiesList) {
+                            if (distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+                                ap.setOnClickListener(previewClickListener);
+                                listEmpty = false;
+                            }
+                        }
+
+                        if (listEmpty) {
+                            NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                            activityPreviewsLayout.addView(result, layoutParams);
+                        }
+
+                        (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                        setFilterListener();
+                        setSearchListener();
+                    }
+                }, filterCategory);
+            }
         }
         else {
-            maxDistance = 21000;
-            Log.d(TAG, "Invalid maxDistance string detected");
-        }
-
-        Calendar currentTime = Calendar.getInstance();
-        if(filterStartCalendar.before(currentTime)) {
-            filterStartCalendar = currentTime;
-        }
-
-        if(filterCategory.equals("All")){
-            mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
-
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-
-                    boolean listEmpty = true;
-                    for(DeboxActivity elem: activitiesList) {
-                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                            activityPreviewsLayout.addView(ap, layoutParams);
-                            ap.setOnClickListener(previewClickListener);
-                            listEmpty = false;
-                        }
-                    }
-
-                    if (listEmpty) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-                    }
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    setFilterListener();
-                }
-            });
-        }
-
-        else {
-            mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
-                @Override
-                public void getCategory(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-
-
-                    boolean listEmpty = true;
-                    for(DeboxActivity elem: activitiesList) {
-                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                            activityPreviewsLayout.addView(ap, layoutParams);
-                            ap.setOnClickListener(previewClickListener);
-                            listEmpty = false;
-                        }
-                    }
-
-                    if (listEmpty) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-                    }
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    setFilterListener();
-                }
-            }, filterCategory);
+            setNoConnectionPreview();
         }
     }
 
@@ -528,6 +547,45 @@ public class WelcomeActivity extends AppCompatActivity
         };
         Button filterButton = (Button) findViewById(R.id.filterActivity);
         filterButton.setOnClickListener(filterEventsListener);
+    }
+
+    private void setSearchListener() {
+        //Button searchButton = (Button) findViewById(R.id.buttonSearch);
+        //searchButton.setOnClickListener(searchListener);
+
+        final EditText searchEditText = ((EditText) findViewById(R.id.search));
+        searchEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //final int DRAWABLE_LEFT = 0;
+                //final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                //final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP && isConnectedInternet()) {
+                    if (event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        search();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                    if (((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)))
+                            && isConnectedInternet()) {
+                        search();
+                        return true;
+                    } else {
+                        return false;
+                    }
+            }
+        });
     }
 
     //Computes distance in km from lagitudes and longitudes with the equirectangular approximation
@@ -558,26 +616,28 @@ public class WelcomeActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        if(isConnectedInternet()) {
+            int id = item.getItemId();
 
-        if (id == R.id.nav_user_profile) {
-            Intent intent = new Intent(this, UserProfile.class);
-            intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
-            startActivity(intent);
-        } else if (id == R.id.nav_log_out) {
-            //Return to Login Activity and logout
-            setResult(Login.RE_LOG_OUT);
-            finish();
-        } else if (id == R.id.nav_share) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        } else if (id == R.id.nav_contact) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto",getResources().getString(R.string.company_mail), null));
-            startActivity(Intent.createChooser(intent, getResources().getString(R.string.contact_message)));
+            if (id == R.id.nav_user_profile) {
+                Intent intent = new Intent(this, UserProfile.class);
+                intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
+                startActivity(intent);
+            } else if (id == R.id.nav_log_out) {
+                //Return to Login Activity and logout
+                setResult(Login.RE_LOG_OUT);
+                finish();
+            } else if (id == R.id.nav_share) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            } else if (id == R.id.nav_contact) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", getResources().getString(R.string.company_mail), null));
+                startActivity(Intent.createChooser(intent, getResources().getString(R.string.contact_message)));
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -625,6 +685,44 @@ public class WelcomeActivity extends AppCompatActivity
         dialogFragment.updateTimeTextViews();
     }
 
+    /*View.OnClickListener searchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            hideSoftKeyboard();
+            final String searchText = ((TextView) findViewById(R.id.search)).getText().toString().toLowerCase();
+
+            (findViewById(R.id.loadingProgressBar)).setVisibility(View.VISIBLE);
+            mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+                @Override
+                public void getActivities(List<DeboxActivity> activitiesList) {
+
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    layoutParams.setMargins(30, 20, 30, 0);
+
+                    cleanLinearLayout(activityPreviewsLayout);
+
+                    boolean listEmpty = true;
+                    for(DeboxActivity elem: activitiesList) {
+                        if(elem.getTitle().toLowerCase().contains(searchText) && elem.getTimeEnd().after(Calendar.getInstance())) {
+                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                            activityPreviewsLayout.addView(ap, layoutParams);
+                            ap.setOnClickListener(previewClickListener);
+                            listEmpty = false;
+                        }
+                    }
+
+                    if (listEmpty) {
+                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                        activityPreviewsLayout.addView(result, layoutParams);
+                    }
+
+                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                }
+            });
+        }
+    };*/
 
     public String makeDateString(Calendar calendar) {
         DateFormat dateFormat = getDateInstance();

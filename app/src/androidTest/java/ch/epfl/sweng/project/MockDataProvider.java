@@ -51,7 +51,7 @@ public class MockDataProvider {
         listUserActivityEnrolledStored = new ArrayList<>();
         userID="default";
         user = new User("def_id", "def_username", "def_email", new ArrayList<String>(), new ArrayList<String>(),
-                new ArrayList<String>(),10, 5, "def_photoLink");
+                new ArrayList<String>(),10, 5, "def_photoLink", new ArrayList<Map<String, String>>());
 
         return mockDataProvider;
     }

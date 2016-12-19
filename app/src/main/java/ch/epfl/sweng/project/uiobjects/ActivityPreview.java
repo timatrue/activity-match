@@ -22,33 +22,26 @@ import ch.epfl.sweng.project.R;
 import java.util.Calendar;
 import java.text.DateFormat;
 import java.util.List;
-import java.util.Random;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static ch.epfl.sweng.project.R.id.imageView;
 import static java.text.DateFormat.getDateInstance;
 
-
-import java.util.List;
-/**
- * Created by nathan on 07.10.16.
- */
 
 public class ActivityPreview extends LinearLayout {
 
     private DeboxActivity event;
     private String eventTime;
-    private Calendar timeStart;
-    private DateFormat dateFormat;
+    Calendar timeStart;
+    DateFormat dateFormat;
 
-    private TextView titleEvent;
-    private TextView previewEvent;
-    private TextView dateEvent;
-    private TextView sizeEvent;
+    TextView titleEvent;
+    TextView previewEvent;
+    TextView dateEvent;
+    TextView sizeEvent;
 
-    private List<String> imagesList;
-    private ImageView imageView;
-    private String eventId;
+    List<String> imagesList;
+    ImageView imageView;
+    String eventId;
 
     public ActivityPreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -139,7 +132,7 @@ public class ActivityPreview extends LinearLayout {
         if (arrayId != 0)
         {
             TypedArray colors = getResources().obtainTypedArray(arrayId);
-            int index = ((int) (letter-'A')) % colors.length();
+            int index = ((letter-'A')) % colors.length();
             returnColor = colors.getColor(index, Color.BLACK);
             colors.recycle();
         }
