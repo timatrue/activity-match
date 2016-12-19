@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.NoConnectionPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
 
 import static java.text.DateFormat.getDateInstance;
@@ -589,6 +590,37 @@ public class WelcomeActivityTest {
         assertTrue(previewLayout.getChildAt(0) instanceof NoResultsPreview);
     }
 
+    @UiThreadTest
+    @Test
+    public void NoConnectionTest() throws Exception {
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        initializeMockProvider(activity);
+
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
+        Calendar startCalendar = addDays(currentCalendar,3);
+        Calendar endCalendar = addDays(currentCalendar,6);
+        activity.filterCategory = "All";
+        activity.maxDistanceString = "All";
+        activity.centerLongitude = 6.642266;
+        activity.centerLatitude = 46.777245;
+        activity.filterStartCalendar = startCalendar;
+        activity.filterEndCalendar = endCalendar;
+
+        activity.testIsConnectedInternet = false;
+
+        //Calls the method that filters and displays the activities
+        activity.displaySpecifiedActivities();
+
+        final LinearLayout previewLayout = activity.activityPreviewsLayout;
+        final int activityCountAll = previewLayout.getChildCount();
+        assertThat(activityCountAll, is(1));
+
+        View view = previewLayout.getChildAt(0);
+        assertTrue(view instanceof NoConnectionPreview);
+    }
+
     @Test
     public void UITest() throws Exception {
 
@@ -723,7 +755,7 @@ public class WelcomeActivityTest {
 
         onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 
-        onView(allOf(withId(R.id.validate))).perform(scrollTo(), click());
+        onView((withId(R.id.validate))).perform(scrollTo(), click());
 
         onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
 

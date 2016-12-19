@@ -1,6 +1,5 @@
 package ch.epfl.sweng.project;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 
 import android.content.Context;
@@ -21,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,19 +35,13 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
-import ch.epfl.sweng.project.fragments.FilterFragment;
-
-import static android.R.attr.category;
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
@@ -69,6 +61,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     boolean creation = true;
 
+    boolean testIsConnectedInternet = true;
 
     final static public String CREATE_ACTIVITY_DEFAULT_ID = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_DEFAULT_ID";
 
@@ -86,7 +79,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     private AutoCompleteTextView proSpinner;
     private List<String> stringList;
-    private String emptyString;
+    String emptyString;
 
     String activityId = CREATE_ACTIVITY_DEFAULT_ID;
     String activityOrganizer = "default_organizer";
@@ -222,10 +215,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         @Override
         public boolean isValid(CharSequence userInput){
          //Log.v("Test", "Checking if valid: "+ userInput);
-            if(stringList.contains(userInput.toString())) {
-                return true;
-            }
-            return false;
+            return stringList.contains(userInput.toString());
         }
         @Override
         public CharSequence fixText(CharSequence invalidUserInput){
@@ -305,10 +295,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         if(requestCode == PICK_IMAGE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 //Add image URI in the list
-                if(imagesUriList.contains(data.getData())) {
-
-                }
-                else {
+                if(!imagesUriList.contains(data.getData())) {
                     imagesUriList.add(data.getData());
                 }
             }
@@ -336,17 +323,15 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
         String valid = ConfirmationCodes.get_success(this);
         if(validation.equals(valid)) {
-            if(/*!TEST_MODE*/true) {
-                FragmentManager fm = getFragmentManager();
-                validationFragment = new CreateValidationFragment();
-                validationFragment.setDataProvider(mDataProvider);
-                validationFragment.setImageProvider(mImageProvider);
-                validationFragment.show(fm, "Validating your event");
+            FragmentManager fm = getFragmentManager();
+            validationFragment = new CreateValidationFragment();
+            validationFragment.setDataProvider(mDataProvider);
+            validationFragment.setImageProvider(mImageProvider);
+            validationFragment.show(fm, "Validating your event");
 
-                validationFragment.setImagesUriList(imagesUriList);
+            validationFragment.setImagesUriList(imagesUriList);
 
-                validationFragment.uploadActivity(newDeboxActivity, creation);
-            }
+            validationFragment.uploadActivity(newDeboxActivity, creation);
         }
         else {
             setErrorTextView(validation);
@@ -396,7 +381,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private boolean isConnectedInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        return (networkInfo != null && networkInfo.isConnected()) && testIsConnectedInternet;
     }
 
     /* Returns a DeboxActivity instance with the parameters entered in the by the user or null if

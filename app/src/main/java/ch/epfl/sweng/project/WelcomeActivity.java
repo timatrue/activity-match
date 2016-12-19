@@ -43,8 +43,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -115,6 +113,7 @@ public class WelcomeActivity extends AppCompatActivity
     boolean permission_granted = false;
     boolean permission_already_asked = false;
     public boolean enableGpsRequest = false;
+    boolean testIsConnectedInternet = true;
     GoogleApiClient mGoogleApiClient;
 
     @Override
@@ -171,7 +170,7 @@ public class WelcomeActivity extends AppCompatActivity
     private boolean isConnectedInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        return (networkInfo != null && networkInfo.isConnected()) && testIsConnectedInternet;
     }
 
     public void search() {
@@ -215,8 +214,10 @@ public class WelcomeActivity extends AppCompatActivity
         InputMethodManager inputMethodManager =
                 (InputMethodManager) this.getSystemService(
                         Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                this.getCurrentFocus().getWindowToken(), 0);
+        if(this.getCurrentFocus() != null) {
+            inputMethodManager.hideSoftInputFromWindow(
+                    this.getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -253,23 +254,29 @@ public class WelcomeActivity extends AppCompatActivity
 
 
     public void getAllCategoriesAndLocation() {
-        setCurrentLocalisation();
-        createLocationRequest();
-        getAllCategories();
+        if(isConnectedInternet()){
+            setCurrentLocalisation();
+            createLocationRequest();
+            getAllCategories();
 
 
-        if(!permission_already_asked || enableGpsRequest) {
-            permission_already_asked = true;
-            enableGpsRequest = false;
-            //The permissions need to be asked to the user at runtime for newer APIs
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-            } else {
-                permission_granted = true;
-                initializeGoogleApiClient();
+            if(!permission_already_asked || enableGpsRequest) {
+                permission_already_asked = true;
+                enableGpsRequest = false;
+                //The permissions need to be asked to the user at runtime for newer APIs
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+                } else {
+                    permission_granted = true;
+                    initializeGoogleApiClient();
+                }
             }
         }
+        else {
+            setNoConnectionPreview();
+        }
+
     }
 
     public void getAllCategories() {
@@ -443,87 +450,89 @@ public class WelcomeActivity extends AppCompatActivity
     //Gets the activities that should be displayed given the filters and displays them
     public void displaySpecifiedActivities() {
 
-        final int maxDistance;
-        if(maxDistanceMap.get(maxDistanceString) != null) {
-            maxDistance = maxDistanceMap.get(maxDistanceString);
+        if(isConnectedInternet()) {
+            final int maxDistance;
+            if (maxDistanceMap.get(maxDistanceString) != null) {
+                maxDistance = maxDistanceMap.get(maxDistanceString);
+            } else {
+                maxDistance = 21000;
+                Log.d(TAG, "Invalid maxDistance string detected");
+            }
+
+            Calendar currentTime = Calendar.getInstance();
+            if (filterStartCalendar.before(currentTime)) {
+                filterStartCalendar = currentTime;
+            }
+
+            if (filterCategory.equals("All")) {
+                mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
+
+                    @Override
+                    public void getActivities(List<DeboxActivity> activitiesList) {
+
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(30, 20, 30, 0);
+
+                        cleanLinearLayout(activityPreviewsLayout);
+
+                        boolean listEmpty = true;
+                        for (DeboxActivity elem : activitiesList) {
+                            if (distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+                                ap.setOnClickListener(previewClickListener);
+                                listEmpty = false;
+                            }
+                        }
+
+                        if (listEmpty) {
+                            NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                            activityPreviewsLayout.addView(result, layoutParams);
+                        }
+
+                        (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                        setFilterListener();
+                        setSearchListener();
+                    }
+                });
+            } else {
+                mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
+
+                    @Override
+                    public void getCategory(List<DeboxActivity> activitiesList) {
+
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.setMargins(30, 20, 30, 0);
+
+                        cleanLinearLayout(activityPreviewsLayout);
+
+
+                        boolean listEmpty = true;
+                        for (DeboxActivity elem : activitiesList) {
+                            if (distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
+                                ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
+                                activityPreviewsLayout.addView(ap, layoutParams);
+                                ap.setOnClickListener(previewClickListener);
+                                listEmpty = false;
+                            }
+                        }
+
+                        if (listEmpty) {
+                            NoResultsPreview result = new NoResultsPreview(getApplicationContext());
+                            activityPreviewsLayout.addView(result, layoutParams);
+                        }
+
+                        (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
+                        setFilterListener();
+                        setSearchListener();
+                    }
+                }, filterCategory);
+            }
         }
         else {
-            maxDistance = 21000;
-            Log.d(TAG, "Invalid maxDistance string detected");
-        }
-
-        Calendar currentTime = Calendar.getInstance();
-        if(filterStartCalendar.before(currentTime)) {
-            filterStartCalendar = currentTime;
-        }
-
-        if(filterCategory.equals("All")){
-            mDataProvider.getAllActivities(new DataProvider.DataProviderListenerActivities() {
-
-                @Override
-                public void getActivities(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-
-                    boolean listEmpty = true;
-                    for(DeboxActivity elem: activitiesList) {
-                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                            activityPreviewsLayout.addView(ap, layoutParams);
-                            ap.setOnClickListener(previewClickListener);
-                            listEmpty = false;
-                        }
-                    }
-
-                    if (listEmpty) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-                    }
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    setFilterListener();
-                    setSearchListener();
-                }
-            });
-        }
-
-        else {
-            mDataProvider.getSpecifiedCategory(new DataProvider.DataProviderListenerCategory() {
-
-                @Override
-                public void getCategory(List<DeboxActivity> activitiesList) {
-
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 30, 0);
-
-                    cleanLinearLayout(activityPreviewsLayout);
-
-
-                    boolean listEmpty = true;
-                    for(DeboxActivity elem: activitiesList) {
-                        if(distanceFromCenter(elem) <= maxDistance && elem.getTimeEnd().after(filterStartCalendar) && elem.getTimeStart().before(filterEndCalendar)) {
-                            ActivityPreview ap = new ActivityPreview(getApplicationContext(), elem);
-                            activityPreviewsLayout.addView(ap, layoutParams);
-                            ap.setOnClickListener(previewClickListener);
-                            listEmpty = false;
-                        }
-                    }
-
-                    if (listEmpty) {
-                        NoResultsPreview result = new NoResultsPreview(getApplicationContext());
-                        activityPreviewsLayout.addView(result, layoutParams);
-                    }
-
-                    (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
-                    setFilterListener();
-                    setSearchListener();
-                }
-            }, filterCategory);
+            setNoConnectionPreview();
         }
     }
 
@@ -547,10 +556,10 @@ public class WelcomeActivity extends AppCompatActivity
         searchEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
+                //final int DRAWABLE_LEFT = 0;
+                //final int DRAWABLE_TOP = 1;
                 final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
+                //final int DRAWABLE_BOTTOM = 3;
 
                 if (event.getAction() == MotionEvent.ACTION_UP && isConnectedInternet()) {
                     if (event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
