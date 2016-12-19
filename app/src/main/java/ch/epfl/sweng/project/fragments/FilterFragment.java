@@ -84,15 +84,11 @@ public class FilterFragment extends DialogFragment {
 
         dropDownCategories.setSelection(categoryListWithAll.indexOf(wa.filterCategory));
 
-        String enabledSettings = Settings.Secure.getString(wa.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        List<String> enabledSettingsList = Arrays.asList(enabledSettings.split("\\s*,\\s*"));
-        boolean gpsIsEnabled = enabledSettingsList.contains("gps");
-
         TextView gpsIsDisabledView = (TextView) rootView.findViewById(R.id.filterGPSDisabled);
         gpsIsDisabledView.setTextColor(Color.RED);
         TextView enableGps = (TextView) rootView.findViewById(R.id.filterEnableGPS);
 
-        if(gpsIsEnabled) {
+        if(isGpsEnabled()) {
             gpsIsDisabledView.setVisibility(View.GONE);
             enableGps.setVisibility(View.GONE);
         }
@@ -102,6 +98,13 @@ public class FilterFragment extends DialogFragment {
         }
 
         return rootView;
+    }
+
+    boolean isGpsEnabled(){
+        WelcomeActivity wa = (WelcomeActivity)getActivity();
+        String enabledSettings = Settings.Secure.getString(wa.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        List<String> enabledSettingsList = Arrays.asList(enabledSettings.split("\\s*,\\s*"));
+         return enabledSettingsList.contains("gps") && wa.testIsGpsEnabled;
     }
 
     AdapterView.OnItemSelectedListener maxDistanceSelectedItemListener = new AdapterView.OnItemSelectedListener() {

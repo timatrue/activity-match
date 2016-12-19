@@ -622,6 +622,30 @@ public class WelcomeActivityTest {
     }
 
     @Test
+    public void NoGpsTest() throws Exception {
+        final WelcomeActivity activity = welcomeActivityRule.getActivity();
+
+        initializeMockProvider(activity);
+
+        /* Sets the parameters of the WelcomeActivity that are usually set by the user and are required
+        in the displaySpecifiedActivities() function */
+        Calendar startCalendar = addDays(currentCalendar,3);
+        Calendar endCalendar = addDays(currentCalendar,6);
+        activity.filterCategory = "All";
+        activity.maxDistanceString = "All";
+        activity.centerLongitude = 6.642266;
+        activity.centerLatitude = 46.777245;
+        activity.filterStartCalendar = startCalendar;
+        activity.filterEndCalendar = endCalendar;
+
+        activity.testIsGpsEnabled = false;
+
+        onView(allOf(withId(R.id.filterActivity), withParent(withId(R.id.include)), isDisplayed())).perform(click());
+        onView(withId(R.id.filterGPSDisabled)).perform(scrollTo()).check(matches(isDisplayed()));
+        onView(withId(R.id.filterEnableGPS)).perform(scrollTo()).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void UITest() throws Exception {
 
         final WelcomeActivity activity = welcomeActivityRule.getActivity();

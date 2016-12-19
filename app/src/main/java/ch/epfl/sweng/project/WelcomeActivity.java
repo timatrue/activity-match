@@ -114,6 +114,7 @@ public class WelcomeActivity extends AppCompatActivity
     boolean permission_already_asked = false;
     public boolean enableGpsRequest = false;
     boolean testIsConnectedInternet = true;
+    public boolean testIsGpsEnabled = true;
     GoogleApiClient mGoogleApiClient;
 
     @Override
