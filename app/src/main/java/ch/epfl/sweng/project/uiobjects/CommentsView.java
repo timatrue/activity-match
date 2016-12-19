@@ -78,9 +78,7 @@ public class CommentsView extends LinearLayout {
 
         idComment = (TextView) childLayout.findViewById(R.id.idComment);
         idCommentText = new SpannableStringBuilder("See related activity");
-        //colorSpan = new ForegroundColorSpan(res.getColor(R.color.niceBlueDebox));
         idCommentText.setSpan(new UnderlineSpan(), 0, idCommentText.length(), 0);
-        //idComment.setSpan(colorSpan, publishedByString.length() - 1, userSigntureFull.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         idComment.setText(idCommentText);
 
         ratingComment = (TextView) childLayout.findViewById(R.id.ratingComment);
