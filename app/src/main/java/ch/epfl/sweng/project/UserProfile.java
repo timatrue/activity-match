@@ -34,6 +34,7 @@ import java.util.Map;
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
 import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
+import ch.epfl.sweng.project.uiobjects.CommentsView;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import android.util.Log;
@@ -273,6 +274,8 @@ public class UserProfile extends AppCompatActivity {
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
                 rankedIds = new ArrayList<String>(user.getRankedEventIds());
                 comments = new ArrayList<Map<String, String>>(user.getCommentField());
+
+                addUsersComments(comments);
                 
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
@@ -448,4 +451,11 @@ public class UserProfile extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void addUsersComments( List<Map <String,String>> userComments) {
+
+        for(Map<String,String> elem : userComments){
+            CommentsView comment = new CommentsView(getApplicationContext(), elem);
+        }
+
+    }
 }

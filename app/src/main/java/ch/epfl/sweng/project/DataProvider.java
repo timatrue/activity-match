@@ -612,9 +612,6 @@ public class DataProvider {
         if (userMap.containsKey("comments")) {
             Map<String, Map<String, String>> comments = (Map<String, Map<String, String>>) userMap.get("comments");
             for (Map<String, String> innerMap : comments.values()) {
-                //String comment = (String) innerMap.get("comment");
-                //String eventId = (String) innerMap.get("eventId");
-                //String rating = (String) innerMap.get("rating");
                 commentsField.add(innerMap);
             }
         }
