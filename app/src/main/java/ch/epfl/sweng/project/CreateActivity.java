@@ -3,8 +3,11 @@ package ch.epfl.sweng.project;
 import android.app.Activity;
 import android.app.FragmentManager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -256,16 +259,19 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
 
     //When click on the choose a location button, start the PLacePicker activity
     public void chooseLocation(View v) {
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
-        try {
-            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-            Log.d(TAG, "PlacePicker: GooglePlayServicesRepairableException");
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-            Log.d(TAG, "PlacePicker: GooglePlayServicesNotAvailableException");
+        if(isConnectedInternet()) {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+            try {
+                startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+                Log.d(TAG, "PlacePicker: GooglePlayServicesRepairableException");
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+                Log.d(TAG, "PlacePicker: GooglePlayServicesNotAvailableException");
+            }
         }
     }
 
@@ -362,7 +368,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     /* Checks the parameters entered by the user an returns a String with the corresponding error
     or success */
     public String validateActivity() {
-        if (activityTitle.equals("") || activityDescription.equals("")) {
+        if (!isConnectedInternet()){
+            return  ConfirmationCodes.get_no_connection(this);
+        }
+
+        else if (activityTitle.equals("") || activityDescription.equals("")) {
             return ConfirmationCodes.get_missing_field_error(this);
         }
         else if (activityCategory == null) {
@@ -381,6 +391,12 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         else {
             return ConfirmationCodes.get_success(this);
         }
+    }
+
+    private boolean isConnectedInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     /* Returns a DeboxActivity instance with the parameters entered in the by the user or null if
@@ -429,7 +445,11 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
         TextView confirmation = (TextView) findViewById(R.id.createActivityError);
         confirmation.setTextColor(Color.RED);
 
-        if(error.equals(ConfirmationCodes.get_missing_field_error(this))) {
+        if(error.equals(ConfirmationCodes.get_no_connection(this))){
+            confirmation.setText(error);
+        }
+
+        else if(error.equals(ConfirmationCodes.get_missing_field_error(this))) {
             confirmation.setText(error);
         }
 

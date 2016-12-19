@@ -61,4 +61,12 @@ public final class ConfirmationCodes extends AppCompatActivity {
         }
         return unknown_error;
     }
+
+    private static String no_connection;
+    public static String get_no_connection(Context context) {
+        if (no_connection == null) {
+            no_connection = context.getResources().getString(R.string.create_activity_no_connection);
+        }
+        return no_connection;
+    }
 }

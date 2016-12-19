@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -129,44 +128,6 @@ public class WelcomeActivity extends AppCompatActivity
         Button addActivityButton = (Button) findViewById(R.id.addActivity);
         addActivityButton.setOnClickListener(newActivityListener);
 
-        //Button searchButton = (Button) findViewById(R.id.buttonSearch);
-        //searchButton.setOnClickListener(searchListener);
-
-        final EditText searchEditText = ((EditText) findViewById(R.id.search));
-        searchEditText.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        search();
-
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ( (actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN ))){
-                    search();
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
-        });
-
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -243,7 +204,6 @@ public class WelcomeActivity extends AppCompatActivity
                     NoResultsPreview result = new NoResultsPreview(getApplicationContext());
                     activityPreviewsLayout.addView(result, layoutParams);
                 }
-                //mDataProvider = new DataProvider();
 
                 (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
             }
@@ -424,7 +384,7 @@ public class WelcomeActivity extends AppCompatActivity
     View.OnClickListener previewClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(v instanceof ActivityPreview) {
+            if(v instanceof ActivityPreview && isConnectedInternet()) {
                 String eventId = ((ActivityPreview) v).getEventId();
                 Intent intent = new Intent(getApplicationContext(), DisplayActivity.class);
                 intent.putExtra(DisplayActivity.DISPLAY_ACTIVITY_TEST_KEY, DisplayActivity.DISPLAY_ACTIVITY_NO_TEST);
@@ -526,6 +486,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
                     setFilterListener();
+                    setSearchListener();
                 }
             });
         }
@@ -560,6 +521,7 @@ public class WelcomeActivity extends AppCompatActivity
 
                     (findViewById(R.id.loadingProgressBar)).setVisibility(View.GONE);
                     setFilterListener();
+                    setSearchListener();
                 }
             }, filterCategory);
         }
@@ -575,6 +537,45 @@ public class WelcomeActivity extends AppCompatActivity
         };
         Button filterButton = (Button) findViewById(R.id.filterActivity);
         filterButton.setOnClickListener(filterEventsListener);
+    }
+
+    private void setSearchListener() {
+        //Button searchButton = (Button) findViewById(R.id.buttonSearch);
+        //searchButton.setOnClickListener(searchListener);
+
+        final EditText searchEditText = ((EditText) findViewById(R.id.search));
+        searchEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP && isConnectedInternet()) {
+                    if (event.getRawX() >= (searchEditText.getRight() - searchEditText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        search();
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                    if (((actionId == EditorInfo.IME_ACTION_DONE) || ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)))
+                            && isConnectedInternet()) {
+                        search();
+                        return true;
+                    } else {
+                        return false;
+                    }
+            }
+        });
     }
 
     //Computes distance in km from lagitudes and longitudes with the equirectangular approximation
@@ -605,26 +606,28 @@ public class WelcomeActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        if(isConnectedInternet()) {
+            int id = item.getItemId();
 
-        if (id == R.id.nav_user_profile) {
-            Intent intent = new Intent(this, UserProfile.class);
-            intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
-            startActivity(intent);
-        } else if (id == R.id.nav_log_out) {
-            //Return to Login Activity and logout
-            setResult(Login.RE_LOG_OUT);
-            finish();
-        } else if (id == R.id.nav_share) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        } else if (id == R.id.nav_contact) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto",getResources().getString(R.string.company_mail), null));
-            startActivity(Intent.createChooser(intent, getResources().getString(R.string.contact_message)));
+            if (id == R.id.nav_user_profile) {
+                Intent intent = new Intent(this, UserProfile.class);
+                intent.putExtra(UserProfile.USER_PROFILE_TEST_KEY, UserProfile.USER_PROFILE_NO_TEST);
+                startActivity(intent);
+            } else if (id == R.id.nav_log_out) {
+                //Return to Login Activity and logout
+                setResult(Login.RE_LOG_OUT);
+                finish();
+            } else if (id == R.id.nav_share) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            } else if (id == R.id.nav_contact) {
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", getResources().getString(R.string.company_mail), null));
+                startActivity(Intent.createChooser(intent, getResources().getString(R.string.contact_message)));
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -672,7 +675,7 @@ public class WelcomeActivity extends AppCompatActivity
         dialogFragment.updateTimeTextViews();
     }
 
-    View.OnClickListener searchListener = new View.OnClickListener() {
+    /*View.OnClickListener searchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             hideSoftKeyboard();
@@ -709,7 +712,7 @@ public class WelcomeActivity extends AppCompatActivity
                 }
             });
         }
-    };
+    };*/
 
     public String makeDateString(Calendar calendar) {
         DateFormat dateFormat = getDateInstance();

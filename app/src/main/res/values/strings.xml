@@ -43,6 +43,7 @@
     <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Give details about yours event</string>
     <string name="create_activity_confirmation_message">Event successfully created</string>
+    <string name="create_activity_no_connection">No Internet connection</string>
     <string name="create_activity_name_textView">Name</string>
     <string name="create_activity_description_textView">Description</string>
 
