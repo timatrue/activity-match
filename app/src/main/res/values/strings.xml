@@ -166,7 +166,7 @@
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
-    <string name="header_user_comments">Opinion of participants:</string>
+    <string name="header_user_comments">Comments of participants of the past organized events:</string>
     <string name="rate_event_comments">Rate %1$s out of 5</string>
 
 
