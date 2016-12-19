@@ -1,9 +1,12 @@
 package ch.epfl.sweng.project.fragments;
 
 import android.app.DialogFragment;
+import android.content.Intent;
+import android.graphics.Color;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +17,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +28,7 @@ import static com.google.android.gms.internal.zzs.TAG;
 
 public class FilterFragment extends DialogFragment {
     Button validate;
+    Button enableGps;
     public List<String> categoryList;
     public List<String> categoryListWithAll;
     Spinner dropdownMaxDistance;
@@ -72,13 +75,36 @@ public class FilterFragment extends DialogFragment {
         validate = (Button) rootView.findViewById(R.id.validate);
         validate.setOnClickListener(validateListener);
 
+        enableGps = (Button) rootView.findViewById(R.id.filterEnableGPS);
+        enableGps.setOnClickListener(enableGpsListener);
+
         String[] maxDistanceArray = getResources().getStringArray(R.array.max_distance_array);
         List<String> maxDistanceList = Arrays.asList(maxDistanceArray);
         dropdownMaxDistance.setSelection(maxDistanceList.indexOf(wa.maxDistanceString));
 
         dropDownCategories.setSelection(categoryListWithAll.indexOf(wa.filterCategory));
 
+        TextView gpsIsDisabledView = (TextView) rootView.findViewById(R.id.filterGPSDisabled);
+        gpsIsDisabledView.setTextColor(Color.RED);
+        TextView enableGps = (TextView) rootView.findViewById(R.id.filterEnableGPS);
+
+        if(isGpsEnabled()) {
+            gpsIsDisabledView.setVisibility(View.GONE);
+            enableGps.setVisibility(View.GONE);
+        }
+        else {
+            gpsIsDisabledView.setVisibility(View.VISIBLE);
+            enableGps.setVisibility(View.VISIBLE);
+        }
+
         return rootView;
+    }
+
+    boolean isGpsEnabled(){
+        WelcomeActivity wa = (WelcomeActivity)getActivity();
+        String enabledSettings = Settings.Secure.getString(wa.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        List<String> enabledSettingsList = Arrays.asList(enabledSettings.split("\\s*,\\s*"));
+         return enabledSettingsList.contains("gps") && wa.testIsGpsEnabled;
     }
 
     AdapterView.OnItemSelectedListener maxDistanceSelectedItemListener = new AdapterView.OnItemSelectedListener() {
@@ -115,6 +141,19 @@ public class FilterFragment extends DialogFragment {
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
 
+        }
+    };
+
+    View.OnClickListener enableGpsListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            WelcomeActivity wa = (WelcomeActivity)getActivity();
+            wa.enableGpsRequest = true;
+            Intent startGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(startGPS);
+
+            dismiss();
         }
     };
 

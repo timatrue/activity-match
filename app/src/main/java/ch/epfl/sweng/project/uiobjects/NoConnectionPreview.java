@@ -7,14 +7,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import ch.epfl.sweng.project.R;
 
-public class NoResultsPreview extends LinearLayout {
+public class NoConnectionPreview extends LinearLayout {
 
-    public NoResultsPreview(Context context) {
+    public NoConnectionPreview(Context context) {
         super(context);
         setOrientation(VERTICAL);
 
         TextView noResults = new TextView(context);
-        noResults.setText(R.string.no_results_found);
+        noResults.setText(R.string.no_internet_connection);
         noResults.setTextColor(Color.BLACK);
         noResults.setTextSize(20);
 
@@ -23,6 +23,5 @@ public class NoResultsPreview extends LinearLayout {
         GradientDrawable gd = new GradientDrawable();
         gd.setColor(Color.WHITE); // Changes this drawbale to use a single color instead of a gradient
         this.setPadding(10,10,10,10);
-
     }
 }

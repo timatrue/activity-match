@@ -33,6 +33,7 @@
     <string name="display_activities_button">Display All Events</string>
     <string name="filter_button_text">Filter the events</string>
     <string name="create_activity_button_text">Organize yours!</string>
+    <string name="no_internet_connection">No internet connection</string>
 
 
     <!-- Create Activity -->
@@ -42,6 +43,7 @@
     <string name="create_activity_category">Category</string>
     <string name="create_activity_description_hint">Give details about yours event</string>
     <string name="create_activity_confirmation_message">Event successfully created</string>
+    <string name="create_activity_no_connection">No Internet connection</string>
     <string name="create_activity_name_textView">Name</string>
     <string name="create_activity_description_textView">Description</string>
 
@@ -137,7 +139,8 @@
         <item>20 km</item>
         <item>50 km</item>
     </string-array>
-
+    <string name="gps_is_disabled">GPS is disabled</string>
+    <string name="filter_enable_gps">Enable GPS</string>
     <string name="close">Close</string>
 
     <!-- Fragment Rating -->
@@ -167,6 +170,7 @@
     <string name="rank_text">Your ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
+    <string name="search">Search</string>
 
 
 </resources>

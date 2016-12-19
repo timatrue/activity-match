@@ -36,6 +36,8 @@ public class Login extends AppCompatActivity implements
 
     private GoogleApiClient mGoogleApiClient;
 
+    boolean googleAccountExists = false;
+
     private static final int RC_SIGN_IN = 1;
     private static final int RC_LOG_OUT = 2;
 
@@ -76,6 +78,8 @@ public class Login extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .build();
         mGoogleApiClient.connect();
+
+        googleAccountExists = mGoogleApiClient != null;
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -122,7 +126,6 @@ public class Login extends AppCompatActivity implements
     }
 
     private void signIn() {
-        //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

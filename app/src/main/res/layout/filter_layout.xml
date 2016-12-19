@@ -21,12 +21,43 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         <Spinner
-            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:id="@+id/filterMaxDistanceDropDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/filterGPSDisabled"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/gps_is_disabled"
+                android:visibility="gone"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/filterEnableGPS"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_enable_gps"
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:textColor="@color/niceWhiteDebox"
+                android:background="@color/niceBlueDebox" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/filterCategoriesTextView"
@@ -133,6 +164,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:textColor="@color/niceWhiteDebox"
+                android:background="@color/niceBlueDebox"
                 android:text="@string/validate" />
 
             <Button
@@ -145,6 +178,9 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:textColor="@color/niceWhiteDebox"
+                android:background="@color/niceBlueDebox"
                 android:id="@+id/filterAddLocation"
                 android:onClick="chooseLocation" />
 

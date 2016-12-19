@@ -515,6 +515,40 @@ public class CreateActivityTest {
     }
 
     @Test
+    public void noInternetConnection() throws Exception {
+
+        final CreateActivity activity = createActivityRule.getActivity();
+        Context context = InstrumentationRegistry.getTargetContext();
+
+        initializeMockProvider(activity);
+
+        activity.activityTitle = "test_title";
+        activity.activityDescription = "test description";
+        activity.activityLatitude = 1;
+        activity.activityLongitude = 0.3;
+        activity.activityStartCalendar = addDays(currentCalendar, 1);
+        activity.activityEndCalendar = addDays(currentCalendar, 2);
+        activity.activityCategory = "Culture";
+
+        activity.testIsConnectedInternet = false;
+
+        onView(withId(R.id.createActivityTitleEditText)).perform(closeSoftKeyboard());
+
+        final String validation = activity.validateActivity();
+        final DeboxActivity da = activity.createActivityMethod(validation);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.setErrorTextView(validation);
+            }
+        });
+
+        assertThat(validation, is(ConfirmationCodes.get_no_connection(context)));
+        assertTrue(da == null);
+        onView(withId(R.id.createActivityError)).perform(ViewActions.scrollTo()).check(matches(withText(ConfirmationCodes.get_no_connection(context))));
+    }
+
+    @Test
     public void validActivityCreation() throws Exception {
 
         final CreateActivity activity = createActivityRule.getActivity();
