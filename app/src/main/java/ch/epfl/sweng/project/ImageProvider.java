@@ -60,7 +60,9 @@ public class ImageProvider {
 
             ImageView imageView = new ImageView(context);
             imageView.setBackgroundResource(R.drawable.rectangle);
-            imageLayout.addView(imageView);
+            if(imageLayout != null){
+                imageLayout.addView(imageView);
+            }
 
             // Load the image using Glide
             Glide.with(context)
