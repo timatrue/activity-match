@@ -14,10 +14,8 @@ import android.widget.RatingBar;
 import ch.epfl.sweng.project.DataProvider;
 import ch.epfl.sweng.project.DisplayActivity;
 import ch.epfl.sweng.project.R;
-/**
- * Created by olga on 08.12.16.
- */
 
+@SuppressWarnings("deprecation")
 public class RatingFragment extends DialogFragment {
 
     RatingBar rateEvent;

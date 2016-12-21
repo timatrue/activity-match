@@ -21,11 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 
-
-/**
- * Created by jeremie on 12.10.16.
- */
-
 public class DataProvider {
 
 
@@ -55,14 +50,14 @@ public class DataProvider {
     }
 
 
-    public static class CategoryName{
+    static class CategoryName{
         String categoryId;
         String nameCategory;
-        public CategoryName(String categoryId, String nameCategory){
+        CategoryName(String categoryId, String nameCategory){
             this.categoryId = categoryId;
             this.nameCategory = nameCategory;
         }
-        public String getCategoryId() {
+        String getCategoryId() {
             return this.categoryId;
         }
         public String getCategory() {
@@ -70,7 +65,7 @@ public class DataProvider {
         }
     }
 
-    public enum UserStatus{
+    enum UserStatus{
         ENROLLED,
         NOT_ENROLLED_NOT_FULL,
         NOT_ENROLLED_FULL,
@@ -81,7 +76,7 @@ public class DataProvider {
 
     }
 
-    public void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
+    void getCurrentUserStatusSimplified(final DeboxActivity currentActivity, final DataProviderListenerUserState listener) {
 
         userProfile( new DataProviderListenerUserInfo() {
             @Override
@@ -125,7 +120,7 @@ public class DataProvider {
  */
 
 
-    public UserStatus getUserStatusInActivity(final DeboxActivity currentActivity, final User currentUser){
+    UserStatus getUserStatusInActivity(final DeboxActivity currentActivity, final User currentUser){
 
         if(userIsTheOrganizer(currentActivity,currentUser)){
             return UserStatus.ORGANIZER;
@@ -204,7 +199,7 @@ public class DataProvider {
         return false;
     }
 
-    public void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
+    void getIfPlaceLeftInActivity(final String uid, final DataProviderListenerPlaceFreeInActivity listener){
 
         getActivityFromUid(new DataProvider.DataProviderListenerActivity(){
 
@@ -227,7 +222,7 @@ public class DataProvider {
 
 
 
-    public void getAllCategories(final DataProviderListenerCategories listener) {
+    void getAllCategories(final DataProviderListenerCategories listener) {
 
         DatabaseReference myCategories = database.getReference("categories");
 
@@ -236,7 +231,7 @@ public class DataProvider {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<CategoryName> categoriesList = new ArrayList<CategoryName>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
-                    String id = child.getKey().toString();
+                    String id = child.toString();
                     String name = child.getValue().toString();
                     CategoryName category = new CategoryName(id,name);
                     categoriesList.add(category);
@@ -250,7 +245,7 @@ public class DataProvider {
         });
 
     }
-    public void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
+    void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
 
         DatabaseReference getActivities = database.getReference("activities");
         Query getCategory = getActivities.orderByChild("category").equalTo(specifiedCategory);
@@ -1020,7 +1015,7 @@ public class DataProvider {
      *
      * @param dba       : deboxActivity to decrement
      */
-    public void atomicDecreasesParticipant(DeboxActivity dba){
+    void atomicDecreasesParticipant(DeboxActivity dba){
 
         DatabaseReference participantsRef = mDatabase.child("activities/"+dba.getId()+"/nbOfParticipants");
 
@@ -1048,11 +1043,7 @@ public class DataProvider {
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
                 // b is boolean that contain if transaction has been committed or aborted
-                if(b) {
 
-                } else {
-                    //TODO implement error : impossible to update nbOfParticipant Activity deleted ?
-                }
             }
         });
     }
@@ -1061,43 +1052,43 @@ public class DataProvider {
 
     //DB Callbacks interfaces
 
-    public interface DataProviderListenerResultOfJoinActivity{
+    interface DataProviderListenerResultOfJoinActivity{
         void getResultJoinActivity(boolean result);
     }
 
-    public interface DataProviderListenerPlaceFreeInActivity{
+    interface DataProviderListenerPlaceFreeInActivity{
         void getIfFreePlace(boolean result);
     }
 
-    public interface DataProviderListenerEnrolled {
+    interface DataProviderListenerEnrolled {
         void getIfEnrolled(boolean result);
     }
 
-    public interface DataProviderListenerUserState {
+    interface DataProviderListenerUserState {
         void getUserState(UserStatus status);
     }
 
-    public interface DataProviderListenerActivity {
+    interface DataProviderListenerActivity {
         void getActivity(DeboxActivity activity);
     }
 
-    public interface DataProviderListenerActivities {
+    interface DataProviderListenerActivities {
         void getActivities(List<DeboxActivity> activitiesList);
     }
 
-    public interface DataProviderListenerCategories {
+    interface DataProviderListenerCategories {
         void getCategories(List<CategoryName> categoriesList);
     }
 
-    public interface DataProviderListenerCategory {
+    interface DataProviderListenerCategory {
         void getCategory(List<DeboxActivity> activitiesList);
     }
 
-    public interface DataProviderListenerUserInfo {
+    interface DataProviderListenerUserInfo {
         void getUserInfo(User user);
     }
 
-    public interface DataProviderListenerUserEvents {
+    interface DataProviderListenerUserEvents {
         void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList);
     }
 

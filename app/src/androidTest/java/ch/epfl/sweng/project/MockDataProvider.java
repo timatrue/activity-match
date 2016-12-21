@@ -17,11 +17,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 
-/**
- * Created by jeremie on 09.11.16.
- */
 @LargeTest
-public class MockDataProvider {
+class MockDataProvider {
 
     @Mock
     DataProvider mockDataProvider;
@@ -32,7 +29,7 @@ public class MockDataProvider {
     private String userID;
     private User user;
 
-    public DataProvider getMockDataProvider(){
+    DataProvider getMockDataProvider(){
 
         mockDataProvider = Mockito.mock(DataProvider.class);
         initMocPushActivity();
@@ -54,7 +51,7 @@ public class MockDataProvider {
         return mockDataProvider;
     }
 
-    public void setUserToMock(User newUser){
+    void setUserToMock(User newUser){
         user = newUser;
         initMockUserProfile();
     }
@@ -65,26 +62,26 @@ public class MockDataProvider {
         initJoinActivity();
     }
 
-    public void setListOfEnrolledActivityToMock(List<String> list){
+    void setListOfEnrolledActivityToMock(List<String> list){
         listUserActivityEnrolledStored = list;
         initMockUserIsEnrolledInActivity();
         initJoinActivity();
 
     }
 
-    public void setListOfCategoryToMock(final List<DataProvider.CategoryName> list){
+    void setListOfCategoryToMock(final List<DataProvider.CategoryName> list){
         initMockGetAllCategories();
         listCategoryStored = list;
     }
 
-    public void setListOfActivitiesToMock(final List<DeboxActivity> list){
+    void setListOfActivitiesToMock(final List<DeboxActivity> list){
 
         listDeboxActivityStored=list;
         initMocGetAllActivities();
         initMocGetActivityFromUid();
     }
 
-    public void addActivityToMock(DeboxActivity dba){
+    void addActivityToMock(DeboxActivity dba){
 
         listDeboxActivityStored.add(dba);
         initMocGetAllActivities();
@@ -222,6 +219,7 @@ public class MockDataProvider {
         }).when(mockDataProvider).userEnrolledInActivity(any(DataProvider.DataProviderListenerEnrolled.class),any(String.class));
     }
 
+    @SuppressWarnings("deprecation")
     private void initJoinActivity(){
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {

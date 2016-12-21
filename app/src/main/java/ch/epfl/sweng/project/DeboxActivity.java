@@ -6,12 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-/**
- * Created by nathan on 09.10.16.
- */
-
 public class DeboxActivity {
-    public final int DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH = 64;
 
     private String id;
     private String organizer;
@@ -41,15 +36,15 @@ public class DeboxActivity {
      */
     public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
                          Calendar timeEnd, double latitude, double longitude, String category) {
-        this.id = new String(id);
-        this.organizer = new String(organizer);
-        this.title = new String(title);
-        this.description = new String(description);
+        this.id = id;
+        this.organizer = organizer;
+        this.title = title;
+        this.description = description;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.category = new String(category);
+        this.category = category;
         this.imagesList = new ArrayList<>();
         this.nbOfParticipants = 0;
         this.nbMaxOfParticipants = 0;
@@ -71,15 +66,15 @@ public class DeboxActivity {
      */
     public DeboxActivity(String id, String organizer, String title, String description, Calendar timeStart,
                          Calendar timeEnd, double latitude, double longitude, String category, int nbOfParticipants, int nbMaxParticipants ) {
-        this.id = new String(id);
-        this.organizer = new String(organizer);
-        this.title = new String(title);
-        this.description = new String(description);
+        this.id = id;
+        this.organizer = organizer;
+        this.title = title;
+        this.description = description;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.category = new String(category);
+        this.category = category;
         this.imagesList = new ArrayList<>();
         this.nbOfParticipants = nbOfParticipants;
         this.nbMaxOfParticipants = nbMaxParticipants;
@@ -109,28 +104,28 @@ public class DeboxActivity {
     /**,
      * @return  the organizer of the Debox Activity
      */
-    public String getId() { return new String(id); }
+    public String getId() { return id; }
 
     /**
      * @return  the organizer of the Debox Activity
      */
-    public String getOrganizer() {
-        return new String(organizer);
+    String getOrganizer() {
+        return organizer;
     }
 
     /**
      * @return  the title of the Debox Activity
      */
     public String getTitle() {
-        return new String(title);
+        return title;
     }
 
 
     /**
      * @return the description of the Debox Activity
      */
-    public String getDescription(){
-        return new String(description);
+    String getDescription(){
+        return description;
     }
 
     /**
@@ -138,11 +133,12 @@ public class DeboxActivity {
      * description, with a maximum length of 64 characters.
      */
     public String getShortDescription() {
+        int DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH = 64;
         if (description.length() > DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH) {
-            return new String(description.substring(0, DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH-3) + "...");
+            return description.substring(0, DEBOX_ACTIVITY_SHORT_DESCRIPTION_MAX_LENGTH - 3) + "...";
         }
         else {
-            return new String(description);
+            return description;
         }
     }
 
@@ -151,15 +147,15 @@ public class DeboxActivity {
      * @return a short description of the Debox Activity. The short description corresponds to the
      * description, with a maximum length specified by the paramter maxLength
      */
-    public String getShortDescription(int maxLength) {
+    String getShortDescription(int maxLength) {
         if(maxLength <= 3) {
             return "...";
         }
         if (description.length() > maxLength) {
-            return new String(description.substring(0, maxLength-3) + "...");
+            return description.substring(0, maxLength - 3) + "...";
         }
         else {
-            return new String(description);
+            return description;
         }
     }
 
@@ -190,29 +186,29 @@ public class DeboxActivity {
      * @return the category of the Debox Activity
      */
     public String getCategory() {
-        return new String(category);
+        return category;
     }
 
     /**
      * @return the NbOfParticipants of the Debox Activity
      */
     public int getNbOfParticipants() {
-        return new Integer(nbOfParticipants);
+        return nbOfParticipants;
     }
 
     /**
      * @return the NbMaxOfParticipants of the Debox Activity
      */
     public int getNbMaxOfParticipants() {
-        return new Integer(nbMaxOfParticipants);
+        return nbMaxOfParticipants;
     }
 
 
     /**
      * @param imageName: the name of the image to insert
      */
-    public void addImage(String imageName) {
-        imagesList.add(new String(imageName));
+    void addImage(String imageName) {
+        imagesList.add(imageName);
     }
 
     /**
@@ -225,7 +221,7 @@ public class DeboxActivity {
 
         List<String> list = new ArrayList<>();
         for(String image: imagesList) {
-            list.add(new String(image));
+            list.add(image);
         }
         return list;
     }

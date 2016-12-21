@@ -14,7 +14,6 @@ import static java.text.DateFormat.getDateInstance;
 public class ModifyActivity extends CreateActivity {
 
     public final static String MODIFY_ACTIVITY_EVENT_ID = "ch.epfl.sweng.project.ModifyActivity.MODIFY_ACTIVITY_EVENT_ID";
-    private DataProvider dp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class ModifyActivity extends CreateActivity {
         Button modifyActivityButton = (Button) findViewById(R.id.createActivityValidateButton);
         modifyActivityButton.setText(R.string.modify_activity_modify_activity_button);
 
-        dp = new DataProvider();
+        DataProvider dp = new DataProvider();
         dp.getActivityFromUid(new DataProvider.DataProviderListenerActivity() {
             @Override
             public void getActivity(DeboxActivity activity) {
@@ -67,7 +66,7 @@ public class ModifyActivity extends CreateActivity {
                 imagesNameList = activity.getImageList();
 
                 if(imagesNameList != null) {
-                    ((Button) findViewById(R.id.createActivityUploadImage)).setText("Add images");
+                    ((Button) findViewById(R.id.createActivityUploadImage)).setText(R.string.modify_add_images);
                     new ImageProvider().downloadImage(getApplicationContext(), eventId, imagesLayout, imagesNameList);
                 }
 

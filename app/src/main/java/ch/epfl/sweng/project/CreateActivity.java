@@ -462,7 +462,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     }
 
     public String makeTimeString(Calendar calendar) {
-        //DateFormat timeFormat = getTimeInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         return timeFormat.format(calendar.getTime());
     }

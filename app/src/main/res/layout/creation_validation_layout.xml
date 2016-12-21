@@ -34,7 +34,7 @@
             android:layout_margin="@dimen/create_activity_margin"
             android:textAlignment="center"
             android:id="@+id/createValidationUploadRate"
-            android:text="0%"/>
+            android:text="@string/Opourcent"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -43,7 +43,8 @@
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:visibility="invisible"
-            android:id="@+id/uploadedImage" />
+            android:id="@+id/uploadedImage"
+            android:contentDescription="@string/uploadedimage" />
 
 
     </RelativeLayout>

@@ -47,7 +47,7 @@ public class CreateValidationFragment extends DialogFragment {
     private ImageProvider mImageProvider;
     private DataProvider mDataProvider;
 
-    private LinearLayout rootView;
+    LinearLayout rootView;
 
     CreateActivity baseActivity;
 
@@ -116,8 +116,8 @@ public class CreateValidationFragment extends DialogFragment {
 
     public void setImagesUriList(List<Uri> imagesUriList) {
         for(Uri uri: imagesUriList) {
-            imagesUploadedMap.put(uri, new Long(0));
-            imagesToUploadMap.put(uri, new Long(0));
+            imagesUploadedMap.put(uri, 0L);
+            imagesToUploadMap.put(uri, 0L);
         }
         nbFilesToUpload = imagesUriList.size() + 1;
     }
@@ -153,7 +153,7 @@ public class CreateValidationFragment extends DialogFragment {
         }
 
         progressRate = (int)(uploadedLength*100.0/uploadLength);
-        String uploadRate = new StringBuilder(getString(R.string.creation_rate_text)).append((progressRate + "%")).toString();
+        String uploadRate = getString(R.string.creation_rate_text) + (progressRate + "%");
         uploadRateText.setText(uploadRate);
 
         if(nbFilesUploaded == nbFilesToUpload) {

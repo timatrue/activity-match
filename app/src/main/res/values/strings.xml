@@ -58,19 +58,22 @@
     <string name="modify_activity_title">Edit your activity : \nChoose a title and describe it</string>
     <string name="modify_activity_set_location">Change location</string>
     <string name="modify_activity_modify_activity_button">Modify activity</string>
+    <string name="modify_add_images">Add images</string>
 
 
     <!-- Create Activity Validation Fragment -->
     <string name="creation_validation_text">Uploading in progress&#8230;</string>
     <string name="creation_validation_complete_text">Uploading completed</string>
     <string name="creation_validation_button_text">OK</string>
-    <string name="creation_rate_text"></string>
+    <string name="creation_rate_text" />
 
 
 
     <!-- User Image Fragment -->
     <string name="user_image_ok">OK</string>
     <string name="user_image_edit">Edit</string>
+    <string name="progress">%1d$\%</string>
+
 
 
     <!-- Display Activity -->
@@ -101,7 +104,7 @@
     <!-- Join activity -->
     <string name="joinActivity_button">Join this activity</string>
     <string name="leaveActivity_button">Leave this activity</string>
-    <string name="joinActivity_satus">Current Stat is loading  ... </string>
+    <string name="joinActivity_satus">Current Stat is loading  … </string>
     <string name="toast_success_join">You have successfully joined this activity</string>
     <string name="toast_fail_join_full">You don\'t joint this activity</string>
     <string name="toast_fail_join">Something wrong with network.. Try again in few seconds </string>
@@ -149,6 +152,11 @@
     <string name="pick_image_intent_text">text</string>
     <string name="header_user_comments">Comments of participants of the past organized events:</string>
     <string name="rate_event_comments">Rate %1$s out of 5</string>
+    <string name="userimagedescription">userImage</string>
+    <string name="Opourcent">0%</string>
+    <string name="uploadvalidationimage">uploadValidationImage</string>
+    <string name="uploadedimage">uploadedImage</string>
+    <string name="activityimage">activityImage</string>
 
 
 </resources>

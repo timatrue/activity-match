@@ -100,6 +100,7 @@ public class FilterFragment extends DialogFragment {
         return rootView;
     }
 
+    @SuppressWarnings("deprecation")
     boolean isGpsEnabled(){
         WelcomeActivity wa = (WelcomeActivity)getActivity();
         String enabledSettings = Settings.Secure.getString(wa.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);

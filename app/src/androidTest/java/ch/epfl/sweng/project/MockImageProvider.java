@@ -22,17 +22,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 
 
-/**
- * Created by jeremie on 09.11.16.
- */
-
-public class MockImageProvider {
+class MockImageProvider {
 
     @Mock
     ImageProvider mockImageProvider;
 
 
-    public ImageProvider getMockImageProvider(){
+    ImageProvider getMockImageProvider(){
 
         mockImageProvider = Mockito.mock(ImageProvider.class);
         initUploadImage();
@@ -83,7 +79,6 @@ public class MockImageProvider {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 Context context = (Context) args[0];
-                String folder = (String) args[1];
                 ImageView imageView = (ImageView) args[2];
                 String imageName = (String) args[2];
 
@@ -101,7 +96,7 @@ public class MockImageProvider {
         }).when(mockImageProvider).previewImage(any(Context.class), any(String.class), any(ImageView.class), any(String.class));
     }
 
-    public void initUploadImage() {
+    private void initUploadImage() {
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {

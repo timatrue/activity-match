@@ -91,12 +91,6 @@ public class DataProviderTest {
      * Test the function public String pushActivity(DeboxActivity da) of the dataProvider
      *
      */
-    @Test
-    public void testDataProvider(){
-        DataProvider dp = new DataProvider();
-        assertEquals(true,true);
-
-    }
 
     @Test
     public void testPushActivity() {
@@ -1141,8 +1135,8 @@ public class DataProviderTest {
 
         final Map<String, Object> activityMap = new HashMap<>();
 
-        for(int i = 0 ; i<idArray.length;i++){
-            activityMap.put(idArray[i],toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(idArray[i])));
+        for (String anIdArray : idArray) {
+            activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
         }
 
 
@@ -1792,9 +1786,8 @@ public class DataProviderTest {
         double longitude = 10.1;
         String category = "Sports";
 
-        DeboxActivity dba = new DeboxActivity(UID,organiser,title,description,
+        return new DeboxActivity(UID,organiser,title,description,
                 Calendar.getInstance(),Calendar.getInstance(),latitude,longitude,category);
-        return dba;
     }
 
     /**

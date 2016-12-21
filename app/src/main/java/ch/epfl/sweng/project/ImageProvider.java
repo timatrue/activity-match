@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.DisplayMetrics;
@@ -28,16 +29,12 @@ import com.google.firebase.storage.UploadTask;
 import java.util.List;
 
 
-/**
- * Created by nathan on 06.11.16.
- */
-
 public class ImageProvider {
 
 
-    FirebaseStorage storage=FirebaseStorage.getInstance();
+    private FirebaseStorage storage=FirebaseStorage.getInstance();
     // Create a storage reference from our app
-    StorageReference storageRef;
+    private StorageReference storageRef;
 
     public ImageProvider(){
         storage = FirebaseStorage.getInstance();
@@ -50,7 +47,7 @@ public class ImageProvider {
         storageRef = mockStorageRef;
     }
 
-    public void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
+    void downloadImage(Context context, String folder, LinearLayout imageLayout, List<String> imagesList) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
 
@@ -77,6 +74,7 @@ public class ImageProvider {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void downloadUserImage(final Context context, String folder, String imageName, final ImageView imageView, final downloadListener listener) {
         // Reference to an image file in Firebase Storage
         StorageReference storageReference = storageRef.child("user-images/" + folder + "/" + imageName);
@@ -101,7 +99,7 @@ public class ImageProvider {
                             if (listener != null) {
                                 listener.downloadSucessful();
                             }
-                            return context == null;
+                            return false;
                         }
                     })
                     .into(imageView);
@@ -147,7 +145,7 @@ public class ImageProvider {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(Exception exception) {
+            public void onFailure(@NonNull Exception exception) {
                 listener.uploadFailed();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -179,7 +177,7 @@ public class ImageProvider {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(Exception exception) {
+            public void onFailure(@NonNull Exception exception) {
                 listener.uploadFailed();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

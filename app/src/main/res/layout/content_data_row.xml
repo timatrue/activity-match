@@ -18,14 +18,16 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-           />
+            android:contentDescription="@string/activityimage" />
 
         <TextView
             android:id="@+id/activityTextImage"
             android:layout_width="fill_parent"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:visibility="gone"
             android:layout_height="fill_parent"
 
@@ -37,32 +39,39 @@
         <TextView
             android:id="@+id/dateEvent"
             android:paddingLeft="5dp"
+            android:paddingStart="5dp"
             android:layout_width="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/leftBlock"
+            android:layout_toEndOf="@id/leftBlock"
             android:textColor="@color/lightGreyDebox" />
         <TextView
             android:id="@+id/sizeEvent"
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_height="wrap_content"
             android:textColor="@color/lightGreyDebox" />
         <TextView
             android:id="@+id/titleEvent"
             android:paddingLeft="5dp"
-            android:textSize="16dp"
+            android:paddingStart="5dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_below="@id/dateEvent"
             android:layout_toRightOf="@id/leftBlock"
+            android:layout_toEndOf="@id/leftBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/blueDarkDebox" />
         <TextView
             android:id="@+id/previewEvent"
             android:paddingLeft="5dp"
+            android:paddingStart="5dp"
             android:layout_below="@id/titleEvent"
             android:layout_toRightOf="@id/leftBlock"
+            android:layout_toEndOf="@id/leftBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

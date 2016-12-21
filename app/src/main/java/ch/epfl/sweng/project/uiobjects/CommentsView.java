@@ -17,25 +17,22 @@ import ch.epfl.sweng.project.R;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-/**
- * Created by artem on 18/12/2016.
- */
 
 public class CommentsView extends LinearLayout {
 
-    private TextView idComment;
-    private SpannableStringBuilder idCommentText;
-    private TextView ratingComment;
-    private TextView contentComment;
-    private String eventId;
-    private String eventRate;
+    TextView idComment;
+    SpannableStringBuilder idCommentText;
+    TextView ratingComment;
+    TextView contentComment;
+    String eventId;
+    String eventRate;
     Resources res;
 
     public String getEventId() {
         return eventId;
     }
 
-    private Map<String, String> userComments;
+    Map<String, String> userComments;
 
     public CommentsView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,13 +54,13 @@ public class CommentsView extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         View childLayout = inflater.inflate(R.layout.activity_user_profile_comment, (ViewGroup) findViewById(R.id.commentsLayout));
-        setComments(userComments, childLayout, context);
+        setComments(userComments, childLayout);
 
         this.addView(childLayout,layoutParams);
 
     }
 
-    private void setComments(Map<String, String> userComments, View childLayout, Context context){
+    private void setComments(Map<String, String> userComments, View childLayout){
 
         String comment = String.valueOf(userComments.get("comment"));
         eventId = String.valueOf(userComments.get("eventId"));

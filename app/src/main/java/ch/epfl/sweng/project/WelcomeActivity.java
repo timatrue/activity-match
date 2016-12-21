@@ -59,6 +59,7 @@ import static com.google.android.gms.internal.zzs.TAG;
 import static java.text.DateFormat.getDateInstance;
 
 
+@SuppressWarnings("deprecation")
 public class WelcomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -434,6 +435,7 @@ public class WelcomeActivity extends AppCompatActivity
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -729,7 +731,6 @@ public class WelcomeActivity extends AppCompatActivity
     }
 
     public String makeTimeString(Calendar calendar) {
-        //DateFormat timeFormat = getTimeInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         return timeFormat.format(calendar.getTime());
     }

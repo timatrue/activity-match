@@ -42,10 +42,10 @@ import ch.epfl.sweng.project.fragments.RatingFragment;
 import static java.text.DateFormat.getDateInstance;
 
 /**
- * Created by olga on 10.10.16.
  * This class displays the details of a certain event, that comes from the list of events shown in WelcomeActivity class.
  */
 
+@SuppressWarnings("deprecation")
 public class DisplayActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     final static public String DISPLAY_EVENT_ID = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_EVENT_ID";
@@ -88,8 +88,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     private TextView statusInfoTextView;
     public TextView occupancyTextView;
     private FirebaseUser mFirebaseUser;
-    private LinearLayout textBlockLayout;
-    private ImageProvider mImageProvider;
+    ImageProvider mImageProvider;
 
 
     @Override
@@ -112,7 +111,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
         setupUserToolBar();
 
-        textBlockLayout = (LinearLayout) findViewById(R.id.textBlockLayout);
+        LinearLayout textBlockLayout = (LinearLayout) findViewById(R.id.textBlockLayout);
         res = getResources();
 
 
@@ -254,7 +253,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         @Override
                         public void onClick(View v) {
                             Intent intent;
-                            if (organizerId.equals(user1.getUid())) {
+                            if (user1 != null && organizerId.equals(user1.getUid())) {
                                 intent = new Intent(getApplicationContext(), UserProfile.class);
                             }
                             else {
@@ -296,10 +295,6 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                     if (addresses != null && addresses.size() > 0) {
                         String address = addresses.get(0).getAddressLine(0);
                         String city = addresses.get(0).getLocality();
-                        String state = addresses.get(0).getAdminArea();
-                        String country = addresses.get(0).getCountryName();
-                        String postalCode = addresses.get(0).getPostalCode();
-                        String knownName = addresses.get(0).getFeatureName();
                         commaSpace = res.getString(R.string.commaSpace);
 
 

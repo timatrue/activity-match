@@ -4,8 +4,6 @@ package ch.epfl.sweng.project;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,25 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import ch.epfl.sweng.project.fragments.UserImageFragment;
 import ch.epfl.sweng.project.uiobjects.CommentsView;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 
-/**
- * Created by olga on 07.11.16.
+/*
  * Displays the profile of the currently logged in user
  */
 
@@ -51,13 +43,12 @@ public class UserProfile extends AppCompatActivity {
     private String test;
 
 
-    private RatingBar userRank;
+    RatingBar userRank;
 
     protected UserProfileExpandableListAdapter eventsExpListAdapter;
 
     protected DataProvider mDataProvider;
     protected ImageProvider mImageProvider;
-    private FirebaseUser user ;
 
     TextView nameTextView;
     User current_user;
@@ -80,9 +71,6 @@ public class UserProfile extends AppCompatActivity {
     ArrayList<DeboxActivity> toRankPartEvents = new ArrayList<>();
     ArrayList<Map<String, String>> comments = new ArrayList<>();
 
-    Bitmap userImageBitmap;
-
-
     public String interestedEvents;
     public String participatedEvents;
     public String toRankEvents;
@@ -94,10 +82,9 @@ public class UserProfile extends AppCompatActivity {
 
 
     List<String> groupList;
-    List<DeboxActivity> childList;
     Map<String, List<DeboxActivity>> activityCollection;
     ExpandableListView expListView;
-    private Context mContext;
+    Context mContext;
 
     ImageView userImage;
     FragmentManager fm;
@@ -202,23 +189,6 @@ public class UserProfile extends AppCompatActivity {
         mImageProvider = imageProvider;
     }
 
-    public Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpsURLConnection connection = (HttpsURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            myBitmap = Bitmap.createScaledBitmap(myBitmap, 240, 240, false);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public void updateUser(User user, boolean newImage) {
         current_user = user;
         if(newImage) {
@@ -265,10 +235,10 @@ public class UserProfile extends AppCompatActivity {
                 current_user = user.copy();
                 displayUserImage();
                 displayUserRanking();
-                interestedIds = new ArrayList<String>(user.getInterestedEventIds());
-                organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
-                rankedIds = new ArrayList<String>(user.getRankedEventIds());
-                comments = new ArrayList<Map<String, String>>(user.getCommentField());
+                interestedIds = new ArrayList<>(user.getInterestedEventIds());
+                organizedIds = new ArrayList<>(user.getOrganizedEventIds());
+                rankedIds = new ArrayList<>(user.getRankedEventIds());
+                comments = new ArrayList<>(user.getCommentField());
 
                 addUsersComments(comments);
                 
@@ -276,8 +246,6 @@ public class UserProfile extends AppCompatActivity {
 
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList) {
-                        String [] emptyEventList = { "No Events" };
-
 
                         for (DeboxActivity event : intList) {
                             if (event.getTimeEnd().after(Calendar.getInstance())) {
@@ -377,10 +345,8 @@ public class UserProfile extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                             .show();
 
-                    if (selected != null) {
-                        String eventId = selected.getId();
-                        launchDisplayActivity(eventId);
-                    }
+                    String eventId = selected.getId();
+                    launchDisplayActivity(eventId);
                 }
                 return true;
             }
@@ -395,10 +361,8 @@ public class UserProfile extends AppCompatActivity {
             Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                     .show();
 
-            if (selected != null) {
-                String eventId = selected.getId();
-                launchModifyActivity(eventId);
-            }
+            String eventId = selected.getId();
+            launchModifyActivity(eventId);
         }
 
         @Override
@@ -424,10 +388,8 @@ public class UserProfile extends AppCompatActivity {
             Toast.makeText(getBaseContext(), selected.getTitle(), Toast.LENGTH_SHORT)
                     .show();
 
-            if (selected != null) {
-                String eventId = selected.getId();
-                launchDisplayActivity(eventId);
-            }
+            String eventId = selected.getId();
+            launchDisplayActivity(eventId);
         }
 
     };

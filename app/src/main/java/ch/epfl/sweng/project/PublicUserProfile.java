@@ -10,14 +10,12 @@ import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import ch.epfl.sweng.project.fragments.PublicUserImageFragment;
 import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 
-/**
- * Created by olga on 07.11.16.
+/*
  * Displays the profile of the currently logged in user
  */
 
@@ -71,10 +69,10 @@ public class PublicUserProfile extends UserProfile {
                 current_user = user.copy();
                 displayUserImage();
                 displayUserRanking();
-                interestedIds = new ArrayList<String>(user.getInterestedEventIds());
-                organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
-                rankedIds = new ArrayList<String>(user.getOrganizedEventIds());
-                comments = new ArrayList<Map<String, String>>(user.getCommentField());
+                interestedIds = new ArrayList<>(user.getInterestedEventIds());
+                organizedIds = new ArrayList<>(user.getOrganizedEventIds());
+                rankedIds = new ArrayList<>(user.getOrganizedEventIds());
+                comments = new ArrayList<>(user.getCommentField());
                 addUsersComments(comments);
 
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
