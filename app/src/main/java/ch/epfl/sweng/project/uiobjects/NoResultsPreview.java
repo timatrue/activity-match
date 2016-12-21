@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import ch.epfl.sweng.project.R;
 
 public class NoResultsPreview extends LinearLayout {

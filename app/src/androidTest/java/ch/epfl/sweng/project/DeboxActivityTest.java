@@ -1,18 +1,17 @@
 package ch.epfl.sweng.project;
 
-        import android.support.test.runner.AndroidJUnit4;
+import android.support.test.runner.AndroidJUnit4;
 
-        import org.hamcrest.Matchers;
-        import org.junit.Test;
-        import org.junit.runner.RunWith;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-        import java.util.ArrayList;
-        import java.util.Arrays;
-        import java.util.Calendar;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-        import static org.hamcrest.CoreMatchers.is;
-        import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public final class DeboxActivityTest {

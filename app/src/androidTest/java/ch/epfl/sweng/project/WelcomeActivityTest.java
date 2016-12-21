@@ -9,16 +9,13 @@ import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-
 import android.view.View;
 import android.widget.DatePicker;
-
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import org.hamcrest.Matchers;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +27,6 @@ import java.util.List;
 import ch.epfl.sweng.project.uiobjects.ActivityPreview;
 import ch.epfl.sweng.project.uiobjects.NoConnectionPreview;
 import ch.epfl.sweng.project.uiobjects.NoResultsPreview;
-
-import static java.text.DateFormat.getDateInstance;
-import static org.junit.Assert.assertEquals;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -47,11 +41,12 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static java.text.DateFormat.getDateInstance;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-
 import static org.junit.Assert.assertTrue;
 
 

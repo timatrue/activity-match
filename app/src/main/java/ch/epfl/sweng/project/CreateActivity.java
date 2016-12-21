@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.app.FragmentManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,7 +30,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -44,7 +42,6 @@ import java.util.List;
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
 
 import static com.google.android.gms.internal.zzs.TAG;
-
 import static java.text.DateFormat.getDateInstance;
 
 

@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
-
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,13 +14,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.List;
+
 import ch.epfl.sweng.project.DeboxActivity;
 import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
-
-import java.util.Calendar;
-import java.text.DateFormat;
-import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static java.text.DateFormat.getDateInstance;

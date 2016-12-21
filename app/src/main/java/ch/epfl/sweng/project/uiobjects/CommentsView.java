@@ -1,11 +1,8 @@
 package ch.epfl.sweng.project.uiobjects;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import android.widget.TextView;
 
 import java.util.Map;
 
-import ch.epfl.sweng.project.DisplayActivity;
 import ch.epfl.sweng.project.R;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;

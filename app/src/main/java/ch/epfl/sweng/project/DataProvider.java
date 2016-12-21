@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 
-
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
 
