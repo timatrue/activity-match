@@ -65,7 +65,8 @@ public class DataProvider {
         }
     }
 
-    enum UserStatus{
+    //DO NOT make this package local
+    public enum UserStatus{
         ENROLLED,
         NOT_ENROLLED_NOT_FULL,
         NOT_ENROLLED_FULL,
@@ -220,8 +221,6 @@ public class DataProvider {
 
     }
 
-
-
     void getAllCategories(final DataProviderListenerCategories listener) {
 
         DatabaseReference myCategories = database.getReference("categories");
@@ -231,7 +230,7 @@ public class DataProvider {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<CategoryName> categoriesList = new ArrayList<CategoryName>();
                 for(DataSnapshot child: dataSnapshot.getChildren()) {
-                    String id = child.toString();
+                    String id = child.getKey().toString();
                     String name = child.getValue().toString();
                     CategoryName category = new CategoryName(id,name);
                     categoriesList.add(category);
@@ -245,6 +244,7 @@ public class DataProvider {
         });
 
     }
+
     void getSpecifiedCategory(final DataProviderListenerCategory listener, String specifiedCategory) {
 
         DatabaseReference getActivities = database.getReference("activities");

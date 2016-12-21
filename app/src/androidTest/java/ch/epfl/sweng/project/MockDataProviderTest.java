@@ -261,7 +261,7 @@ public class MockDataProviderTest {
             }
         },activity3.getId());
 
-        //TODO USE RIT FNCTION
+        //TODO USE RIGHT FUNCTION
         dp.joinActivity(activity3);
 
         dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
