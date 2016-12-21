@@ -1,5 +1,6 @@
 package ch.epfl.sweng.project.fragments;
 
+
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -17,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ch.epfl.sweng.project.DataProvider;
-import ch.epfl.sweng.project.ImagePicker;
 import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.User;
@@ -123,18 +123,30 @@ public class UserImageFragment extends DialogFragment {
     View.OnClickListener editListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getActivity());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
+
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("image/*");
+
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("image/*");
+
+            Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+            startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
         }
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PICK_IMAGE_REQUEST) {
+
             if (resultCode == Activity.RESULT_OK) {
-                Uri imageUri = ImagePicker.getImageUri(getActivity(), resultCode, data);
-                mImageProvider.UploadUserImage(imageUri, user.getId(), uploadListener);
-                userImageView.setVisibility(View.GONE);
-                uploadLayout.setVisibility(View.VISIBLE);
+                Uri imageUri = data.getData();
+                if(imageUri != null) {
+                    mImageProvider.UploadUserImage(imageUri, user.getId(), uploadListener);
+                    userImageView.setVisibility(View.GONE);
+                    uploadLayout.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
