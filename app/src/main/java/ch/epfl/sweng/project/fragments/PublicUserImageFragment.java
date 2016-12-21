@@ -14,7 +14,9 @@ public class PublicUserImageFragment extends UserImageFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = (LinearLayout) super.onCreateView(inflater, container, savedInstanceState);
-        ((LinearLayout)rootView.findViewById(R.id.userProfileButtonsLayout)).removeView(rootView.findViewById(R.id.userImageEdit));
+        if(rootView != null){
+            ((LinearLayout)rootView.findViewById(R.id.userProfileButtonsLayout)).removeView(rootView.findViewById(R.id.userImageEdit));
+        }
         return rootView;
     }
 }

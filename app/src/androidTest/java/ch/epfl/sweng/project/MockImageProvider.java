@@ -1,63 +1,34 @@
 package ch.epfl.sweng.project;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import ch.epfl.sweng.project.uiobjects.SquareImageView;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 
-/**
- * Created by jeremie on 09.11.16.
- */
-
-public class MockImageProvider {
+class MockImageProvider {
 
     @Mock
     ImageProvider mockImageProvider;
 
 
-    public ImageProvider getMockImageProvider(){
+    ImageProvider getMockImageProvider(){
 
         mockImageProvider = Mockito.mock(ImageProvider.class);
         initUploadImage();
@@ -108,7 +79,6 @@ public class MockImageProvider {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 Context context = (Context) args[0];
-                String folder = (String) args[1];
                 ImageView imageView = (ImageView) args[2];
                 String imageName = (String) args[2];
 
@@ -126,7 +96,7 @@ public class MockImageProvider {
         }).when(mockImageProvider).previewImage(any(Context.class), any(String.class), any(ImageView.class), any(String.class));
     }
 
-    public void initUploadImage() {
+    private void initUploadImage() {
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {

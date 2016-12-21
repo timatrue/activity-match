@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -18,9 +16,6 @@ import java.util.Map;
 import ch.epfl.sweng.project.DeboxActivity;
 import ch.epfl.sweng.project.R;
 
-/**
- * Created by artem on 13/11/2016.
- */
 
 public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter {
     private Activity context;
@@ -63,8 +58,6 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
         if(groups.get(groupPosition).equals(modifiableGroup)) {
 
             convertView = inflater.inflate(R.layout.activity_user_profile_group_child_organized, null);
-
-            TextView item = (TextView) convertView.findViewById(R.id.userProfileActivityChild);
 
             ImageButton modifyButton = (ImageButton) convertView.findViewById(R.id.modifyButton);
             ImageButton deleteButton = (ImageButton) convertView.findViewById(R.id.deleteButton);
@@ -139,8 +132,8 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
 
 
     public interface modifyDeleteListener {
-        public void onItemModified(int groupPosition, int childPosition);
-        public void onItemDeleted(int groupPosition, int childPosition);
-        public void onItemClicked(int groupPosition, int childPosition);
+        void onItemModified(int groupPosition, int childPosition);
+        void onItemDeleted(int groupPosition, int childPosition);
+        void onItemClicked(int groupPosition, int childPosition);
     }
 }

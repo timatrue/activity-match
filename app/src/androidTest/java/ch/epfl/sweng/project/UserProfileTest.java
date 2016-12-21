@@ -6,7 +6,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,6 +14,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +25,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class UserProfileTest {
     @Rule
@@ -45,7 +44,7 @@ public class UserProfileTest {
 
     private List<String> organizedEvents = Arrays.asList("id2", "id3");
     private List<String> interestedEvents = Arrays.asList("id1", "id4", "id5");
-    private List<String> rankedEvents = Arrays.asList("id2");
+    private List<String> rankedEvents = Collections.singletonList("id2");
 
     private Map<String, String> createCommentsMap() {
         Map<String, String> commentsMap = new Hashtable<>();
@@ -56,7 +55,7 @@ public class UserProfileTest {
     }
     private Map<String, String> commentsMap = createCommentsMap();
 
-    private List<Map<String, String>> comments = Arrays.asList(commentsMap);
+    private List<Map<String, String>> comments = Collections.singletonList(commentsMap);
     private User testUser = new User("Bob", "username", "email", organizedEvents,
             interestedEvents, rankedEvents, 4, 8, "slls", comments);
 
@@ -70,7 +69,7 @@ public class UserProfileTest {
         return newCalendar;
     }
 
-    final DeboxActivity dA1 = new DeboxActivity(
+    private final DeboxActivity dA1 = new DeboxActivity(
             "id1",
             "Benoit",
             "da1",
@@ -81,7 +80,7 @@ public class UserProfileTest {
             6.642266,
             "Sports");
 
-    final DeboxActivity dA2 = new DeboxActivity(
+    private final DeboxActivity dA2 = new DeboxActivity(
             "id2",
             "Bob",
             "da2",
@@ -92,7 +91,7 @@ public class UserProfileTest {
             6.642266,
             "Culture");
 
-    final DeboxActivity dA3 = new DeboxActivity(
+    private final DeboxActivity dA3 = new DeboxActivity(
             "id3",
             "Bob",
             "da3",
@@ -103,7 +102,7 @@ public class UserProfileTest {
             6.642266,
             "Sport");
 
-    final DeboxActivity dA4 = new DeboxActivity(
+    private final DeboxActivity dA4 = new DeboxActivity(
             "id4",
             "Benoit",
             "da4",
@@ -114,7 +113,7 @@ public class UserProfileTest {
             6.642266,
             "Culture");
 
-    final DeboxActivity dA5 = new DeboxActivity(
+    private final DeboxActivity dA5 = new DeboxActivity(
             "id5",
             "Benoit",
             "da5",
@@ -150,7 +149,7 @@ public class UserProfileTest {
         mocDataProvider.setListOfActivitiesToMock(deboxActivityList);
         mocDataProvider.setUserToMock(testUser);
         activity.setDataProvider(dp);
-        activity.activityCollection = new LinkedHashMap<String, List<DeboxActivity>>();
+        activity.activityCollection = new LinkedHashMap<>();
         activity.createCollection();
         activity.setExpListView();
 

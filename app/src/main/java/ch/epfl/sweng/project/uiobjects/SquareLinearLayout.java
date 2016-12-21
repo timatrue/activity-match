@@ -2,10 +2,6 @@ package ch.epfl.sweng.project.uiobjects;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-/**
- * Created by artem on 23/11/2016.
- */
-
 
 
 public class SquareLinearLayout extends LinearLayout{
@@ -21,6 +17,7 @@ public class SquareLinearLayout extends LinearLayout{
         super(context, attrs, defStyle);
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);

@@ -26,7 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
-
+@SuppressWarnings("deprecation")
 public class Login extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
         View.OnClickListener {

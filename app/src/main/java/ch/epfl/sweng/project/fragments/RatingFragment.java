@@ -12,12 +12,10 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 
 import ch.epfl.sweng.project.DataProvider;
-import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.DisplayActivity;
-/**
- * Created by olga on 08.12.16.
- */
+import ch.epfl.sweng.project.R;
 
+@SuppressWarnings("deprecation")
 public class RatingFragment extends DialogFragment {
 
     RatingBar rateEvent;

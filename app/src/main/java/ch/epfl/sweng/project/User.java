@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by olga on 04.11.16.
- */
 
 public class User {
     private String id;
@@ -54,7 +51,7 @@ public class User {
     /**
      * @return username of the user
      */
-    public String getUsername() {
+    String getUsername() {
         return this.username;
     }
 
@@ -65,32 +62,32 @@ public class User {
         return this.email;
     }
 
-    public List<String> getOrganizedEventIds() {
+    List<String> getOrganizedEventIds() {
         return new ArrayList<>(organizedEventIds);
     }
 
-    public List<String> getInterestedEventIds() {
+    List<String> getInterestedEventIds() {
         return new ArrayList<>(interestedEventIds);
     }
 
-    public List<String> getRankedEventIds() {
+    List<String> getRankedEventIds() {
         return new ArrayList<>(rankedEventIds);
     }
     /**
      * @return rating of the user
      */
-    public double getRating() {
+    double getRating() {
         if (this.ratingNb > 0) {
             return (((double)ratingSum)/ratingNb);
         }
         return -1;
     }
 
-    public int getRatingSum(){
+    int getRatingSum(){
         return ratingSum;
     }
 
-    public int getRatingNb(){
+    int getRatingNb(){
         return ratingNb;
     }
 
@@ -98,14 +95,14 @@ public class User {
         if(photoLink == null) {
             return null;
         }
-        return new String(photoLink);
+        return photoLink;
     }
 
     public void setPhotoLink(String newPhotoLink) {
-        photoLink = new String(newPhotoLink);
+        photoLink = newPhotoLink;
     }
 
-    public List<Map<String, String>> getCommentField() {
+    List<Map<String, String>> getCommentField() {
         return this.commentField;
     }
     public User copy() {

@@ -9,16 +9,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
-/**
- * Created by jeremie on 13.11.16.
- */
+
 @LargeTest
 public class MockDataProviderTest {
 
 
-    final DeboxActivity activity1 = new DeboxActivity("idActivity_1","organiser_1", "titel_1",
+    private final DeboxActivity activity1 = new DeboxActivity("idActivity_1","organiser_1", "titel_1",
             "description_1",
             Calendar.getInstance(),
             Calendar.getInstance(),
@@ -26,7 +23,7 @@ public class MockDataProviderTest {
             121.0213,
             "Sports");
 
-    final DeboxActivity activity2 = new DeboxActivity("idActivity_2","organiser_2", "titel_2",
+    private final DeboxActivity activity2 = new DeboxActivity("idActivity_2","organiser_2", "titel_2",
             "description_2",
             Calendar.getInstance(),
             Calendar.getInstance(),
@@ -34,7 +31,7 @@ public class MockDataProviderTest {
             121.0213,
             "Sports");
 
-    final DeboxActivity activity3 = new DeboxActivity("idActivity_3","organiser_3", "titel_3",
+    private final DeboxActivity activity3 = new DeboxActivity("idActivity_3","organiser_3", "titel_3",
             "description_3",
             Calendar.getInstance(),
             Calendar.getInstance(),
@@ -42,7 +39,7 @@ public class MockDataProviderTest {
             121.0213,
             "Culture");
 
-    final DeboxActivity activity4 = new DeboxActivity("idActivity_4","organiser_4", "titel_4",
+    private final DeboxActivity activity4 = new DeboxActivity("idActivity_4","organiser_4", "titel_4",
             "description_4",
             Calendar.getInstance(),
             Calendar.getInstance(),
@@ -264,6 +261,7 @@ public class MockDataProviderTest {
             }
         },activity3.getId());
 
+        //TODO USE RIGHT FUNCTION
         dp.joinActivity(activity3);
 
         dp.userEnrolledInActivity(new DataProvider.DataProviderListenerEnrolled() {
