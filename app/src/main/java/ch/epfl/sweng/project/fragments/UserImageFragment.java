@@ -1,12 +1,10 @@
 package ch.epfl.sweng.project.fragments;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import ch.epfl.sweng.project.CreateActivity;
 import ch.epfl.sweng.project.DataProvider;
-import ch.epfl.sweng.project.DeboxActivity;
-import ch.epfl.sweng.project.ImagePicker;
 import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.User;
