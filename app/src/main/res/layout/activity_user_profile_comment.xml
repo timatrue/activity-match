@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/idComment"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:textColor="@color/niceBlueDebox"
         android:padding="@dimen/generalPaddingCommentsBlock"/>
 

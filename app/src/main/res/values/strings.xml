@@ -88,7 +88,7 @@
     <string name="no_enrolled_full">Sorry this event is full</string>
     <string name="must_be_rank">Please rank this event</string>
     <string name="already_rank">You have already ranked this event</string>
-    <string name="activity_past">This event has past you cannot joint it!</string>
+    <string name="activity_past">This event has past you cannot join it!</string>
     <string name="you_are_organizer">This event is organised by yourself. You are automatically counted in participants</string>
 
 
@@ -106,7 +106,7 @@
     <string name="leaveActivity_button">Leave this activity</string>
     <string name="joinActivity_satus">Current Stat is loading  … </string>
     <string name="toast_success_join">You have successfully joined this activity</string>
-    <string name="toast_fail_join_full">You don\'t joint this activity</string>
+    <string name="toast_fail_join_full">You don\'t join this activity</string>
     <string name="toast_fail_join">Something wrong with network.. Try again in few seconds </string>
     <string name="rateButton">Rate me NOW !</string>
 
@@ -147,7 +147,7 @@
     <string name="organised_events">Upcoming organized Events</string>
     <string name="participated_events">Participated Events</string>
     <string name="interested_events">Upcoming Events</string>
-    <string name="rank_text">Your ranking:</string>
+    <string name="rank_text">Ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
     <string name="header_user_comments">Comments of participants of the past organized events:</string>
