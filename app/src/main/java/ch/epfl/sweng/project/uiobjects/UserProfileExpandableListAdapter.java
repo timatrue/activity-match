@@ -139,8 +139,8 @@ public class UserProfileExpandableListAdapter extends BaseExpandableListAdapter 
 
 
     public interface modifyDeleteListener {
-        public void onItemModified(int groupPosition, int childPosition);
-        public void onItemDeleted(int groupPosition, int childPosition);
-        public void onItemClicked(int groupPosition, int childPosition);
+        void onItemModified(int groupPosition, int childPosition);
+        void onItemDeleted(int groupPosition, int childPosition);
+        void onItemClicked(int groupPosition, int childPosition);
     }
 }

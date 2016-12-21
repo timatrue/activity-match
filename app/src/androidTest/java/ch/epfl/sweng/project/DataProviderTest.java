@@ -1705,18 +1705,14 @@ public class DataProviderTest {
      */
     private boolean toolsActivitiesEquals(DeboxActivity dba1, DeboxActivity dba2){
 
-        if(dba1.getTitle().equals(dba2.getTitle()) &&
+        return dba1.getTitle().equals(dba2.getTitle()) &&
                 dba1.getDescription().equals(dba2.getDescription()) &&
                 dba1.getCategory().equals(dba2.getCategory()) &&
                 dba1.getId().equals(dba2.getId()) &&
                 dba1.getLocation()[0] == dba2.getLocation()[0] &&
                 dba1.getLocation()[1] == dba2.getLocation()[1] &&
                 dba1.getTimeEnd().equals(dba2.getTimeEnd()) &&
-                dba1.getTimeStart().equals(dba2.getTimeStart())) {
-
-            return true;
-        }
-        return false;
+                dba1.getTimeStart().equals(dba2.getTimeStart());
     }
 
     /**

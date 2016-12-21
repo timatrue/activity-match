@@ -107,11 +107,7 @@ public class ImageProvider {
                             if (listener != null) {
                                 listener.downloadSucessful();
                             }
-                            if (context != null) {
-                                return false;
-                            } else {
-                                return true;
-                            }
+                            return context == null;
                         }
                     })
                     .into(imageView);

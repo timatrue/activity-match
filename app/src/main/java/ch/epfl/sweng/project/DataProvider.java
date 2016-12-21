@@ -176,11 +176,7 @@ public class DataProvider {
     }
 
     private boolean userIsTheOrganizer(DeboxActivity dba, User user){
-        if(dba.getOrganizer().equals(user.getId())){
-            return true;
-        } else {
-            return false;
-        }
+        return dba.getOrganizer().equals(user.getId());
     }
 
     private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){
