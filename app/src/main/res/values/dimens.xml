@@ -17,6 +17,10 @@
     <dimen name="create_activity_input_text_size">16sp</dimen>
     <dimen name="imagePreview">60dp</dimen>
 
+    <!--User Profile-->
+    <dimen name="generalMarginCommentsBlock">10dp</dimen>
+    <dimen name="generalPaddingCommentsBlock">3dp</dimen>
+
     <!--Display Activity-->
     <dimen name="eventTitleFontSize">17dp</dimen>
     <dimen name="eventDescriptionFontSize">16dp</dimen>

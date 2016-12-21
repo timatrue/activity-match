@@ -1,0 +1,32 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/commentsLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/rectangle_rounded">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingComment"
+        android:textColor="@color/blueDarkDebox"
+        android:padding="@dimen/generalPaddingCommentsBlock"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/idComment"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/niceBlueDebox"
+        android:padding="@dimen/generalPaddingCommentsBlock"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/contentComment"
+        android:textColor="@color/normalGreyDebox"
+        android:layout_below="@id/ratingComment"
+        android:padding="@dimen/generalPaddingCommentsBlock"/>
+
+</RelativeLayout>

@@ -608,6 +608,14 @@ public class DataProvider {
         String email = (String) userMap.get("user_email");
         String username = (String) userMap.get("default_user_name");
 
+        List<Map<String,String>> commentsField = new ArrayList<>();
+        if (userMap.containsKey("comments")) {
+            Map<String, Map<String, String>> comments = (Map<String, Map<String, String>>) userMap.get("comments");
+            for (Map<String, String> innerMap : comments.values()) {
+                commentsField.add(innerMap);
+            }
+        }
+
         List<String> interestedEvents = new ArrayList<>();
         if (userMap.containsKey("enrolled")) {
             Map<String, Map<String, Object>> enrolled = (Map<String, Map<String, Object>>) userMap.get("enrolled");
@@ -651,7 +659,7 @@ public class DataProvider {
             photoLink = (String) userMap.get("image");
         }
 
-        return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink);
+        return new User(uid, username, email, organizedEvents, interestedEvents,rankedEvents, ratingNb, ratingSum, photoLink, commentsField);
     }
 
     public void userProfile(final DataProviderListenerUserInfo listener){

@@ -93,6 +93,8 @@ public class PublicUserProfile extends UserProfile {
                 interestedIds = new ArrayList<String>(user.getInterestedEventIds());
                 organizedIds = new ArrayList<String>(user.getOrganizedEventIds());
                 rankedIds = new ArrayList<String>(user.getOrganizedEventIds());
+                comments = new ArrayList<Map<String, String>>(user.getCommentField());
+                addUsersComments(comments);
 
                 mDataProvider.getSpecifiedActivities(new DataProvider.DataProviderListenerUserEvents (){
 
