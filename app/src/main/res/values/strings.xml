@@ -154,7 +154,7 @@
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
     <string name="header_user_comments">Comments of participants of the past organized events:</string>
-    <string name="rate_event_comments">Rate %1$s out of 5</string>
+    <string name="rate_event_comments">Rate: %1$s/5</string>
     <string name="userimagedescription">userImage</string>
     <string name="Opourcent">0%</string>
     <string name="uploadvalidationimage">uploadValidationImage</string>
