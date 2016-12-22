@@ -53,6 +53,9 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     final static public String DISPLAY_ACTIVITY_NO_TEST = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_ACTIVITY_NO_TEST";
     final static public String DISPLAY_ACTIVITY_TEST = "ch.epfl.sweng.project.DisplayActivity.DISPLAY_ACTIVITY_TEST";
 
+    boolean buttonJoinClicked = false;
+    boolean buttonLeaveClicked = false;
+
     TextView title;
     TextView category;
     TextView description;
@@ -158,13 +161,18 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
 
             switch(status){
                 case ENROLLED:
-                    leaveActivityButton.setVisibility(View.VISIBLE);
-                    statusInfoTextView.setText(R.string.already_enrolled);
+                    if(!buttonLeaveClicked){
+                        leaveActivityButton.setVisibility(View.VISIBLE);
+                        statusInfoTextView.setText(R.string.already_enrolled);
+                    }
 
                     break;
                 case NOT_ENROLLED_NOT_FULL:
-                    joinActivityButton.setVisibility(View.VISIBLE);
-                    statusInfoTextView.setText(R.string.no_enrolled_free_place);
+
+                    if(!buttonJoinClicked) {
+                        joinActivityButton.setVisibility(View.VISIBLE);
+                        statusInfoTextView.setText(R.string.no_enrolled_free_place);
+                    }
 
 
                     break;
@@ -376,8 +384,10 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
      */
 
     public void joinActivity(View v) {
-        if(currentActivity!= null){
+        buttonLeaveClicked= false;
+        if(currentActivity!= null && buttonJoinClicked == false){
 
+            buttonJoinClicked = true;
             joinActivityButton.setVisibility(View.INVISIBLE);
 
             mDataProvider.atomicJoinActivity(currentActivity, new DataProvider.DataProviderListenerResultOfJoinActivity() {
@@ -390,6 +400,7 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
                         String toastMsg = getString(R.string.toast_fail_join_full);
                         showToast(toastMsg);
                     }
+                    buttonJoinClicked=false;
                 }
             });
 
@@ -405,7 +416,8 @@ public class DisplayActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void leaveActivity(View v){
-        if(currentActivity!= null){
+        if(currentActivity!= null && buttonLeaveClicked == false){
+            buttonLeaveClicked = true;
             mDataProvider.leaveActivity(currentActivity);
             leaveActivityButton.setVisibility(View.INVISIBLE);
 

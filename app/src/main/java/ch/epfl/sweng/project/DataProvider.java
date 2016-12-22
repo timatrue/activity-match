@@ -588,6 +588,9 @@ public class DataProvider {
         enrolled.put("user_email", user.getEmail());
         enrolled.put("default_user_name",user.getDisplayName());
 
+        //enrolled.put("ratingNb","-1");
+        //enrolled.put("ratingSum","0");
+
         mDatabase.child("users").child(user.getUid()).updateChildren(enrolled);
 
     }
@@ -918,28 +921,41 @@ public class DataProvider {
 
     private void atomicAddRankToOrganiser(final String organizerID, final int rank){
 
-        DatabaseReference rankSumReference = database.getReference("users/"+organizerID+"/ratingSum");
+        //DatabaseReference rankSumReference = database.getReference("users/"+organizerID+"/ratingSum");
+
+        //DatabaseReference rankSumReference = mDatabase.child("users/"+organizerID+"/ratingSum");
+
+        DatabaseReference rankSumReference = mDatabase.child("users").child(organizerID).child("ratingSum");
+        //Log.e("rSum ref ","users/"+organizerID+"/ratingSum");
+
+
 
         rankSumReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
 
-                //TODO problem solved ?
+                //Don't change the ranking value by hand in db something everything get broken
                 Integer currentRank = mutableData.getValue(Integer.class);
+                //Log.e("ratingSum-handler","currentRank"+currentRank);
                 if(currentRank != null){
                     if(currentRank<0){
-                        currentRank = rank;
+                        //currentRank = rank;
+                        mutableData.setValue(rank);
                     } else {
 
-                        currentRank = currentRank + rank;
+                        mutableData.setValue(currentRank+rank);
+                        //currentRank = currentRank + rank;
                     }
-                    mutableData.setValue(currentRank);
+                    //mutableData.setValue(currentRank);
 
                     if(!localTestMode){
                         return Transaction.success(mutableData);
                     }
                 }
-                return null;
+
+                mutableData.setValue(rank);
+                return Transaction.success(mutableData);
+                //return null;
 
             }
 
@@ -947,17 +963,29 @@ public class DataProvider {
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
 
                 //TODO implement case of fail update rank
+                if(b){
+                  //  Log.e("ratingSum","true");
+                } else {
+                 //   Log.e("ratingSum","false");
+                }
 
 
             }
         });
 
-        DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+        //DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+
+        //DatabaseReference numberRankReference = mDatabase.child("users/"+organizerID+"/ratingNb");
+        DatabaseReference numberRankReference = mDatabase.child("users").child(organizerID).child("ratingNb");
+
+        Log.e("ratingNb-ref","users/"+organizerID+"/ratingNb");
 
         numberRankReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer numberRank = mutableData.getValue(Integer.class);
+
+                //Log.e("ratingNb-handler","numberRank"+numberRank);
                 if(numberRank != null){
                     if(numberRank<0){
                         numberRank=1;
@@ -967,13 +995,21 @@ public class DataProvider {
                     mutableData.setValue(numberRank);
                     return Transaction.success(mutableData);
                 }
-                return null;
+
+                mutableData.setValue(1);
+                return Transaction.success(mutableData);
+                //return null;
             }
 
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
 
                 //TODO implement case of fail update rank
+                if(b){
+                  //  Log.e("ratingNb","true");
+                } else {
+                  //  Log.e("ratingNb","false");
+                }
 
             }
         });

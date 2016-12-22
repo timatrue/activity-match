@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -80,8 +81,11 @@ public class PublicUserProfile extends UserProfile {
                     @Override
                     public void getUserActivities(List<DeboxActivity> intList, List<DeboxActivity> orgList, List<DeboxActivity> rankedList) {
                         for (DeboxActivity event : orgList) {
-                            orgTitles.add(event.getTitle());
-                            orgEvents.add(event);
+                            if (event.getTimeEnd().after(Calendar.getInstance())) {
+                                orgTitles.add(event.getTitle());
+                                orgEvents.add(event);
+                            }
+
                         }
                         activityCollection.put(organizedEvents, orgEvents);
 
