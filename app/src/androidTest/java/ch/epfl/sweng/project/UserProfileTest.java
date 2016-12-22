@@ -6,6 +6,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.ExpandableListView;
 import android.widget.RatingBar;
 
 import org.junit.Rule;
@@ -20,6 +21,8 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import ch.epfl.sweng.project.uiobjects.UserProfileExpandableListAdapter;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -249,6 +252,16 @@ public class UserProfileTest {
         List<DeboxActivity> toRankEvents = activity.activityCollection.get(activity.toRankEvents);
         assertThat(toRankEvents.size(),is(1));
         assertTrue(toRankEvents.contains(dA1));
+
+        ExpandableListView expListView = activity.expListView;
+        UserProfileExpandableListAdapter upexla = (UserProfileExpandableListAdapter) expListView.getExpandableListAdapter();
+        assertTrue(upexla.getChild(0,0) == dA7);
+        assertTrue(upexla.getChild(1,0) == dA2);
+        assertTrue(upexla.getChild(1,1) == dA3);
+        assertTrue(upexla.getChild(2,0) == dA6);
+        assertTrue(upexla.getChild(3,0) == dA1);
+        assertTrue(upexla.getChild(4,0) == dA4);
+        assertTrue(upexla.getChild(4,1) == dA5);
     }
 
     @UiThreadTest
