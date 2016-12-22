@@ -85,9 +85,15 @@ public class ModifyActivity extends CreateActivity {
 
                 imagesNameList = activity.getImageList();
 
-                if(imagesNameList != null) {
-                    ((Button) findViewById(R.id.createActivityUploadImage)).setText(R.string.modify_add_images);
-                    mImageProvider.downloadImage(getApplicationContext(), eventId, imagesLayout, imagesNameList);
+                Bundle bundle = getIntent().getExtras();
+                String test = bundle.getString(CREATE_ACTIVITY_TEST_KEY);
+                if(test != null) {
+                    if (test.equals(CREATE_ACTIVITY_NO_TEST)) {
+                        if (imagesNameList != null) {
+                            ((Button) findViewById(R.id.createActivityUploadImage)).setText(R.string.modify_add_images);
+                            mImageProvider.downloadImage(getApplicationContext(), eventId, imagesLayout, imagesNameList);
+                        }
+                    }
                 }
             }
         }, eventId);
