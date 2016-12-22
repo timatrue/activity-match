@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 import android.app.FragmentManager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,7 +30,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -44,7 +42,6 @@ import java.util.List;
 import ch.epfl.sweng.project.fragments.CreateValidationFragment;
 
 import static com.google.android.gms.internal.zzs.TAG;
-
 import static java.text.DateFormat.getDateInstance;
 
 
@@ -95,10 +92,13 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private int minuteDelayStartTime;
     private int minuteDelayEndTime;
 
+    //The organizer is counted in the number of participants
+    int initialNumberParticipants = 1;
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private DataProvider mDataProvider;
-    private ImageProvider mImageProvider;
+    DataProvider mDataProvider;
+    ImageProvider mImageProvider;
 
     private List<Uri> imagesUriList = new ArrayList<>();
     protected List<String> imagesNameList = new ArrayList<>();
@@ -402,8 +402,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 imagesNameList.add(uri.getLastPathSegment());
             }
 
-            //The organizer is counted in the number of participants
-            int initialNumberParticipants = 1;
             newDeboxActivity = new DeboxActivity(
                     activityId,
                     activityOrganizer,
@@ -465,7 +463,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     }
 
     public String makeTimeString(Calendar calendar) {
-        //DateFormat timeFormat = getTimeInstance();
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         return timeFormat.format(calendar.getTime());
     }

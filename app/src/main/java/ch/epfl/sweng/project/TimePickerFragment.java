@@ -10,19 +10,16 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-/**
- * Created by benoit on 12.10.16.
- */
 
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
     public Calendar roundTime;
-    private Calendar currentTime;
     CalendarPickerListener pickerListener;
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time or rounded time (if exists) as the default values for the picker
+        Calendar currentTime;
         if(roundTime != null) {
             currentTime = roundTime;
         } else {

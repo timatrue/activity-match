@@ -1,12 +1,12 @@
 package ch.epfl.sweng.project.fragments;
 
-import android.app.Dialog;
+
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import ch.epfl.sweng.project.CreateActivity;
 import ch.epfl.sweng.project.DataProvider;
-import ch.epfl.sweng.project.DeboxActivity;
-import ch.epfl.sweng.project.ImagePicker;
 import ch.epfl.sweng.project.ImageProvider;
 import ch.epfl.sweng.project.R;
 import ch.epfl.sweng.project.User;
@@ -45,7 +33,7 @@ public class UserImageFragment extends DialogFragment {
 
     ProgressBar uploadProgress;
 
-    Object semaphore = new Object();
+    final Object semaphore = new Object();
 
     private ImageProvider mImageProvider;
     private DataProvider mDataProvider;
@@ -54,8 +42,6 @@ public class UserImageFragment extends DialogFragment {
 
     Button okButton;
     Button editButton;
-
-    private boolean uploadFinished = false;
 
     TextView uploadRateText;
     TextView uploadRate;
@@ -106,7 +92,7 @@ public class UserImageFragment extends DialogFragment {
                 mImageProvider.downloadUserImage(getActivity(), user.getId(), user.getPhotoLink(), userImageView, new ImageProvider.downloadListener() {
                     @Override
                     public void downloadFailed() {
-                        return;
+
                     }
 
                     @Override
@@ -137,18 +123,30 @@ public class UserImageFragment extends DialogFragment {
     View.OnClickListener editListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getActivity());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
+
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("image/*");
+
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("image/*");
+
+            Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+            startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
         }
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PICK_IMAGE_REQUEST) {
-            if (resultCode == getActivity().RESULT_OK) {
-                Uri imageUri = ImagePicker.getImageUri(getActivity(), resultCode, data);
-                mImageProvider.UploadUserImage(imageUri, user.getId(), uploadListener);
-                userImageView.setVisibility(View.GONE);
-                uploadLayout.setVisibility(View.VISIBLE);
+
+            if (resultCode == Activity.RESULT_OK) {
+                Uri imageUri = data.getData();
+                if(imageUri != null) {
+                    mImageProvider.UploadUserImage(imageUri, user.getId(), uploadListener);
+                    userImageView.setVisibility(View.GONE);
+                    uploadLayout.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -183,7 +181,7 @@ public class UserImageFragment extends DialogFragment {
         @Override
         public void uploadProgress(Uri fileUri, long bytesTransferred, long totalBytesCount) {
             int rate = (int) ((double) bytesTransferred/totalBytesCount * 100);
-            uploadRate.setText(rate + "%");
+            uploadRate.setText(getActivity().getString(R.string.progress, rate));
         }
     };
 
@@ -227,7 +225,7 @@ public class UserImageFragment extends DialogFragment {
                 mImageProvider.downloadUserImage(getActivity(), user.getId(), user.getPhotoLink(), userImageView, new ImageProvider.downloadListener() {
                     @Override
                     public void downloadFailed() {
-                        return;
+
                     }
 
                     @Override

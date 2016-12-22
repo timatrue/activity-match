@@ -1,19 +1,5 @@
 package ch.epfl.sweng.project;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +9,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,6 +24,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataProviderTest {
@@ -85,12 +91,6 @@ public class DataProviderTest {
      * Test the function public String pushActivity(DeboxActivity da) of the dataProvider
      *
      */
-    @Test
-    public void testDataProvider(){
-        DataProvider dp = new DataProvider();
-        assertEquals(true,true);
-
-    }
 
     @Test
     public void testPushActivity() {
@@ -1135,8 +1135,8 @@ public class DataProviderTest {
 
         final Map<String, Object> activityMap = new HashMap<>();
 
-        for(int i = 0 ; i<idArray.length;i++){
-            activityMap.put(idArray[i],toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(idArray[i])));
+        for (String anIdArray : idArray) {
+            activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
         }
 
 
@@ -1705,18 +1705,14 @@ public class DataProviderTest {
      */
     private boolean toolsActivitiesEquals(DeboxActivity dba1, DeboxActivity dba2){
 
-        if(dba1.getTitle().equals(dba2.getTitle()) &&
+        return dba1.getTitle().equals(dba2.getTitle()) &&
                 dba1.getDescription().equals(dba2.getDescription()) &&
                 dba1.getCategory().equals(dba2.getCategory()) &&
                 dba1.getId().equals(dba2.getId()) &&
                 dba1.getLocation()[0] == dba2.getLocation()[0] &&
                 dba1.getLocation()[1] == dba2.getLocation()[1] &&
                 dba1.getTimeEnd().equals(dba2.getTimeEnd()) &&
-                dba1.getTimeStart().equals(dba2.getTimeStart())) {
-
-            return true;
-        }
-        return false;
+                dba1.getTimeStart().equals(dba2.getTimeStart());
     }
 
     /**
@@ -1790,9 +1786,8 @@ public class DataProviderTest {
         double longitude = 10.1;
         String category = "Sports";
 
-        DeboxActivity dba = new DeboxActivity(UID,organiser,title,description,
+        return new DeboxActivity(UID,organiser,title,description,
                 Calendar.getInstance(),Calendar.getInstance(),latitude,longitude,category);
-        return dba;
     }
 
     /**

@@ -179,6 +179,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
                 android:textColor="@color/niceWhiteDebox"
                 android:background="@color/niceBlueDebox"
                 android:id="@+id/filterAddLocation"

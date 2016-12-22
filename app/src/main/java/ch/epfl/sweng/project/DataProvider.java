@@ -1,7 +1,6 @@
 package ch.epfl.sweng.project;
 
 
-
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,15 +17,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
 
-
-
-/**
- * Created by jeremie on 12.10.16.
- */
 
 public class DataProvider {
 
@@ -176,11 +169,7 @@ public class DataProvider {
     }
 
     private boolean userIsTheOrganizer(DeboxActivity dba, User user){
-        if(dba.getOrganizer().equals(user.getId())){
-            return true;
-        } else {
-            return false;
-        }
+        return dba.getOrganizer().equals(user.getId());
     }
 
     private boolean userIsEnrolledInActivity(DeboxActivity dba, User user){
@@ -429,7 +418,7 @@ public class DataProvider {
                         commentsMap.put("comments/" + comments, commentsChild);
                         //mDatabase.child("users").child(idOrganiser).updateChildren(commentsMap);
                         mDatabase.child("users/"+idOrganiser).updateChildren(commentsMap);
-                        
+
                     }
 
 
@@ -964,9 +953,9 @@ public class DataProvider {
             }
         });
 
-       DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
+        DatabaseReference numberRankReference = database.getReference("users/"+organizerID+"/ratingNb");
 
-       numberRankReference.runTransaction(new Transaction.Handler() {
+        numberRankReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Integer numberRank = mutableData.getValue(Integer.class);

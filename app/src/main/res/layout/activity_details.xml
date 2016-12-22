@@ -85,13 +85,13 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/separatorLocation"
                             android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/eventOccupancy"
-                                android:textColor="@color/niceRedDebox"
                                 android:padding="@dimen/textBlockPadding"/>
                             <TextView
                                 android:layout_width="wrap_content"
@@ -133,27 +133,28 @@
                 </LinearLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/create_activity_top_bottom_margin">
 
                     <Button
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/joinActivity"
                         android:text="@string/joinActivity_button"
                         android:onClick="joinActivity"
                         android:visibility="invisible"
                         android:textColor="@color/niceWhiteDebox"
-                        android:background="@color/niceRedDebox"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:padding="@dimen/textBlockPadding"
+                        android:background="@color/niceBlueDebox"
+                        android:paddingLeft="@dimen/create_activity_left_right_margin"
+                        android:paddingRight="@dimen/create_activity_left_right_margin"
+                        android:layout_centerInParent="true"
                         android:bottomRightRadius="10dp"
                         android:bottomLeftRadius="10dp"
                         android:topLeftRadius="10dp"
                         android:topRightRadius="10dp" />
 
                     <Button
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/leaveActivity"
                         android:text="@string/leaveActivity_button"
@@ -161,16 +162,16 @@
                         android:visibility="invisible"
                         android:textColor="@color/niceWhiteDebox"
                         android:background="@color/niceBlueDebox"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:padding="@dimen/textBlockPadding"
+                        android:paddingLeft="@dimen/create_activity_left_right_margin"
+                        android:paddingRight="@dimen/create_activity_left_right_margin"
+                        android:layout_centerInParent="true"
                         android:bottomRightRadius="10dp"
                         android:bottomLeftRadius="10dp"
                         android:topLeftRadius="10dp"
                         android:topRightRadius="10dp"/>
 
                     <Button
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rateButton"
                         android:text="@string/rateButton"
@@ -178,9 +179,9 @@
                         android:visibility="invisible"
                         android:textColor="@color/niceWhiteDebox"
                         android:background="@color/niceBlueDebox"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:padding="@dimen/textBlockPadding"
+                        android:paddingLeft="@dimen/create_activity_left_right_margin"
+                        android:paddingRight="@dimen/create_activity_left_right_margin"
+                        android:layout_centerInParent="true"
                         android:bottomRightRadius="10dp"
                         android:bottomLeftRadius="10dp"
                         android:topLeftRadius="10dp"
