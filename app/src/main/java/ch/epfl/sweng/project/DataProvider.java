@@ -289,7 +289,6 @@ public class DataProvider {
         });
     }
 
-    // TODO Remove this method... Very bad idea to fetch all database and proceed it in application !!!!!
 
     public void getSpecifiedActivities(final DataProviderListenerUserEvents listener, final List<String> intEventIds, final List<String> orgEventsIds,
                                        final List<String> rankedEventsIds) {
