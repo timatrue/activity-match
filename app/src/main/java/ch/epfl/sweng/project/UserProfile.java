@@ -116,12 +116,15 @@ public class UserProfile extends AppCompatActivity {
                 createCollection();
                 setExpListView();
             }
+            else {
+                if(mDataProvider != null) {
+                    createCollection();
+                    setExpListView();
+                }
+            }
         }
-
-
-
-
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
