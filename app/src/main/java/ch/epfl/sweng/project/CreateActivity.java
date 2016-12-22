@@ -59,6 +59,7 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     boolean creation = true;
 
     boolean testIsConnectedInternet = true;
+    boolean buttonCreatePressed = false;
 
     final static public String CREATE_ACTIVITY_DEFAULT_ID = "ch.epfl.sweng.project.CreateActivity.CREATE_ACTIVITY_DEFAULT_ID";
 
@@ -305,36 +306,40 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     /* Action of the activity creation confirmation button */
     public void createActivity(View v) {
 
-        EditText titleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
-        activityTitle = titleEditText.getText().toString();
+        if(!buttonCreatePressed) {
+            buttonCreatePressed = true;
 
-        EditText descriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
-        activityDescription = descriptionEditText.getText().toString();
+            EditText titleEditText = (EditText) findViewById(R.id.createActivityTitleEditText);
+            activityTitle = titleEditText.getText().toString();
 
-        EditText maxNbParticipantsEditText = (EditText) findViewById(R.id.createActivityMaxNbParticipantsEditText);
-        String activityMaxNbParticipantsString = maxNbParticipantsEditText.getText().toString();
+            EditText descriptionEditText = (EditText) findViewById(R.id.createActivityDescriptionEditText);
+            activityDescription = descriptionEditText.getText().toString();
 
-        activityMaxNbParticipants = getNbMaxParticipants(activityMaxNbParticipantsString);
+            EditText maxNbParticipantsEditText = (EditText) findViewById(R.id.createActivityMaxNbParticipantsEditText);
+            String activityMaxNbParticipantsString = maxNbParticipantsEditText.getText().toString();
 
-        String validation = validateActivity();
+            activityMaxNbParticipants = getNbMaxParticipants(activityMaxNbParticipantsString);
+
+            String validation = validateActivity();
 
 
-        final DeboxActivity newDeboxActivity = createActivityMethod(validation);
+            final DeboxActivity newDeboxActivity = createActivityMethod(validation);
 
-        String valid = ConfirmationCodes.get_success(this);
-        if(validation.equals(valid)) {
-            FragmentManager fm = getFragmentManager();
-            validationFragment = new CreateValidationFragment();
-            validationFragment.setDataProvider(mDataProvider);
-            validationFragment.setImageProvider(mImageProvider);
-            validationFragment.show(fm, "Validating your event");
+            String valid = ConfirmationCodes.get_success(this);
+            if (validation.equals(valid)) {
+                FragmentManager fm = getFragmentManager();
+                validationFragment = new CreateValidationFragment();
+                validationFragment.setDataProvider(mDataProvider);
+                validationFragment.setImageProvider(mImageProvider);
+                validationFragment.show(fm, "Validating your event");
 
-            validationFragment.setImagesUriList(imagesUriList);
+                validationFragment.setImagesUriList(imagesUriList);
 
-            validationFragment.uploadActivity(newDeboxActivity, creation);
-        }
-        else {
-            setErrorTextView(validation);
+                validationFragment.uploadActivity(newDeboxActivity, creation);
+            } else {
+                setErrorTextView(validation);
+                buttonCreatePressed=false;
+            }
         }
     }
 
