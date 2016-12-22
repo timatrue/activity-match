@@ -92,10 +92,13 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
     private int minuteDelayStartTime;
     private int minuteDelayEndTime;
 
+    //The organizer is counted in the number of participants
+    int initialNumberParticipants = 1;
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private DataProvider mDataProvider;
-    private ImageProvider mImageProvider;
+    DataProvider mDataProvider;
+    ImageProvider mImageProvider;
 
     private List<Uri> imagesUriList = new ArrayList<>();
     protected List<String> imagesNameList = new ArrayList<>();
@@ -399,8 +402,6 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
                 imagesNameList.add(uri.getLastPathSegment());
             }
 
-            //The organizer is counted in the number of participants
-            int initialNumberParticipants = 1;
             newDeboxActivity = new DeboxActivity(
                     activityId,
                     activityOrganizer,
