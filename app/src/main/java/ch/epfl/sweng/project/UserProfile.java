@@ -192,6 +192,7 @@ public class UserProfile extends AppCompatActivity {
         mImageProvider = imageProvider;
     }
 
+
     public void updateUser(User user, boolean newImage) {
         current_user = user;
         if(newImage) {
