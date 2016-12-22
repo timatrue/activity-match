@@ -181,7 +181,7 @@ public class UserImageFragment extends DialogFragment {
         @Override
         public void uploadProgress(Uri fileUri, long bytesTransferred, long totalBytesCount) {
             int rate = (int) ((double) bytesTransferred/totalBytesCount * 100);
-//            uploadRate.setText(getActivity().getString(R.string.progress, rate));
+            uploadRate.setText(rate + "%");
         }
     };
 
