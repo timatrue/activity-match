@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.Map;
@@ -27,6 +28,8 @@ public class CommentsView extends LinearLayout {
     String eventId;
     String eventRate;
     Resources res;
+
+    RatingBar eventRating;
 
     public String getEventId() {
         return eventId;
@@ -64,18 +67,15 @@ public class CommentsView extends LinearLayout {
 
         String comment = String.valueOf(userComments.get("comment"));
         eventId = String.valueOf(userComments.get("eventId"));
-        String rating = String.valueOf(userComments.get("rating"));
-        eventRate = String.format(res.getString(R.string.rate_event_comments),rating);
+        int rate = Integer.valueOf(String.valueOf(userComments.get("rating")));
 
-
+        eventRating = (RatingBar) childLayout.findViewById(R.id.ratingBar);
+        eventRating.setNumStars(rate);
 
         idComment = (TextView) childLayout.findViewById(R.id.idComment);
         idCommentText = new SpannableStringBuilder("See related activity");
         idCommentText.setSpan(new UnderlineSpan(), 0, idCommentText.length(), 0);
         idComment.setText(idCommentText);
-
-        ratingComment = (TextView) childLayout.findViewById(R.id.ratingComment);
-        ratingComment.setText(eventRate);
 
         contentComment = (TextView) childLayout.findViewById(R.id.contentComment);
         contentComment.setText(comment);

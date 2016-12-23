@@ -410,9 +410,11 @@ public class UserProfile extends AppCompatActivity {
 
 
         for(Map<String,String> elem : userComments){
-            CommentsView comment = new CommentsView(getApplicationContext(), elem);
-            comment.setOnClickListener(eventIdCommentsListener);
-            commentsLayout.addView(comment);
+            if (!String.valueOf(elem.get("comment")).contentEquals("")) {
+                CommentsView comment = new CommentsView(getApplicationContext(), elem);
+                comment.setOnClickListener(eventIdCommentsListener);
+                commentsLayout.addView(comment);
+            }
         }
 
     }

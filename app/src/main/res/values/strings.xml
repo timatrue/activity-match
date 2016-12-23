@@ -27,35 +27,35 @@
     <string name="communicate">Communicate</string>
 
     <!-- Welcome Activity interface -->
-    <string name="filter_button_text">Filter the events</string>
-    <string name="create_activity_button_text">Organize yours!</string>
+    <string name="filter_button_text">Filter the activities</string>
+    <string name="create_activity_button_text">Organize activity!</string>
     <string name="no_internet_connection">No internet connection</string>
 
 
     <!-- Create Activity -->
-    <string name="create_activity_title_bar">Event organizer</string>
-    <string name="create_activity_title">Organize your event</string>
-    <string name="create_activity_name_hint">The title of your event</string>
-    <string name="create_activity_description_hint">Give details about yours event</string>
+    <string name="create_activity_title_bar">Activity organizer</string>
+    <string name="create_activity_title">Organize your activity</string>
+    <string name="create_activity_name_hint">The title of your activity</string>
+    <string name="create_activity_description_hint">Give details about your activity</string>
     <string name="create_activity_confirmation_message">Event successfully created</string>
     <string name="create_activity_no_connection">No Internet connection</string>
 
     <string name="create_activity_starting_time_textView">Starts </string>
     <string name="create_activity_ending_time_textView">Ends </string>
-    <string name="create_activity_create_activity_button">Create event</string>
+    <string name="create_activity_create_activity_button">Create activity</string>
     <string name="modifyButtonText">Modify activity</string>
-    <string name="create_activity_maximum_number_of_participants">Maximum number of participants (optional)</string>
+    <string name="create_activity_maximum_number_of_participants">Max number of participants (optional)</string>
 
     <string name="create_activity_set_location">Choose location</string>
     <string name="create_activity_category_text">%1$s Event</string>
     <string name="create_activity_upload_image">Upload Image</string>
-    <string name="create_activity_header">Event\'s Organizer</string>
+    <string name="create_activity_header">Activity Organizer</string>
 
     <string name="create_activity_invalid_category">Invalid category</string>
     <string name="create_activity_date_error_message">Invalid dates and/or time</string>
     <string name="create_activity_location_error_message">Please select a location</string>
     <string name="create_activity_category_error_message">Please select a category</string>
-    <string name="create_activity_missing_field_error_message">Missing required field informations</string>
+    <string name="create_activity_missing_field_error_message">Missing required field information</string>
     <string name="create_activity_invalid_max_number_participants">The maximum number of participants is invalid. Please select a number smaller than a thousand or leave the field empty if you don\'t want to have a maximum.</string>
     <string name="create_activity_unknown_error_message">Unknown error</string>
 
@@ -86,13 +86,13 @@
     <string name="occupancy">Participants: %1$d</string>
     <string name="occupancy_with_max">Participants: %1$d/%2$d</string>
     <string name="invalid_occupancy">Invalid information about participants</string>
-    <string name="already_enrolled">You have already join this Event</string>
-    <string name="no_enrolled_free_place">You can join this event</string>
-    <string name="no_enrolled_full">Sorry this event is full</string>
-    <string name="must_be_rank">Please rank this event</string>
-    <string name="already_rank">You have already ranked this event</string>
-    <string name="activity_past">This event has past you cannot join it!</string>
-    <string name="you_are_organizer">This event is organised by yourself. You are automatically counted in participants</string>
+    <string name="already_enrolled">You have already join this activity</string>
+    <string name="no_enrolled_free_place">You can join this activity</string>
+    <string name="no_enrolled_full">Sorry this activity is full</string>
+    <string name="must_be_rank">Please rank this activity</string>
+    <string name="already_rank">You have already ranked this activity</string>
+    <string name="activity_past">This activity has passed, you cannot join it!</string>
+    <string name="you_are_organizer">You are the organizer of this activity and are automatically counted in participants</string>
 
 
     
@@ -107,15 +107,15 @@
     <!-- Join activity -->
     <string name="joinActivity_button">Join this activity</string>
     <string name="leaveActivity_button">Leave this activity</string>
-    <string name="joinActivity_satus">Current Stat is loading  … </string>
+    <string name="joinActivity_satus">Information is loading  … </string>
     <string name="toast_success_join">You have successfully joined this activity</string>
-    <string name="toast_fail_join_full">You don\'t join this activity</string>
-    <string name="toast_fail_join">Something wrong with network.. Try again in few seconds </string>
+    <string name="toast_fail_join_full">You can\'t join this activity</string>
+    <string name="toast_fail_join">Something wrong with network.. Try again in a few seconds </string>
     <string name="rateButton">Rate me NOW !</string>
 
     <!-- Fragment Filter -->
     <string name="no_results_found">No results found</string>
-    <string name="event_filter_title">Filter events</string>
+    <string name="event_filter_title">Filter activities</string>
     <string name="event_filter_description">Choose your category:</string>
     <string name="validate">Validate</string>
     <string name="filter_change_your_location">Change your location</string>
@@ -145,16 +145,16 @@
 
     <!-- User Profile -->
     <string name="comment_field">Comments</string>
-    <string name="to_rank_events">Events to rank</string>
-    <string name="past_organised_events">Past organized Events</string>
-    <string name="organised_events">Upcoming organized Events</string>
-    <string name="participated_events">Participated Events</string>
-    <string name="interested_events">Upcoming Events</string>
+    <string name="to_rank_events">Activities to rank</string>
+    <string name="past_organised_events">Past organized Activities</string>
+    <string name="organised_events">Upcoming organized Activities</string>
+    <string name="participated_events">Participated Activities</string>
+    <string name="interested_events">Upcoming Activities</string>
     <string name="rank_text">Ranking:</string>
     <string name="select_category_hint">Select category</string>
     <string name="pick_image_intent_text">text</string>
-    <string name="header_user_comments">Comments of participants of the past organized events:</string>
-    <string name="rate_event_comments">Rate: %1$s/5</string>
+    <string name="header_user_comments">Comments of participants of the past organized activities:</string>
+    <string name="rate_event_comments">Rate %1$s out of 5</string>
     <string name="userimagedescription">userImage</string>
     <string name="Opourcent">0%</string>
     <string name="uploadvalidationimage">uploadValidationImage</string>
