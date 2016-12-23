@@ -70,7 +70,9 @@ public class CommentsView extends LinearLayout {
         int rate = Integer.valueOf(String.valueOf(userComments.get("rating")));
 
         eventRating = (RatingBar) childLayout.findViewById(R.id.ratingBar);
-        eventRating.setNumStars(rate);
+        eventRating.setNumStars(5);
+        eventRating.setMax(5);
+        eventRating.setProgress(rate);
 
         idComment = (TextView) childLayout.findViewById(R.id.idComment);
         idCommentText = new SpannableStringBuilder("See related activity");
