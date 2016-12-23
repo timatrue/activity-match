@@ -165,7 +165,7 @@ public class UserProfile extends AppCompatActivity {
             if(userImage.getDrawable() instanceof GlideBitmapDrawable) {
                 imageFragment.setImage(((GlideBitmapDrawable) userImage.getDrawable()).getBitmap());
             }
-            else {
+            else if (userImage.getDrawable() instanceof  BitmapDrawable){
                 imageFragment.setImage(((BitmapDrawable) userImage.getDrawable()).getBitmap());
             }
             imageFragment.show(fm, "Validating your event");
