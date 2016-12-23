@@ -111,16 +111,7 @@ public class UserProfile extends AppCompatActivity {
 
         if (test != null) {
             if (test.equals(USER_PROFILE_NO_TEST)) {
-                //setDataProvider(new DataProvider());
-                //setImageProvider(new ImageProvider());
                 createCollection();
-                setExpListView();
-            }
-            else {
-                if(mDataProvider != null) {
-                    createCollection();
-                    setExpListView();
-                }
             }
         }
     }
@@ -151,8 +142,6 @@ public class UserProfile extends AppCompatActivity {
                 if (test.equals(USER_PROFILE_NO_TEST)) {
                     setDataProvider(new DataProvider());
                     setImageProvider(new ImageProvider());
-                    //createCollection();
-                    //setExpListView();
                 }
             }
         }
@@ -191,6 +180,7 @@ public class UserProfile extends AppCompatActivity {
     public void setImageProvider(ImageProvider imageProvider) {
         mImageProvider = imageProvider;
     }
+
 
     public void updateUser(User user, boolean newImage) {
         current_user = user;
@@ -297,6 +287,8 @@ public class UserProfile extends AppCompatActivity {
                 if(userName != null) {
                     nameTextView.setText(user.getUsername());
                 }
+
+                setExpListView();
 
                 if(expListView != null) {
                     expListView.setVisibility(View.VISIBLE);
