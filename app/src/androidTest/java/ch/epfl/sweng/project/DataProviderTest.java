@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -30,7 +31,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
@@ -114,7 +114,7 @@ public class DataProviderTest {
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
         when(mChild.push()).thenReturn(mPush);
         when(mPush.getKey()).thenReturn(uuidTest);
-        when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
+        when(mDataBaseRef.updateChildren(Matchers.<HashMap<String, Object>>any())).thenReturn(null);
 
 
         DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
@@ -861,7 +861,7 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.initUserInDB();
@@ -970,9 +970,8 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
-        // init moc for incrementNbOfUserInActivity
 
         when(database.getReference("activities/" + dbaTest.getId())).thenReturn(myRefIncrement);
 
@@ -997,7 +996,7 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRefIncrement).updateChildren(anyMap());
+        }).when(myRefIncrement).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -1326,7 +1325,7 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         final int nbOfParticipants = 10;
@@ -1383,7 +1382,7 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRefComments).updateChildren(anyMap());
+        }).when(myRefComments).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         //build user to rank
@@ -1413,8 +1412,8 @@ public class DataProviderTest {
         dp.rankUser(dbaTest.getId(),rank, comment);
 
 
-        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(anyMap());
-        Mockito.verify(myRef,atLeastOnce()).updateChildren(anyMap());
+        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(Matchers.<HashMap<String, Object>>any());
+        Mockito.verify(myRef,atLeastOnce()).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
     }
@@ -1658,7 +1657,7 @@ public class DataProviderTest {
                 return null;
 
             }
-        }).when(mDataBaseRef).updateChildren(anyMap());
+        }).when(mDataBaseRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
