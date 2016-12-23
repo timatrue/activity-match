@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -30,7 +31,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyMap;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
@@ -114,7 +114,7 @@ public class DataProviderTest {
         when(mDataBaseRef.child("activities")).thenReturn(mChild);
         when(mChild.push()).thenReturn(mPush);
         when(mPush.getKey()).thenReturn(uuidTest);
-        when(mDataBaseRef.updateChildren(anyMap())).thenReturn(null);
+        when(mDataBaseRef.updateChildren(Matchers.<HashMap<String, Object>>any())).thenReturn(null);
 
 
         DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
@@ -854,14 +854,16 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
 
-                assertEquals(objectBuild.get("user_email"),fakeUserEmail);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+
+                assertEquals(objectBuild.get("user_email"), fakeUserEmail);
                 assertEquals(objectBuild.get("default_user_name"),fakeUserName);
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
         dp.initUserInDB();
@@ -962,17 +964,17 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-
-                HashMap<String, Object> enrolledChild = (HashMap<String, Object>) objectBuild.get("enrolled/"+fakeEnrolledKey);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> enrolledChild = (HashMap<String, Object>) objectBuild.get("enrolled/"+fakeEnrolledKey);
+                HashMap enrolledChild = (HashMap) objectBuild.get("enrolled/"+fakeEnrolledKey);
 
                 assertEquals(enrolledChild.get("activity ID:"),dbaTest.getId());
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
-        // init moc for incrementNbOfUserInActivity
 
         when(database.getReference("activities/" + dbaTest.getId())).thenReturn(myRefIncrement);
 
@@ -991,13 +993,14 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
 
                 assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants+1);
 
                 return null;
             }
-        }).when(myRefIncrement).updateChildren(anyMap());
+        }).when(myRefIncrement).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         DataProvider dp = new DataProvider(myRef,database,mUser);
@@ -1133,11 +1136,12 @@ public class DataProviderTest {
 
         final String[] idArray = {"id0","id1","id2","id3","id4","id5","id6","id7","id8","id9"};
 
-        final Map<String, Object> activityMap = new HashMap<>();
+        //final Map<String, Object> activityMap = new HashMap<>();
 
-        for (String anIdArray : idArray) {
-            activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
-        }
+
+       // for (String anIdArray : idArray) {
+          //  activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
+        //}
 
 
         //when(ds.getValue()).thenReturn(activityMap);
@@ -1315,10 +1319,12 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
 
 
-                HashMap<String, Object> objectBuild2 = (HashMap<String, Object>)objectBuild.get("ranked/" + rankedKey);
+                //HashMap<String, Object> objectBuild2 = (HashMap<String, Object>)objectBuild.get("ranked/" + rankedKey);
+                HashMap objectBuild2 = (HashMap)objectBuild.get("ranked/" + rankedKey);
 
                 String id = (String) objectBuild2.get("activity ID:");
                 assertEquals(id,mocActivityIDToRank);
@@ -1326,7 +1332,7 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRef).updateChildren(anyMap());
+        }).when(myRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         final int nbOfParticipants = 10;
@@ -1374,8 +1380,10 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-                HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+                HashMap commentsMap = (HashMap) objectBuild.get("comments/"+commentKey);
 
                 assertEquals(commentsMap.get("eventId"),dbaTest.getId());
                 assertEquals(commentsMap.get("comment"),comment);
@@ -1383,22 +1391,23 @@ public class DataProviderTest {
 
                 return null;
             }
-        }).when(myRefComments).updateChildren(anyMap());
+        }).when(myRefComments).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         //build user to rank
         final Map<String, Object> userToRankMap= new HashMap<>();
-        final Map<String, Object> enrolledMapEmpty= new HashMap<>();
-        final Map<String, Object> organisedMapEmpty= new HashMap<>();
-        final Map<String, Object> commentsMapEmpty = new HashMap<>();
+        //final Map<String, Object> enrolledMapEmpty= new HashMap<>();
+        //final Map<String, Object> organisedMapEmpty= new HashMap<>();
+        //final Map<String, Object> commentsMapEmpty = new HashMap<>();
 
         userToRankMap.put("default_user_name","userToBeRanked");
-        userToRankMap.put("enrolled",enrolledMapEmpty);
-        userToRankMap.put("organised",organisedMapEmpty);
+        //userToRankMap.put("enrolled",enrolledMapEmpty);
+        userToRankMap.put("enrolled",new HashMap<>());
+        userToRankMap.put("organised",new HashMap<>());
         userToRankMap.put("ratingNb",-1);
         userToRankMap.put("ratingSum",0);
         userToRankMap.put("user_email","mailToRank@gmail.com");
-        userToRankMap.put("comments", commentsMapEmpty); //mine
+        userToRankMap.put("comments", new HashMap<>());
 
         final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
         when(ds3.getValue()).thenReturn(userToRankMap);
@@ -1413,8 +1422,8 @@ public class DataProviderTest {
         dp.rankUser(dbaTest.getId(),rank, comment);
 
 
-        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(anyMap());
-        Mockito.verify(myRef,atLeastOnce()).updateChildren(anyMap());
+        Mockito.verify(myRefComments,atLeastOnce()).updateChildren(Matchers.<HashMap<String, Object>>any());
+        Mockito.verify(myRef,atLeastOnce()).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
     }
@@ -1429,7 +1438,7 @@ public class DataProviderTest {
     public void testGetCurrentUserStatusSimplified(){
 
         final Map<String, Object> enrolledMap = new HashMap<>();
-        final Map<String, Object> organisedMap = new HashMap<>();
+        //final Map<String, Object> organisedMap = new HashMap<>();
         final Map<String, Object> rankedMap = new HashMap<>();
 
         // build to getStatus ENROLLED
@@ -1538,7 +1547,7 @@ public class DataProviderTest {
 
         userMap.put("default_user_name","fakeUserName");
         userMap.put("enrolled",enrolledMap);
-        userMap.put("organised",organisedMap);
+        userMap.put("organised",new HashMap<>());
         userMap.put("ranked",rankedMap);
         userMap.put("ratingNb",1);
         userMap.put("ratingSum",3);
@@ -1645,8 +1654,10 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-                HashMap<String, Object> activityMap = (HashMap<String, Object>) objectBuild.get("activities/"+id1);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> activityMap = (HashMap<String, Object>) objectBuild.get("activities/"+id1);
+                HashMap activityMap = (HashMap) objectBuild.get("activities/"+id1);
 
                 assertEquals(activityMap.get("category"),dba.getCategory());
                 assertEquals(activityMap.get("description"),dba.getDescription());
@@ -1658,7 +1669,7 @@ public class DataProviderTest {
                 return null;
 
             }
-        }).when(mDataBaseRef).updateChildren(anyMap());
+        }).when(mDataBaseRef).updateChildren(Matchers.<HashMap<String, Object>>any());
 
 
         DataProvider dp = new DataProvider(mDataBaseRef,database,mUser);
