@@ -6,12 +6,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/rectangle_rounded">
 
-    <TextView
-        android:layout_width="match_parent"
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/ratingBar"
+        android:clickable="false"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
+        android:max="100"
+        android:stepSize="0.01"
         android:layout_height="wrap_content"
-        android:id="@+id/ratingComment"
-        android:textColor="@color/blueDarkDebox"
-        android:padding="@dimen/generalPaddingCommentsBlock"/>
+        style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -27,7 +33,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/contentComment"
         android:textColor="@color/normalGreyDebox"
-        android:layout_below="@id/ratingComment"
+        android:layout_below="@id/ratingBar"
         android:padding="@dimen/generalPaddingCommentsBlock"/>
 
 </RelativeLayout>
