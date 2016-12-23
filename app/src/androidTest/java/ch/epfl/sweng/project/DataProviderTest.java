@@ -854,9 +854,11 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
 
-                assertEquals(objectBuild.get("user_email"),fakeUserEmail);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+
+                assertEquals(objectBuild.get("user_email"), fakeUserEmail);
                 assertEquals(objectBuild.get("default_user_name"),fakeUserName);
 
                 return null;
@@ -962,9 +964,10 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-
-                HashMap<String, Object> enrolledChild = (HashMap<String, Object>) objectBuild.get("enrolled/"+fakeEnrolledKey);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> enrolledChild = (HashMap<String, Object>) objectBuild.get("enrolled/"+fakeEnrolledKey);
+                HashMap enrolledChild = (HashMap) objectBuild.get("enrolled/"+fakeEnrolledKey);
 
                 assertEquals(enrolledChild.get("activity ID:"),dbaTest.getId());
 
@@ -990,7 +993,8 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
 
                 assertEquals(objectBuild.get("nbOfParticipants"),nbOfParticipants+1);
 
@@ -1132,11 +1136,12 @@ public class DataProviderTest {
 
         final String[] idArray = {"id0","id1","id2","id3","id4","id5","id6","id7","id8","id9"};
 
-        final Map<String, Object> activityMap = new HashMap<>();
+        //final Map<String, Object> activityMap = new HashMap<>();
 
-        for (String anIdArray : idArray) {
-            activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
-        }
+
+       // for (String anIdArray : idArray) {
+          //  activityMap.put(anIdArray, toolsBuildMapFromDebox(toolsBuildDummyDeboxActivity(anIdArray)));
+        //}
 
 
         //when(ds.getValue()).thenReturn(activityMap);
@@ -1314,10 +1319,12 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
 
 
-                HashMap<String, Object> objectBuild2 = (HashMap<String, Object>)objectBuild.get("ranked/" + rankedKey);
+                //HashMap<String, Object> objectBuild2 = (HashMap<String, Object>)objectBuild.get("ranked/" + rankedKey);
+                HashMap objectBuild2 = (HashMap)objectBuild.get("ranked/" + rankedKey);
 
                 String id = (String) objectBuild2.get("activity ID:");
                 assertEquals(id,mocActivityIDToRank);
@@ -1373,8 +1380,10 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-                HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> commentsMap = (HashMap<String, Object>) objectBuild.get("comments/"+commentKey);
+                HashMap commentsMap = (HashMap) objectBuild.get("comments/"+commentKey);
 
                 assertEquals(commentsMap.get("eventId"),dbaTest.getId());
                 assertEquals(commentsMap.get("comment"),comment);
@@ -1644,8 +1653,10 @@ public class DataProviderTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
-                HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
-                HashMap<String, Object> activityMap = (HashMap<String, Object>) objectBuild.get("activities/"+id1);
+                //HashMap<String, Object> objectBuild = (HashMap<String, Object>) args[0];
+                HashMap objectBuild = (HashMap) args[0];
+                //HashMap<String, Object> activityMap = (HashMap<String, Object>) objectBuild.get("activities/"+id1);
+                HashMap activityMap = (HashMap) objectBuild.get("activities/"+id1);
 
                 assertEquals(activityMap.get("category"),dba.getCategory());
                 assertEquals(activityMap.get("description"),dba.getDescription());
