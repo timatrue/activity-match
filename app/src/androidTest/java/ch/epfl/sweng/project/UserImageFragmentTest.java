@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -68,7 +70,6 @@ public class UserImageFragmentTest {
         activity.setExpListView();
     }
 
-    @UiThreadTest
     @Test
     public void LaunchFragment() {
 
@@ -79,16 +80,28 @@ public class UserImageFragmentTest {
         activity.setImageProvider(ip);
         ImageView userImage = (ImageView) activity.findViewById(R.id.userImage);
 
-        userImage.performClick();
+        onView(withId(R.id.userImage)).perform(click());
+
+        while(activity.imageFragment == null)
+        {
+
+        }
+
+
+        onView(withId(R.id.userImageOk)).perform(click());
+
+        onView(withId(R.id.userImage)).perform(click());
+
+        while(activity.imageFragment == null)
+        {
+
+        }
+
+        onView(withId(R.id.userImageEdit)).perform(click());
+
 
     }
 
-    public void test() {
-
-        final UserProfile activity = userProfileRule.getActivity();
-
-
-    }
 
 
 }

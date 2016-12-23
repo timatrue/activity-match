@@ -88,7 +88,7 @@ public class UserProfile extends AppCompatActivity {
 
     ImageView userImage;
     FragmentManager fm;
-    UserImageFragment imageFragment;
+    public UserImageFragment imageFragment;
 
     public LinearLayout commentsLayout;
 
@@ -112,6 +112,9 @@ public class UserProfile extends AppCompatActivity {
         if (test != null) {
             if (test.equals(USER_PROFILE_NO_TEST)) {
                 createCollection();
+            }
+            else {
+                userImage.setImageDrawable(getResources().getDrawable(R.drawable.logo_icon));
             }
         }
     }
