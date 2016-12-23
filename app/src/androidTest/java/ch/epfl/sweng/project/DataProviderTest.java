@@ -1396,17 +1396,18 @@ public class DataProviderTest {
 
         //build user to rank
         final Map<String, Object> userToRankMap= new HashMap<>();
-        final Map<String, Object> enrolledMapEmpty= new HashMap<>();
-        final Map<String, Object> organisedMapEmpty= new HashMap<>();
-        final Map<String, Object> commentsMapEmpty = new HashMap<>();
+        //final Map<String, Object> enrolledMapEmpty= new HashMap<>();
+        //final Map<String, Object> organisedMapEmpty= new HashMap<>();
+        //final Map<String, Object> commentsMapEmpty = new HashMap<>();
 
         userToRankMap.put("default_user_name","userToBeRanked");
-        userToRankMap.put("enrolled",enrolledMapEmpty);
-        userToRankMap.put("organised",organisedMapEmpty);
+        //userToRankMap.put("enrolled",enrolledMapEmpty);
+        userToRankMap.put("enrolled",new HashMap<>());
+        userToRankMap.put("organised",new HashMap<>());
         userToRankMap.put("ratingNb",-1);
         userToRankMap.put("ratingSum",0);
         userToRankMap.put("user_email","mailToRank@gmail.com");
-        userToRankMap.put("comments", commentsMapEmpty); //mine
+        userToRankMap.put("comments", new HashMap<>());
 
         final DataSnapshot ds3 = Mockito.mock(DataSnapshot.class);
         when(ds3.getValue()).thenReturn(userToRankMap);
@@ -1437,7 +1438,7 @@ public class DataProviderTest {
     public void testGetCurrentUserStatusSimplified(){
 
         final Map<String, Object> enrolledMap = new HashMap<>();
-        final Map<String, Object> organisedMap = new HashMap<>();
+        //final Map<String, Object> organisedMap = new HashMap<>();
         final Map<String, Object> rankedMap = new HashMap<>();
 
         // build to getStatus ENROLLED
@@ -1546,7 +1547,7 @@ public class DataProviderTest {
 
         userMap.put("default_user_name","fakeUserName");
         userMap.put("enrolled",enrolledMap);
-        userMap.put("organised",organisedMap);
+        userMap.put("organised",new HashMap<>());
         userMap.put("ranked",rankedMap);
         userMap.put("ratingNb",1);
         userMap.put("ratingSum",3);
