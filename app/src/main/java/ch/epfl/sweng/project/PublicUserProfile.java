@@ -100,6 +100,8 @@ public class PublicUserProfile extends UserProfile {
                     nameTextView.setText(user.getUsername());
                 }
 
+                setExpListView();
+
                 if(expListView != null) {
                     expListView.setVisibility(View.VISIBLE);
                 }
