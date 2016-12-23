@@ -500,46 +500,50 @@ public class DataProvider {
 
     private DeboxActivity getDeboxActivity(String uid, Map<String, Object> activityMap) {
 
-        String category = (String) activityMap.get("category");
-        String description = (String) activityMap.get("description");
+        if(activityMap != null) {
+            String category = (String) activityMap.get("category");
+            String description = (String) activityMap.get("description");
 
-        Double latitude = Double.valueOf(activityMap.get("latitude").toString());
-        Double longitude = Double.valueOf(activityMap.get("longitude").toString());
+            Double latitude = Double.valueOf(activityMap.get("latitude").toString());
+            Double longitude = Double.valueOf(activityMap.get("longitude").toString());
 
-        String organizer = (String) activityMap.get("organizer");
-        String title = (String) activityMap.get("title");
+            String organizer = (String) activityMap.get("organizer");
+            String title = (String) activityMap.get("title");
 
-        Calendar timeStart = Calendar.getInstance();
-        Long timeStartMillis = (Long) activityMap.get("timeStart");
-        if(timeStartMillis != null) {
-            timeStart.setTimeInMillis(timeStartMillis);
+            Calendar timeStart = Calendar.getInstance();
+            Long timeStartMillis = (Long) activityMap.get("timeStart");
+            if (timeStartMillis != null) {
+                timeStart.setTimeInMillis(timeStartMillis);
+            }
+
+            Calendar timeEnd = Calendar.getInstance();
+            Long timeEndMillis = (Long) activityMap.get("timeEnd");
+            if (timeEndMillis != null) {
+                timeEnd.setTimeInMillis(timeEndMillis);
+            }
+
+            List<String> imagesList = (ArrayList<String>) activityMap.get("images");
+
+
+            boolean check_nbParticipants = activityMap.containsKey("nbOfParticipants");
+            int nbOfParticipants = -1;
+            if (check_nbParticipants) {
+                //nbOfParticipants = (int) activityMap.get("nbOfParticipants");
+                nbOfParticipants = Integer.valueOf(activityMap.get("nbOfParticipants").toString());
+            }
+
+            boolean check_nbMaxOfParticipants = activityMap.containsKey("nbMaxOfParticipants");
+            int nbMaxOfParticipants = -1;
+            if (check_nbMaxOfParticipants) {
+                //nbMaxOfParticipants = (int) activityMap.get("nbMaxOfParticipants");
+                nbMaxOfParticipants = Integer.valueOf(activityMap.get("nbMaxOfParticipants").toString());
+            }
+
+            return new DeboxActivity(uid, organizer, title, description, timeStart, timeEnd, latitude, longitude, category, imagesList, nbOfParticipants, nbMaxOfParticipants);
         }
-
-        Calendar timeEnd = Calendar.getInstance();
-        Long timeEndMillis = (Long) activityMap.get("timeEnd");
-        if(timeEndMillis != null) {
-            timeEnd.setTimeInMillis(timeEndMillis);
+        else {
+            return null;
         }
-
-        List<String> imagesList = (ArrayList<String>) activityMap.get("images");
-
-
-        boolean check_nbParticipants = activityMap.containsKey("nbOfParticipants");
-        int nbOfParticipants = -1;
-        if(check_nbParticipants){
-            //nbOfParticipants = (int) activityMap.get("nbOfParticipants");
-            nbOfParticipants = Integer.valueOf(activityMap.get("nbOfParticipants").toString());
-        }
-
-        boolean check_nbMaxOfParticipants = activityMap.containsKey("nbMaxOfParticipants");
-        int nbMaxOfParticipants = -1;
-        if(check_nbMaxOfParticipants){
-            //nbMaxOfParticipants = (int) activityMap.get("nbMaxOfParticipants");
-            nbMaxOfParticipants = Integer.valueOf(activityMap.get("nbMaxOfParticipants").toString());
-        }
-
-        return new DeboxActivity(uid, organizer, title, description,timeStart, timeEnd, latitude, longitude, category, imagesList,nbOfParticipants,nbMaxOfParticipants);
-
     }
 
     public Void getActivityFromUid(final DataProviderListenerActivity listener, final String uid) {

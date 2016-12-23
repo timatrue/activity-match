@@ -403,6 +403,9 @@ public class CreateActivity extends AppCompatActivity implements CalendarPickerL
             }
 
             //Add all images name in the debox activity
+            if(imagesNameList == null) {
+                imagesNameList = new ArrayList<>();
+            }
             for (Uri uri : imagesUriList) {
                 imagesNameList.add(uri.getLastPathSegment());
             }
